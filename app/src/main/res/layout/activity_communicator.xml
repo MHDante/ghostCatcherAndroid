@@ -1,0 +1,193 @@
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/steampunk">
+
+    <HorizontalScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/horizontalScrollView"
+        android:layout_gravity="center_horizontal|top"
+        android:background="#442b2a">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent">
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/shine">
+
+                <ImageButton
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/imageButton"
+                    android:src="@drawable/map"
+                    android:cropToPadding="false"
+                    android:adjustViewBounds="false"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/frameLayout"
+                android:background="@drawable/shine">
+
+                <ImageButton
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/imageButton2"
+                    android:src="@drawable/fingerprint"
+                    android:cropToPadding="false"
+                    android:adjustViewBounds="false"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/frameLayout2"
+                android:background="@drawable/shine">
+
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imageButton3"
+                    android:cropToPadding="false"
+                    android:adjustViewBounds="false"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/frameLayout3"
+                android:background="@drawable/shine">
+
+                <ImageButton
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/imageButton4"
+                    android:cropToPadding="false"
+                    android:adjustViewBounds="false"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/frameLayout4"
+                android:background="@drawable/shine">
+
+                <ImageButton
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/imageButton5"
+                    android:cropToPadding="false"
+                    android:adjustViewBounds="false"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/frameLayout5"
+                android:background="@drawable/shine">
+
+                <ImageButton
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/imageButton6"
+                    android:cropToPadding="false"
+                    android:adjustViewBounds="false"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside" />
+            </FrameLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <FrameLayout
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_gravity="left|bottom">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/back_gear"
+            android:src="@drawable/back_gear"
+            android:background="@android:color/transparent"
+            android:scaleType="matrix"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="-30dp"
+            android:onClick="backClick" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_gravity="right|bottom"
+        android:id="@+id/frameLayout6">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/journal_gear"
+            android:src="@drawable/journal_gear"
+            android:background="@android:color/transparent"
+            android:scaleType="matrix"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:onClick="journalClick" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="293dp"
+                android:layout_height="293dp"
+                android:id="@+id/imageView"
+                android:src="@drawable/character_prof" />
+
+            <ImageView
+                android:layout_width="293dp"
+                android:layout_height="293dp"
+                android:id="@+id/imageView2"
+                android:src="@drawable/frame" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="“Who is this... and how did you get this application?! No, no, this just won't do... "
+            android:id="@+id/textView"
+            android:layout_marginTop="20dp"
+            android:textAlignment="center"
+            android:gravity="center_horizontal"
+            android:background="#575757"
+            android:onClick="backClick" />
+    </LinearLayout>
+
+</FrameLayout>
