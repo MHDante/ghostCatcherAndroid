@@ -119,39 +119,37 @@
     <FrameLayout
         android:layout_width="105dp"
         android:layout_height="105dp"
-        android:layout_gravity="left|bottom">
+        android:layout_gravity="left|bottom"
+        android:translationX="-200dp"
+        android:id="@+id/back_gear">
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/back_gear"
             android:src="@drawable/back_gear"
             android:background="@android:color/transparent"
             android:scaleType="matrix"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_marginLeft="-30dp"
-            android:onClick="backClick" />
+            android:onClick="onClick"
+            android:id="@+id/back_gear_btn" />
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="105dp"
         android:layout_height="105dp"
         android:layout_gravity="right|bottom"
-        android:id="@+id/frameLayout6">
+        android:translationX="200dp"
+        android:id="@+id/journal_gear">
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/journal_gear"
             android:src="@drawable/journal_gear"
             android:background="@android:color/transparent"
             android:scaleType="matrix"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:onClick="journalClick" />
+            android:onClick="onClick"
+            android:focusableInTouchMode="true"
+            android:id="@+id/journal_gear_btn" />
     </FrameLayout>
 
     <LinearLayout
@@ -186,8 +184,7 @@
             android:layout_marginTop="20dp"
             android:textAlignment="center"
             android:gravity="center_horizontal"
-            android:background="#575757"
-            android:onClick="backClick" />
+            android:background="#575757" />
     </LinearLayout>
 
 </FrameLayout>
