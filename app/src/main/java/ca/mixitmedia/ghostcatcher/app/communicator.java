@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import ca.mixitmedia.ghostcatcher.utils.Debug;
+
 
 public class communicator extends Activity {
 

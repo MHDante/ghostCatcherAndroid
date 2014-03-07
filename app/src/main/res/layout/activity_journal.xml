@@ -1,16 +1,100 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="ca.mixitmedia.ghostcatcher.app.Journal">
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#524851">
 
-    <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <FrameLayout
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_alignParentBottom="true"
+        android:translationX="-200dp"
+        android:id="@+id/back_gear">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_gear"
+            android:background="@android:color/transparent"
+            android:scaleType="matrix"
+            android:layout_marginLeft="-30dp"
+            android:onClick="onClick"
+            android:id="@+id/back_gear_btn" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:translationX="200dp"
+        android:id="@+id/journal_gear">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/journal_gear"
+            android:background="@android:color/transparent"
+            android:scaleType="matrix"
+            android:onClick="onClick"
+            android:focusableInTouchMode="true"
+            android:id="@+id/journal_gear_btn" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/back_gear"
+        android:background="@drawable/moleskin">
+
+        <Space
+            android:layout_width="60dp"
+            android:layout_height="110dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/notes_tab"
+            android:focusableInTouchMode="false" />
+
+        <Space
+            android:layout_width="60dp"
+            android:layout_height="110dp"
+            android:id="@+id/bio_tab"
+            android:layout_below="@+id/notes_tab"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Space
+            android:layout_width="60dp"
+            android:layout_height="110dp"
+            android:id="@+id/places_tab"
+            android:layout_below="@+id/bio_tab"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Space
+            android:layout_width="60dp"
+            android:layout_height="110dp"
+            android:id="@+id/items_tab"
+            android:layout_below="@+id/places_tab"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <ViewFlipper
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/JournalFlipper"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/places_tab"
+            android:background="@drawable/moleskin_page">
+
+            <AdapterViewFlipper
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/NotesFlipper"
+                android:background="@drawable/moleskin_page" />
+
+        </ViewFlipper>
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -18,8 +18,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name="ca.mixitmedia.ghostcatcher.app.Journal"
-            android:label="@string/title_activity_journal"></activity>
+            android:label="@string/title_activity_journal"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

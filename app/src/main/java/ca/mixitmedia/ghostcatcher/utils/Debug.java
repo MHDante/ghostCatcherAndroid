@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.utils;
 
 import android.util.Log;
 
