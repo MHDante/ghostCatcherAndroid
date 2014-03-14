@@ -3,11 +3,13 @@ package ca.mixitmedia.ghostcatcher.app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Debug;
 
 
@@ -16,9 +18,11 @@ public class communicator extends Activity {
     float gearsize = 200;
     View backGear;
     View journalGear;
-
+    Context ctxt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ctxt = this;
+        gcEngine.getInstance().init(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_communicator);
         backGear = findViewById(R.id.back_gear);
@@ -48,6 +52,9 @@ public class communicator extends Activity {
                 break;
             case R.id.journal_gear_btn:
                 action = "journal";
+                break;
+            case R.id.tool_button_1:
+                action = "map";
                 break;
         }
         AnimationHandler ah = new AnimationHandler(this, action);
@@ -88,6 +95,11 @@ public class communicator extends Activity {
                 caller.onBackPressed();
             if (action.equals("journal"))
                 caller.startJournal();
+            if (action.equals("map")) {
+                startActivity(new Intent(ctxt, FakePlayer.class));
+                overridePendingTransition(R.anim.rotate_in_from_right, R.anim.rotate_out_to_left);
+            }
+
         }
     }
 }

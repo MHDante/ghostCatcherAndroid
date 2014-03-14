@@ -24,12 +24,13 @@
                 <ImageButton
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:id="@+id/imageButton"
+                    android:id="@+id/tool_button_1"
                     android:src="@drawable/map"
                     android:cropToPadding="false"
                     android:adjustViewBounds="false"
                     android:background="@android:color/transparent"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"
+                    android:onClick="onClick" />
             </FrameLayout>
 
             <FrameLayout

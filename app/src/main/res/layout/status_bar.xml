@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notification_base"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    tools:ignore="ContentDescription">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:padding="4dip"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ghost"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="fitStart"></ImageView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:id="@+id/linearLayout"
+        android:layout_toLeftOf="@+id/status_bar_play"
+        android:layout_toRightOf="@+id/icon">
+
+        <TextView
+            android:id="@+id/title"
+            style="@android:style/TextAppearance.StatusBar.EventContent.Title"
+            android:focusable="true"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:layout_gravity="left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/to_do"
+            style="@android:style/TextAppearance.StatusBar.EventContent"
+            android:layout_gravity="left"
+            android:maxLines="2"
+            android:scrollHorizontally="true"
+            android:ellipsize="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/status_bar_play"
+        android:src="@drawable/btn_playback_play"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
