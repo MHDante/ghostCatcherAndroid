@@ -73,6 +73,7 @@ public class Journal extends Activity {
                 action = "back";
                 break;
         }
+
         AnimationHandler ah = new AnimationHandler(this, action);
         backGear.animate().setListener(ah);
         hideGears();
