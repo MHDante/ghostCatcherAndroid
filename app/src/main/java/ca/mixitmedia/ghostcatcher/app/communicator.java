@@ -19,8 +19,10 @@ public class communicator extends Activity {
     View backGear;
     View journalGear;
     Context ctxt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         ctxt = this;
         gcEngine.getInstance().init(this);
         super.onCreate(savedInstanceState);
@@ -34,8 +36,7 @@ public class communicator extends Activity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             // getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION| View.SYSTEM_UI_FLAG_FULLSCREEN| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showGears();
@@ -96,7 +97,7 @@ public class communicator extends Activity {
             if (action.equals("journal"))
                 caller.startJournal();
             if (action.equals("map")) {
-                startActivity(new Intent(ctxt, FakePlayer.class));
+                startActivity(new Intent(ctxt, Tester.class));
                 overridePendingTransition(R.anim.rotate_in_from_right, R.anim.rotate_out_to_left);
             }
 

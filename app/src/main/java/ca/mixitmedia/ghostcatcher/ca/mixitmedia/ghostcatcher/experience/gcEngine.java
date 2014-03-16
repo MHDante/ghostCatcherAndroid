@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import java.io.File;
 
+import ca.mixitmedia.ghostcatcher.app.gcMediaService;
 import ca.mixitmedia.ghostcatcher.utils.ChapterLoader;
 
 /**
@@ -12,7 +13,6 @@ import ca.mixitmedia.ghostcatcher.utils.ChapterLoader;
  */
 public class gcEngine {
     private static gcEngine ourInstance = new gcEngine();
-
     public Context context;
     ChapterLoader loader;
 

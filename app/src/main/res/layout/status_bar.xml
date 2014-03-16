@@ -14,7 +14,7 @@
         android:padding="4dip"
         android:gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:src="@drawable/ghost"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"

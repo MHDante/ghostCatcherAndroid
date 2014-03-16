@@ -4,7 +4,10 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -31,17 +34,32 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static final String EXTRA_LOOP = INTENT_BASE_NAME + ".EXTRA_LOOP";
 
     static final int NOTIFICATION_MPLAYER = 56584;
-
+    public static boolean isStarted;
+    public static boolean isPaused;
+    static Notification status;
     gcEngine engine = gcEngine.getInstance();
     MediaPlayer mPlayer = null;
     Queue<Uri> tracks = new LinkedList<Uri>();
-    boolean isStarted;
+
     boolean looping;
+
+    BroadcastReceiver receiver = new AudioReceiver();
 
     ///////////////////////////////////Service methods
     @Override
     public void onCreate() {
+
         super.onCreate();
+        IntentFilter i = new IntentFilter();
+
+        i.addAction(ACTION_TOGGLE_PLAY);
+        i.addAction(ACTION_STOP);
+        i.addAction(ACTION_PLAY_TRACK);
+        i.addAction(ACTION_QUEUE_TRACK);
+        i.addAction(ACTION_END_LOOP);
+
+        registerReceiver(receiver, i);
+
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnPreparedListener(this);
@@ -51,40 +69,17 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent.getAction().equals(ACTION_TOGGLE_PLAY)) {
-            if (isStarted) {
-                if (mPlayer.isPlaying()) {
-                    mPlayer.pause();
-                    updateNotification();
-                } else {
-                    mPlayer.start();
-                    updateNotification();
-                }
-            }
-        } else if (intent.getAction().equals(ACTION_STOP)) {
-            stop();
-        } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
-            String track = intent.getStringExtra(EXTRA_TRACK);
-            looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-            for (Uri t : tracks) tracks.remove(t);
-            tracks.add(engine.getSoundUri(track));
-            startPlaying();
-        } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
-            String track = intent.getStringExtra(EXTRA_TRACK);
-            looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-            tracks.add(engine.getSoundUri(track));
-            if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
-        }
-
+        updateNotification();
+        startForeground(NOTIFICATION_MPLAYER, status);
         return (START_NOT_STICKY);
     }
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(receiver);
         mPlayer.release();
     }
 
-    @Override
     public IBinder onBind(Intent intent) {
         return (null);
     }
@@ -92,31 +87,73 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     ///////////////////////////////////Media Player Listeners
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        isPaused = false;
         updateNotification();
     }
 
-    @Override
     public void onCompletion(MediaPlayer mp) {
         if (tracks.peek() != null) {
             try {
                 Uri track = tracks.remove();
                 if (looping && tracks.size() > 1) tracks.add(track);
+                mPlayer.reset();
                 mPlayer.setDataSource(getApplicationContext(), track);
                 mPlayer.prepareAsync();
 
             } catch (IOException e) {
                 Log.e("AudioPlayer", "Error:" + e.getMessage());
             }
+        } else stop();
+    }
+
+    ///////////////////////////////////Broadcast Receiver
+    private class AudioReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(ACTION_TOGGLE_PLAY)) {
+                if (isStarted) {
+                    if (mPlayer.isPlaying()) {
+                        mPlayer.pause();
+                        isPaused = true;
+                        updateNotification();
+                    } else {
+                        mPlayer.start();
+                        isPaused = false;
+                        updateNotification();
+                    }
+                } else startPlaying();
+            } else if (intent.getAction().equals(ACTION_STOP)) {
+                stop();
+            } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
+                String track = intent.getStringExtra(EXTRA_TRACK);
+                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+                for (Uri t : tracks) tracks.remove(t);
+                tracks.add(engine.getSoundUri(track));
+                startPlaying();
+            } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
+                String track = intent.getStringExtra(EXTRA_TRACK);
+                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+                tracks.add(engine.getSoundUri(track));
+                if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
+            }
         }
     }
 
     ///////////////////////////////////Utility methods
-    private void stop() {
+    void stop() {
         mPlayer.stop();
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_MPLAYER);
+        isStarted = false;
+        stopSelf();
     }
 
-    private void startPlaying() {
+    void startPlaying() {
+
+        if (tracks.size() == 0) {
+            Log.e("audio", "Tried to play without a playlist set.");
+            return;
+        }
         mPlayer.reset();
 
         if (tracks.size() == 1) mPlayer.setLooping(looping);
@@ -133,7 +170,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         isStarted = true;
     }
 
-    private void updateNotification() {
+    void updateNotification() {
 
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
         Bitmap nextLocation = engine.getNextLocation().image;
@@ -143,17 +180,21 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
 
         statusBarView.setImageViewResource(R.id.status_bar_play,
                 (isStarted && mPlayer.isLooping()) ? R.drawable.btn_playback_pause : R.drawable.btn_playback_play);
+
+
         statusBarView.setOnClickPendingIntent(R.id.status_bar_play,
                 PendingIntent.getService(this, 0, new Intent(ACTION_TOGGLE_PLAY), 0));
 
 
-        Notification status = new Notification();
+        status = new Notification();
         status.contentView = statusBarView;
         status.flags |= Notification.FLAG_ONGOING_EVENT;
         status.icon = R.drawable.ghost;
         status.contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, communicator.class), 0);
 
-        startForeground(NOTIFICATION_MPLAYER, status);
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_MPLAYER, status);
+
     }
+
 }
