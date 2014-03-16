@@ -13,8 +13,8 @@
         android:id="@+id/icon"
         android:padding="4dip"
         android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:src="@drawable/ghost"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
@@ -27,10 +27,10 @@
         android:orientation="vertical"
         android:layout_centerVertical="true"
         android:id="@+id/linearLayout"
-        android:layout_toLeftOf="@+id/status_bar_play"
-        android:layout_toRightOf="@+id/icon">
+        android:layout_toRightOf="@+id/icon"
+        android:layout_toLeftOf="@+id/status_bar_play">
 
-        <TextView
+    <TextView
             android:id="@+id/title"
             style="@android:style/TextAppearance.StatusBar.EventContent.Title"
             android:focusable="true"
@@ -51,12 +51,24 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/status_bar_play"
-        android:src="@drawable/btn_playback_play"
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/status_bar_clear"
+        android:src="@drawable/clear"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="@android:color/transparent"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/status_bar_play"
+        android:src="@drawable/btn_playback_play"
+        android:background="@android:color/transparent"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/status_bar_clear" />
 </RelativeLayout>

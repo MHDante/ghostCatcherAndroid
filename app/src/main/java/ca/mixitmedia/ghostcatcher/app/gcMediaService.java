@@ -11,14 +11,15 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
@@ -39,11 +40,12 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     static Notification status;
     gcEngine engine = gcEngine.getInstance();
     MediaPlayer mPlayer = null;
-    Queue<Uri> tracks = new LinkedList<Uri>();
+    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
 
     boolean looping;
 
     BroadcastReceiver receiver = new AudioReceiver();
+    public static boolean receiverRegistered;
 
     ///////////////////////////////////Service methods
     @Override
@@ -59,7 +61,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         i.addAction(ACTION_END_LOOP);
 
         registerReceiver(receiver, i);
-
+        receiverRegistered = true;
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(this);
         mPlayer.setOnPreparedListener(this);
@@ -103,7 +105,9 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             } catch (IOException e) {
                 Log.e("AudioPlayer", "Error:" + e.getMessage());
             }
-        } else stop();
+        } else {
+            stop();
+        }
     }
 
     ///////////////////////////////////Broadcast Receiver
@@ -128,7 +132,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
                 String track = intent.getStringExtra(EXTRA_TRACK);
                 looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                for (Uri t : tracks) tracks.remove(t);
+                tracks = new ConcurrentLinkedQueue<Uri>();
                 tracks.add(engine.getSoundUri(track));
                 startPlaying();
             } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
@@ -142,10 +146,13 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
 
     ///////////////////////////////////Utility methods
     void stop() {
-        mPlayer.stop();
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_MPLAYER);
+        receiverRegistered = false;
         isStarted = false;
+        mPlayer.stop();
+        tracks = new ConcurrentLinkedQueue<Uri>();
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_MPLAYER);
         stopSelf();
+
     }
 
     void startPlaying() {
@@ -171,7 +178,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     }
 
     void updateNotification() {
-
+        int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
         Bitmap nextLocation = engine.getNextLocation().image;
         statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
@@ -179,19 +186,20 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
 
         statusBarView.setImageViewResource(R.id.status_bar_play,
-                (isStarted && mPlayer.isLooping()) ? R.drawable.btn_playback_pause : R.drawable.btn_playback_play);
+                (isPaused || !isStarted) ? R.drawable.btn_playback_play : R.drawable.btn_playback_pause);
 
 
         statusBarView.setOnClickPendingIntent(R.id.status_bar_play,
-                PendingIntent.getService(this, 0, new Intent(ACTION_TOGGLE_PLAY), 0));
+                PendingIntent.getBroadcast(getApplicationContext(), requestID, new Intent(ACTION_TOGGLE_PLAY), PendingIntent.FLAG_CANCEL_CURRENT));
+        statusBarView.setOnClickPendingIntent(R.id.status_bar_clear,
+                PendingIntent.getBroadcast(getApplicationContext(), requestID + 2, new Intent(ACTION_STOP), PendingIntent.FLAG_CANCEL_CURRENT));
 
 
         status = new Notification();
         status.contentView = statusBarView;
-        status.flags |= Notification.FLAG_ONGOING_EVENT;
         status.icon = R.drawable.ghost;
-        status.contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, communicator.class), 0);
+        status.contentIntent = PendingIntent.getActivity(this, requestID + 1,
+                new Intent(this, communicator.class), PendingIntent.FLAG_CANCEL_CURRENT);
 
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_MPLAYER, status);
 

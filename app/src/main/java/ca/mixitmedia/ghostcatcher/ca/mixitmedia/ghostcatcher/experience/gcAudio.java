@@ -50,39 +50,38 @@ public class gcAudio {
         if (!gcMediaService.isStarted) {
             ctxt().startService(new Intent(ctxt(), gcMediaService.class));
         }
-        new Handler().postDelayed(new Runnable() {
+        new Runnable() {
             @Override
             public void run() {
-                if (gcMediaService.isStarted) {
-                    Intent i = new Intent(gcMediaService.ACTION_PLAY_TRACK);
+
+                Intent i = new Intent(gcMediaService.ACTION_PLAY_TRACK);
                     i.putExtra(gcMediaService.EXTRA_TRACK, track);
                     i.putExtra(gcMediaService.EXTRA_LOOP, loop);
                     ctxt().sendBroadcast(i);
-                } else {
-                    new Handler().postDelayed(this, 100);
+                if (!gcMediaService.receiverRegistered) {
+                    new Handler().postDelayed(this, 50);
                 }
             }
-        }, 100);
-
+        }.run();
     }
 
     public static void queueTrack(final String track, final boolean loop) {
         if (!gcMediaService.isStarted) {
             ctxt().startService(new Intent(ctxt(), gcMediaService.class));
         }
-        new Handler().postDelayed(new Runnable() {
+        new Runnable() {
             @Override
             public void run() {
-                if (gcMediaService.isStarted) {
-                    Intent i = new Intent(gcMediaService.ACTION_QUEUE_TRACK);
+
+                Intent i = new Intent(gcMediaService.ACTION_QUEUE_TRACK);
                     i.putExtra(gcMediaService.EXTRA_TRACK, track);
                     i.putExtra(gcMediaService.EXTRA_LOOP, loop);
                     ctxt().sendBroadcast(i);
-                } else {
-                    new Handler().postDelayed(this, 100);
+                if (!gcMediaService.receiverRegistered) {
+                    new Handler().postDelayed(this, 50);
                 }
             }
-        }, 100);
+        }.run();
     }
 
     public static void stopLooping() {
