@@ -3,8 +3,11 @@ package ca.mixitmedia.ghostcatcher.app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -12,23 +15,68 @@ import android.view.View;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Debug;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.*;
 
-public class communicator extends Activity {
+import static com.google.android.gms.common.GooglePlayServicesUtil.*;
+
+
+public class communicator extends Activity
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     float gearsize = 200;
     View backGear;
     View journalGear;
     Context ctxt;
+    private GoogleApiClient mGoogleApiClient;
+
+    private static final String STATE_RESOLVING_ERROR = "resolving_error";
+    // Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
+    // Unique tag for the error dialog fragment
+    private static final String DIALOG_ERROR = "dialog_error";
+    // Bool to track whether the app is already resolving an error
+    private boolean mResolvingError = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+        mResolvingError = savedInstanceState != null
+                && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
         ctxt = this;
         gcEngine.getInstance().init(this);
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_communicator);
         backGear = findViewById(R.id.back_gear);
         journalGear = findViewById(R.id.journal_gear);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addApi(Maps.API)
+//                .addScope(Maps.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mResolvingError) {  // more about this later
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int isGoogleThere = isGooglePlayServicesAvailable(this);
+        if (isGoogleThere != ConnectionResult.SUCCESS) {
+            getErrorDialog(isGoogleThere, this, 0);
+        }
+
     }
 
     @Override
@@ -43,6 +91,19 @@ public class communicator extends Activity {
                 }
             }, 500);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_RESOLVING_ERROR, mResolvingError);
     }
 
     public void onClick(View view) {
@@ -97,10 +158,52 @@ public class communicator extends Activity {
             if (action.equals("journal"))
                 caller.startJournal();
             if (action.equals("map")) {
-                startActivity(new Intent(ctxt, Tester.class));
+                startActivity(new Intent(ctxt, gcMap.class));
                 overridePendingTransition(R.anim.rotate_in_from_right, R.anim.rotate_out_to_left);
             }
 
+        }
+    }
+
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        // Connected to Google Play services!
+        // The good stuff goes here.
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // The connection has been interrupted.
+        // Disable any UI components that depend on Google APIs
+        // until onConnected() is called.
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (result.hasResolution()) {
+            try {
+                mResolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                mGoogleApiClient.connect();
+            }
+        } else {
+            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
+            mResolvingError = true;
+            Dialog d = GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(),
+                    this, REQUEST_RESOLVE_ERROR);
+            d.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    mResolvingError = false;
+                }
+            });
+            d.show();
         }
     }
 }

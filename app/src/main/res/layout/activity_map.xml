@@ -1,0 +1,105 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_gravity="center" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
+        android:src="@drawable/map_overlay"
+        android:scaleType="fitXY" />
+
+    <FrameLayout
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_gravity="left|bottom"
+        android:translationX="-200dp"
+        android:id="@+id/back_gear">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_gear"
+            android:background="@android:color/transparent"
+            android:scaleType="matrix"
+            android:layout_marginLeft="-30dp"
+            android:onClick="onClick"
+            android:id="@+id/back_gear_btn" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="105dp"
+        android:layout_height="105dp"
+        android:layout_gravity="right|bottom"
+        android:translationX="200dp"
+        android:id="@+id/journal_gear">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/journal_gear"
+            android:background="@android:color/transparent"
+            android:scaleType="matrix"
+            android:onClick="onClick"
+            android:focusableInTouchMode="true"
+            android:id="@+id/journal_gear_btn" />
+    </FrameLayout>
+
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/viewFlipper"
+        android:layout_gravity="center_horizontal|top">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#66000000"
+            android:clickable="false">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton2"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/btn_playback_play" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/btn_playback_play"
+                android:scaleX="-1" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/imageView2"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/imageButton"
+                android:src="#878787" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/imageButton2"
+                android:layout_below="@+id/imageButton2"
+                android:layout_toRightOf="@+id/imageView2"></LinearLayout>
+        </RelativeLayout>
+    </ViewFlipper>
+
+</FrameLayout>
