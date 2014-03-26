@@ -118,6 +118,9 @@ public class communicator extends Activity
             case R.id.tool_button_1:
                 action = "map";
                 break;
+            case R.id.tool_button_2:
+                action = "tester";
+                break;
         }
         AnimationHandler ah = new AnimationHandler(this, action);
         backGear.animate().setListener(ah);
@@ -161,7 +164,10 @@ public class communicator extends Activity
                 startActivity(new Intent(ctxt, gcMap.class));
                 overridePendingTransition(R.anim.rotate_in_from_right, R.anim.rotate_out_to_left);
             }
-
+            if (action.equals("tester")) {
+                startActivity(new Intent(ctxt, Tester.class));
+                overridePendingTransition(R.anim.rotate_in_from_right, R.anim.rotate_out_to_left);
+            }
         }
     }
 

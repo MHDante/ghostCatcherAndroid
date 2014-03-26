@@ -12,11 +12,11 @@
         android:id="@+id/back_gear">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="135dp"
+            android:layout_height="135dp"
             android:src="@drawable/back_gear"
             android:background="@android:color/transparent"
-            android:scaleType="matrix"
+            android:scaleType="fitXY"
             android:layout_marginLeft="-30dp"
             android:onClick="onClick"
             android:id="@+id/back_gear_btn" />
@@ -31,11 +31,11 @@
         android:id="@+id/journal_gear">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="135dp"
+            android:layout_height="135dp"
             android:src="@drawable/journal_gear"
             android:background="@android:color/transparent"
-            android:scaleType="matrix"
+            android:scaleType="fitXY"
             android:onClick="onClick"
             android:focusableInTouchMode="true"
             android:id="@+id/journal_gear_btn" />

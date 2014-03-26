@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SeekBar;
 
 import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -20,13 +24,35 @@ import ca.mixitmedia.ghostcatcher.utils.Utils;
 public class gcMap extends gcActivity {
 
     GoogleMap map;
-
+    SeekBar bar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         setGears();
         setUpMapIfNeeded();
+        bar = (SeekBar) findViewById(R.id.seekBar);
+        bar.setMax((int) map.getMaxZoomLevel() / 2);
+        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                map.animateCamera(CameraUpdateFactory.zoomTo((float) progress + map.getMaxZoomLevel() / 2));
+            }
+        });
+        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                bar.setProgress((int) (cameraPosition.zoom - map.getMaxZoomLevel() / 2));
+            }
+        });
 
 
     }
@@ -51,6 +77,7 @@ public class gcMap extends gcActivity {
         map.addGroundOverlay(newarkMap);
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(43.65947, -79.37961))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
                 .title("Ryerson Theatre"));
 //        map.moveCamera();
 //        map.getMyLocation();

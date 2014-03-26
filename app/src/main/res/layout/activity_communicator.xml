@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/horizontalScrollView"
         android:layout_gravity="center_horizontal|top"
-        android:background="#442b2a">
+        android:background="#88442b2a">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -42,12 +42,13 @@
                 <ImageButton
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:id="@+id/imageButton2"
+                    android:id="@+id/tool_button_2"
                     android:src="@drawable/fingerprint"
                     android:cropToPadding="false"
                     android:adjustViewBounds="false"
                     android:background="@android:color/transparent"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"
+                    android:onClick="onClick" />
 
             </FrameLayout>
 
@@ -125,11 +126,11 @@
         android:id="@+id/back_gear">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="135dp"
+            android:layout_height="135dp"
             android:src="@drawable/back_gear"
             android:background="@android:color/transparent"
-            android:scaleType="matrix"
+            android:scaleType="fitXY"
             android:layout_marginLeft="-30dp"
             android:onClick="onClick"
             android:id="@+id/back_gear_btn" />
@@ -143,11 +144,11 @@
         android:id="@+id/journal_gear">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="135dp"
+            android:layout_height="135dp"
             android:src="@drawable/journal_gear"
             android:background="@android:color/transparent"
-            android:scaleType="matrix"
+            android:scaleType="fitXY"
             android:onClick="onClick"
             android:focusableInTouchMode="true"
             android:id="@+id/journal_gear_btn" />
