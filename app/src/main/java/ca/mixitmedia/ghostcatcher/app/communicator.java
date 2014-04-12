@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Debug;
 
@@ -49,6 +50,8 @@ public class communicator extends Activity
                 && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
         ctxt = this;
         gcEngine.getInstance().init(this);
+        gcAudio.queueTrack("bg1", true);
+
         setContentView(R.layout.activity_communicator);
         backGear = findViewById(R.id.back_gear);
         journalGear = findViewById(R.id.journal_gear);
@@ -120,6 +123,10 @@ public class communicator extends Activity
                 break;
             case R.id.tool_button_2:
                 action = "tester";
+                break;
+            case R.id.sound:
+                if (gcAudio.isPlaying()) gcAudio.pause();
+                else gcAudio.play();
                 break;
         }
         AnimationHandler ah = new AnimationHandler(this, action);
