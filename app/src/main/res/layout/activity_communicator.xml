@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="“Who is this... and how did you get this application?! No, no, this just won't do... "
-                    android:id="@+id/textView"
+                    android:id="@+id/subtitle_text_view"
                     android:gravity="center_horizontal"
                     android:layout_gravity="bottom" />
             </LinearLayout>
