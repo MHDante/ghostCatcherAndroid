@@ -8,9 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
@@ -20,7 +23,6 @@ import ca.mixitmedia.ghostcatcher.utils.Debug;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.*;
 
 import static com.google.android.gms.common.GooglePlayServicesUtil.*;
 
@@ -28,6 +30,7 @@ import static com.google.android.gms.common.GooglePlayServicesUtil.*;
 public class communicator extends Activity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private static final int MAX_STREAMS = 2;
     float gearsize = 200;
     View backGear;
     View journalGear;
@@ -38,10 +41,13 @@ public class communicator extends Activity
     // Request code to use when launching the resolution activity
     private static final int REQUEST_RESOLVE_ERROR = 1001;
     // Unique tag for the error dialog fragment
-    private static final String DIALOG_ERROR = "dialog_error";
+    //private static final String DIALOG_ERROR = "dialog_error";
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
 
+    private SoundPool mSoundPool = new SoundPool( MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+    private int dialogueStream = 0;
+    private int testSoundClip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,8 @@ public class communicator extends Activity
                 .addOnConnectionFailedListener(this)
                 .build();
         populateText("", false);
+        //testSoundClip = mSoundPool.load()
+
     }
 
     @Override
@@ -130,16 +138,21 @@ public class communicator extends Activity
                 //else gcAudio.play();
 
                 populateText("Hello world. ", true);
+                mSoundPool.stop(dialogueStream);
+                //dialogueStream = mSoundPool;
                 break;
         }
     }
 
     private void populateText(String st, Boolean append){
-        View v = this.findViewById(R.id.subtitle_text_view);
-        TextView tv = (TextView)v;
+        TextView tv = (TextView)findViewById(R.id.subtitle_text_view);
         String stPrev = (String)tv.getText();
+        ScrollView sv = (ScrollView)findViewById(R.id.subtitle_scroll_view);
         if (append) st = stPrev + st;
         tv.setText(st);
+        sv.fullScroll(ScrollView.FOCUS_DOWN);
+
+
     }
 
     public void hideGears(String action) {
