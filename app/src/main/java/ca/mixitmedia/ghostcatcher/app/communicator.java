@@ -126,6 +126,7 @@ public class communicator extends Activity
                 break;
             case R.id.sound:
                 if (gcAudio.isPlaying()) gcAudio.pause();
+                    //stuff
                 else gcAudio.play();
                 break;
         }
