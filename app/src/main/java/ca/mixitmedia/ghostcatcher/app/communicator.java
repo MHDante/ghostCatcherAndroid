@@ -11,6 +11,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.TextView;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -62,6 +63,7 @@ public class communicator extends Activity
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        populateText("", false);
     }
 
     @Override
@@ -110,31 +112,39 @@ public class communicator extends Activity
     }
 
     public void onClick(View view) {
-        String action = "";
         switch (view.getId()) {
             case R.id.back_gear_btn:
-                action = "back";
+                hideGears("back");
                 break;
             case R.id.journal_gear_btn:
-                action = "journal";
+                hideGears("journal");
                 break;
             case R.id.tool_button_1:
-                action = "map";
+                hideGears("map");
                 break;
             case R.id.tool_button_2:
-                action = "tester";
+                hideGears("tester");
                 break;
             case R.id.sound:
-                if (gcAudio.isPlaying()) gcAudio.pause();
-                else gcAudio.play();
+                //if (gcAudio.isPlaying()) gcAudio.pause();
+                //else gcAudio.play();
+
+                populateText("Hello world. ", true);
                 break;
         }
-        AnimationHandler ah = new AnimationHandler(this, action);
-        backGear.animate().setListener(ah);
-        hideGears();
     }
 
-    public void hideGears() {
+    private void populateText(String st, Boolean append){
+        View v = this.findViewById(R.id.subtitle_text_view);
+        TextView tv = (TextView)v;
+        String stPrev = (String)tv.getText();
+        if (append) st = stPrev + st;
+        tv.setText(st);
+    }
+
+    public void hideGears(String action) {
+        AnimationHandler ah = new AnimationHandler(this, action);
+        backGear.animate().setListener(ah);
         backGear.animate().translationX(-gearsize);
         journalGear.animate().translationX(gearsize);
     }
