@@ -70,7 +70,7 @@ public class communicator extends Activity
                 .addOnConnectionFailedListener(this)
                 .build();
         populateText("", false);
-        //testSoundClip = mSoundPool.load()
+        testSoundClip = mSoundPool.load(this,R.raw.track1,1);
 
     }
 
@@ -139,7 +139,9 @@ public class communicator extends Activity
 
                 populateText("Hello world. ", true);
                 mSoundPool.stop(dialogueStream);
-                //dialogueStream = mSoundPool;
+                AudioManager audioMan = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+                float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
+                dialogueStream = mSoundPool.play(testSoundClip, streamVolume, streamVolume, 1, 0, 1f  );
                 break;
         }
     }
