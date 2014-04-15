@@ -25,7 +25,7 @@ public class BiocalibrateFragment extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_biocalibrate, container, false);
-        testSoundClip = mSoundPool.load( getActivity(), R.raw.biocalib2, 1);
+        testSoundClip = mSoundPool.load(getActivity(), R.raw.track1, 1);
         return view;
     }
 
