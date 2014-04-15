@@ -2,30 +2,16 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Debug;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.*;
-
-import static com.google.android.gms.common.GooglePlayServicesUtil.*;
 
 
 public class MainActivity extends FragmentActivity implements ToolFragment.ToolInteractionListener {
@@ -36,6 +22,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     View fragmentContainer;
     CommunicatorFragment communicator = CommunicatorFragment.newInstance("Settings");
     Journal journal = Journal.newInstance("Settings");
+    BiocalibrateFragment biocalib = BiocalibrateFragment.newInstance("Biocalibrate");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +56,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
 
     public void onClick(View view) {
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-        tf.checkClick(view);
+        if (tf.checkClick(view)) return;
         switch (view.getId()) {
             case R.id.back_gear_btn:
                 hideGears("back");
@@ -95,7 +82,13 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         } else if (fragment.equals("communicator")) {
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left)
-                    .replace(R.id.fragment_container, journal)
+                    .replace(R.id.fragment_container, communicator)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (fragment.equals("biocalibrate")) {
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left)
+                    .replace(R.id.fragment_container, biocalib)
                     .addToBackStack(null)
                     .commit();
         }
