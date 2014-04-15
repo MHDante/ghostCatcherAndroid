@@ -21,15 +21,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import ca.mixitmedia.ghostcatcher.utils.Utils;
 
 
-public class gcMap extends gcActivity {
+public class gcMap extends Activity {
 
     GoogleMap map;
     SeekBar bar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        setGears();
+        ///setGears();
         setUpMapIfNeeded();
         bar = (SeekBar) findViewById(R.id.seekBar);
         bar.setMax((int) map.getMaxZoomLevel() / 2);

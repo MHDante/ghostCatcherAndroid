@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -199,7 +198,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         status.contentView = statusBarView;
         status.icon = R.drawable.ghost;
         status.contentIntent = PendingIntent.getActivity(this, requestID + 1,
-                new Intent(this, communicator.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                new Intent(this, MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
 
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_MPLAYER, status);
 

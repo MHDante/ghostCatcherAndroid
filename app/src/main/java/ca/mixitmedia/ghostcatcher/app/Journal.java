@@ -1,18 +1,13 @@
 package ca.mixitmedia.ghostcatcher.app;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 
-import ca.mixitmedia.ghostcatcher.utils.Debug;
-
-public class Journal extends gcActivity {
+public class Journal extends ToolFragment {
 
     static String[] items = {"lorem", "ipsum", "dolor", "sit", "amet",
             "consectetuer", "adipiscing", "elit", "morbi", "vel", "ligula",
@@ -22,13 +17,32 @@ public class Journal extends gcActivity {
     AdapterViewFlipper flipper;
 
     @Override
-    public void onCreate(Bundle savedState) {
-        super.onCreate(savedState);
-        setContentView(R.layout.activity_journal);
-        setGears();
-        flipper = (AdapterViewFlipper) findViewById(R.id.NotesFlipper);
-        flipper.setAdapter(new ArrayAdapter<String>(this, R.layout.flip_tester, items));
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_journal, container, false);
+        view.setPivotX(0f);
+        view.setPivotY(1f);
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        flipper = (AdapterViewFlipper) getView().findViewById(R.id.NotesFlipper);
+        flipper.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.flip_tester, items));
         flipper.setFlipInterval(2000);
         flipper.startFlipping();
+    }
+
+    public boolean checkClick(View view) {
+        return false;
+    }
+
+    public static Journal newInstance(String settings) {
+        Journal fragment = new Journal();
+        Bundle args = new Bundle();
+        args.putString("settings", settings);
+        fragment.setArguments(args);
+        return fragment;
     }
 }

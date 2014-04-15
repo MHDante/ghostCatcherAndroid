@@ -191,40 +191,4 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <FrameLayout
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_gravity="left|bottom"
-        android:translationX="-200dp"
-        android:id="@+id/back_gear">
-
-        <ImageButton
-            android:layout_width="135dp"
-            android:layout_height="135dp"
-            android:src="@drawable/back_gear"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:layout_marginLeft="-30dp"
-            android:onClick="onClick"
-            android:id="@+id/back_gear_btn" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_gravity="right|bottom"
-        android:translationX="200dp"
-        android:id="@+id/journal_gear">
-
-        <ImageButton
-            android:layout_width="135dp"
-            android:layout_height="135dp"
-            android:src="@drawable/journal_gear"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:onClick="onClick"
-            android:focusableInTouchMode="true"
-            android:id="@+id/journal_gear_btn" />
-    </FrameLayout>
-
 </FrameLayout>

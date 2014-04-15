@@ -4,52 +4,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="#524851">
 
-    <FrameLayout
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_alignParentBottom="true"
-        android:translationX="-200dp"
-        android:id="@+id/back_gear">
-
-        <ImageButton
-            android:layout_width="135dp"
-            android:layout_height="135dp"
-            android:src="@drawable/back_gear"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:layout_marginLeft="-30dp"
-            android:onClick="onClick"
-            android:id="@+id/back_gear_btn" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:translationX="200dp"
-        android:id="@+id/journal_gear">
-
-        <ImageButton
-            android:layout_width="135dp"
-            android:layout_height="135dp"
-            android:src="@drawable/journal_gear"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:onClick="onClick"
-            android:focusableInTouchMode="true"
-            android:id="@+id/journal_gear_btn" />
-    </FrameLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/back_gear"
         android:background="@drawable/moleskin">
 
         <Space
             android:layout_width="60dp"
-            android:layout_height="110dp"
+            android:layout_height="140dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -58,7 +20,7 @@
 
         <Space
             android:layout_width="60dp"
-            android:layout_height="110dp"
+            android:layout_height="130dp"
             android:id="@+id/bio_tab"
             android:layout_below="@+id/notes_tab"
             android:layout_alignParentLeft="true"
@@ -66,7 +28,7 @@
 
         <Space
             android:layout_width="60dp"
-            android:layout_height="110dp"
+            android:layout_height="120dp"
             android:id="@+id/places_tab"
             android:layout_below="@+id/bio_tab"
             android:layout_alignParentLeft="true"
@@ -74,7 +36,7 @@
 
         <Space
             android:layout_width="60dp"
-            android:layout_height="110dp"
+            android:layout_height="120dp"
             android:id="@+id/items_tab"
             android:layout_below="@+id/places_tab"
             android:layout_alignParentLeft="true"
