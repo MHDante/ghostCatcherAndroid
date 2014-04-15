@@ -26,6 +26,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     JournalFragment journal;
     gcMap map;
     BiocalibrateFragment biocalib;
+    TesterFragment tester;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         journal = JournalFragment.newInstance("Settings");
         map = gcMap.newInstance("Settings");
         biocalib = BiocalibrateFragment.newInstance("Settings");
+        tester = TesterFragment.newInstance("Settings");
         if (savedInstanceState != null) {
             return;//Avoid overlapping fragments.
         }
@@ -118,6 +120,11 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
                     .replace(R.id.fragment_container, biocalib)
                     .addToBackStack(null)
                     .commit();
+        } else if (fragment.equals("tester")) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, tester)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
@@ -154,16 +161,18 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
             Debug.out("OnEnd");
             if (action.equals("back"))
                 caller.onBackPressed();
-            if (action.equals("journal"))
+            else if (action.equals("journal"))
                 caller.startJournal();
-            if (action.equals("map")) {
+            else if (action.equals("map")) {
                 startActivity(new Intent(ctxt, gcMap.class));
                 overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
             }
-            if (action.equals("tester")) {
-                startActivity(new Intent(ctxt, Tester.class));
-                overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
-            }
+            //else if (action.equals("tester")) {
+            //    startActivity(new Intent(ctxt, TesterFragment.class));
+            //    overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
+            //}
+            else
+                throw new RuntimeException("This system is being depreciated, and you passed an incorrect parameter");
         }
     }
 

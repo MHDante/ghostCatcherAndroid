@@ -60,7 +60,7 @@ public class CommunicatorFragment extends ToolFragment {
                 gcMain.swapTo("biocalibrate");
                 return true;
             case R.id.tool_button_3:
-                gcMain.hideGears("tester");
+                gcMain.swapTo("tester");
                 return true;
             case R.id.sound:
                 //if (gcAudio.isPlaying()) gcAudio.pause();

@@ -26,32 +26,32 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button1"
-                android:onClick="button1"
-                android:id="@+id/button1" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_1" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button2"
-                android:onClick="button2"
-                android:id="@+id/button2" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_2" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button3"
-                android:onClick="button3"
-                android:id="@+id/button3" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_3" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button4"
-                android:onClick="button4"
-                android:id="@+id/button4" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_4" />
         </LinearLayout>
 
         <LinearLayout
@@ -65,32 +65,32 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button5"
-                android:onClick="button5"
-                android:id="@+id/button5" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_5" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button6"
-                android:onClick="button6"
-                android:id="@+id/button6" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_6" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button7"
-                android:onClick="button7"
-                android:id="@+id/button7" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_7" />
 
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="button8"
-                android:onClick="button8"
-                android:id="@+id/button8" />
+                android:onClick="onClick"
+                android:id="@+id/tester_button_8" />
         </LinearLayout>
     </LinearLayout>
 
