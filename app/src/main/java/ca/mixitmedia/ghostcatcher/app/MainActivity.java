@@ -2,30 +2,18 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Debug;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.*;
-
-import static com.google.android.gms.common.GooglePlayServicesUtil.*;
 
 
 public class MainActivity extends FragmentActivity implements ToolFragment.ToolInteractionListener {
@@ -34,8 +22,9 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     View journalGear;
     Context ctxt; //TODO:REMOVE.
     View fragmentContainer;
-    CommunicatorFragment communicator = CommunicatorFragment.newInstance("Settings");
-    Journal journal = Journal.newInstance("Settings");
+    CommunicatorFragment communicator;
+    JournalFragment journal;
+    gcMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +34,18 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         setContentView(R.layout.activity_main);
         backGear = findViewById(R.id.back_gear);
         journalGear = findViewById(R.id.journal_gear);
-
+        //TODO: Implement, you lazy fool.
+        communicator = CommunicatorFragment.newInstance("Settings");
+        journal = JournalFragment.newInstance("Settings");
+        map = gcMap.newInstance("Settings");
         if (savedInstanceState != null) {
             return;//Avoid overlapping fragments.
         }
-        getFragmentManager().beginTransaction().add(R.id.fragment_container, communicator).commit();
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, communicator)
+                        //.addToBackStack(null)
+                .commit();
 
     }
 
@@ -72,7 +68,8 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         tf.checkClick(view);
         switch (view.getId()) {
             case R.id.back_gear_btn:
-                hideGears("back");
+                //hideGears("back");
+                onBackPressed();
                 break;
             case R.id.journal_gear_btn:
                 swapTo("journal");
@@ -85,17 +82,32 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         //TODO: doStuff
     }
 
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            Log.i("MainActivity", "popping backstack");
+            fm.popBackStack();
+        } else {
+            Log.i("MainActivity", "nothing on backstack, calling super");
+            super.onBackPressed();
+        }
+    }
+
     public void swapTo(String fragment) {
         if (fragment.equals("journal")) {
             getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left)
                     .replace(R.id.fragment_container, journal)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (fragment.equals("map")) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, map)
                     .addToBackStack(null)
                     .commit();
         } else if (fragment.equals("communicator")) {
             getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left)
-                    .replace(R.id.fragment_container, journal)
+                    .replace(R.id.fragment_container, communicator)
                     .addToBackStack(null)
                     .commit();
         }
@@ -116,7 +128,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     }
 
     public void startJournal() {
-        startActivity(new Intent(this, Journal.class));
+        startActivity(new Intent(this, JournalFragment.class));
         overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
     }
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 
-public class Journal extends ToolFragment {
+public class JournalFragment extends ToolFragment {
 
     static String[] items = {"lorem", "ipsum", "dolor", "sit", "amet",
             "consectetuer", "adipiscing", "elit", "morbi", "vel", "ligula",
@@ -20,8 +20,8 @@ public class Journal extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_journal, container, false);
-        view.setPivotX(0f);
-        view.setPivotY(1f);
+        view.setPivotX(0);
+        view.setPivotY(view.getMeasuredHeight());
         return view;
     }
 
@@ -38,8 +38,8 @@ public class Journal extends ToolFragment {
         return false;
     }
 
-    public static Journal newInstance(String settings) {
-        Journal fragment = new Journal();
+    public static JournalFragment newInstance(String settings) {
+        JournalFragment fragment = new JournalFragment();
         Bundle args = new Bundle();
         args.putString("settings", settings);
         fragment.setArguments(args);

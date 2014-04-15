@@ -2,8 +2,11 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -21,18 +24,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import ca.mixitmedia.ghostcatcher.utils.Utils;
 
 
-public class gcMap extends Activity {
+public class gcMap extends ToolFragment {
 
     GoogleMap map;
     SeekBar bar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
-        ///setGears();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_map, container, false);
         setUpMapIfNeeded();
-        bar = (SeekBar) findViewById(R.id.seekBar);
+        bar = (SeekBar) view.findViewById(R.id.seekBar);
         bar.setMax((int) map.getMaxZoomLevel() / 2);
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -54,6 +56,7 @@ public class gcMap extends Activity {
                 bar.setProgress((int) (cameraPosition.zoom - map.getMaxZoomLevel() / 2));
             }
         });
+        return view;
 
 
     }
@@ -70,7 +73,7 @@ public class gcMap extends Activity {
     }
 
     private void setUpMap() {
-        map.setPadding(Utils.convertDpToPixelInt(105, this), 0, 0, 0);
+        map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
         LatLngBounds b = new LatLngBounds(new LatLng(43.65486328474458, -79.38564497647212), new LatLng(43.66340903426289, -79.37292076230159));
         GroundOverlayOptions newarkMap = new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromResource(R.drawable.campus))
@@ -82,5 +85,17 @@ public class gcMap extends Activity {
                 .title("Ryerson Theatre"));
 //        map.moveCamera();
 //        map.getMyLocation();
+    }
+
+    public boolean checkClick(View view) {
+        return false;
+    }
+
+    public static gcMap newInstance(String settings) {
+        gcMap fragment = new gcMap();
+        Bundle args = new Bundle();
+        args.putString("settings", settings);
+        fragment.setArguments(args);
+        return fragment;
     }
 }

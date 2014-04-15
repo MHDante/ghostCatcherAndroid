@@ -30,8 +30,8 @@ public class CommunicatorFragment extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_communicator, container, false);
-        view.setPivotX(0f);
-        view.setPivotY(1f);
+        view.setPivotX(0);//TODO: Fix
+        view.setPivotY(view.getMeasuredHeight());
         return view;
     }
 
@@ -54,7 +54,7 @@ public class CommunicatorFragment extends ToolFragment {
     public boolean checkClick(View view) {
         switch (view.getId()) {
             case R.id.tool_button_1:
-                gcMain.hideGears("map");
+                gcMain.swapTo("map");
                 return true;
             case R.id.tool_button_2:
                 gcMain.hideGears("tester");

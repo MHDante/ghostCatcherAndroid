@@ -4,5 +4,5 @@
     android:valueFrom="90"
     android:valueTo="0"
     android:propertyName="rotation"
-    android:duration="500"
+    android:duration="1000"
     android:valueType="floatType" />
