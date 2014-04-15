@@ -25,7 +25,8 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     CommunicatorFragment communicator;
     JournalFragment journal;
     gcMap map;
-
+    BiocalibrateFragment biocalib;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ctxt = this;
@@ -38,6 +39,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         communicator = CommunicatorFragment.newInstance("Settings");
         journal = JournalFragment.newInstance("Settings");
         map = gcMap.newInstance("Settings");
+        biocalib = BiocalibrateFragment.newInstance("Settings");
         if (savedInstanceState != null) {
             return;//Avoid overlapping fragments.
         }
@@ -65,7 +67,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
 
     public void onClick(View view) {
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-        tf.checkClick(view);
+        if (tf.checkClick(view)) return;
         switch (view.getId()) {
             case R.id.back_gear_btn:
                 //hideGears("back");
@@ -97,6 +99,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     public void swapTo(String fragment) {
         if (fragment.equals("journal")) {
             getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left)
                     .replace(R.id.fragment_container, journal)
                     .addToBackStack(null)
                     .commit();
@@ -108,6 +111,11 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         } else if (fragment.equals("communicator")) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, communicator)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (fragment.equals("biocalibrate")) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, biocalib)
                     .addToBackStack(null)
                     .commit();
         }

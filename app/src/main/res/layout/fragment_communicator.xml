@@ -135,11 +135,13 @@
                 <ImageButton
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/imageButton3"
+                    android:id="@+id/tool_button_3"
                     android:cropToPadding="false"
                     android:adjustViewBounds="false"
                     android:background="@android:color/transparent"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ghost"
+                    android:onClick="onClick" />
             </FrameLayout>
 
             <FrameLayout

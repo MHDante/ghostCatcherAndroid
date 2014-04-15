@@ -57,6 +57,9 @@ public class CommunicatorFragment extends ToolFragment {
                 gcMain.swapTo("map");
                 return true;
             case R.id.tool_button_2:
+                gcMain.swapTo("biocalibrate");
+                return true;
+            case R.id.tool_button_3:
                 gcMain.hideGears("tester");
                 return true;
             case R.id.sound:
