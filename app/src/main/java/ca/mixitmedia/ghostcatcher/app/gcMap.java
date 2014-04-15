@@ -33,7 +33,10 @@ public class gcMap extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_map, container, false);
-        setUpMapIfNeeded();
+
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+        if (map != null) setUpMap();
+
         bar = (SeekBar) view.findViewById(R.id.seekBar);
         bar.setMax((int) map.getMaxZoomLevel() / 2);
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -50,6 +53,7 @@ public class gcMap extends ToolFragment {
                 map.animateCamera(CameraUpdateFactory.zoomTo((float) progress + map.getMaxZoomLevel() / 2));
             }
         });
+
         map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -58,18 +62,6 @@ public class gcMap extends ToolFragment {
         });
         return view;
 
-
-    }
-
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (map == null) {
-            map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            if (map != null) {
-                setUpMap();
-            }
-        }
     }
 
     private void setUpMap() {
@@ -83,8 +75,18 @@ public class gcMap extends ToolFragment {
                 .position(new LatLng(43.65947, -79.37961))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
                 .title("Ryerson Theatre"));
+
 //        map.moveCamera();
 //        map.getMyLocation();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        MapFragment f = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        if (f != null)
+            getFragmentManager().beginTransaction().remove(f).commit();
     }
 
     public boolean checkClick(View view) {
