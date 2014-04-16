@@ -4,6 +4,7 @@
 //import java.io.FileOutputStream;
 //
 //
+//import android.app.Activity;
 //import android.content.Intent;
 //import android.graphics.Bitmap;
 //import android.hardware.SensorManager;
@@ -18,16 +19,24 @@
 //import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
 //import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 //import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
-//import com.example.imagertool.R;
 //
 //public class SampleCamActivity extends AbstractArchitectCamActivity {
-//    private long lastCalibrationToastShownTimeMillis = System.currentTimeMillis();
 //
-//    private int selectedGhost;
+//    protected static final String WIKITUDE_SDK_KEY = "tW3Ht861dC8lNC2/xnahrP7DRI7nqfXDGZfUvdeIGJsc64QLICf0leLIO50svo8me8yrGBcglCEHwAQEhqs8eOceTQ0iXJhF6Glf016W/tDsCSXMetFz4vdZIHzOdNOOBJEKuIEPYZgyffutNigYtdWpPzS33L1OQLoVkdQ3z/NTYWx0ZWRfX21xcPVHf8nkO6IcVarrd+BPN3s78E/Ac39sjGX90LKiVK47DeMMovn5X5X3vXIcwrxe3WRZqL6sczpdObKvll+Qwvpbrnej1ausee5uUCCXFC6oevbcnuWyqgYXzctjCjrJlcdfzL1EgPi9W4i87bnT1uf8IYISiPwBlK7vNvLpBIfryzyn9t4EKMGr5X0GTgXA11G5BJW2wkgukMSt7zp8fE1XurT/C97tTtN9P/w5lyWnpjm/1Qt8n409QxB09A9ZW2x9vcOoTzyCKQyTXduWyhW4hv6gXHZUU5A88PJBGtFpX63f40VURgi+6hMNy2Q4I57Ck0d+NTJHQnPbm2NoHKiAkFr5LS2A91lnhF3BI9Qx8YPpjStPNslW93NJPXOstmSFDLep9MpNx+tLzPMRBj5HLjSTPCzWZSQSuXSj31hc/nwoaVl+0MvQzNC1YQdS1QcjeQx5Ln6nFaW+eCmRHOOAZZQJUJeaVvLSMll+zaYwZ+WrIYDCMx/nCwjtQ7Y+Voj2sivGIxPNrcDUuWul6q2D3WJmUwjquibs2M97lLljwojpgLfRf8hWynpvnfliTgk2OZUT96+vcwLW3FHkCLFteuRQ2g==";
+//    private long lastCalibrationToastShownTimeMillis = System.currentTimeMillis();
+//    protected ArchitectView					architectView;
+//    private int selectedGhost = 1;
+//
+//    private String ARUrl = "samples"
+//            + File.separator + "1_$Ghost$Catcher$AR$Tool_"
+//            + File.separator + "index.html";
+//
+//    private String ARTitle = "Imager Tool";
+//
 //    @Override
 //    public void onCreate(final Bundle savedInstanceState ) {
 //        super.onCreate( savedInstanceState );
-//        selectedGhost = getIntent().getExtras().getInt(MainActivity.SELECTED_GHOST);
+//        //selectedGhost = getIntent().getExtras().getInt(MainActivity.SELECTED_GHOST);
 //    }
 //
 //    @Override
@@ -52,8 +61,6 @@
 //
 //    /**
 //     * call JacaScript in architectView
-//     * @param methodName
-//     * @param arguments
 //     */
 //    private void callJavaScript(final String methodName) {
 //        if (this.architectView!=null) {
@@ -64,16 +71,12 @@
 //
 //    @Override
 //    public String getARchitectWorldPath() {
-//        return getIntent().getExtras().getString(
-//                MainActivity.EXTRAS_KEY_ACTIVITY_ARCHITECT_WORLD_URL);
+//        return ARUrl;
 //    }
 //
 //    @Override
 //    public String getActivityTitle() {
-//        return (getIntent().getExtras() != null && getIntent().getExtras().get(
-//                MainActivity.EXTRAS_KEY_ACTIVITY_TITLE_STRING) != null) ? getIntent()
-//                .getExtras().getString(MainActivity.EXTRAS_KEY_ACTIVITY_TITLE_STRING)
-//                : "Test-World";
+//        return ARTitle;
 //    }
 //
 //
@@ -91,7 +94,7 @@
 //
 //    @Override
 //    public String getWikitudeSDKLicenseKey() {
-//        return WikitudeSDKConstants.WIKITUDE_SDK_KEY;
+//        return WIKITUDE_SDK_KEY;
 //    }
 //
 //

@@ -95,6 +95,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         } else {
             Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
+            //startActivity(new Intent(this, SampleCamActivity.class));
         }
     }
 
