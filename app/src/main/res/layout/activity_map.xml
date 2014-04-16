@@ -5,13 +5,13 @@
 
     <fragment
         android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="302dp"
+        android:layout_height="506dp"
         android:name="com.google.android.gms.maps.MapFragment"
         map:cameraTargetLat="43.6576004"
         map:cameraTargetLng="-79.37839"
         map:cameraZoom="13"
-        android:layout_gravity="center" />
+        android:layout_gravity="center_horizontal" />
 
     <ImageView
         android:layout_width="fill_parent"
@@ -150,6 +150,6 @@
         android:id="@+id/seekBar"
         android:layout_gravity="right|center_vertical"
         android:rotation="-90"
-        android:layout_marginRight="-90dp" />
+        android:layout_marginRight="-110dp" />
 
 </FrameLayout>

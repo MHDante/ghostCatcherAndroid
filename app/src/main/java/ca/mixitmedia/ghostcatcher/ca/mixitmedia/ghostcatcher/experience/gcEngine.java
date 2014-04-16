@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import java.io.File;
+import java.net.URI;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.gcMediaService;
@@ -35,10 +36,11 @@ public class gcEngine {
     }
 
     public Uri getSoundUri(String sound) {
-        File f = new File(loader.root, sound + ".mp3");
-        return Uri.fromFile(f);
-
-        //return Uri.parse("android.resource://ca.mixitmedia.ghostcatcher.app/" + R.raw.bg1);
+        //    File f = new File(loader.root, sound + ".mp3");
+        //    return Uri.fromFile(f);
+//
+        int soundId = context.getResources().getIdentifier(sound, "raw", context.getPackageName());
+        return Uri.parse("android.resource://ca.mixitmedia.ghostcatcher.app/" + soundId);
     }
 
     public CharSequence getNextToDo() {

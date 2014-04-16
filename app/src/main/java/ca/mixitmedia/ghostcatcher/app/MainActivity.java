@@ -142,6 +142,15 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         }
     }
 
+    @Override
+    public void startDialog(String dialog) {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, communicator)
+                .addToBackStack(null)
+                .commit();
+        communicator.loadfile(dialog);
+    }
+
     public void hideGears(String action) {
         AnimationHandler ah = new AnimationHandler(this, action);
         backGear.animate().setListener(ah);

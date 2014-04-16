@@ -11,13 +11,18 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -34,6 +39,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static final String EXTRA_LOOP = INTENT_BASE_NAME + ".EXTRA_LOOP";
 
     static final int NOTIFICATION_MPLAYER = 56584;
+    public static int duration = -1;
     public static boolean isStarted;
     public static boolean isPaused;
     static Notification status;
@@ -88,11 +94,13 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     ///////////////////////////////////Media Player Listeners
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+        duration = mp.getDuration();
         isPaused = false;
         updateNotification();
     }
 
     public void onCompletion(MediaPlayer mp) {
+        duration = -1;
         if (tracks.peek() != null) {
             try {
                 Uri track = tracks.remove();
@@ -109,6 +117,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         }
     }
 
+
     ///////////////////////////////////Broadcast Receiver
     private class AudioReceiver extends BroadcastReceiver {
         @Override
@@ -122,6 +131,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
                         updateNotification();
                     } else {
                         mPlayer.start();
+                        duration = mPlayer.getDuration();
                         isPaused = false;
                         updateNotification();
                     }

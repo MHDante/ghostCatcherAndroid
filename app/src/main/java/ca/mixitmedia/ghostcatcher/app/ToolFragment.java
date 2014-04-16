@@ -98,6 +98,8 @@ public abstract class ToolFragment extends Fragment {
         public void hideGears(String s);
 
         public void swapTo(String fragment);
+
+        void startDialog(String dialog);
     }
 
 }

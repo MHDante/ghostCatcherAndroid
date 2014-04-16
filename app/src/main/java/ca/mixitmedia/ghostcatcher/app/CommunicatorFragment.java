@@ -1,10 +1,23 @@
 package ca.mixitmedia.ghostcatcher.app;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 
 /**
  * Created by Dante on 2014-04-14.
@@ -50,6 +63,34 @@ public class CommunicatorFragment extends ToolFragment {
         tv.setText(st);
     }
 
+    public void loadfile(String file) {
+        try {
+            InputStream inputStream = getActivity().getAssets().open(file + ".txt");
+            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder total = new StringBuilder();
+            String line;
+            while ((line = r.readLine()) != null) {
+                total.append(line);
+            }
+
+            int drawableId = getResources().getIdentifier(file, "drawable", getActivity().getPackageName());
+            ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
+            imgV.setBackgroundResource(drawableId);
+
+            gcAudio.playTrack(file, false);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startDialog();
+                }
+            }, 500);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+// ...
+    }
     @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
@@ -75,4 +116,29 @@ public class CommunicatorFragment extends ToolFragment {
         }
 
     }
+
+    int counter;
+    boolean isTimerRunning;
+    Timer timer;
+    String currentString;
+
+    protected void startDialog() {
+        timer.purge();
+        populateText("", false);
+        counter = 0;
+        isTimerRunning = true;
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                counter += 1; //increase every sec
+                mHandler.obtainMessage(1).sendToTarget();
+
+            }
+        }, 0, 1000);
+    }
+
+    public Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            populateText(currentString.substring(counter - 1, counter), true);
+        }
+    };
 }

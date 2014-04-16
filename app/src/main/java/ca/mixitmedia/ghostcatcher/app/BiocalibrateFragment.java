@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.media.SoundPool;
 import android.media.AudioManager;
 
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Created by IAN on 15/04/2014.
@@ -20,6 +24,7 @@ public class BiocalibrateFragment extends ToolFragment {
     private SoundPool mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
     private int dialogueStream = 0;
     private int testSoundClip;
+    private String[] dialogs = new String[]{"gc_0_0", "gc_0_1", "gc_1_0_1", "gc_1_0_2"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +48,8 @@ public class BiocalibrateFragment extends ToolFragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        gcMain.swapTo("communicator");
+                        int dialog = 0 + (int) (Math.random() * ((4 - 0) + 1));
+                        gcMain.startDialog(dialogs[dialog]);
                     }
                 }, 2500);
 
