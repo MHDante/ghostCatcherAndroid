@@ -209,11 +209,13 @@
                 <ImageButton
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:id="@+id/imageButton4"
+                    android:id="@+id/tool_button_4"
                     android:cropToPadding="false"
                     android:adjustViewBounds="false"
                     android:background="@android:color/transparent"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"
+                    android:src="@drawable/map_marker"
+                    android:onClick="onClick" />
             </FrameLayout>
 
             <FrameLayout

@@ -26,6 +26,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     JournalFragment journal;
     gcMap map;
     BiocalibrateFragment biocalib;
+    AmplifierFragment amplifier;
     TesterFragment tester;
     
     @Override
@@ -41,6 +42,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         journal = JournalFragment.newInstance("Settings");
         map = gcMap.newInstance("Settings");
         biocalib = BiocalibrateFragment.newInstance("Settings");
+        amplifier = AmplifierFragment.newInstance("Settings");
         tester = TesterFragment.newInstance("Settings");
         if (savedInstanceState != null) {
             return;//Avoid overlapping fragments.
@@ -124,6 +126,11 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         } else if (fragment.equals("tester")) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, tester)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (fragment.equals("amplifier")) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, amplifier)
                     .addToBackStack(null)
                     .commit();
         }

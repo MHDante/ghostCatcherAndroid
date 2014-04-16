@@ -62,6 +62,9 @@ public class CommunicatorFragment extends ToolFragment {
             case R.id.tool_button_3:
                 gcMain.swapTo("tester");
                 return true;
+            case R.id.tool_button_4:
+                gcMain.swapTo("amplifier");
+                return true;
             case R.id.sound:
                 //if (gcAudio.isPlaying()) gcAudio.pause();
                 //else gcAudio.play();
