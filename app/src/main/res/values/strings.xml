@@ -7,5 +7,6 @@
     <string name="title_activity_journal">Journal</string>
     <string name="title_activity_gc_map">Map</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_sample_cam">SampleCamActivity</string>
 
 </resources>

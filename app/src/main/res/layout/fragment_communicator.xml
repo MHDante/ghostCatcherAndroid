@@ -5,9 +5,9 @@
     android:background="#968b72">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal">
+        android:layout_width="390dip"
+        android:layout_height="640dp"
+        android:layout_gravity="center">
 
         <LinearLayout
             android:orientation="vertical"
@@ -18,7 +18,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dip"
-                android:layout_weight="260"
+                android:layout_weight="270"
                 android:weightSum="768"
                 android:gravity="center">
 
@@ -48,14 +48,15 @@
 
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="540"
                     android:id="@+id/character_portrait"
                     android:src="@drawable/character_prof"
                     android:layout_row="0"
                     android:layout_column="0"
                     android:layout_gravity="center_horizontal|left|right|bottom"
-                    android:adjustViewBounds="false" />
+                    android:adjustViewBounds="false"
+                    android:scaleType="fitXY" />
 
             </LinearLayout>
 
@@ -85,11 +86,11 @@
                     android:gravity="center_horizontal"
 
                     android:id="@+id/subtitle_scroll_view"
-                    android:layout_gravity="center_horizontal|top">
+                    android:layout_gravity="center_horizontal|top"
+                    android:background="#575757">
 
-                    <LinearLayout
+                <LinearLayout
                         android:layout_width="fill_parent"
-                        android:background="#575757"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -111,7 +112,7 @@
 
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="390dp"
             android:layout_height="match_parent"
             android:id="@+id/main_frame"
             android:layout_row="0"

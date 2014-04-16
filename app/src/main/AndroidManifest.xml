@@ -16,8 +16,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
         android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name">
         <meta-data
             android:name="com.google.android.gms.version"
@@ -27,7 +27,7 @@
             android:value="AIzaSyBd2jsok_1ns75y5fQJ51U80Me-GCRC4n4" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="ca.mixitmedia.ghostcatcher.app.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -43,6 +43,9 @@
             android:enabled="true"
             android:exported="false" />
 
+        <activity
+            android:name="ca.mixitmedia.ghostcatcher.app.SampleCamActivity"
+            android:label="@string/title_activity_sample_cam"></activity>
     </application>
 
 </manifest>

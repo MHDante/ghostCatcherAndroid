@@ -4,12 +4,16 @@ import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 public abstract class ToolFragment extends Fragment {
@@ -35,9 +39,41 @@ public abstract class ToolFragment extends Fragment {
             }
         });
 
+
         return anim;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getView().getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+
+                        Display display = getActivity().getWindowManager().getDefaultDisplay();
+                        Point size = new Point();
+                        display.getSize(size);
+                        int width = size.x;
+                        int height = size.y;
+
+                        View view = getView();
+                        ViewGroup.LayoutParams layout = view.getLayoutParams();
+
+                        float maxWidth = view.getWidth();
+                        float maxHeight = view.getHeight();
+
+                        if (height > maxHeight || width > maxWidth) {
+                            float ratio = Math.min(maxWidth / width, maxHeight / height);
+                            layout.width = (int) (width * ratio);
+                            layout.height = (int) (height * ratio);
+                        }
+                        view.setLayoutParams(layout);
+                        view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+        );
+    }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
