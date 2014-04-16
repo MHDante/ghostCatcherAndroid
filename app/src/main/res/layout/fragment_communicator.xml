@@ -4,78 +4,133 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="#968b72">
 
-    <GridLayout
-        android:orientation="vertical"
-        android:layout_width="280dp"
-        android:layout_height="335dp"
-        android:layout_gravity="center"
-        android:weightSum="1">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal">
 
-        <ImageView
-            android:layout_width="293dp"
-            android:layout_height="293dp"
-            android:id="@+id/imageView"
-            android:src="@drawable/character_prof"
-            android:layout_row="0"
-            android:layout_column="0" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="1280">
 
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="52dp"
-            android:fillViewport="true"
-            android:gravity="center_horizontal"
-            android:background="#575757"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:id="@+id/subtitle_scroll_view">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="260"
+                android:weightSum="768"
+                android:gravity="center">
+
+                <Space
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_weight="610"
+                    android:gravity="left"/>
+
+
+                <ImageButton
+                    android:layout_width="0dip"
+                    android:layout_height="30sp"
+                    android:layout_weight="158"
+                    android:id="@+id/sound"
+                    android:onClick="onClick"
+                    android:layout_gravity="right|bottom" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="540"
+                android:weightSum="768"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="540"
+                    android:id="@+id/character_portrait"
+                    android:src="@drawable/character_prof"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_gravity="center_horizontal|left|right|bottom"
+                    android:adjustViewBounds="false" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dip"
+                android:layout_weight="60"
+                android:gravity="center">
+
+
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="0dip"
+                android:layout_weight="140"
+                android:weightSum="768"
+                android:gravity="center">
 
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="“Who is this... and how did you get this application?! No, no, this just won't do... "
-                    android:id="@+id/subtitle_text_view"
+                <ScrollView
+                    android:layout_width="0dip"
+                    android:layout_height="50dip"
+                    android:layout_weight="600"
                     android:gravity="center_horizontal"
-                    android:layout_gravity="bottom" />
-            </LinearLayout>
-        </ScrollView>
-    </GridLayout>
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:columnCount="100"
-        android:rowCount="100">
+                    android:id="@+id/subtitle_scroll_view"
+                    android:layout_gravity="center_horizontal|top">
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:background="#575757"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:layout_margin="5dip"
+                            android:text="“Who is this... and how did you get this application?! No, no, this just won't do... "
+                            android:id="@+id/subtitle_text_view"
+                            android:gravity="center_horizontal"
+                            android:layout_gravity="bottom" />
+                    </LinearLayout>
+                </ScrollView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView2"
-            android:src="@drawable/steampunk"
+            android:layout_height="match_parent"
+            android:id="@+id/main_frame"
             android:layout_row="0"
             android:layout_column="0"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="0dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="0dp" />
+            android:layout_marginTop="0dp"
+            android:src="@drawable/main_screen2"
+            android:layout_gravity="center" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sound"
-            android:layout_row="1"
-            android:layout_column="1"
-            android:layout_marginTop="119dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="44dp"
-            android:onClick="onClick" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:columnCount="100"
+        android:rowCount="100">
+
     </RelativeLayout>
 
     <HorizontalScrollView
