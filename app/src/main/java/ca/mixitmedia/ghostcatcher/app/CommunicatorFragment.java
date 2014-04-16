@@ -60,7 +60,7 @@ public class CommunicatorFragment extends ToolFragment {
                 gcMain.swapTo("biocalibrate");
                 return true;
             case R.id.tool_button_3:
-                gcMain.swapTo("tester");
+                gcMain.swapTo("imager");
                 return true;
             case R.id.tool_button_4:
                 gcMain.swapTo("amplifier");
