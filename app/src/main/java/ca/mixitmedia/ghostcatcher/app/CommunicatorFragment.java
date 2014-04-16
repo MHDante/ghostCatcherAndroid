@@ -1,5 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app;
 
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,8 +65,10 @@ public class CommunicatorFragment extends ToolFragment {
     }
 
     public void loadfile(String file) {
+        AssetManager assetManager = getResources().getAssets();
+        InputStream inputStream = null;
         try {
-            InputStream inputStream = getActivity().getAssets().open(file + ".txt");
+            inputStream = assetManager.open("levelinfo.txt");
             BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder total = new StringBuilder();
             String line;
