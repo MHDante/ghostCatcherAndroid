@@ -27,6 +27,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     gcMap map;
     BiocalibrateFragment biocalib;
     TesterFragment tester;
+    ImagerFragment imager;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +37,13 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         setContentView(R.layout.activity_main);
         backGear = findViewById(R.id.back_gear);
         journalGear = findViewById(R.id.journal_gear);
-        //TODO: Implement, you lazy fool.
+        //TODO: Implement settings, you lazy fool.
         communicator = CommunicatorFragment.newInstance("Settings");
         journal = JournalFragment.newInstance("Settings");
         map = gcMap.newInstance("Settings");
         biocalib = BiocalibrateFragment.newInstance("Settings");
         tester = TesterFragment.newInstance("Settings");
+        imager = ImagerFragment.newInstance("Settings");
         if (savedInstanceState != null) {
             return;//Avoid overlapping fragments.
         }
@@ -95,20 +97,24 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         } else {
             Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
-            //startActivity(new Intent(this, SampleCamActivity.class));
+            //startActivity(new Intent(this, ImagerFragment.class));
         }
     }
 
     public void swapTo(String fragment) {
         if (fragment.equals("journal")) {
             getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left)
                     .replace(R.id.fragment_container, journal)
                     .addToBackStack(null)
                     .commit();
         } else if (fragment.equals("map")) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, map)
+                    .addToBackStack(null)
+                    .commit();
+        } else if (fragment.equals("imager")) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, imager)
                     .addToBackStack(null)
                     .commit();
         } else if (fragment.equals("communicator")) {
@@ -176,5 +182,6 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
                 throw new RuntimeException("This system is being depreciated, and you passed an incorrect parameter");
         }
     }
+
 
 }

@@ -78,7 +78,7 @@
             android:exported="false" />
 
         <activity
-            android:name="ca.mixitmedia.ghostcatcher.app.SampleCamActivity"
+            android:name=".ImagerFragment"
             android:label="@string/title_activity_sample_cam"></activity>
     </application>
 

@@ -21,7 +21,7 @@ import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
 import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 
 
-public abstract class AbstractArchitectCamFragmentV4 extends Fragment implements ArchitectViewHolderInterface {
+public abstract class AbstractArchitectCamFragmentV4 extends ToolFragment implements ArchitectViewHolderInterface {
 
     /**
      * holds the Wikitude SDK AR-View, this is where camera, markers, compass, 3D models etc. are rendered
