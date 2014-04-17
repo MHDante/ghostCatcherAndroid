@@ -31,6 +31,12 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     TesterFragment tester;
     ImagerFragment imager;
 
+    //Keep This line
+    //Modify this line
+    //Keep this line
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ctxt = this;
@@ -60,6 +66,8 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
 
     }
 
+
+    //This block should automatically sync? Maybe?
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
