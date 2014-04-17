@@ -147,6 +147,7 @@ public class CommunicatorFragment extends ToolFragment {
     Timer timer = new Timer();
     String currentString = "";
 
+    //Hello barry, This function starts the dialog.
     protected void startDialog() {
         timer.cancel();
         timer = new Timer();
