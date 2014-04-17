@@ -75,6 +75,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     }
 
     public void onClick(View view) {
+        //get current fragment
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
         if (tf.checkClick(view)) return;
         switch (view.getId()) {
