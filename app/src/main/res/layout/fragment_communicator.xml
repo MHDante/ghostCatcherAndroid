@@ -1,12 +1,13 @@
 <FrameLayout
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="390dp"
+    android:layout_height="640dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#968b72">
+    android:background="#968b72"
+    android:foregroundGravity="center">
 
     <FrameLayout
-        android:layout_width="390dip"
-        android:layout_height="640dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center">
 
         <LinearLayout
@@ -126,14 +127,6 @@
 
     </FrameLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:columnCount="100"
-        android:rowCount="100">
-
-    </RelativeLayout>
-
     <HorizontalScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -147,8 +140,8 @@
             android:layout_height="fill_parent">
 
             <FrameLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:background="@drawable/shine">
 
                 <ImageButton
@@ -164,8 +157,8 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/frameLayout"
                 android:background="@drawable/shine">
 
@@ -183,8 +176,8 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/frameLayout2"
                 android:background="@drawable/shine">
 
@@ -201,8 +194,8 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/frameLayout3"
                 android:background="@drawable/shine">
 
@@ -219,8 +212,8 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/frameLayout4"
                 android:background="@drawable/shine">
 
@@ -235,8 +228,8 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/frameLayout5"
                 android:background="@drawable/shine">
 

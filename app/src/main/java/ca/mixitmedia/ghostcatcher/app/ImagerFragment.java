@@ -39,7 +39,7 @@ public class ImagerFragment extends AbstractArchitectCamFragmentV4 {
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
-        gcMain.hideJournal();
+        ///gcMain.hideJournal();
         super.onActivityCreated(savedInstanceState);
         if (this.architectView != null) {
             final String js = (jsMethod + "( " + selectedGhost + " );");

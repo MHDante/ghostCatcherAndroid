@@ -29,6 +29,8 @@ public class CommunicatorFragment extends ToolFragment {
     private static final String ARG_PARAM1 = "param1";
     private String mParam1;
     private String pendingDialog;
+    private boolean stopText = false;
+
     public CommunicatorFragment() {
     }//req'd
 
@@ -129,9 +131,10 @@ public class CommunicatorFragment extends ToolFragment {
                 gcMain.swapTo("amplifier");
                 return true;
             case R.id.sound:
-                //if (gcAudio.isPlaying()) gcAudio.pause();
-                //else gcAudio.play();
-                populateText("Hello world. ", true);
+                if (gcAudio.isPlaying()) gcAudio.pause();
+                else gcAudio.play();
+                //populateText("Hello world. ", true);
+                stopText = !stopText;
                 return true;
             default:
                 return false;
@@ -152,7 +155,8 @@ public class CommunicatorFragment extends ToolFragment {
         isTimerRunning = true;
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                counter += 1; //increase every sec
+                if(!stopText)
+                    counter += 1;  //increase every sec
                 mHandler.obtainMessage(1).sendToTarget();
 
             }
