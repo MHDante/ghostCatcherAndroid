@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Debug;
 
@@ -46,6 +47,8 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         amplifier = AmplifierFragment.newInstance("Settings");
         tester = TesterFragment.newInstance("Settings");
         imager = ImagerFragment.newInstance("Settings");
+        gcAudio.play();
+
         if (savedInstanceState != null) {
             return;//Avoid overlapping fragments.
         }
@@ -101,7 +104,14 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
             Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
             //startActivity(new Intent(this, ImagerFragment.class));
+
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (gcAudio.isPlaying()) gcAudio.pause();
+        super.onDestroy();
     }
 
     public void swapTo(String fragment) {

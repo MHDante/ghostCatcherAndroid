@@ -25,12 +25,14 @@ public class BiocalibrateFragment extends ToolFragment {
     private int dialogueStream = 0;
     private int testSoundClip;
     private String[] dialogs = new String[]{"gc_0_0", "gc_0_1", "gc_1_0_1", "gc_1_0_2"};
+    private boolean inProgress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_biocalibrate, container, false);
         testSoundClip = mSoundPool.load(getActivity(), R.raw.biocalib2, 1);
+        inProgress = true;
         return view;
     }
 
@@ -44,6 +46,8 @@ public class BiocalibrateFragment extends ToolFragment {
                 AudioManager audioMan = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
                 float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
                 dialogueStream = mSoundPool.play(testSoundClip, streamVolume, streamVolume, 1, 0, 1f);
+
+                inProgress = true;
 
                 getView().findViewById(R.id.fingerprint_mask).setVisibility(1);
                 getView().findViewById(R.id.calibrating_text).setVisibility(0);
@@ -60,7 +64,10 @@ public class BiocalibrateFragment extends ToolFragment {
 
                 return true;
             default:
-                return false;
+                if(!inProgress)
+                    return false;
+                else
+                    return true;
         }
     }
 
