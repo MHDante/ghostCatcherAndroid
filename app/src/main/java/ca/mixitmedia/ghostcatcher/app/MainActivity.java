@@ -29,7 +29,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     AmplifierFragment amplifier;
     TesterFragment tester;
     ImagerFragment imager;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ctxt = this;
@@ -144,10 +144,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
 
     @Override
     public void startDialog(String dialog) {
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, communicator)
-                .addToBackStack(null)
-                .commit();
+        getFragmentManager().popBackStack();
         communicator.loadfile(dialog);
     }
 

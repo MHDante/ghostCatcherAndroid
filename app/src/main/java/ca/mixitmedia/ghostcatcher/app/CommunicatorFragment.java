@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -27,7 +28,7 @@ public class CommunicatorFragment extends ToolFragment {
 
     private static final String ARG_PARAM1 = "param1";
     private String mParam1;
-
+    private String pendingDialog;
     public CommunicatorFragment() {
     }//req'd
 
@@ -62,23 +63,31 @@ public class CommunicatorFragment extends ToolFragment {
         String stPrev = (String) tv.getText();
         if (append) st = stPrev + st;
         tv.setText(st);
+
+        ScrollView sv = (ScrollView) getView().findViewById(R.id.subtitle_scroll_view);
+        sv.fullScroll(View.FOCUS_DOWN);
     }
 
     public void loadfile(String file) {
+        if (getView() == null) {
+            pendingDialog = file;
+            return;
+        }
         AssetManager assetManager = getResources().getAssets();
         InputStream inputStream = null;
         try {
-            inputStream = assetManager.open("levelinfo.txt");
+            inputStream = assetManager.open(file + ".txt");
             BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
                 total.append(line);
             }
+            currentString = total.toString();
 
             int drawableId = getResources().getIdentifier(file, "drawable", getActivity().getPackageName());
             ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
-            imgV.setBackgroundResource(drawableId);
+            imgV.setImageResource(drawableId);
 
             gcAudio.playTrack(file, false);
 
@@ -94,6 +103,16 @@ public class CommunicatorFragment extends ToolFragment {
         }
 // ...
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (pendingDialog != null) {
+            loadfile(pendingDialog);
+            pendingDialog = null;
+        } else if (getView() == null) throw new RuntimeException("View was null on Resume. Why?");
+    }
+
     @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
@@ -122,11 +141,12 @@ public class CommunicatorFragment extends ToolFragment {
 
     int counter;
     boolean isTimerRunning;
-    Timer timer;
-    String currentString;
+    Timer timer = new Timer();
+    String currentString = "";
 
     protected void startDialog() {
-        timer.purge();
+        timer.cancel();
+        timer = new Timer();
         populateText("", false);
         counter = 0;
         isTimerRunning = true;
@@ -136,12 +156,21 @@ public class CommunicatorFragment extends ToolFragment {
                 mHandler.obtainMessage(1).sendToTarget();
 
             }
-        }, 0, 1000);
+        }, 0, 60);
     }
 
+    private String displayString = "";
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            populateText(currentString.substring(counter - 1, counter), true);
+            if (counter > currentString.length()) {
+                currentString = null;
+                timer.purge();
+            } else {
+                displayString = currentString.substring(0, counter);
+                if (getView() != null) {
+                    populateText(displayString, false);
+                }
+            }
         }
     };
 }
