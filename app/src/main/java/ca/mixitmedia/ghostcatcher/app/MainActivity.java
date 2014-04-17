@@ -31,6 +31,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     TesterFragment tester;
     ImagerFragment imager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ctxt = this;
@@ -40,6 +41,8 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         backGear = findViewById(R.id.back_gear);
         journalGear = findViewById(R.id.journal_gear);
         //TODO: Implement settings, you lazy fool.
+
+        //initialize all the fragments
         communicator = CommunicatorFragment.newInstance("Settings");
         journal = JournalFragment.newInstance("Settings");
         map = gcMap.newInstance("Settings");
@@ -49,9 +52,13 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         imager = ImagerFragment.newInstance("Settings");
         gcAudio.play();
 
+        //do stuff because its cool
+        //it better not be null
         if (savedInstanceState != null) {
             return;//Avoid overlapping fragments.
         }
+
+        //begin the transaction ok
         getFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, communicator)
