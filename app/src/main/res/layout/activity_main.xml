@@ -19,7 +19,7 @@
         android:onClick="onClick">
 
         <ImageButton
-            android:layout_width="135dp"
+            android:layout_width="150dp"
             android:layout_height="135dp"
             android:src="@drawable/back_gear"
             android:background="@android:color/transparent"
@@ -38,7 +38,7 @@
         android:onClick="onClick">
 
         <ImageButton
-            android:layout_width="135dp"
+            android:layout_width="150dp"
             android:layout_height="135dp"
             android:src="@drawable/journal_gear"
             android:background="@android:color/transparent"

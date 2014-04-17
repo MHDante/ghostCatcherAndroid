@@ -189,7 +189,7 @@
                     android:adjustViewBounds="false"
                     android:background="@android:color/transparent"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ghost"
+                    android:src="@drawable/imager_icon"
                     android:onClick="onClick" />
             </FrameLayout>
 
@@ -206,8 +206,8 @@
                     android:cropToPadding="false"
                     android:adjustViewBounds="false"
                     android:background="@android:color/transparent"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/map_marker"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/sound_button"
                     android:onClick="onClick" />
             </FrameLayout>
 

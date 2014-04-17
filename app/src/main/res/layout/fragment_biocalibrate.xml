@@ -1,15 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical" android:layout_width="390dp"
+    android:layout_height="640dp">
 
-    <Button
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/bio_calibrate_unpressed"
+        android:scaleType="centerCrop" />
+
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bio Calibrate"
         android:id="@+id/biocalibrate_btn"
-        android:background="@drawable/fingerprint"
-        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:src="@drawable/bio_calibrate_pressed"
+        android:background="@android:color/transparent"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="70dp"
+        android:layout_marginLeft="12dp"
         android:onClick="onClick" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Calibrating"
+        android:id="@+id/calibrating_text"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="175dp"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fingerprint_mask"
+        android:src="@drawable/bio_calibrate_unpressed"
+        android:scaleType="centerCrop"
+        android:focusableInTouchMode="false" />
+
 </FrameLayout>

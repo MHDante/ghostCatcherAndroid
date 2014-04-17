@@ -45,6 +45,10 @@ public class BiocalibrateFragment extends ToolFragment {
                 float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
                 dialogueStream = mSoundPool.play(testSoundClip, streamVolume, streamVolume, 1, 0, 1f);
 
+                getView().findViewById(R.id.fingerprint_mask).setVisibility(1);
+                getView().findViewById(R.id.calibrating_text).setVisibility(0);
+                getView().findViewById(R.id.biocalibrate_btn).bringToFront();
+
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
