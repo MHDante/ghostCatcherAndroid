@@ -100,6 +100,8 @@ public abstract class ToolFragment extends Fragment {
         public void swapTo(String fragment);
 
         void startDialog(String dialog);
+
+        void hideJournal();
     }
 
 }

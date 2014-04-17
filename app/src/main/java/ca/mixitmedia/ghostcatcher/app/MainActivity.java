@@ -96,6 +96,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
         if (fm.getBackStackEntryCount() > 0) {
             Log.i("MainActivity", "popping backstack");
             fm.popBackStack();
+            findViewById(R.id.journal_gear).setVisibility(0);
         } else {
             Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
@@ -109,6 +110,8 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
                     .replace(R.id.fragment_container, journal)
                     .addToBackStack(null)
                     .commit();
+            findViewById(R.id.journal_gear).setVisibility(2);
+            findViewById(R.id.journal_gear_btn).setVisibility(2);
         } else if (fragment.equals("map")) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, map)
@@ -119,6 +122,8 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
                     .replace(R.id.fragment_container, imager)
                     .addToBackStack(null)
                     .commit();
+            findViewById(R.id.journal_gear).setVisibility(2);
+            findViewById(R.id.journal_gear_btn).setVisibility(2);
         } else if (fragment.equals("communicator")) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, communicator)
@@ -145,6 +150,7 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     @Override
     public void startDialog(String dialog) {
         getFragmentManager().popBackStack();
+        findViewById(R.id.journal_gear).setVisibility(0);
         communicator.loadfile(dialog);
     }
 
@@ -165,6 +171,10 @@ public class MainActivity extends FragmentActivity implements ToolFragment.ToolI
     public void startJournal() {
         startActivity(new Intent(this, JournalFragment.class));
         overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
+    }
+
+    public void hideJournal(){
+        findViewById(R.id.journal_gear).setVisibility(1);
     }
 
     class AnimationHandler extends AnimatorListenerAdapter {

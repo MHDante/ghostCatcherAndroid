@@ -162,9 +162,9 @@ public class CommunicatorFragment extends ToolFragment {
     private String displayString = "";
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            if (counter > currentString.length()) {
+            if (currentString != null && counter > currentString.length()) {
                 currentString = null;
-                timer.purge();
+                timer.cancel();
             } else {
                 displayString = currentString.substring(0, counter);
                 if (getView() != null) {

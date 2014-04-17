@@ -39,6 +39,7 @@ public class ImagerFragment extends AbstractArchitectCamFragmentV4 {
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
+        gcMain.hideJournal();
         super.onActivityCreated(savedInstanceState);
         if (this.architectView != null) {
             final String js = (jsMethod + "( " + selectedGhost + " );");
@@ -131,7 +132,11 @@ public class ImagerFragment extends AbstractArchitectCamFragmentV4 {
 
     @Override
     public boolean checkClick(View view) {
-        return false;
+        if (view.getId() == R.id.back_gear_btn) {
+            return false;
+        }
+        else
+            return true;
     }
 
     @Override
