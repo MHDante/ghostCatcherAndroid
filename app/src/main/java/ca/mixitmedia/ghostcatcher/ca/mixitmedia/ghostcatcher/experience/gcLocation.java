@@ -19,4 +19,6 @@ public class gcLocation {
     public gcLocation() {
         image = BitmapFactory.decodeResource(gcEngine.getInstance().context.getResources(), R.drawable.ghost);
     }
+
+
 }

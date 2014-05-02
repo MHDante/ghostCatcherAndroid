@@ -43,7 +43,7 @@ public class BiocalibrateFragment extends ToolFragment {
             case R.id.biocalibrate_btn:
 
                 mSoundPool.stop(dialogueStream);
-                AudioManager audioMan = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
+                AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
                 float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
                 dialogueStream = mSoundPool.play(testSoundClip, streamVolume, streamVolume, 1, 0, 1f);
 
@@ -58,14 +58,12 @@ public class BiocalibrateFragment extends ToolFragment {
                     public void run() {
                         int dialog = 0 + (int) (Math.random() * ((3 - 0) + 1));
                         gcMain.startDialogByLocation(dialogs[dialog]);
-
-
                     }
                 }, 2500);
 
                 return true;
             default:
-                if(!inProgress)
+                if (!inProgress)
                     return false;
                 else
                     return true;

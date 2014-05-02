@@ -67,10 +67,12 @@ public class gcMap extends ToolFragment {
     private void setUpMap() {
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
         LatLngBounds b = new LatLngBounds(new LatLng(43.65486328474458, -79.38564497647212), new LatLng(43.66340903426289, -79.37292076230159));
-        GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+
+        GroundOverlayOptions ryersonMap = new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromResource(R.drawable.campus))
                 .positionFromBounds(b);
-        map.addGroundOverlay(newarkMap);
+        map.addGroundOverlay(ryersonMap);
+
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(43.65947, -79.37961))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
