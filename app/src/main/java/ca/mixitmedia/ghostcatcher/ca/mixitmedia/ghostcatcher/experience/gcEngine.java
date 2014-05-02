@@ -46,4 +46,8 @@ public class gcEngine {
     public CharSequence getNextToDo() {
         return "You must go defeat the dargon"; //todo: correct spelling of dragon
     }
+
+    public gcSeqPt getCurrentSeqPt(){
+        return new gcSeqPt();
+    }
 }

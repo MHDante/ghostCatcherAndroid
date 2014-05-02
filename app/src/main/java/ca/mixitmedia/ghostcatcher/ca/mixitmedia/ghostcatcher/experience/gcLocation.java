@@ -11,14 +11,17 @@ import ca.mixitmedia.ghostcatcher.app.R;
 public class gcLocation {
     public int id;
     public String name;
-    public float latitude;
-    public float longitude;
+    public double latitude;
+    public double longitude;
     public Bitmap image;
     public String description;
 
-    public gcLocation() {
-        image = BitmapFactory.decodeResource(gcEngine.getInstance().context.getResources(), R.drawable.ghost);
+    public gcLocation(int id, String name, double latitude, double longitude, String description) {
+        this.id = id;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.description = description;
     }
-
 
 }
