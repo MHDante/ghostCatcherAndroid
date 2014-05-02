@@ -3,7 +3,7 @@ package ca.mixitmedia.ghostcatcher.utils;
 /**
  * Created by Dante on 2014-05-02.
  */
-public final class GeofenceUtils {
+public final class GeoFenceUtils {
 
     // Used to track what type of geofence removal request was made.
     public enum REMOVE_TYPE {

@@ -31,10 +31,6 @@ public class gcEngine {
     }
 
 
-    public gcLocation getNextLocation() {
-        return new gcLocation();
-    }
-
     public Uri getSoundUri(String sound) {
         //    File f = new File(loader.root, sound + ".mp3");
         //    return Uri.fromFile(f);

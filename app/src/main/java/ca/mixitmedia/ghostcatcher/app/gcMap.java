@@ -44,9 +44,18 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
         View view = inflater.inflate(R.layout.activity_map, container, false);
 
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+
+        return view;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         if (map != null) setUpMap();
 
-        bar = (SeekBar) view.findViewById(R.id.seekBar);
+        bar = (SeekBar) getView().findViewById(R.id.seekBar);
         bar.setMax((int) map.getMaxZoomLevel() / 2);
         bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -69,7 +78,6 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
                 bar.setProgress((int) (cameraPosition.zoom - map.getMaxZoomLevel() / 2));
             }
         });
-        return view;
 
     }
 
@@ -92,7 +100,7 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
 
         }
 
-        setBanner( locations.get(selectedLocation) );
+        setBanner( locations.get(selectedLocation-1) );
 
 
 

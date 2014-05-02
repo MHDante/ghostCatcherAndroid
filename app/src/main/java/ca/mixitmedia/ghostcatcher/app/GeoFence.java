@@ -9,7 +9,7 @@ import com.google.android.gms.location.Geofence;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mixitmedia.ghostcatcher.utils.GeofenceUtils;
+import ca.mixitmedia.ghostcatcher.utils.GeoFenceUtils;
 
 /**
  * Created by Dante on 2014-05-02.
@@ -258,12 +258,12 @@ class SimpleGeofenceStore {
                 INVALID_INT_VALUE);
         // If none of the values is incorrect, return the object
         if (
-                lat != GeofenceUtils.INVALID_FLOAT_VALUE &&
-                        lng != GeofenceUtils.INVALID_FLOAT_VALUE &&
-                        radius != GeofenceUtils.INVALID_FLOAT_VALUE &&
+                lat != GeoFenceUtils.INVALID_FLOAT_VALUE &&
+                        lng != GeoFenceUtils.INVALID_FLOAT_VALUE &&
+                        radius != GeoFenceUtils.INVALID_FLOAT_VALUE &&
                         expirationDuration !=
-                                GeofenceUtils.INVALID_LONG_VALUE &&
-                        transitionType != GeofenceUtils.INVALID_INT_VALUE) {
+                                GeoFenceUtils.INVALID_LONG_VALUE &&
+                        transitionType != GeoFenceUtils.INVALID_INT_VALUE) {
 
             // Return a true Geofence object
             return new SimpleGeofence(

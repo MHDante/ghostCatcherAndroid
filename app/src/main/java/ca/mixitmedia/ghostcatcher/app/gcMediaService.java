@@ -189,7 +189,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification() {
         int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
-        Bitmap nextLocation = engine.getNextLocation().image;
+        Bitmap nextLocation = engine.getCurrentSeqPt().locations.get(0).image ; //TODO: #HACKS
         statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
         statusBarView.setTextViewText(R.id.title, "Ghost Catcher");
         statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
