@@ -57,7 +57,8 @@ public class BiocalibrateFragment extends ToolFragment {
                     @Override
                     public void run() {
                         int dialog = 0 + (int) (Math.random() * ((3 - 0) + 1));
-                        gcMain.startDialog(dialogs[dialog]);
+                        gcMain.startDialogByLocation(dialogs[dialog]);
+
 
                     }
                 }, 2500);

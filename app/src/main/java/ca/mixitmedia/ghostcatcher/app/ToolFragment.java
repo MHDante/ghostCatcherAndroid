@@ -102,6 +102,7 @@ public abstract class ToolFragment extends Fragment {
         void startDialog(String dialog);
 
 
+        void startDialogByLocation(String dialog);
     }
 
 }
