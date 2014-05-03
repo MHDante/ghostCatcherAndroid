@@ -44,7 +44,7 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
         View view = inflater.inflate(R.layout.activity_map, container, false);
 
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-
+        map.setOnMarkerClickListener(this);
         return view;
 
     }
@@ -147,9 +147,11 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
     public boolean onMarkerClick(Marker marker) {
         for( gcLocation l : locations){
             if (l.name.equals(marker.getTitle())){
+                setBanner(l);
                 selectedLocation = locations.indexOf(l);
+                return false;
             }
         }
-        return true;
+        throw new RuntimeException("Something really bad happened on this line.");
     }
 }

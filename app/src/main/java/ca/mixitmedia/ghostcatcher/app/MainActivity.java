@@ -34,7 +34,8 @@ import ca.mixitmedia.ghostcatcher.utils.Debug;
 import ca.mixitmedia.ghostcatcher.utils.Tuple;
 
 
-public class MainActivity extends Activity implements ToolFragment.ToolInteractionListener,
+public class MainActivity extends Activity implements
+        ToolFragment.ToolInteractionListener,
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener,
         LocationListener {
