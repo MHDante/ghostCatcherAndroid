@@ -45,11 +45,13 @@ public class MainActivity extends Activity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener,
         LocationListener {
+
     float gearsize = 200;
     View backGear;
     View journalGear;
     Context ctxt; //TODO:REMOVE.
     View fragmentContainer;
+
     CommunicatorFragment communicator;
     JournalFragment journal;
     gcMap map;
