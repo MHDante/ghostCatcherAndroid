@@ -48,9 +48,10 @@
             android:id="@+id/JournalFlipper"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/places_tab"
-            android:background="@drawable/moleskin_page">
+            android:background="@drawable/moleskin_page"
+            android:visibility="gone">
 
-            <AdapterViewFlipper
+        <AdapterViewFlipper
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:id="@+id/NotesFlipper"

@@ -16,6 +16,8 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
+
 public abstract class ToolFragment extends Fragment {
 
 
@@ -103,6 +105,8 @@ public abstract class ToolFragment extends Fragment {
 
 
         void startDialogByLocation(String dialog);
+
+        gcLocation getCurrentLocation();
     }
 
 }

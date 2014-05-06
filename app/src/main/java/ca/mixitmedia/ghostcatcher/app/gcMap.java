@@ -2,6 +2,7 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -40,9 +43,9 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_map, container, false);
-
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setOnMarkerClickListener(this);
         return view;
@@ -81,31 +84,39 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
 
     }
 
+    ArrayList<Marker> markers = new ArrayList<Marker>();
     private void setUpMap() {
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
         LatLngBounds b = new LatLngBounds(new LatLng(43.65486328474458, -79.38564497647212), new LatLng(43.66340903426289, -79.37292076230159));
 
-        GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromResource(R.drawable.campus))
-                .positionFromBounds(b);
-        map.addGroundOverlay(newarkMap);
+        //GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+        //        .image(BitmapDescriptorFactory.fromResource(R.drawable.campus))
+        //        .positionFromBounds(b);
+        //map.addGroundOverlay(newarkMap);
 
         locations = gcEngine.getInstance().getCurrentSeqPt().locations;
 
-        for(selectedLocation = 0; selectedLocation < locations.size(); selectedLocation ++){
-            map.addMarker(new MarkerOptions()
-                    .position(new LatLng( locations.get(selectedLocation).latitude , locations.get(selectedLocation).longitude ))
-                    .icon( BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
-                    .title( locations.get(selectedLocation).name ));
+        for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
+            if (gcMain.getCurrentLocation() != null && locations.get(selectedLocation).id != gcMain.getCurrentLocation().id) {
+                markers.add(map.addMarker(new MarkerOptions()
+                        .position(new LatLng(locations.get(selectedLocation).latitude, locations.get(selectedLocation).longitude))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
+                        .title(locations.get(selectedLocation).name)));
+                // Google Marker IDs are held as Strings with an m prefix : m1, m2, m3, m4
 
+            } else {
+                if (locations.get(selectedLocation) != gcMain.getCurrentLocation()) {
+                    markers.add(map.addMarker(new MarkerOptions()
+                            .position(new LatLng(locations.get(selectedLocation).latitude, locations.get(selectedLocation).longitude))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
+                            .title(locations.get(selectedLocation).name)));
+                }
+            }
         }
-
         setBanner( locations.get(selectedLocation-1) );
 
 
-
-//        map.moveCamera();
-//        map.getMyLocation();
+        map.setMyLocationEnabled(true);
     }
 
     //private void addMarker(){
@@ -143,12 +154,16 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
         return fragment;
     }
 
+
     @Override
     public boolean onMarkerClick(Marker marker) {
         for( gcLocation l : locations){
             if (l.name.equals(marker.getTitle())){
                 setBanner(l);
                 selectedLocation = locations.indexOf(l);
+                if (gcMain.getCurrentLocation() != null && l.id == gcMain.getCurrentLocation().id) {
+                    gcMain.swapTo("biocalibrate");
+                }
                 return false;
             }
         }

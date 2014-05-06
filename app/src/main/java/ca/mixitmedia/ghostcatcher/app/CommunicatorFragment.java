@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +31,8 @@ public class CommunicatorFragment extends ToolFragment {
     private String mParam1;
     private String pendingDialog;
     private boolean stopText = false;
+    private List<View> tools;
+    public boolean bioCalib = true;
 
     public CommunicatorFragment() {
     }//req'd
@@ -113,6 +116,11 @@ public class CommunicatorFragment extends ToolFragment {
             loadfile(pendingDialog);
             pendingDialog = null;
         } else if (getView() == null) throw new RuntimeException("View was null on Resume. Why?");
+        if (!bioCalib) {
+            getView().findViewById(R.id.tool_button_2).setVisibility(View.GONE);
+        } else {
+            getView().findViewById(R.id.tool_button_2).setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -178,4 +186,17 @@ public class CommunicatorFragment extends ToolFragment {
             }
         }
     };
+
+    public void HideTool(String tool) {
+
+        if (tool.equals("biocalibrate")) {
+            getView().findViewById(R.id.tool_button_2).setVisibility(View.GONE);
+        }
+    }
+
+    public void ShowTool(String tool) {
+        if (tool.equals("biocalibrate")) {
+            getView().findViewById(R.id.tool_button_2).setVisibility(View.VISIBLE);
+        }
+    }
 }

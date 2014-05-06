@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -23,13 +25,17 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
 import ca.mixitmedia.ghostcatcher.utils.Debug;
 import ca.mixitmedia.ghostcatcher.utils.Tuple;
 
@@ -245,25 +251,28 @@ public class MainActivity extends Activity implements
 
     @Override
     public void startDialogByLocation(String dialog) {
-        for (String s : audioMap.keySet()) {
-            Tuple<Tuple<Double, Double>, Tuple<Double, Double>> boundries = audioMap.get(s);
-            double bottom = boundries.first.first;
-            double left = boundries.first.second;
-            double top = boundries.second.first;
-            double right = boundries.second.second;
+        startDialog(currentLocation.audio);
+
+        //for (String s : audioMap.keySet()) {
+        //Tuple<Tuple<Double, Double>, Tuple<Double, Double>> boundries = audioMap.get(s);
+        //double bottom = boundries.first.first;
+        //double left = boundries.first.second;
+        //double top = boundries.second.first;
+        //double right = boundries.second.second;
+//
+//
+        //if (latitude > bottom && latitude < top) {
+        //    if (longitude > left && longitude < right) {
+        //        startDialog(s);
+        //        return;
+        //    }
+        //}
+        //Log.d("Loc", "Bot: " + bottom + " Lat: " + latitude + " Top: " + top);
+        //Log.d("Loc", "Left: " + left + " Long: " + longitude + " Right: " + right);
 
 
-            if (latitude > bottom && latitude < top) {
-                if (longitude > left && longitude < right) {
-                    startDialog(s);
-                    return;
-                }
-            }
-            Log.d("Loc", "Bot: " + bottom + " Lat: " + latitude + " Top: " + top);
-            Log.d("Loc", "Left: " + left + " Long: " + longitude + " Right: " + right);
-
-        }
-        throw new RuntimeException("You're outta the zone. :" + latitude + longitude);
+        //}
+        //throw new RuntimeException("You're outta the zone. :" + latitude + longitude);
 
     }
 
@@ -419,6 +428,7 @@ public class MainActivity extends Activity implements
         mCurrentLocation = mLocationClient.getLastLocation();
         latitude = mCurrentLocation.getLatitude();
         longitude = mCurrentLocation.getLongitude();
+        onLocationChanged(mCurrentLocation);
         Log.d("loc", "loc :" + mCurrentLocation);
 
     }
@@ -472,17 +482,77 @@ public class MainActivity extends Activity implements
 
     double longitude;
     double latitude;
+    private gcLocation currentLocation;
+
+    @Override
+    public gcLocation getCurrentLocation() {
+        return currentLocation;
+    }
 
     @Override
     public void onLocationChanged(Location location) {
-        // Report to the UI that the location was updated
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();
 
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        List<gcLocation> locations = gcEngine.getInstance().getCurrentSeqPt().locations;
+        boolean hit = false;
+        float accuracy = location.getAccuracy();
+        for (gcLocation l : locations) {
+            float distance[] = new float[3]; // ugh, ref parameters.
+            Location.distanceBetween(l.latitude, l.longitude, location.getLatitude(), location.getLongitude(), distance);
+            if (distance[0] < accuracy) {
+                currentLocation = l;
+                hit = true;
+            }
+        }
+        if (hit) {
+            ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+            if (tf instanceof gcMap) {
+                gcMap m = (gcMap) tf;
+                for (gcLocation l : m.locations) {
+                    if (l == currentLocation) {
+                        m.markers.get(m.locations.indexOf(l)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2));
+                    } else {
+                        m.markers.get(m.locations.indexOf(l)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
+                    }
+                }
+            }
+            showLocationNotification();
+            communicator.bioCalib = true;
+            ShowTool("biocalibrate");
+        } else {
+            HideTool("biocalibrate");
+            communicator.bioCalib = false;
+        }
+
+    }
+
+    private void ShowTool(String tool) {
+
+        ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+        if (tf instanceof CommunicatorFragment) {
+            CommunicatorFragment c = (CommunicatorFragment) tf;
+            c.ShowTool(tool);
+        }
+    }
+
+    private void HideTool(String tool) {
+        ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+        if (tf instanceof CommunicatorFragment) {
+            CommunicatorFragment c = (CommunicatorFragment) tf;
+            c.HideTool(tool);
+        }
+    }
+
+    private final int NOTIF_ID = 2013567;
+
+    public void showLocationNotification() {
+        Notification.Builder mBuilder =
+                new Notification.Builder(this)
+                        .setSmallIcon(R.drawable.ghost)
+                        .setContentTitle("Ghost Catcher")
+                        .setContentText("You have arrived to your next location!");
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(NOTIF_ID, mBuilder.build());
     }
 
     @Override

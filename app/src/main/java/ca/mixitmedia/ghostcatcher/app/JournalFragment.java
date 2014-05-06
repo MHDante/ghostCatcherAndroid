@@ -35,6 +35,7 @@ public class JournalFragment extends ToolFragment {
     }
 
     public boolean checkClick(View view) {
+        if (view.getId() == R.id.journal_gear_btn) return true;
         return false;
     }
 
