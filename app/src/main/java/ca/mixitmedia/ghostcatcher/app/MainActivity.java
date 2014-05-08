@@ -59,6 +59,8 @@ public class MainActivity extends Activity implements
     AmplifierFragment amplifier;
     TesterFragment tester;
     ImagerFragment imager;
+    boolean debugging = true;
+    int debugLoc = 0;
 
     private LocationClient mLocationClient;
     Location mCurrentLocation;
@@ -166,6 +168,7 @@ public class MainActivity extends Activity implements
             case R.id.journal_gear_btn:
                 swapTo("journal");
                 break;
+
         }
     }
 
@@ -428,8 +431,6 @@ public class MainActivity extends Activity implements
         // Display the connection status
         Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
         mCurrentLocation = mLocationClient.getLastLocation();
-        latitude = mCurrentLocation.getLatitude();
-        longitude = mCurrentLocation.getLongitude();
         onLocationChanged(mCurrentLocation);
         Log.d("loc", "loc :" + mCurrentLocation);
 
@@ -482,8 +483,6 @@ public class MainActivity extends Activity implements
         }
     }
 
-    double longitude;
-    double latitude;
     private gcLocation currentLocation;
 
     @Override
@@ -491,20 +490,30 @@ public class MainActivity extends Activity implements
         return currentLocation;
     }
 
+    //
     @Override
     public void onLocationChanged(Location location) {
 
+        if (location == null) { currentLocation = null; return; }
         List<gcLocation> locations = gcEngine.getInstance().getCurrentSeqPt().locations;
         boolean hit = false;
-        float accuracy = location.getAccuracy();
-        for (gcLocation l : locations) {
-            float distance[] = new float[3]; // ugh, ref parameters.
-            Location.distanceBetween(l.latitude, l.longitude, location.getLatitude(), location.getLongitude(), distance);
-            if (distance[0] < accuracy) {
-                currentLocation = l;
-                hit = true;
+
+        if (debugging) {
+            currentLocation = locations.get(debugLoc);
+            hit = true;
+        }
+        else {
+            float accuracy = location.getAccuracy();
+            for (gcLocation l : locations) {
+                float distance[] = new float[3]; // ugh, ref parameters.
+                Location.distanceBetween(l.latitude, l.longitude, location.getLatitude(), location.getLongitude(), distance);
+                if (distance[0] < accuracy) {
+                    currentLocation = l;
+                    hit = true;
+                }
             }
         }
+
         if (hit) {
             ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
             if (tf instanceof gcMap) {

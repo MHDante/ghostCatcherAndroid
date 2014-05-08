@@ -37,7 +37,7 @@ public abstract class ToolFragment extends Fragment {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (enter) getView().setLayerType(View.LAYER_TYPE_NONE, null);
+                if (enter && getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
 

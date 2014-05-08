@@ -17,11 +17,12 @@ public class gcLocation {
     public String description;
     public String audio;
 
-    public gcLocation(int id, String name, double latitude, double longitude, String description, String audio) {
+    public gcLocation(int id, String name, double latitude, double longitude, Bitmap image, String description, String audio) {
         this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.image = image;
         this.description = description;
         this.audio = audio;
     }

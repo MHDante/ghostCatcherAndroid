@@ -1,6 +1,8 @@
 package ca.mixitmedia.ghostcatcher.app;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -33,7 +39,7 @@ import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocati
 import ca.mixitmedia.ghostcatcher.utils.Utils;
 
 
-public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListener {
+public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
 
     GoogleMap map;
     SeekBar bar;
@@ -47,8 +53,11 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_map, container, false);
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-        map.setOnMarkerClickListener(this);
+        map.setOnMarkerClickListener( this );
+        map.setInfoWindowAdapter( this );
+        map.setOnInfoWindowClickListener( this );
         return view;
+
 
     }
 
@@ -97,7 +106,7 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
         locations = gcEngine.getInstance().getCurrentSeqPt().locations;
 
         for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
-            if (gcMain.getCurrentLocation() != null && locations.get(selectedLocation).id != gcMain.getCurrentLocation().id) {
+            if (gcMain.getCurrentLocation() == null || locations.get(selectedLocation).id != gcMain.getCurrentLocation().id) {
                 markers.add(map.addMarker(new MarkerOptions()
                         .position(new LatLng(locations.get(selectedLocation).latitude, locations.get(selectedLocation).longitude))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
@@ -105,12 +114,10 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
                 // Google Marker IDs are held as Strings with an m prefix : m1, m2, m3, m4
 
             } else {
-                if (locations.get(selectedLocation) != gcMain.getCurrentLocation()) {
-                    markers.add(map.addMarker(new MarkerOptions()
-                            .position(new LatLng(locations.get(selectedLocation).latitude, locations.get(selectedLocation).longitude))
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
-                            .title(locations.get(selectedLocation).name)));
-                }
+                markers.add(map.addMarker(new MarkerOptions()
+                    .position(new LatLng(locations.get(selectedLocation).latitude, locations.get(selectedLocation).longitude))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
+                    .title(locations.get(selectedLocation).name)));
             }
         }
         setBanner( locations.get(selectedLocation-1) );
@@ -128,6 +135,8 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
         tv.setText( loc.name );
         TextView tv2 = (TextView)getView().findViewById(R.id.to_do);
         tv2.setText( loc.description );
+        ImageView iv = (ImageView)getView().findViewById(R.id.imageThumbnail);
+        iv.setImageBitmap( loc.image );
     }
 
 
@@ -143,6 +152,20 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
     }
 
     public boolean checkClick(View view) {
+        switch (view.getId()) {
+            case R.id.left:
+                int mod_result = (selectedLocation + markers.size() - 1 ) % markers.size();
+                Marker m =  markers.get( mod_result );
+                m.showInfoWindow();
+                onMarkerClick(m);
+                return true;
+            case R.id.right:
+                int mod_result2 = (selectedLocation + markers.size() + 1 ) % markers.size();
+                Marker m2 = markers.get( mod_result2 );
+                m2.showInfoWindow();
+                onMarkerClick(m2);
+                return true;
+        }
         return false;
     }
 
@@ -161,12 +184,53 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
             if (l.name.equals(marker.getTitle())){
                 setBanner(l);
                 selectedLocation = locations.indexOf(l);
-                if (gcMain.getCurrentLocation() != null && l.id == gcMain.getCurrentLocation().id) {
-                    gcMain.swapTo("biocalibrate");
-                }
                 return false;
             }
         }
         throw new RuntimeException("Something really bad happened on this line.");
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        return null;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+
+        LinearLayout lv = new LinearLayout(getActivity());
+        lv.setBackgroundColor(Color.WHITE);
+        lv.setOrientation(LinearLayout.VERTICAL);
+
+        //FrameLayout.LayoutParams LLParams
+        //=  new WindowManager.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT);
+
+        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id ){
+
+            ImageView iv = new ImageView(getActivity());
+            iv.setImageResource(R.drawable.fingerprint);
+
+            lv.addView(iv);
+        }
+
+        TextView tv = new TextView( getActivity() );
+        tv.setText(marker.getTitle());
+        tv.setTextColor(Color.BLACK);
+
+        lv.addView(tv);
+
+        return lv;
+
+
+
+        //original text gets reset here
+        //return null;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id ){
+            gcMain.swapTo("biocalibrate");
+        }
     }
 }
