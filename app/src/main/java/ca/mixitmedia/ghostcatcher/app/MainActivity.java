@@ -107,6 +107,7 @@ public class MainActivity extends Activity implements
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationClient = new LocationClient(this, this, this);
 
+
         //initialize all the fragments
         communicator = CommunicatorFragment.newInstance("Settings");
         journal = JournalFragment.newInstance("Settings");
