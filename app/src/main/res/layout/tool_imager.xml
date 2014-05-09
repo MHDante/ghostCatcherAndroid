@@ -7,7 +7,8 @@
     <FrameLayout
         android:id="@+id/camera_preview"
         android:layout_width="fill_parent"
-        android:layout_height="366dp" />
+        android:layout_height="366dp"
+        android:background="#ffff0000" />
 
     <ImageView
         android:layout_width="match_parent"

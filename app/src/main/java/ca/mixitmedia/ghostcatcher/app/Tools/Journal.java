@@ -21,7 +21,7 @@ public class Journal extends ToolFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_journal, container, false);
+        View view = inflater.inflate(R.layout.tool_journal, container, false);
         view.setPivotX(0);
         view.setPivotY(view.getMeasuredHeight());
         return view;

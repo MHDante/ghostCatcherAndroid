@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +26,6 @@ public abstract class ToolFragment extends Fragment {
 
 
     protected ToolInteractionListener gcMain;
-    public Class type;
-    public Class getType(){return type;}
 
     public abstract boolean checkClick(View view);
 
@@ -35,17 +34,27 @@ public abstract class ToolFragment extends Fragment {
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
         final int animatorId = (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
         final Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
-        getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        getView().setPivotX(getView().getMeasuredWidth()/2);
+        getView().setPivotY(getView().getMeasuredHeight());
+        Log.d("Pivot", "enter: " + enter + "Pivot:" + getView().getPivotY());
+
+        if (anim != null)
+            getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
         anim.addListener(new AnimatorListenerAdapter() {
+
+
             @Override
             public void onAnimationStart(Animator animation) {
 //                MainActivity.inProgress = true;
 //            }
             }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 //MainActivity.inProgress = false;
-                if (enter && getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
+                if (getView()!=null)getView().setLayerType(View.LAYER_TYPE_NONE, null);
+
             }
         });
 
@@ -103,13 +112,10 @@ public abstract class ToolFragment extends Fragment {
 
     public interface ToolInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
 
-        public void hideGears(String s);
 
         public void swapTo(Class fragment, boolean addToBackStack);
 
-        void startDialog(String dialog);
 
 
         void startDialogByLocation(String dialog);

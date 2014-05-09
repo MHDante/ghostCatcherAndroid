@@ -2,7 +2,6 @@
     android:layout_width="390dp"
     android:layout_height="640dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#968b72"
     android:foregroundGravity="center">
 
     <FrameLayout

@@ -38,9 +38,6 @@ public class ChapterLoader {
                 writer.flush();
                 writer.close();
                 Toast.makeText(gcEngine.getInstance().context, "Saved", Toast.LENGTH_SHORT).show();
-                Debug.out("MADE DIRECTORIES");
-            } else {
-                Debug.out("Directory found.");
             }
         } catch (IOException e) {
             throw new RuntimeException("IOException when creating directory: " + e.getMessage());

@@ -33,6 +33,7 @@ public class Communicator extends ToolFragment {
     private boolean stopText = false;
     private List<View> tools;
     public boolean bioCalib = true;
+    private int drawableId = 0;  //todo: hack
 
     public Communicator() {
     }//req'd
@@ -49,9 +50,16 @@ public class Communicator extends ToolFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_communicator, container, false);
+        View view = inflater.inflate(R.layout.tool_communicator, container, false);
         view.setPivotX(0);//TODO: Fix
         view.setPivotY(view.getMeasuredHeight());
+        if (savedInstanceState != null) drawableId = savedInstanceState.getInt("drawableId");
+
+        if ( drawableId != 0) {
+            ImageView imgV = (ImageView) view.findViewById(R.id.character_portrait);
+            imgV.setImageResource(drawableId);
+        }
+
         return view;
     }
 
@@ -90,18 +98,20 @@ public class Communicator extends ToolFragment {
             }
             currentString = total.toString();
 
-            int drawableId = getResources().getIdentifier(file, "drawable", getActivity().getPackageName());
+            drawableId = getResources().getIdentifier(file, "drawable", getActivity().getPackageName());
             ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
             imgV.setImageResource(drawableId);
 
             gcAudio.playTrack(file, false);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startDialog();
-                }
-            }, 500);
+            startDialog();
+
+            //new Handler().postDelayed(new Runnable() {
+            //    @Override
+            //    public void run() {
+            //        startDialog();
+            //    }
+            //}, 500);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -175,17 +185,27 @@ public class Communicator extends ToolFragment {
     private String displayString = "";
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            if (currentString != null && counter > currentString.length()) {
-                currentString = null;
-                timer.cancel();
-            } else {
-                displayString = currentString.substring(0, counter);
-                if (getView() != null) {
-                    populateText(displayString, false);
-                }
+        if (currentString != null && counter > currentString.length()) {
+            currentString = null;
+            timer.cancel();
+        } else {
+            displayString = currentString.substring(0, counter);
+            if (getView() != null) {
+                populateText(displayString, false);
             }
         }
+        }
     };
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putInt("drawableId", drawableId);
+        super.onSaveInstanceState(outState);
+    }
+
 
     public void HideTool(String tool) {
 

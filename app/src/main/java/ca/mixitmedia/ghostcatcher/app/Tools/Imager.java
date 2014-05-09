@@ -7,6 +7,7 @@ import android.content.Context;
 import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -27,7 +28,7 @@ public class Imager extends ToolFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_imager, null);
+        View v = inflater.inflate(R.layout.tool_imager, null);
         camSpace = (FrameLayout) v.findViewById(R.id.camera_preview);
         camHolder = new CameraHolder(getActivity());
         return v;
@@ -118,6 +119,7 @@ public class Imager extends ToolFragment {
                 cam.setPreviewDisplay(holder);
                 cam.startPreview();
             } catch (IOException e) {
+                Log.d("Imager:", "Imager didn't load" + e.getMessage());
             }
         }
 

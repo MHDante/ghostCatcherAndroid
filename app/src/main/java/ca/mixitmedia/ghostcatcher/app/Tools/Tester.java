@@ -16,7 +16,7 @@ public class Tester extends ToolFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_tester, container, false);
+        View view = inflater.inflate(R.layout.tool_tester, container, false);
 
         ((Button) view.findViewById(R.id.tester_button_1)).setText(tester_button_1);
         ((Button) view.findViewById(R.id.tester_button_2)).setText(tester_button_2);

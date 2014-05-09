@@ -13,7 +13,6 @@ package ca.mixitmedia.ghostcatcher.app;
         import android.content.IntentSender;
         import android.location.Location;
         import android.location.LocationListener;
-        import android.net.Uri;
         import android.os.Bundle;
         import android.os.Handler;
         import android.util.Log;
@@ -24,7 +23,6 @@ package ca.mixitmedia.ghostcatcher.app;
         import com.google.android.gms.common.GooglePlayServicesClient;
         import com.google.android.gms.common.GooglePlayServicesUtil;
         import com.google.android.gms.location.LocationClient;
-        import com.google.android.gms.location.LocationRequest;
         import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
         import java.util.HashMap;
@@ -35,8 +33,6 @@ package ca.mixitmedia.ghostcatcher.app;
         import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
         import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
         import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
-        import ca.mixitmedia.ghostcatcher.utils.Debug;
-        import ca.mixitmedia.ghostcatcher.utils.Tuple;
 
 
 public class MainActivity extends Activity implements
@@ -48,42 +44,18 @@ public class MainActivity extends Activity implements
     float gearsize = 200;
     View backGear;
     View journalGear;
-    Context ctxt; //TODO:REMOVE.
-    View fragmentContainer;
-
 
     Map<Class, ToolFragment> ToolMap;
 
     boolean debugging = true;
-    int debugLoc = 0;
+    int debugLoc = 2;
 
     private LocationClient mLocationClient;
     Location mCurrentLocation;
-    // Milliseconds per second
-    private static final int MILLISECONDS_PER_SECOND = 1000;
-    // Update frequency in seconds
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
-    // Update frequency in milliseconds
-    private static final long UPDATE_INTERVAL =
-            MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
-    // The fastest update frequency, in seconds
-    private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
-    // A fast frequency ceiling in milliseconds
-    private static final long FASTEST_INTERVAL =
-            MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
-    private LocationRequest mLocationRequest;
 
-
-    Map<String, Tuple<Tuple<Double, Double>, Tuple<Double, Double>>> audioMap = new HashMap<String, Tuple<Tuple<Double, Double>, Tuple<Double, Double>>>() {{
-        this.put("gc_0_0", new Tuple<Tuple<Double, Double>, Tuple<Double, Double>>(new Tuple<Double, Double>(43.658331051519916, -79.37825549063609), new Tuple<Double, Double>(43.659997833617425, -79.37679655432811)));
-        this.put("gc_0_1", new Tuple<Tuple<Double, Double>, Tuple<Double, Double>>(new Tuple<Double, Double>(43.65814476359927, -79.38022959647105), new Tuple<Double, Double>(43.659384650720966, -79.3784702527534)));
-        this.put("gc_1_0_1", new Tuple<Tuple<Double, Double>, Tuple<Double, Double>>(new Tuple<Double, Double>(43.65648367075437, -79.37776196417735), new Tuple<Double, Double>(43.6583678399643, -79.37615282416454)));
-        this.put("gc_1_0_2", new Tuple<Tuple<Double, Double>, Tuple<Double, Double>>(new Tuple<Double, Double>(43.6571046454204, -79.3801652234547), new Tuple<Double, Double>(43.657847785059126, -79.37900669455638)));
-    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ctxt = this;
         super.onCreate(savedInstanceState);
         gcEngine.getInstance().init(this);
         setContentView(R.layout.activity_main);
@@ -91,19 +63,7 @@ public class MainActivity extends Activity implements
         journalGear = findViewById(R.id.journal_gear);
         //TODO: Implement settings, you lazy fool.
 
-        // Create the LocationRequest object
-        mLocationRequest = LocationRequest.create();
-        // Use high accuracy
-        mLocationRequest.setPriority(
-                LocationRequest.PRIORITY_HIGH_ACCURACY);
-        // Set the update interval to 5 seconds
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        // Set the fastest update interval to 1 second
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         mLocationClient = new LocationClient(this, this, this);
-
-
-
 
         ToolMap = new HashMap<Class, ToolFragment>(){{
             put(Communicator.class  ,Communicator.newInstance("Settings"));
@@ -152,6 +112,7 @@ public class MainActivity extends Activity implements
         super.onStart();
         // Connect the client.
         mLocationClient.connect();
+        findViewById(R.id.fragment_container).setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
 
     }
@@ -170,11 +131,6 @@ public class MainActivity extends Activity implements
                 break;
 
         }
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        //TODO: doStuff
     }
 
     @Override
@@ -197,7 +153,9 @@ public class MainActivity extends Activity implements
         // Disconnecting the client invalidates it.
         mLocationClient.disconnect();
         super.onStop();
+        findViewById(R.id.fragment_container).setLayerType(View.LAYER_TYPE_NONE, null);
     }
+
 
     @Override
     protected void onDestroy() {
@@ -222,45 +180,13 @@ public class MainActivity extends Activity implements
 
     }
 
-    @Override
     public void startDialog(String dialog) {
-        getFragmentManager().popBackStack();
-        findViewById(R.id.journal_gear).setVisibility(0);
         getTool(Communicator.class).loadfile(dialog);
     }
 
     @Override
     public void startDialogByLocation(String dialog) {
         startDialog(currentLocation.audio);
-
-        //for (String s : audioMap.keySet()) {
-        //Tuple<Tuple<Double, Double>, Tuple<Double, Double>> boundries = audioMap.get(s);
-        //double bottom = boundries.first.first;
-        //double left = boundries.first.second;
-        //double top = boundries.second.first;
-        //double right = boundries.second.second;
-//
-//
-        //if (latitude > bottom && latitude < top) {
-        //    if (longitude > left && longitude < right) {
-        //        startDialog(s);
-        //        return;
-        //    }
-        //}
-        //Log.d("Loc", "Bot: " + bottom + " Lat: " + latitude + " Top: " + top);
-        //Log.d("Loc", "Left: " + left + " Long: " + longitude + " Right: " + right);
-
-
-        //}
-        //throw new RuntimeException("You're outta the zone. :" + latitude + longitude);
-
-    }
-
-    public void hideGears(String action) {
-        AnimationHandler ah = new AnimationHandler(this, action);
-        backGear.animate().setListener(ah);
-        backGear.animate().translationX(-gearsize);
-        journalGear.animate().translationX(gearsize);
     }
 
     public void showGears() {
@@ -269,45 +195,6 @@ public class MainActivity extends Activity implements
         backGear.animate().translationX(0);
         journalGear.animate().translationX(0);
     }
-
-    public void startJournal() {
-        startActivity(new Intent(this, Journal.class));
-        overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
-    }
-
-    public void hideJournal(){
-        findViewById(R.id.journal_gear).setVisibility(1);
-    }
-
-    class AnimationHandler extends AnimatorListenerAdapter {
-        MainActivity caller;
-        String action;
-
-        AnimationHandler(MainActivity a, String action) {
-            this.caller = a;
-            this.action = action;
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            Debug.out("OnEnd");
-            if (action.equals("back"))
-                caller.onBackPressed();
-            else if (action.equals("journal"))
-                caller.startJournal();
-            else if (action.equals("map")) {
-                startActivity(new Intent(ctxt, LocationMap.class));
-                overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
-            }
-            //else if (action.equals("tester")) {
-            //    startActivity(new Intent(ctxt, TesterFragment.class));
-            //    overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
-            //}
-            else
-                throw new RuntimeException("This system is being depreciated, and you passed an incorrect parameter");
-        }
-    }
-
 
     //GOOGLE SERVICES CODE
 
@@ -556,17 +443,15 @@ public class MainActivity extends Activity implements
 
     }
 
-    @SuppressWarnings("unchecked")
     public <T extends ToolFragment> T CurrentToolFragment(Class<T> cls){
         if (getFragmentManager().findFragmentById(R.id.fragment_container).getClass() == cls){
-            return (T) (getFragmentManager().findFragmentById(R.id.fragment_container));
+            return cls.cast(getFragmentManager().findFragmentById(R.id.fragment_container));
         }
         return null;
     }
-    @SuppressWarnings("unchecked")
     public <T extends ToolFragment> T getTool(Class<T> cls){
         if (ToolMap.containsKey(cls)) {
-            return (T) ToolMap.get(cls);
+            return cls.cast(ToolMap.get(cls));
         }
         else return null;
     }
