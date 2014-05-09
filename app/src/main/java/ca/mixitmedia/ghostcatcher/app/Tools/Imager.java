@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +39,14 @@ public class Imager extends ToolFragment {
         try {
             object = Camera.open();
         } catch (Exception e) {
+            Log.d("Imager", "Camera wasn't opened" + e.getMessage());
+            throw new RuntimeException(e);
         }
+        if (object == null) {
+            Log.d("Imager", "Camera wasn't opened");
+            throw new RuntimeException("Camera wasn't opened");
+        }
+
         return object;
     }
 
@@ -60,23 +66,10 @@ public class Imager extends ToolFragment {
 
     @Override
     public void onResume() {
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                cam = isCameraAvailiable();
-                if (cam != null) {
-                    camHolder.setCam(cam);
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-
-            }
-        }.execute((Void) null);
-
+        cam = isCameraAvailiable();
+        if (cam != null) {
+            camHolder.setCam(cam);
+        }
 
         super.onResume();
     }
@@ -126,6 +119,7 @@ public class Imager extends ToolFragment {
                 cam.startPreview();
             } catch (IOException e) {
                 Log.d("Imager:", "Imager didn't load" + e.getMessage());
+                throw new RuntimeException(e);
             }
         }
 
