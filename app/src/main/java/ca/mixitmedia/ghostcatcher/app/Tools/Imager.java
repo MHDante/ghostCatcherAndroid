@@ -47,7 +47,7 @@ public class Imager extends ToolFragment {
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         ///gcMain.hideJournal();
-        getView().findViewById(R.id.imagerFrame).bringToFront();
+        //getView().findViewById(R.id.imagerFrame).bringToFront();
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -73,12 +73,18 @@ public class Imager extends ToolFragment {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                camSpace.addView(camHolder);
+
             }
         }.execute((Void) null);
 
 
         super.onResume();
+    }
+
+    @Override
+    public void afterAnimation(boolean enter) {
+        super.afterAnimation(enter);
+        if (enter) camSpace.addView(camHolder);
     }
 
     @Override

@@ -1,38 +1,38 @@
 package ca.mixitmedia.ghostcatcher.app;
 
-        import android.animation.Animator;
-        import android.animation.AnimatorListenerAdapter;
-        import android.app.Activity;
-        import android.app.Dialog;
-        import android.app.DialogFragment;
-        import android.app.FragmentManager;
-        import android.app.Notification;
-        import android.app.NotificationManager;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.IntentSender;
-        import android.location.Location;
-        import android.location.LocationListener;
-        import android.os.Bundle;
-        import android.os.Handler;
-        import android.util.Log;
-        import android.view.View;
-        import android.widget.Toast;
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.graphics.drawable.AnimationDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.GooglePlayServicesClient;
-        import com.google.android.gms.common.GooglePlayServicesUtil;
-        import com.google.android.gms.location.LocationClient;
-        import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
-        import java.util.HashMap;
-        import java.util.List;
-        import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-        import ca.mixitmedia.ghostcatcher.app.Tools.*;
-        import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
-        import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
-        import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
+import ca.mixitmedia.ghostcatcher.app.Tools.*;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 
 public class MainActivity extends Activity implements
@@ -41,15 +41,10 @@ public class MainActivity extends Activity implements
         GooglePlayServicesClient.OnConnectionFailedListener,
         LocationListener {
 
-    float gearsize = 200;
-    View backGear;
-    View journalGear;
-
+    static final boolean debugging = true;
+    static final int debugLoc = 2;
+    public static boolean inProgress;
     Map<Class, ToolFragment> ToolMap;
-
-    boolean debugging = true;
-    int debugLoc = 2;
-
     private LocationClient mLocationClient;
     Location mCurrentLocation;
 
@@ -59,35 +54,26 @@ public class MainActivity extends Activity implements
         super.onCreate(savedInstanceState);
         gcEngine.getInstance().init(this);
         setContentView(R.layout.activity_main);
-        backGear = findViewById(R.id.back_gear);
-        journalGear = findViewById(R.id.journal_gear);
-        //TODO: Implement settings, you lazy fool.
 
         mLocationClient = new LocationClient(this, this, this);
 
-        ToolMap = new HashMap<Class, ToolFragment>(){{
-            put(Communicator.class  ,Communicator.newInstance("Settings"));
-            put(Journal     .class  ,Journal.newInstance("Settings"));
-            put(LocationMap .class  ,LocationMap.newInstance("Settings"));
-            put(Biocalibrate.class  ,Biocalibrate.newInstance("Settings"));
-            put(Amplifier   .class  ,Amplifier.newInstance("Settings"));
-            put(Tester      .class  ,Tester.newInstance("Settings"));
-            put(Imager      .class  ,Imager.newInstance("Settings"));
+        ToolMap = new HashMap<Class, ToolFragment>() {{
+            put(Communicator.class, Communicator.newInstance("Settings"));
+            put(Journal.class, Journal.newInstance("Settings"));
+            put(LocationMap.class, LocationMap.newInstance("Settings"));
+            put(Biocalibrate.class, Biocalibrate.newInstance("Settings"));
+            put(Amplifier.class, Amplifier.newInstance("Settings"));
+            put(Tester.class, Tester.newInstance("Settings"));
+            put(Imager.class, Imager.newInstance("Settings"));
         }};
 
         gcAudio.play();
 
-        if (savedInstanceState != null) {
-            return;//Avoid overlapping fragments.
+        if (savedInstanceState == null) {  //Avoid overlapping fragments.
+            getFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, getTool(Communicator.class))
+                    .commit();
         }
-
-        //begin the transaction ok
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container, getTool(Communicator.class))
-                        //.addToBackStack(null)
-                .commit();
-
     }
 
 
@@ -164,14 +150,13 @@ public class MainActivity extends Activity implements
     }
 
     public void swapTo(Class toolType, boolean addToBackStack) {
-        if (ToolMap.containsKey(toolType)){
-            if(addToBackStack){
+        if (ToolMap.containsKey(toolType)) {
+            if (addToBackStack) {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, ToolMap.get(toolType))
                         .addToBackStack(null)
                         .commit();
-            }
-            else{
+            } else {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, ToolMap.get(toolType))
                         .commit();
@@ -190,6 +175,10 @@ public class MainActivity extends Activity implements
     }
 
     public void showGears() {
+
+        View backGear = findViewById(R.id.back_gear);
+        View journalGear = findViewById(R.id.journal_gear);
+
         backGear.animate().setListener(null);
         journalGear.animate().setListener(null);
         backGear.animate().translationX(0);
@@ -356,15 +345,17 @@ public class MainActivity extends Activity implements
     @Override
     public void onLocationChanged(Location location) {
 
-        if (location == null) { currentLocation = null; return; }
+        if (location == null) {
+            currentLocation = null;
+            return;
+        }
         List<gcLocation> locations = gcEngine.getInstance().getCurrentSeqPt().locations;
         boolean hit = false;
 
         if (debugging) {
             currentLocation = locations.get(debugLoc);
             hit = true;
-        }
-        else {
+        } else {
             float accuracy = location.getAccuracy();
             for (gcLocation l : locations) {
                 float distance[] = new float[3]; // ugh, ref parameters.
@@ -425,35 +416,35 @@ public class MainActivity extends Activity implements
                         .setContentText("You have arrived to your next location!");
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(NOTIF_ID, mBuilder.build());
+        mNotificationManager.notify(NOTIF_ID, mBuilder.getNotification());      //Oh come on, google, one is depreciated, the other is unsupported. :(
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        //todo:implement
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        //todo:implement
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        //todo:implement
     }
 
-    public <T extends ToolFragment> T CurrentToolFragment(Class<T> cls){
-        if (getFragmentManager().findFragmentById(R.id.fragment_container).getClass() == cls){
+    public <T extends ToolFragment> T CurrentToolFragment(Class<T> cls) {
+        if (getFragmentManager().findFragmentById(R.id.fragment_container).getClass() == cls) {
             return cls.cast(getFragmentManager().findFragmentById(R.id.fragment_container));
         }
         return null;
     }
-    public <T extends ToolFragment> T getTool(Class<T> cls){
+
+    public <T extends ToolFragment> T getTool(Class<T> cls) {
         if (ToolMap.containsKey(cls)) {
             return cls.cast(ToolMap.get(cls));
-        }
-        else return null;
+        } else return null;
     }
 }
 

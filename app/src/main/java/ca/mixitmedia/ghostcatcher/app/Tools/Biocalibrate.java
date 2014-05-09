@@ -56,6 +56,7 @@ public class Biocalibrate extends ToolFragment {
                     public void run() {
                         int dialog = 0 + (int) (Math.random() * ((3 - 0) + 1));
                         gcMain.startDialogByLocation(dialogs[dialog]);
+                        getActivity().onBackPressed();
                     }
                 }, 2500);
 

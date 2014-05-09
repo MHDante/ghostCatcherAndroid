@@ -1,6 +1,7 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -53,9 +54,14 @@ public class Communicator extends ToolFragment {
         View view = inflater.inflate(R.layout.tool_communicator, container, false);
         view.setPivotX(0);//TODO: Fix
         view.setPivotY(view.getMeasuredHeight());
+        TextView tv = (TextView) (view.findViewById(R.id.subtitle_text_view));
+
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/pixelated.ttf");
+        tv.setTypeface(font);
+
         if (savedInstanceState != null) drawableId = savedInstanceState.getInt("drawableId");
 
-        if ( drawableId != 0) {
+        if (drawableId != 0) {
             ImageView imgV = (ImageView) view.findViewById(R.id.character_portrait);
             imgV.setImageResource(drawableId);
         }
@@ -174,7 +180,7 @@ public class Communicator extends ToolFragment {
         isTimerRunning = true;
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                if(!stopText)
+                if (!stopText)
                     counter += 1;  //increase every sec
                 mHandler.obtainMessage(1).sendToTarget();
 
@@ -185,18 +191,17 @@ public class Communicator extends ToolFragment {
     private String displayString = "";
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-        if (currentString != null && counter > currentString.length()) {
-            currentString = null;
-            timer.cancel();
-        } else {
-            displayString = currentString.substring(0, counter);
-            if (getView() != null) {
-                populateText(displayString, false);
+            if (currentString != null && counter > currentString.length()) {
+                currentString = null;
+                timer.cancel();
+            } else {
+                displayString = currentString.substring(0, counter);
+                if (getView() != null) {
+                    populateText(displayString, false);
+                }
             }
         }
-        }
     };
-
 
 
     @Override
