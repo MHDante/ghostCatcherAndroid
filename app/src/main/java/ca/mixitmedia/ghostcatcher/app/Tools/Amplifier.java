@@ -1,17 +1,16 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterViewFlipper;
-import android.widget.ArrayAdapter;
 
-public class AmplifierFragment extends ToolFragment {
+import ca.mixitmedia.ghostcatcher.app.R;
+
+public class Amplifier extends ToolFragment {
 
     private static final int MAX_STREAMS = 2;
     private SoundPool mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
@@ -48,8 +47,8 @@ public class AmplifierFragment extends ToolFragment {
                 return false;
         }
     }
-    public static AmplifierFragment newInstance(String settings) {
-        AmplifierFragment fragment = new AmplifierFragment();
+    public static Amplifier newInstance(String settings) {
+        Amplifier fragment = new Amplifier();
         Bundle args = new Bundle();
         args.putString("settings", settings);
         fragment.setArguments(args);

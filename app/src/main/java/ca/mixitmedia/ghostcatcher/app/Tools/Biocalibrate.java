@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
 
 import android.content.Context;
@@ -10,15 +10,13 @@ import android.view.ViewGroup;
 import android.media.SoundPool;
 import android.media.AudioManager;
 
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
+import ca.mixitmedia.ghostcatcher.app.R;
 
 
 /**
  * Created by IAN on 15/04/2014.
  */
-public class BiocalibrateFragment extends ToolFragment {
+public class Biocalibrate extends ToolFragment {
 
     private static final int MAX_STREAMS = 2;
     private SoundPool mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
@@ -70,8 +68,8 @@ public class BiocalibrateFragment extends ToolFragment {
         }
     }
 
-    public static BiocalibrateFragment newInstance(String settings) {
-        BiocalibrateFragment fragment = new BiocalibrateFragment();
+    public static Biocalibrate newInstance(String settings) {
+        Biocalibrate fragment = new Biocalibrate();
         Bundle args = new Bundle();
         args.putString("thingy", settings);
         fragment.setArguments(args);

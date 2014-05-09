@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -16,14 +16,20 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.lang.reflect.ParameterizedType;
+
+import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 public abstract class ToolFragment extends Fragment {
 
 
     protected ToolInteractionListener gcMain;
+    public Class type;
+    public Class getType(){return type;}
 
     public abstract boolean checkClick(View view);
+
 
     @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
@@ -33,10 +39,12 @@ public abstract class ToolFragment extends Fragment {
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
+//                MainActivity.inProgress = true;
+//            }
             }
-
             @Override
             public void onAnimationEnd(Animator animation) {
+                //MainActivity.inProgress = false;
                 if (enter && getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
             }
         });
@@ -99,7 +107,7 @@ public abstract class ToolFragment extends Fragment {
 
         public void hideGears(String s);
 
-        public void swapTo(String fragment);
+        public void swapTo(Class fragment, boolean addToBackStack);
 
         void startDialog(String dialog);
 

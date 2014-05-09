@@ -1,49 +1,39 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
 import ca.mixitmedia.ghostcatcher.utils.Utils;
 
 
-public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
+public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
 
     GoogleMap map;
     SeekBar bar;
-    List<gcLocation> locations;
+    public List<gcLocation> locations;
     int selectedLocation;
 
 
@@ -93,7 +83,7 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
 
     }
 
-    ArrayList<Marker> markers = new ArrayList<Marker>();
+    public ArrayList<Marker> markers = new ArrayList<Marker>();
     private void setUpMap() {
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
         LatLngBounds b = new LatLngBounds(new LatLng(43.65486328474458, -79.38564497647212), new LatLng(43.66340903426289, -79.37292076230159));
@@ -169,8 +159,8 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
         return false;
     }
 
-    public static gcMap newInstance(String settings) {
-        gcMap fragment = new gcMap();
+    public static LocationMap newInstance(String settings) {
+        LocationMap fragment = new LocationMap();
         Bundle args = new Bundle();
         args.putString("settings", settings);
         fragment.setArguments(args);
@@ -230,7 +220,7 @@ public class gcMap extends ToolFragment implements GoogleMap.OnMarkerClickListen
     @Override
     public void onInfoWindowClick(Marker marker) {
         if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id ){
-            gcMain.swapTo("biocalibrate");
+            gcMain.swapTo(Biocalibrate.class, true);
         }
     }
 }

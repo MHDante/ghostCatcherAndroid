@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import java.io.IOException;
 
@@ -14,13 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-public class ImagerFragment extends ToolFragment {
+import ca.mixitmedia.ghostcatcher.app.R;
+
+public class Imager extends ToolFragment {
 
     private CameraHolder camHolder;
     private Camera cam;
     private FrameLayout camSpace;
 
-    public ImagerFragment() {
+    public Imager() {
     }
 
     @Override
@@ -87,8 +89,8 @@ public class ImagerFragment extends ToolFragment {
             return true;
     }
 
-    public static ImagerFragment newInstance(String settings) {
-        ImagerFragment fragment = new ImagerFragment();
+    public static Imager newInstance(String settings) {
+        Imager fragment = new Imager();
         Bundle args = new Bundle();
         args.putString("settings", settings);
         fragment.setArguments(args);

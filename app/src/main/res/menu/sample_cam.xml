@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ca.mixitmedia.ghostcatcher.app.ImagerFragment">
+    tools:context="ca.mixitmedia.ghostcatcher.app.Tools.Imager">
 
     <item
         android:id="@+id/action_settings"

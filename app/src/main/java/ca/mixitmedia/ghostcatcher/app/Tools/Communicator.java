@@ -1,7 +1,6 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,12 +19,13 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 
 /**
  * Created by Dante on 2014-04-14.
  */
-public class CommunicatorFragment extends ToolFragment {
+public class Communicator extends ToolFragment {
 
     private static final String ARG_PARAM1 = "param1";
     private String mParam1;
@@ -34,12 +34,12 @@ public class CommunicatorFragment extends ToolFragment {
     private List<View> tools;
     public boolean bioCalib = true;
 
-    public CommunicatorFragment() {
+    public Communicator() {
     }//req'd
 
     // TODO: Rename and change types and number of parameters
-    public static CommunicatorFragment newInstance(String param1) {
-        CommunicatorFragment fragment = new CommunicatorFragment();
+    public static Communicator newInstance(String param1) {
+        Communicator fragment = new Communicator();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
@@ -127,16 +127,16 @@ public class CommunicatorFragment extends ToolFragment {
     public boolean checkClick(View view) {
         switch (view.getId()) {
             case R.id.tool_button_1:
-                gcMain.swapTo("map");
+                gcMain.swapTo(LocationMap.class, true);
                 return true;
             case R.id.tool_button_2:
-                gcMain.swapTo("biocalibrate");
+                gcMain.swapTo(Biocalibrate.class, true);
                 return true;
             case R.id.tool_button_3:
-                gcMain.swapTo("imager");
+                gcMain.swapTo(Imager.class, true);
                 return true;
             case R.id.tool_button_4:
-                gcMain.swapTo("amplifier");
+                gcMain.swapTo(Amplifier.class, true);
                 return true;
             case R.id.sound:
                 if (gcAudio.isPlaying()) gcAudio.pause();

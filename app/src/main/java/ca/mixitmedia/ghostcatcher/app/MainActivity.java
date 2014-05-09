@@ -1,43 +1,42 @@
 package ca.mixitmedia.ghostcatcher.app;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentSender;
-import android.location.Location;
-import android.location.LocationListener;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
+        import android.animation.Animator;
+        import android.animation.AnimatorListenerAdapter;
+        import android.app.Activity;
+        import android.app.Dialog;
+        import android.app.DialogFragment;
+        import android.app.FragmentManager;
+        import android.app.Notification;
+        import android.app.NotificationManager;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.content.IntentSender;
+        import android.location.Location;
+        import android.location.LocationListener;
+        import android.net.Uri;
+        import android.os.Bundle;
+        import android.os.Handler;
+        import android.util.Log;
+        import android.view.View;
+        import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
+        import com.google.android.gms.common.ConnectionResult;
+        import com.google.android.gms.common.GooglePlayServicesClient;
+        import com.google.android.gms.common.GooglePlayServicesUtil;
+        import com.google.android.gms.location.LocationClient;
+        import com.google.android.gms.location.LocationRequest;
+        import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
 
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
-import ca.mixitmedia.ghostcatcher.utils.Debug;
-import ca.mixitmedia.ghostcatcher.utils.Tuple;
+        import ca.mixitmedia.ghostcatcher.app.Tools.*;
+        import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
+        import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+        import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
+        import ca.mixitmedia.ghostcatcher.utils.Debug;
+        import ca.mixitmedia.ghostcatcher.utils.Tuple;
 
 
 public class MainActivity extends Activity implements
@@ -52,13 +51,9 @@ public class MainActivity extends Activity implements
     Context ctxt; //TODO:REMOVE.
     View fragmentContainer;
 
-    CommunicatorFragment communicator;
-    JournalFragment journal;
-    gcMap map;
-    BiocalibrateFragment biocalib;
-    AmplifierFragment amplifier;
-    TesterFragment tester;
-    ImagerFragment imager;
+
+    Map<Class, ToolFragment> ToolMap;
+
     boolean debugging = true;
     int debugLoc = 0;
 
@@ -108,14 +103,18 @@ public class MainActivity extends Activity implements
         mLocationClient = new LocationClient(this, this, this);
 
 
-        //initialize all the fragments
-        communicator = CommunicatorFragment.newInstance("Settings");
-        journal = JournalFragment.newInstance("Settings");
-        map = gcMap.newInstance("Settings");
-        biocalib = BiocalibrateFragment.newInstance("Settings");
-        amplifier = AmplifierFragment.newInstance("Settings");
-        tester = TesterFragment.newInstance("Settings");
-        imager = ImagerFragment.newInstance("Settings");
+
+
+        ToolMap = new HashMap<Class, ToolFragment>(){{
+            put(Communicator.class  ,Communicator.newInstance("Settings"));
+            put(Journal     .class  ,Journal.newInstance("Settings"));
+            put(LocationMap .class  ,LocationMap.newInstance("Settings"));
+            put(Biocalibrate.class  ,Biocalibrate.newInstance("Settings"));
+            put(Amplifier   .class  ,Amplifier.newInstance("Settings"));
+            put(Tester      .class  ,Tester.newInstance("Settings"));
+            put(Imager      .class  ,Imager.newInstance("Settings"));
+        }};
+
         gcAudio.play();
 
         if (savedInstanceState != null) {
@@ -125,7 +124,7 @@ public class MainActivity extends Activity implements
         //begin the transaction ok
         getFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, communicator)
+                .add(R.id.fragment_container, getTool(Communicator.class))
                         //.addToBackStack(null)
                 .commit();
 
@@ -167,7 +166,7 @@ public class MainActivity extends Activity implements
                 onBackPressed();
                 break;
             case R.id.journal_gear_btn:
-                swapTo("journal");
+                swapTo(Journal.class, true);
                 break;
 
         }
@@ -206,53 +205,28 @@ public class MainActivity extends Activity implements
         super.onDestroy();
     }
 
-    public void swapTo(String fragment) {
-        if (fragment.equals("journal")) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, journal)
-                    .addToBackStack(null)
-                    .commit();
-            findViewById(R.id.journal_gear).setVisibility(2);
-            findViewById(R.id.journal_gear_btn).setVisibility(2);
-        } else if (fragment.equals("map")) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, map)
-                    .addToBackStack(null)
-                    .commit();
-        } else if (fragment.equals("imager")) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, imager)
-                    .addToBackStack(null)
-                    .commit();
-            findViewById(R.id.journal_gear).setVisibility(2);
-            findViewById(R.id.journal_gear_btn).setVisibility(2);
-        } else if (fragment.equals("communicator")) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, communicator)
-                    .addToBackStack(null)
-                    .commit();
-        } else if (fragment.equals("biocalibrate")) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, biocalib)
-                    .addToBackStack(null)
-                    .commit();
-        } else if (fragment.equals("tester")) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, tester)
-                    .addToBackStack(null)
-                    .commit();
-        } else if (fragment.equals("amplifier")) {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, amplifier)
-                    .addToBackStack(null)
-                    .commit();
-        }
+    public void swapTo(Class toolType, boolean addToBackStack) {
+        if (ToolMap.containsKey(toolType)){
+            if(addToBackStack){
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, ToolMap.get(toolType))
+                        .addToBackStack(null)
+                        .commit();
+            }
+            else{
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, ToolMap.get(toolType))
+                        .commit();
+            }
+        } else throw new RuntimeException("That Class is not a Tool, You Tool!");
+
     }
+
     @Override
     public void startDialog(String dialog) {
         getFragmentManager().popBackStack();
         findViewById(R.id.journal_gear).setVisibility(0);
-        communicator.loadfile(dialog);
+        getTool(Communicator.class).loadfile(dialog);
     }
 
     @Override
@@ -297,7 +271,7 @@ public class MainActivity extends Activity implements
     }
 
     public void startJournal() {
-        startActivity(new Intent(this, JournalFragment.class));
+        startActivity(new Intent(this, Journal.class));
         overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
     }
 
@@ -322,7 +296,7 @@ public class MainActivity extends Activity implements
             else if (action.equals("journal"))
                 caller.startJournal();
             else if (action.equals("map")) {
-                startActivity(new Intent(ctxt, gcMap.class));
+                startActivity(new Intent(ctxt, LocationMap.class));
                 overridePendingTransition(R.animator.rotate_in_from_right, R.animator.rotate_out_to_left);
             }
             //else if (action.equals("tester")) {
@@ -517,8 +491,8 @@ public class MainActivity extends Activity implements
 
         if (hit) {
             ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-            if (tf instanceof gcMap) {
-                gcMap m = (gcMap) tf;
+            if (tf instanceof LocationMap) {
+                LocationMap m = (LocationMap) tf;
                 for (gcLocation l : m.locations) {
                     if (l == currentLocation) {
                         m.markers.get(m.locations.indexOf(l)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2));
@@ -528,11 +502,11 @@ public class MainActivity extends Activity implements
                 }
             }
             showLocationNotification();
-            communicator.bioCalib = true;
+            getTool(Communicator.class).bioCalib = true;
             ShowTool("biocalibrate");
         } else {
             HideTool("biocalibrate");
-            communicator.bioCalib = false;
+            getTool(Communicator.class).bioCalib = false;
         }
 
     }
@@ -540,16 +514,16 @@ public class MainActivity extends Activity implements
     private void ShowTool(String tool) {
 
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-        if (tf instanceof CommunicatorFragment) {
-            CommunicatorFragment c = (CommunicatorFragment) tf;
+        if (tf instanceof Communicator) {
+            Communicator c = (Communicator) tf;
             c.ShowTool(tool);
         }
     }
 
     private void HideTool(String tool) {
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-        if (tf instanceof CommunicatorFragment) {
-            CommunicatorFragment c = (CommunicatorFragment) tf;
+        if (tf instanceof Communicator) {
+            Communicator c = (Communicator) tf;
             c.HideTool(tool);
         }
     }
@@ -580,6 +554,21 @@ public class MainActivity extends Activity implements
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends ToolFragment> T CurrentToolFragment(Class<T> cls){
+        if (getFragmentManager().findFragmentById(R.id.fragment_container).getClass() == cls){
+            return (T) (getFragmentManager().findFragmentById(R.id.fragment_container));
+        }
+        return null;
+    }
+    @SuppressWarnings("unchecked")
+    public <T extends ToolFragment> T getTool(Class<T> cls){
+        if (ToolMap.containsKey(cls)) {
+            return (T) ToolMap.get(cls);
+        }
+        else return null;
     }
 }
 

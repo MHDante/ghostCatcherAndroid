@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,9 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 
-public class TesterFragment extends ToolFragment {
+public class Tester extends ToolFragment {
 
 
 
@@ -120,8 +121,8 @@ public class TesterFragment extends ToolFragment {
     }
 
 
-    public static TesterFragment newInstance(String settings) {
-        TesterFragment fragment = new TesterFragment();
+    public static Tester newInstance(String settings) {
+        Tester fragment = new Tester();
         Bundle args = new Bundle();
         args.putString("settings", settings);
         fragment.setArguments(args);

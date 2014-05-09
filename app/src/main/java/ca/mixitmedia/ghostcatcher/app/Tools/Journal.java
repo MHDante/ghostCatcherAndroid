@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.app;
+package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 
-public class JournalFragment extends ToolFragment {
+import ca.mixitmedia.ghostcatcher.app.R;
+
+public class Journal extends ToolFragment {
 
     static String[] items = {"lorem", "ipsum", "dolor", "sit", "amet",
             "consectetuer", "adipiscing", "elit", "morbi", "vel", "ligula",
@@ -39,8 +41,8 @@ public class JournalFragment extends ToolFragment {
         return false;
     }
 
-    public static JournalFragment newInstance(String settings) {
-        JournalFragment fragment = new JournalFragment();
+    public static Journal newInstance(String settings) {
+        Journal fragment = new Journal();
         Bundle args = new Bundle();
         args.putString("settings", settings);
         fragment.setArguments(args);
