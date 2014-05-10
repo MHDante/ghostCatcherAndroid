@@ -30,10 +30,10 @@ public class Journal extends ToolFragment {
     @Override
     public void onStart() {
         super.onStart();
-        flipper = (AdapterViewFlipper) getView().findViewById(R.id.NotesFlipper);
-        flipper.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.flip_tester, items));
-        flipper.setFlipInterval(2000);
-        flipper.startFlipping();
+        //flipper = (AdapterViewFlipper) getView().findViewById(R.id.NotesFlipper);
+        //flipper.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.flip_tester, items));
+        //flipper.setFlipInterval(2000);
+        //flipper.startFlipping();
     }
 
     public boolean checkClick(View view) {

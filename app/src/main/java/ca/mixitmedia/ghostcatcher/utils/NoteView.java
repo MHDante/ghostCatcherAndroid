@@ -45,7 +45,7 @@ public class NoteView extends RelativeLayout {
                         bullet.setImageResource(R.drawable.bullet);
                         break;
                     case DONE:
-                        bullet.setImageResource(R.drawable.check);
+                        //bullet.setImageResource(R.drawable.check);
                         break;
                 }
                 bullet.setId(101 + idCounter);
