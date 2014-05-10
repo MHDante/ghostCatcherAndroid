@@ -50,4 +50,10 @@
             android:id="@+id/journal_gear_btn" />
     </FrameLayout>
 
+    <SurfaceView
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:id="@+id/surfaceView"
+        android:layout_gravity="right|top" />
+
 </FrameLayout>

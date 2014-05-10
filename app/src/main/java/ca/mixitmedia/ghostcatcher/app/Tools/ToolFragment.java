@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import java.lang.reflect.ParameterizedType;
 
+import android.os.Handler;
+
 import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
@@ -42,8 +44,8 @@ public abstract class ToolFragment extends Fragment {
 
         Animator anim = setupAnimator(enter);
 
-        if (anim != null)
-            getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        //if (anim != null)
+        //    getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
 
         anim.addListener(new AnimatorListenerAdapter() {
@@ -52,18 +54,21 @@ public abstract class ToolFragment extends Fragment {
             @Override
             public void onAnimationStart(Animator animation) {
                 MainActivity.inProgress = true;
-                AnimationDrawable ad = (AnimationDrawable) (getActivity().findViewById(R.id.activity_bg).getBackground());
-                ad.start();
+                //AnimationDrawable ad = (AnimationDrawable) (getActivity().findViewById(R.id.activity_bg).getBackground());
+                //ad.setOneShot(false);
+                //ad.start();
 
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 MainActivity.inProgress = false;
-                if (getView()!=null)getView().setLayerType(View.LAYER_TYPE_NONE, null);
-                AnimationDrawable ad = (AnimationDrawable) (getActivity().findViewById(R.id.activity_bg).getBackground());
-                ad.stop();
+                //if (getView()!=null)getView().setLayerType(View.LAYER_TYPE_NONE, null);
+                //AnimationDrawable ad = (AnimationDrawable) (getActivity().findViewById(R.id.activity_bg).getBackground());
+                //ad.stop();
+
                 afterAnimation(enter);
+
             }
         });
 
@@ -128,8 +133,8 @@ public abstract class ToolFragment extends Fragment {
         int width = size.x;
         int height = size.y;
         final Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
-        getView().setPivotX(width / 2);
-        getView().setPivotY(height + width / 2);
+        //getView().setPivotX(width / 2);
+        //getView().setPivotY(height + width / 2);
         //Log.d("Pivot", "enter: " + enter + "PivotY:" + getView().getPivotY() + "PivotX:" + getView().getPivotX());
         return anim;
     }

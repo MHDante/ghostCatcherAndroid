@@ -2,10 +2,10 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import java.io.IOException;
 
-
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -13,14 +13,18 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.utils.*;
 
 public class Imager extends ToolFragment {
 
-    private CameraHolder camHolder;
-    private Camera cam;
-    private FrameLayout camSpace;
+    private SurfaceView preview = null;
+    private SurfaceHolder previewHolder = null;
+    private Camera camera = null;
+    private boolean inPreview = false;
+    private boolean cameraConfigured = false;
 
     public Imager() {
     }
@@ -28,64 +32,19 @@ public class Imager extends ToolFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tool_imager, null);
-        camSpace = (FrameLayout) v.findViewById(R.id.camera_preview);
-        camHolder = new CameraHolder(getActivity());
+        preview = (SurfaceView) v.findViewById(R.id.camera_preview);
+        previewHolder = preview.getHolder();
+        previewHolder.addCallback(surfaceCallback);
+        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         return v;
 
-    }
-
-    public static Camera isCameraAvailiable() {
-        Camera object = null;
-        try {
-            object = Camera.open();
-        } catch (Exception e) {
-            Log.d("Imager", "Camera wasn't opened" + e.getMessage());
-            throw new RuntimeException(e);
-        }
-        if (object == null) {
-            Log.d("Imager", "Camera wasn't opened");
-            throw new RuntimeException("Camera wasn't opened");
-        }
-
-        return object;
-    }
-
-    @Override
-    public void onActivityCreated(final Bundle savedInstanceState) {
-        ///gcMain.hideJournal();
-        //getView().findViewById(R.id.imagerFrame).bringToFront();
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        camSpace.removeView(camHolder);
-        cam.release();
-    }
-
-    @Override
-    public void onResume() {
-        cam = isCameraAvailiable();
-        if (cam != null) {
-            camHolder.setCam(cam);
-        }
-
-        super.onResume();
-    }
-
-    @Override
-    public void afterAnimation(boolean enter) {
-        super.afterAnimation(enter);
-        if (enter) camSpace.addView(camHolder);
     }
 
     @Override
     public boolean checkClick(View view) {
         if (view.getId() == R.id.back_gear_btn) {
             return false;
-        }
-        else
+        } else
             return true;
     }
 
@@ -97,40 +56,103 @@ public class Imager extends ToolFragment {
         return fragment;
     }
 
-    private class CameraHolder extends SurfaceView implements SurfaceHolder.Callback {
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        private Camera cam;
-        private SurfaceHolder sHolder;
+        camera = Camera.open();
+        startPreview();
+    }
 
-        private CameraHolder(Context ctxt) {
-            super(ctxt);
-            sHolder = getHolder();
-            sHolder.addCallback(this);
+    @Override
+    public void onPause() {
+        if (inPreview) {
+            camera.stopPreview();
         }
 
-        public void setCam(Camera cam) {
-            this.cam = cam;
-        }
+        camera.release();
+        camera = null;
+        inPreview = false;
 
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
+        super.onPause();
+    }
+
+    @Override
+    public void afterAnimation(boolean enter) {
+        super.afterAnimation(enter);
+    }
+
+
+    private void initPreview(int width, int height) {
+        if (camera != null && previewHolder.getSurface() != null) {
             try {
-                cam.setPreviewDisplay(holder);
-                cam.startPreview();
-            } catch (IOException e) {
-                Log.d("Imager:", "Imager didn't load" + e.getMessage());
-                throw new RuntimeException(e);
+                camera.setPreviewDisplay(previewHolder);
+            } catch (Throwable t) {
+                Log.e("PreviewDemo-surfaceCallback",
+                        "Exception in setPreviewDisplay()", t);
+                Toast
+                        .makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG)
+                        .show();
+            }
+
+            if (!cameraConfigured) {
+                Camera.Parameters parameters = camera.getParameters();
+                Camera.Size size = getBestPreviewSize(width, height,
+                        parameters);
+
+                if (size != null) {
+                    parameters.setPreviewSize(size.width, size.height);
+                    camera.setParameters(parameters);
+                    cameraConfigured = true;
+                }
+            }
+        }
+    }
+
+    private Camera.Size getBestPreviewSize(int width, int height,
+                                           Camera.Parameters parameters) {
+        Camera.Size result = null;
+
+        for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
+            if (size.width <= width && size.height <= height) {
+                if (result == null) {
+                    result = size;
+                } else {
+                    int resultArea = result.width * result.height;
+                    int newArea = size.width * size.height;
+
+                    if (newArea > resultArea) {
+                        result = size;
+                    }
+                }
             }
         }
 
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        return (result);
+    }
 
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-
+    private void startPreview() {
+        if (cameraConfigured && camera != null) {
+            camera.startPreview();
+            inPreview = true;
         }
     }
+
+    SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
+        public void surfaceCreated(SurfaceHolder holder) {
+            // no-op -- wait until surfaceChanged()
+        }
+
+        public void surfaceChanged(SurfaceHolder holder,
+                                   int format, int width,
+                                   int height) {
+            initPreview(width, height);
+            startPreview();
+        }
+
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            // no-op
+        }
+    };
+
 }
