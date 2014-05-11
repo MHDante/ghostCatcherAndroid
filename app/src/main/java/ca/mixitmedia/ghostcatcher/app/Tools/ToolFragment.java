@@ -133,9 +133,9 @@ public abstract class ToolFragment extends Fragment {
         int width = size.x;
         int height = size.y;
         final Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
-        //getView().setPivotX(width / 2);
-        //getView().setPivotY(height + width / 2);
-        //Log.d("Pivot", "enter: " + enter + "PivotY:" + getView().getPivotY() + "PivotX:" + getView().getPivotX());
+        getView().setPivotX(width / 2);
+        getView().setPivotY(height + width / 2);
+        Log.d("Pivot", "enter: " + enter + "PivotY:" + getView().getPivotY() + "PivotX:" + getView().getPivotX());
         return anim;
     }
 

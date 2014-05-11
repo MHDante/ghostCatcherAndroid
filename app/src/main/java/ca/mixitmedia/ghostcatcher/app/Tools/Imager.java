@@ -5,6 +5,8 @@ import java.io.IOException;
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import ca.mixitmedia.ghostcatcher.app.R;
@@ -22,6 +25,7 @@ public class Imager extends ToolFragment {
 
     private SurfaceView preview = null;
     private SurfaceHolder previewHolder = null;
+    private ImageView ImagerFrame = null;
     private Camera camera = null;
     private boolean inPreview = false;
     private boolean cameraConfigured = false;
@@ -31,11 +35,12 @@ public class Imager extends ToolFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.tool_imager, null);
+        View v = inflater.inflate(R.layout.tool_imager, container, false);
         preview = (SurfaceView) v.findViewById(R.id.camera_preview);
         previewHolder = preview.getHolder();
         previewHolder.addCallback(surfaceCallback);
         previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        ImagerFrame = (ImageView) v.findViewById(R.id.imagerFrame);
         return v;
 
     }
@@ -44,7 +49,9 @@ public class Imager extends ToolFragment {
     public boolean checkClick(View view) {
         if (view.getId() == R.id.back_gear_btn) {
             return false;
-        } else
+        } else {
+
+        }
             return true;
     }
 
@@ -61,6 +68,9 @@ public class Imager extends ToolFragment {
         super.onResume();
 
         camera = Camera.open();
+        Log.d("Surface:", "Invalidate");
+
+
         startPreview();
     }
 
@@ -80,6 +90,31 @@ public class Imager extends ToolFragment {
     @Override
     public void afterAnimation(boolean enter) {
         super.afterAnimation(enter);
+        if (enter) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (preview != null) {
+                        if (inPreview) {
+                            camera.stopPreview();
+                        }
+
+                        camera.release();
+                        camera = null;
+                        inPreview = false;
+                        camera = Camera.open();
+                        startPreview();
+
+                        preview.setVisibility(View.GONE);
+                        preview.setVisibility(View.VISIBLE);
+                        ImagerFrame.getParent().requestTransparentRegion(ImagerFrame);
+
+                        Log.d("Imager", "Preview Swicharoo");
+                    } else Log.e("Imager", "Preview Screen was null.");
+                }
+            }, 1000);
+        }
+
     }
 
 
@@ -135,6 +170,8 @@ public class Imager extends ToolFragment {
         if (cameraConfigured && camera != null) {
             camera.startPreview();
             inPreview = true;
+            Log.d("Surface:", "StartPreview");
+
         }
     }
 
