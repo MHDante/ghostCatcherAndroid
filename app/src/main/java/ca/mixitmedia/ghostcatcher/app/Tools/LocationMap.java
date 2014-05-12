@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
@@ -195,7 +196,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         //FrameLayout.LayoutParams LLParams
         //=  new WindowManager.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT);
 
-        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id ){
+        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id && ((MainActivity) gcMain).getTool(Communicator.class).bioCalib) {
 
             ImageView iv = new ImageView(getActivity());
             iv.setImageResource(R.drawable.fingerprint);
@@ -220,7 +221,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     @Override
     public void onInfoWindowClick(Marker marker) {
         if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id ){
-            gcMain.swapTo(Biocalibrate.class, true);
+            gcMain.swapTo(Biocalibrate.class, false);
         }
     }
 }

@@ -6,17 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ViewSwitcher;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 
 public class Journal extends ToolFragment {
 
-    static String[] items = {"lorem", "ipsum", "dolor", "sit", "amet",
-            "consectetuer", "adipiscing", "elit", "morbi", "vel", "ligula",
-            "vitae", "arcu", "aliquet", "mollis", "etiam", "vel", "erat",
-            "placerat", "ante", "porttitor", "sodales", "pellentesque",
-            "augue", "purus"};
-    AdapterViewFlipper flipper;
+    ViewSwitcher viewSwitcher;
+    ImageButton bio;
+    ImageButton todo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -24,16 +23,37 @@ public class Journal extends ToolFragment {
         View view = inflater.inflate(R.layout.tool_journal, container, false);
         view.setPivotX(0);
         view.setPivotY(view.getMeasuredHeight());
+        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.journal_switcher);
+        bio = (ImageButton) view.findViewById(R.id.arrow_bio);
+        todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
+
+        bio.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                //Toast.makeText(getApplicationContext(), "Showing previous view..", Toast.LENGTH_SHORT).show();
+                viewSwitcher.showPrevious();
+            }
+        });
+        todo.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                //Toast.makeText(getApplicationContext(), "Showing previous view..", Toast.LENGTH_SHORT).show();
+                viewSwitcher.showNext();
+            }
+        });
+
+
         return view;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        //flipper = (AdapterViewFlipper) getView().findViewById(R.id.NotesFlipper);
-        //flipper.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.flip_tester, items));
-        //flipper.setFlipInterval(2000);
-        //flipper.startFlipping();
+    public void onResume() {
+        super.onResume();
+        gcMain.hideGears(false, true);
     }
 
     public boolean checkClick(View view) {

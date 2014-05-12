@@ -6,13 +6,14 @@
 
     <fragment
         android:id="@+id/map"
-        android:layout_width="302dp"
-        android:layout_height="506dp"
+        android:layout_width="313dp"
+        android:layout_height="442dp"
         android:name="com.google.android.gms.maps.MapFragment"
         map:cameraTargetLat="43.6576004"
         map:cameraTargetLng="-79.37839"
         map:cameraZoom="13"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="105dp" />
 
     <ImageView
         android:layout_width="fill_parent"
@@ -66,7 +67,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#66000000"
+            android:background="#bd000000"
             android:clickable="false">
 
             <ImageButton
@@ -154,6 +155,7 @@
         android:id="@+id/seekBar"
         android:layout_gravity="right|center_vertical"
         android:rotation="-90"
-        android:layout_marginRight="-110dp" />
+        android:layout_marginRight="-110dp"
+        android:visibility="gone" />
 
 </FrameLayout>

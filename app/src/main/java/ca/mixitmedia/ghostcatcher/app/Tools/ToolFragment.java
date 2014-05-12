@@ -51,10 +51,10 @@ public abstract class ToolFragment extends Fragment {
             @Override
             public void onAnimationStart(Animator animation) {
                 MainActivity.inProgress = true;
-
-                ad.setOneShot(false);
-                if (!ad.isRunning())
+                if (enter) {
+                    ad.setOneShot(false);
                     ad.start();
+                }
 
             }
 
@@ -62,7 +62,8 @@ public abstract class ToolFragment extends Fragment {
             public void onAnimationEnd(Animator animation) {
                 MainActivity.inProgress = false;
                 if (getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
-                ad.stop();
+
+                if (enter) ad.stop();
 
                 afterAnimation(enter);
 
@@ -145,9 +146,13 @@ public abstract class ToolFragment extends Fragment {
 
         public void swapTo(Class fragment, boolean addToBackStack);
 
+        public void clearBackStack();
 
+        public void hideGears(boolean back, boolean journal);
 
-        void startDialogByLocation(String dialog);
+        public void showGears();
+
+        void startDialogByLocation();
 
         gcLocation getCurrentLocation();
     }

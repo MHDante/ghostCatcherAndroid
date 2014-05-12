@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="390dp"
+    android:orientation="vertical"
+    android:layout_width="390dp"
     android:layout_height="640dp">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:src="@drawable/bio_calibrate_unpressed"
-        android:scaleType="centerCrop" />
+        android:layout_width="335dp"
+        android:layout_height="550dp"
+        android:id="@+id/imageView2"
+        android:src="@drawable/plaquemetal"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="289dp"
+        android:layout_height="87dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="150dp"
+        android:weightSum="30">
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:id="@+id/loading_bar"
+            android:src="#ff00ff00"
+            style=" " />
+    </LinearLayout>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -31,7 +48,8 @@
         android:id="@+id/calibrating_text"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="175dp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:textColor="#ff000000" />
 
     <ImageView
         android:layout_width="match_parent"

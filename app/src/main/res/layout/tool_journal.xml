@@ -6,11 +6,172 @@
 
     <ViewSwitcher
         android:layout_width="290dp"
-        android:layout_height="420dp"
-        android:id="@+id/viewSwitcher"
+        android:layout_height="462dp"
+        android:id="@+id/journal_switcher"
         android:background="#ff369aff"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#fffff325"
+            android:id="@+id/linearLayoutToDo"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="TO DO "
+                    android:id="@+id/textViewTitleToDo"
+                    android:textColor="#ff000000"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="357dp"
+                android:id="@+id/scrollView"
+                android:layout_weight="0.65">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout1">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/imageBullet1"
+                            android:src="@drawable/bullet_check"
+                            android:layout_margin="15dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Talk to Prof. Wolfe"
+                            android:id="@+id/textItem1"
+                            android:textColor="#ff424242"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="30dp"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center_vertical" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout2" >
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/imageView2"
+                            android:src="@drawable/bullet_check"
+                            android:layout_margin="15dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Go to Ryerson Theatre"
+                            android:id="@+id/textView2"
+                            android:textColor="#ff424242"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="30dp"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center_vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout3" >
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/imageView3"
+                            android:src="@drawable/bullet_check"
+                            android:layout_margin="15dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Capture a ghost"
+                            android:id="@+id/textView3"
+                            android:textColor="#ff424242"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="30dp"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center_vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayout5" >
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:id="@+id/imageView5"
+                            android:src="@drawable/bullet_check"
+                            android:layout_margin="15dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Encounter the evil Spirit X"
+                            android:id="@+id/textView5"
+                            android:textColor="#ff424242"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="30dp"
+                            android:layout_marginBottom="15dp"
+                            android:gravity="center_vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/arrow_to_do"
+                android:src="@drawable/arrow_right"
+                android:background="@android:color/transparent"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="15dp"
+                android:scaleType="fitCenter"
+                android:layout_gravity="right"
+                android:onClick="onClick"
+                android:focusableInTouchMode="false" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|right">
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -40,14 +201,14 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/imageView7"
-                android:src="@drawable/gc_0_1"
+                android:src="@drawable/gc_seq1"
                 android:layout_marginTop="40dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Professor Name"
+                android:text="Professor Wolfe"
                 android:id="@+id/textProfName" />
 
             <LinearLayout
@@ -58,210 +219,25 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt"
+                    android:text="Professor Wolfe introduced himself when I inadvertently downloaded the Ghost Catcher app. He gave me tools to hunt Ghosts in the Ryerson U area. He built some kind of machine that bridges the land of the deceased with the world of the living.  I am somehow suspicious of his motives. "
                     android:id="@+id/textView"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="13dp"
                     android:layout_marginTop="10dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="bottom|right"
-                android:id="@+id/linearLayout">
-
-                <ImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/imageButton"
-                    android:src="@drawable/arrow_right"
-                    android:background="@android:color/transparent"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:scaleType="fitCenter" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="#fffff325"
-            android:id="@+id/linearLayoutToDo">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="TO DO "
-                    android:id="@+id/textViewTitleToDo"
-                    android:textColor="#ff000000"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="8dp" />
-            </LinearLayout>
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/scrollView" >
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout1">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/imageBullet1"
-                            android:src="@drawable/bullet_check"
-                            android:layout_margin="15dp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="Lorem ipsum dolo"
-                            android:id="@+id/textItem1"
-                            android:textColor="#ff424242"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginBottom="15dp"
-                            android:gravity="center_vertical" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout2" >
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/imageView2"
-                            android:src="@drawable/bullet_check"
-                            android:layout_margin="15dp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore manqa"
-                            android:id="@+id/textView2"
-                            android:textColor="#ff424242"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginBottom="15dp"
-                            android:gravity="center_vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout3" >
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/imageView3"
-                            android:src="@drawable/bullet_check"
-                            android:layout_margin="15dp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum"
-                            android:id="@+id/textView3"
-                            android:textColor="#ff424242"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginBottom="15dp"
-                            android:gravity="center_vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout4" >
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/imageView4"
-                            android:src="@drawable/bullet_check"
-                            android:layout_margin="15dp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum"
-                            android:id="@+id/textView4"
-                            android:textColor="#ff424242"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginBottom="15dp"
-                            android:gravity="center_vertical" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/linearLayout5" >
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/imageView5"
-                            android:src="@drawable/bullet_check"
-                            android:layout_margin="15dp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum"
-                            android:id="@+id/textView5"
-                            android:textColor="#ff424242"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginBottom="15dp"
-                            android:gravity="center_vertical" />
-                    </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="bottom|right">
-
-                <ImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/arrow_right"
-                    android:src="@drawable/arrow_right"
-                    android:background="@android:color/transparent"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:scaleType="fitCenter" />
-            </LinearLayout>
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/arrow_bio"
+                android:src="@drawable/arrow_right"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="15dp"
+                android:scaleType="fitCenter"
+                android:rotation="180"
+                android:layout_gravity="left"
+                android:layout_marginLeft="15dp"
+                android:onClick="onClick" />
 
         </LinearLayout>
 

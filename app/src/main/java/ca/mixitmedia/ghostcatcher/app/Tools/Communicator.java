@@ -1,7 +1,9 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,7 +35,13 @@ public class Communicator extends ToolFragment {
     private String pendingDialog;
     private boolean stopText = false;
     private List<View> tools;
-    public boolean bioCalib = true;
+
+    public boolean bioCalib = false;
+    public boolean map = true;
+    public boolean imager = false;
+    public boolean amplifier = false;
+
+
     private int drawableId = 0;  //todo: hack
 
     public Communicator() {
@@ -133,27 +141,34 @@ public class Communicator extends ToolFragment {
             loadfile(pendingDialog);
             pendingDialog = null;
         } else if (getView() == null) throw new RuntimeException("View was null on Resume. Why?");
-        if (!bioCalib) {
-            getView().findViewById(R.id.tool_button_2).setVisibility(View.GONE);
-        } else {
-            getView().findViewById(R.id.tool_button_2).setVisibility(View.VISIBLE);
-        }
+
+        gcMain.showGears();
+
+        if (!map) ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(255);
+        else ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(0);
+        if (!bioCalib) ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(255);
+        else ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(0);
+        if (!imager) ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(255);
+        else ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(0);
+        if (!amplifier) ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(255);
+        else ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(0);
     }
 
     @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
             case R.id.tool_button_1:
-                gcMain.swapTo(LocationMap.class, true);
+                if (map) gcMain.swapTo(LocationMap.class, true);
                 return true;
             case R.id.tool_button_2:
-                gcMain.swapTo(Biocalibrate.class, true);
+                Biocalibrate.hasBackStack = true;
+                if (bioCalib) gcMain.swapTo(Biocalibrate.class, true);
                 return true;
             case R.id.tool_button_3:
-                gcMain.swapTo(Imager.class, true);
+                if (imager) gcMain.swapTo(Imager.class, true);
                 return true;
             case R.id.tool_button_4:
-                gcMain.swapTo(Amplifier.class, true);
+                if (amplifier) gcMain.swapTo(Amplifier.class, true);
                 return true;
             case R.id.sound:
                 if (gcAudio.isPlaying()) gcAudio.pause();
@@ -215,14 +230,48 @@ public class Communicator extends ToolFragment {
 
     public void HideTool(String tool) {
 
-        if (tool.equals("biocalibrate")) {
-            getView().findViewById(R.id.tool_button_2).setVisibility(View.GONE);
+        if (tool.equals("map")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(255);
+            map = false;
+        }
+        if (tool.equals("biocalib")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(255);
+            bioCalib = false;
+        }
+        if (tool.equals("amplifier")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(255);
+            amplifier = false;
+        }
+        if (tool.equals("imager")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(255);
+            imager = false;
         }
     }
 
     public void ShowTool(String tool) {
-        if (tool.equals("biocalibrate")) {
-            getView().findViewById(R.id.tool_button_2).setVisibility(View.VISIBLE);
+        if (tool.equals("map")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(0);
+            map = true;
+        }
+        if (tool.equals("biocalib")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(0);
+            bioCalib = true;
+        }
+        if (tool.equals("amplifier")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(0);
+            amplifier = true;
+        }
+        if (tool.equals("imager")) {
+            if (getView() != null)
+                ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(0);
+            imager = true;
         }
     }
 }

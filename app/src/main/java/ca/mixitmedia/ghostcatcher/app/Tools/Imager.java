@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.utils.*;
 
@@ -48,6 +49,9 @@ public class Imager extends ToolFragment {
     @Override
     public boolean checkClick(View view) {
         if (view.getId() == R.id.back_gear_btn) {
+            ((MainActivity) gcMain).debugLoc = 0;
+            gcMain.startDialogByLocation();
+
             return false;
         } else {
 
@@ -144,7 +148,7 @@ public class Imager extends ToolFragment {
         }
     }
 
-    private Camera.Size getBestPreviewSize(int width, int height,
+    public static Camera.Size getBestPreviewSize(int width, int height,
                                            Camera.Parameters parameters) {
         Camera.Size result = null;
 

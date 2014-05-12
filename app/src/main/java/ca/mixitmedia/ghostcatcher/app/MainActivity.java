@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.app;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -12,10 +13,13 @@ import android.content.IntentSender;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,18 +46,32 @@ public class MainActivity extends Activity implements
         LocationListener {
 
     static final boolean debugging = true;
-    static final int debugLoc = 2;
+    public static int debugLoc = 2;
     public static boolean inProgress;
     Map<Class, ToolFragment> ToolMap;
     private LocationClient mLocationClient;
     Location mCurrentLocation;
 
+    private NfcAdapter mNfcAdapter;
+    private boolean gearsHidden;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gcEngine.getInstance().init(this);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mNfcAdapter == null) {
+            // Stop here, we definitely need NFC
+            Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        if (!mNfcAdapter.isEnabled()) {
+            Toast.makeText(this, "NFC is disabled.", Toast.LENGTH_LONG).show();
+        }
 
         mLocationClient = new LocationClient(this, this, this);
 
@@ -71,8 +89,23 @@ public class MainActivity extends Activity implements
 
         if (savedInstanceState == null) {  //Avoid overlapping fragments.
             getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, getTool(Communicator.class))
+                    .add(R.id.fragment_container, getTool(Biocalibrate.class))
                     .commit();
+        }
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent.getAction() != null && intent.getAction().equals("android.nfc.action.TECH_DISCOVERED")) {
+            Communicator c = getTool(Communicator.class);
+            ShowTool("biocalib");
+            debugLoc = 1;
+            onLocationChanged(mCurrentLocation);
         }
     }
 
@@ -82,13 +115,13 @@ public class MainActivity extends Activity implements
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showGears();
-                }
-            }, 500);
+            mHandler.post(decor_view_settings);
+            //new Handler().postDelayed(new Runnable() {
+            //    @Override
+            //    public void run() {
+            //        showGears();
+            //    }
+            //}, 500);
         }
     }
 
@@ -162,17 +195,32 @@ public class MainActivity extends Activity implements
 
     }
 
+    @Override
+    public void clearBackStack() {
+        //TODO: Stuff
+    }
+
     public void startDialog(String dialog) {
         getTool(Communicator.class).loadfile(dialog);
     }
 
     @Override
-    public void startDialogByLocation(String dialog) {
+    public void startDialogByLocation() {
         startDialog(currentLocation.audio);
     }
 
-    public void showGears() {
+    @Override
+    public void hideGears(boolean back, boolean journal) {
+        View backGear = findViewById(R.id.back_gear);
+        View journalGear = findViewById(R.id.journal_gear);
+        backGear.animate().setListener(null);
+        journalGear.animate().setListener(null);
+        if (back) backGear.animate().translationX(-200);
+        if (journal) journalGear.animate().translationX(200);
+    }
 
+    @Override
+    public void showGears() {
         View backGear = findViewById(R.id.back_gear);
         View journalGear = findViewById(R.id.journal_gear);
 
@@ -342,7 +390,7 @@ public class MainActivity extends Activity implements
     @Override
     public void onLocationChanged(Location location) {
 
-        if (location == null) {
+        if (location == null && !debugging) {
             currentLocation = null;
             return;
         }
@@ -376,31 +424,37 @@ public class MainActivity extends Activity implements
                     }
                 }
             }
-            showLocationNotification();
-            getTool(Communicator.class).bioCalib = true;
-            ShowTool("biocalibrate");
+            //showLocationNotification();
+            //getTool(Communicator.class).bioCalib = true;
+            //ShowTool("biocalibrate");
         } else {
-            HideTool("biocalibrate");
-            getTool(Communicator.class).bioCalib = false;
+            //HideTool("biocalibrate");
+            //getTool(Communicator.class).bioCalib = false;
         }
 
     }
 
-    private void ShowTool(String tool) {
-
-        ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-        if (tf instanceof Communicator) {
-            Communicator c = (Communicator) tf;
-            c.ShowTool(tool);
-        }
+    public void ShowTool(String tool) {
+        getTool(Communicator.class).ShowTool(tool);
+        //ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+        //if (tf instanceof Communicator) {
+        //    Communicator c = (Communicator) tf;
+        //    c.ShowTool(tool);
+        //}else {
+        //    getTool(Communicator.class).bioCalib = true;
+        //}
     }
 
-    private void HideTool(String tool) {
-        ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-        if (tf instanceof Communicator) {
-            Communicator c = (Communicator) tf;
-            c.HideTool(tool);
-        }
+    public void HideTool(String tool) {
+        getTool(Communicator.class).HideTool(tool);
+//        ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+//        if (tf instanceof Communicator) {
+//            Communicator c = (Communicator) tf;
+//            c.HideTool(tool);
+//        } else{
+//            getTool(Communicator.class).bioCalib = false;
+//
+//        }
     }
 
     private final int NOTIF_ID = 2013567;
@@ -432,7 +486,10 @@ public class MainActivity extends Activity implements
     }
 
     public <T extends ToolFragment> T CurrentToolFragment(Class<T> cls) {
-        if (getFragmentManager().findFragmentById(R.id.fragment_container).getClass() == cls) {
+        FragmentManager f = getFragmentManager();
+        Fragment ff = f.findFragmentById(R.id.fragment_container);
+        Class c = ff.getClass();
+        if (c == cls) {
             return cls.cast(getFragmentManager().findFragmentById(R.id.fragment_container));
         }
         return null;
@@ -443,5 +500,36 @@ public class MainActivity extends Activity implements
             return cls.cast(ToolMap.get(cls));
         } else return null;
     }
+
+
+    ///////////////////////////DECOR VIEW CODE
+
+    private Runnable decor_view_settings = new Runnable() {
+        public void run() {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
+        }
+    };
+
+    private Handler mHandler = new Handler();
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            mHandler.postDelayed(decor_view_settings, 500);
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+
 }
 
