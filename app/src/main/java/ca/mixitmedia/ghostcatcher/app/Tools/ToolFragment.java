@@ -43,29 +43,26 @@ public abstract class ToolFragment extends Fragment {
 
 
         Animator anim = setupAnimator(enter);
-
-        //if (anim != null)
-        //    getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-
+        if (anim != null) getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        final AnimationDrawable ad = (AnimationDrawable) (getActivity().findViewById(R.id.activity_bg).getBackground());
         anim.addListener(new AnimatorListenerAdapter() {
 
 
             @Override
             public void onAnimationStart(Animator animation) {
                 MainActivity.inProgress = true;
-                //AnimationDrawable ad = (AnimationDrawable) (getActivity().findViewById(R.id.activity_bg).getBackground());
-                //ad.setOneShot(false);
-                //ad.start();
+
+                ad.setOneShot(false);
+                if (!ad.isRunning())
+                    ad.start();
 
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 MainActivity.inProgress = false;
-                //if (getView()!=null)getView().setLayerType(View.LAYER_TYPE_NONE, null);
-                //AnimationDrawable ad = (AnimationDrawable) (getActivity().findViewById(R.id.activity_bg).getBackground());
-                //ad.stop();
+                if (getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
+                ad.stop();
 
                 afterAnimation(enter);
 

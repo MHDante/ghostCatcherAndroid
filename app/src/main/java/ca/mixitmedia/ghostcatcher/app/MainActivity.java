@@ -82,7 +82,7 @@ public class MainActivity extends Activity implements
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            //getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION| View.SYSTEM_UI_FLAG_FULLSCREEN| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -98,13 +98,11 @@ public class MainActivity extends Activity implements
         super.onStart();
         // Connect the client.
         mLocationClient.connect();
-        findViewById(R.id.fragment_container).setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-
     }
 
     public void onClick(View view) {
         //get current fragment
+        if (inProgress) return;
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
         if (tf.checkClick(view)) return;
         switch (view.getId()) {
@@ -139,7 +137,6 @@ public class MainActivity extends Activity implements
         // Disconnecting the client invalidates it.
         mLocationClient.disconnect();
         super.onStop();
-        findViewById(R.id.fragment_container).setLayerType(View.LAYER_TYPE_NONE, null);
     }
 
 

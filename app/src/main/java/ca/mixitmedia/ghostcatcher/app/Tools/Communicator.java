@@ -56,8 +56,9 @@ public class Communicator extends ToolFragment {
         view.setPivotY(view.getMeasuredHeight());
         TextView tv = (TextView) (view.findViewById(R.id.subtitle_text_view));
 
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/pixelated.ttf");
+        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ocean_sans.ttf");
         tv.setTypeface(font);
+        tv.setTextSize(20);
 
         if (savedInstanceState != null) drawableId = savedInstanceState.getInt("drawableId");
 

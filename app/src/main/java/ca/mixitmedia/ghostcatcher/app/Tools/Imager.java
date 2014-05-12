@@ -90,7 +90,7 @@ public class Imager extends ToolFragment {
     @Override
     public void afterAnimation(boolean enter) {
         super.afterAnimation(enter);
-        if (enter) {
+        if (false) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -168,6 +168,7 @@ public class Imager extends ToolFragment {
 
     private void startPreview() {
         if (cameraConfigured && camera != null) {
+            camera.setDisplayOrientation(90);
             camera.startPreview();
             inPreview = true;
             Log.d("Surface:", "StartPreview");
@@ -183,6 +184,7 @@ public class Imager extends ToolFragment {
         public void surfaceChanged(SurfaceHolder holder,
                                    int format, int width,
                                    int height) {
+
             initPreview(width, height);
             startPreview();
         }
