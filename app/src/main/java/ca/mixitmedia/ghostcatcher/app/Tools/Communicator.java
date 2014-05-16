@@ -1,13 +1,12 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -43,6 +42,7 @@ public class Communicator extends ToolFragment {
 
 
     private int drawableId = 0;  //todo: hack
+    private boolean userIsScrolling = false;
 
     public Communicator() {
     }//req'd
@@ -63,6 +63,18 @@ public class Communicator extends ToolFragment {
         view.setPivotX(0);//TODO: Fix
         view.setPivotY(view.getMeasuredHeight());
         TextView tv = (TextView) (view.findViewById(R.id.subtitle_text_view));
+        ScrollView sv = (ScrollView) (view.findViewById(R.id.subtitle_scroll_view));
+        sv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN ){
+                    userIsScrolling = true;
+                }
+                else if ( event.getAction() == MotionEvent.ACTION_UP )
+                    userIsScrolling = false;
+                return false;
+            }
+        });
 
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ocean_sans.ttf");
         tv.setTypeface(font);
@@ -93,7 +105,7 @@ public class Communicator extends ToolFragment {
         tv.setText(st);
 
         ScrollView sv = (ScrollView) getView().findViewById(R.id.subtitle_scroll_view);
-        sv.fullScroll(View.FOCUS_DOWN);
+        if (!userIsScrolling) sv.fullScroll(View.FOCUS_DOWN);
     }
 
     public void loadfile(String file) {
@@ -207,15 +219,15 @@ public class Communicator extends ToolFragment {
     private String displayString = "";
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            if (currentString != null && counter > currentString.length()) {
-                currentString = null;
-                timer.cancel();
-            } else {
-                displayString = currentString.substring(0, counter);
-                if (getView() != null) {
-                    populateText(displayString, false);
-                }
+        if (currentString != null && counter > currentString.length()) {
+            currentString = null;
+            timer.cancel();
+        } else {
+            if (currentString != null) displayString = currentString.substring(0, counter);
+            if (getView() != null) {
+                populateText(displayString, false);
             }
+        }
         }
     };
 

@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -47,10 +46,11 @@ public class MainActivity extends Activity implements
 
     static final boolean debugging = true;
     public static int debugLoc = 2;
-    public static boolean inProgress;
+    public static boolean transitionInProgress;
     Map<Class, ToolFragment> ToolMap;
     private LocationClient mLocationClient;
     Location mCurrentLocation;
+    public AnimationDrawable gearsBackground;
 
     private NfcAdapter mNfcAdapter;
     private boolean gearsHidden;
@@ -61,6 +61,8 @@ public class MainActivity extends Activity implements
         gcEngine.getInstance().init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
+        gearsBackground = (AnimationDrawable)findViewById(R.id.activity_bg).getBackground();
+        //gearsBackground.start();
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             // Stop here, we definitely need NFC
@@ -85,14 +87,19 @@ public class MainActivity extends Activity implements
             put(Imager.class, Imager.newInstance("Settings"));
         }};
 
-        gcAudio.play();
-
         if (savedInstanceState == null) {  //Avoid overlapping fragments.
             getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, getTool(Biocalibrate.class))
                     .commit();
         }
         handleIntent(getIntent());
+        onLocationChanged(null);
+    }
+
+    @Override
+    protected void onResume() {
+        gcAudio.play();
+        super.onResume();
     }
 
     @Override
@@ -135,7 +142,7 @@ public class MainActivity extends Activity implements
 
     public void onClick(View view) {
         //get current fragment
-        if (inProgress) return;
+        if (transitionInProgress) return;
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
         if (tf.checkClick(view)) return;
         switch (view.getId()) {
@@ -154,7 +161,7 @@ public class MainActivity extends Activity implements
     public void onBackPressed() {
         FragmentManager fm = getFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
-            Log.i("MainActivity", "popping backstack");
+            //Log.i("MainActivity", "popping backstack");
             fm.popBackStack();
             findViewById(R.id.journal_gear).setVisibility(0);
         } else {
@@ -174,8 +181,14 @@ public class MainActivity extends Activity implements
 
 
     @Override
-    protected void onDestroy() {
+    protected void onPause(){
         if (gcAudio.isPlaying()) gcAudio.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        gcAudio.stop();
         super.onDestroy();
     }
 
