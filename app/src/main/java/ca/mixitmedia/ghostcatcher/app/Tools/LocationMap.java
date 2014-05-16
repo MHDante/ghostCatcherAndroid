@@ -196,7 +196,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         //FrameLayout.LayoutParams LLParams
         //=  new WindowManager.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT);
 
-        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id && ((MainActivity) gcMain).getTool(Communicator.class).bioCalib) {
+        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id && gcMain.getTool(Communicator.class).bioCalib) {
 
             ImageView iv = new ImageView(getActivity());
             iv.setImageResource(R.drawable.fingerprint);

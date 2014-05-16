@@ -49,7 +49,7 @@ public class Imager extends ToolFragment {
     @Override
     public boolean checkClick(View view) {
         if (view.getId() == R.id.back_gear_btn) {
-            ((MainActivity) gcMain).debugLoc = 0;
+            MainActivity.debugLoc = 0;
             gcMain.startDialogByLocation();
 
             return false;

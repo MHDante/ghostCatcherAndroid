@@ -22,7 +22,7 @@ import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocati
 public abstract class ToolFragment extends Fragment {
 
 
-    protected ToolInteractionListener gcMain;
+    protected MainActivity gcMain;
 
     public abstract boolean checkClick(View view);
 
@@ -100,7 +100,7 @@ public abstract class ToolFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            gcMain = (ToolInteractionListener) activity;
+            gcMain = (MainActivity) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement ToolInteractionListener");
@@ -131,21 +131,6 @@ public abstract class ToolFragment extends Fragment {
     public void afterAnimation(boolean enter) {
     }
 
-    public interface ToolInteractionListener {
-        // TODO: Update argument type and name
 
-
-        public void swapTo(Class fragment, boolean addToBackStack);
-
-        public void clearBackStack();
-
-        public void hideGears(boolean back, boolean journal);
-
-        public void showGears();
-
-        void startDialogByLocation();
-
-        gcLocation getCurrentLocation();
-    }
 
 }
