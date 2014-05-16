@@ -56,7 +56,7 @@ public class Biocalibrate extends ToolFragment {
                     pressed = true;
                     if (!started) {
                         gcMain.hideGears(true, true);
-                        ((MainActivity) gcMain).HideTool("biocalib");
+                        gcMain.HideTool("biocalib");
                         mSoundPool.stop(dialogueStream);
                         AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
                         float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -84,8 +84,8 @@ public class Biocalibrate extends ToolFragment {
                                             Biocalibrate.hasBackStack = false;
                                         } else gcMain.swapTo(Communicator.class, false);
                                         if (MainActivity.debugLoc == 1) {
-                                            ((MainActivity) gcMain).ShowTool("amplifier");
-                                            ((MainActivity) gcMain).ShowTool("imager");
+                                            gcMain.ShowTool("amplifier");
+                                            gcMain.ShowTool("imager");
                                         }
                                     } else {
                                         handler.postDelayed(this, 100);
