@@ -78,7 +78,7 @@ public class Biocalibrate extends ToolFragment {
                                     LoadingBar.setLayoutParams(params);
                                     LoadingBar.invalidate();
                                     if (totalDuration > 3000) {
-                                        gcMain.startDialogByLocation();
+                                        gcMain.triggerLocation();
                                         if (Biocalibrate.hasBackStack) {
                                             getActivity().onBackPressed();
                                             Biocalibrate.hasBackStack = false;

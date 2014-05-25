@@ -9,23 +9,15 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.HashMap;
@@ -43,6 +35,7 @@ public class MainActivity extends Activity implements
 
     static final boolean debugging = true;
     public static int debugLoc = 2;
+
     public static boolean transitionInProgress;
     Map<Class, ToolFragment> ToolMap;
     Location mCurrentLocation;
@@ -53,7 +46,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gcEngine.getInstance().init(this);
+        gcEngine.Access().init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         gearsBackground = (AnimationDrawable)findViewById(R.id.activity_bg).getBackground();
@@ -178,7 +171,7 @@ public class MainActivity extends Activity implements
         getTool(Communicator.class).loadfile(dialog);
     }
 
-    public void startDialogByLocation() {
+    public void triggerLocation() {
         startDialog(currentLocation.audio);
     }
 
@@ -252,7 +245,7 @@ public class MainActivity extends Activity implements
             currentLocation = null;
             return;
         }
-        List<gcLocation> locations = gcEngine.getInstance().getCurrentSeqPt().locations;
+        List<gcLocation> locations = gcEngine.Access().getCurrentSeqPt().locations;
         boolean hit = false;
 
         if (debugging) {

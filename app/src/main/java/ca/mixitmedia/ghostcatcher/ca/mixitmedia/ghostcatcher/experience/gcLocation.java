@@ -2,6 +2,13 @@ package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.File;
+import java.io.IOException;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 
@@ -9,22 +16,34 @@ import ca.mixitmedia.ghostcatcher.app.R;
  * Created by Dante on 07/03/14.
  */
 public class gcLocation {
-    public int id;
-    public String name;
-    public double latitude;
-    public double longitude;
-    public Bitmap image;
-    public String description;
-    public String audio;
+    String id;
+    String name;
+    double latitude;
+    double longitude;
+    String description;
 
-    public gcLocation(int id, String name, double latitude, double longitude, Bitmap image, String description, String audio) {
-        this.id = id;
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.image = image;
-        this.description = description;
-        this.audio = audio;
+    private gcLocation() {
     }
 
+    public static gcLocation parse(XmlPullParser parser)
+            throws IOException, XmlPullParserException {
+
+        if (!parser.getName().equals("location"))
+            throw new RuntimeException("Tried to parse something that wasn't a location");
+
+        gcLocation result = new gcLocation();
+        result.id = parser.getAttributeValue(null, "id");
+        result.name = parser.getAttributeValue(null, "name");
+        result.latitude = Double.parseDouble(parser.getAttributeValue(null, "latitude"));
+        result.longitude = Double.parseDouble(parser.getAttributeValue(null, "longitude"));
+        result.description = parser.getAttributeValue(null, "description");
+        return result;
+    }
+
+    public Uri getImage() {
+        File f = new File(gcEngine.Access().root.getPath() + "/locations/" + name + ".png");
+        if (!f.exists()) throw new RuntimeException("error opening loc image");
+        return Uri.fromFile(f);
+    }
 }
+

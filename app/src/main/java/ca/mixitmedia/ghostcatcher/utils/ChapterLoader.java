@@ -1,5 +1,10 @@
 package ca.mixitmedia.ghostcatcher.utils;
 
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -7,6 +12,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,7 +43,7 @@ public class ChapterLoader {
                 writer.append("This is the directory where we create the experience.");
                 writer.flush();
                 writer.close();
-                Toast.makeText(gcEngine.getInstance().context, "Saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(gcEngine.Access().context, "Saved", Toast.LENGTH_SHORT).show();
             }
         } catch (IOException e) {
             throw new RuntimeException("IOException when creating directory: " + e.getMessage());
@@ -107,5 +113,6 @@ public class ChapterLoader {
 
         return true;
     }
+
 
 }

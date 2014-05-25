@@ -11,18 +11,13 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.PowerManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
-import java.sql.Time;
 import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -43,7 +38,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static boolean isStarted;
     public static boolean isPaused;
     static Notification status;
-    gcEngine engine = gcEngine.getInstance();
+    gcEngine engine = gcEngine.Access();
     MediaPlayer mPlayer = null;
     static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
 
@@ -189,7 +184,8 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification() {
         int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
-        Bitmap nextLocation = engine.getCurrentSeqPt().locations.get(0).image ; //TODO: #HACKS
+        Uri ImgUri = engine.getCurrentSeqPt().getLocations().get(0).getImage();
+        Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
         statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
         statusBarView.setTextViewText(R.id.title, "Ghost Catcher");
         statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());

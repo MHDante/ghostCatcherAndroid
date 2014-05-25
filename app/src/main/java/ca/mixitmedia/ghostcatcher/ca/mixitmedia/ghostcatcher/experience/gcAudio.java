@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import ca.mixitmedia.ghostcatcher.app.gcMediaService;
 
 /**
@@ -15,7 +12,7 @@ import ca.mixitmedia.ghostcatcher.app.gcMediaService;
  */
 public class gcAudio {
     private static Context ctxt() {
-        Context ctxt = gcEngine.getInstance().context;
+        Context ctxt = gcEngine.Access().context;
         if (ctxt == null)
             throw new RuntimeException("gcAudio accessed before gcEngine Initialized;");
         return ctxt;
@@ -55,9 +52,9 @@ public class gcAudio {
             public void run() {
 
                 Intent i = new Intent(gcMediaService.ACTION_PLAY_TRACK);
-                    i.putExtra(gcMediaService.EXTRA_TRACK, track);
-                    i.putExtra(gcMediaService.EXTRA_LOOP, loop);
-                    ctxt().sendBroadcast(i);
+                i.putExtra(gcMediaService.EXTRA_TRACK, track);
+                i.putExtra(gcMediaService.EXTRA_LOOP, loop);
+                ctxt().sendBroadcast(i);
                 if (!gcMediaService.receiverRegistered) {
                     new Handler().postDelayed(this, 50);
                 }
@@ -74,9 +71,9 @@ public class gcAudio {
             public void run() {
 
                 Intent i = new Intent(gcMediaService.ACTION_QUEUE_TRACK);
-                    i.putExtra(gcMediaService.EXTRA_TRACK, track);
-                    i.putExtra(gcMediaService.EXTRA_LOOP, loop);
-                    ctxt().sendBroadcast(i);
+                i.putExtra(gcMediaService.EXTRA_TRACK, track);
+                i.putExtra(gcMediaService.EXTRA_LOOP, loop);
+                ctxt().sendBroadcast(i);
                 if (!gcMediaService.receiverRegistered) {
                     new Handler().postDelayed(this, 50);
                 }

@@ -1,13 +1,46 @@
 package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+
 /**
  * Created by Dante on 07/03/14.
  */
 public class gcAction {
-    public enum ActionType {DIALOG, ENABLETOOL, DISABLETOOL, END_SQPT, ADD_PERIPHERAL_CONTENT, GRANT_BADGE}
 
-    int id;
-    ActionType type;
-    String args;
-    String description;
+
+    public enum Type {
+        DIALOG,
+        ENABLE_TOOL,
+        DISABLE_TOOL,
+        END_SQPT,
+        ENABLE_TRIGGER,
+        FINISH_TASK,
+        CHECK_TASK,
+        ACHIEVEMENT,
+        CONSUME_TRIGGER
+    }
+
+    Type type;
+    String data;
+    boolean lock;
+
+    private gcAction() {
+    }
+
+    public static gcAction parse(XmlPullParser parser)
+            throws IOException, XmlPullParserException {
+
+        if (!parser.getName().equalsIgnoreCase("action"))
+            throw new RuntimeException("Tried to parse something that wasn't an action");
+
+        gcAction result = new gcAction();
+        result.type = Type.valueOf(parser.getAttributeValue(null, "id"));
+        result.data = parser.getAttributeValue(null, "enabled");
+        result.lock = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
+
+        return result;
+    }
 }
