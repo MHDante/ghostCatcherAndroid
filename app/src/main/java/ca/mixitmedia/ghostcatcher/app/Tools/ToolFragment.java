@@ -27,11 +27,6 @@ public abstract class ToolFragment extends Fragment {
     public abstract boolean checkClick(View view);
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
 
 
@@ -43,7 +38,7 @@ public abstract class ToolFragment extends Fragment {
             public void onAnimationStart(Animator animation) {
                 MainActivity.transitionInProgress = true;
                 if (enter) {
-                    ((MainActivity)gcMain).gearsBackground.start();
+                    ((MainActivity) gcMain).gearsBackground.start();
                 }
             }
 
@@ -53,7 +48,7 @@ public abstract class ToolFragment extends Fragment {
                 if (getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
 
                 if (enter) {
-                    ((MainActivity)gcMain).gearsBackground.stop();
+                    ((MainActivity) gcMain).gearsBackground.stop();
                 }
 
                 afterAnimation(enter);
@@ -96,6 +91,7 @@ public abstract class ToolFragment extends Fragment {
                 }
         );
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -130,7 +126,6 @@ public abstract class ToolFragment extends Fragment {
 
     public void afterAnimation(boolean enter) {
     }
-
 
 
 }

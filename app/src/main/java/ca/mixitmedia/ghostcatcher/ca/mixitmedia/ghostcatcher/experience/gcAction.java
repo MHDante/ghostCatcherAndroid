@@ -11,6 +11,20 @@ import java.io.IOException;
 public class gcAction {
 
 
+    private boolean consumed;
+
+    public Type getType() {
+        return type;
+    }
+
+    public boolean isConsumed() {
+        return consumed;
+    }
+
+    public String getData() {
+        return data;
+    }
+
     public enum Type {
         DIALOG,
         ENABLE_TOOL,

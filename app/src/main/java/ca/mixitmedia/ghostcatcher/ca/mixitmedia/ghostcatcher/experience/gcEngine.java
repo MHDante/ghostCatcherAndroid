@@ -28,7 +28,7 @@ import ca.mixitmedia.ghostcatcher.utils.ChapterLoader;
  * Created by Dante on 07/03/14.
  */
 public class gcEngine {
-    private static gcEngine ourInstance = new gcEngine();
+    private static gcEngine ourInstance;
 
     public List<gcCharacter> characters;
     public List<gcSeqPt> seqPts;
@@ -44,6 +44,8 @@ public class gcEngine {
 
 
     public static gcEngine Access() {
+        if (ourInstance == null)
+            ourInstance = new gcEngine();
         return ourInstance;
     }
 

@@ -11,6 +11,14 @@ import java.util.List;
  */
 public class gcTrigger {
 
+    public Type getType() {
+        return type;
+    }
+
+    public List<gcAction> getActions() {
+        return actions;
+    }
+
     public enum Type {AUTO, TOOLFINISH, LOCATION, SCRIPTED}
 
     private boolean enabled;

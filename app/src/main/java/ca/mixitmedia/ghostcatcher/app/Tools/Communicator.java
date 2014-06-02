@@ -23,6 +23,8 @@ import java.util.TimerTask;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcDialog;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Dante on 2014-04-14.
@@ -67,10 +69,9 @@ public class Communicator extends ToolFragment {
         sv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN ){
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     userIsScrolling = true;
-                }
-                else if ( event.getAction() == MotionEvent.ACTION_UP )
+                } else if (event.getAction() == MotionEvent.ACTION_UP)
                     userIsScrolling = false;
                 return false;
             }
@@ -108,42 +109,14 @@ public class Communicator extends ToolFragment {
         if (!userIsScrolling) sv.fullScroll(View.FOCUS_DOWN);
     }
 
-    public void loadfile(String file) {
+    public void loadfile(String dialogId) {
         if (getView() == null) {
-            pendingDialog = file;
+            pendingDialog = dialogId;
             return;
         }
-        AssetManager assetManager = getResources().getAssets();
-        InputStream inputStream = null;
-        try {
-            inputStream = assetManager.open(file + ".txt");
-            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder total = new StringBuilder();
-            String line;
-            while ((line = r.readLine()) != null) {
-                total.append(line);
-            }
-            currentString = total.toString();
+        gcDialog dialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
+        startDialog();
 
-            drawableId = getResources().getIdentifier(file, "drawable", getActivity().getPackageName());
-            ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
-            imgV.setImageResource(drawableId);
-
-            gcAudio.playTrack(file, false);
-
-            startDialog();
-
-            //new Handler().postDelayed(new Runnable() {
-            //    @Override
-            //    public void run() {
-            //        startDialog();
-            //    }
-            //}, 500);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-// ...
     }
 
     @Override
@@ -219,15 +192,15 @@ public class Communicator extends ToolFragment {
     private String displayString = "";
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-        if (currentString != null && counter > currentString.length()) {
-            currentString = null;
-            timer.cancel();
-        } else {
-            if (currentString != null) displayString = currentString.substring(0, counter);
-            if (getView() != null) {
-                populateText(displayString, false);
+            if (currentString != null && counter > currentString.length()) {
+                currentString = null;
+                timer.cancel();
+            } else {
+                if (currentString != null) displayString = currentString.substring(0, counter);
+                if (getView() != null) {
+                    populateText(displayString, false);
+                }
             }
-        }
         }
     };
 

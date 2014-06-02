@@ -25,9 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.Tools.*;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAction;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigger;
 
 
 public class MainActivity extends Activity implements
@@ -109,6 +111,7 @@ public class MainActivity extends Activity implements
         //get current fragment
         if (transitionInProgress) return;
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+        //todo: abstract
         if (tf.checkClick(view)) return;
         switch (view.getId()) {
             case R.id.back_gear_btn:
@@ -168,11 +171,48 @@ public class MainActivity extends Activity implements
 
 
     public void startDialog(String dialog) {
-        getTool(Communicator.class).loadfile(dialog);
+
     }
 
     public void triggerLocation() {
-        startDialog(currentLocation.audio);
+        gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getTrigger(currentLocation);
+        if (trigger != null) {
+            if (trigger.getType() == gcTrigger.Type.LOCATION) {
+                for (gcAction action : trigger.getActions()) {
+                    if (action.isConsumed()) continue;
+                    switch (action.getType()) {
+                        case ACHIEVEMENT:
+                            //todo: implement
+                            break;
+                        case CHECK_TASK:
+                            //todo: implement
+                            break;
+                        case FINISH_TASK:
+                            //todo: implement
+                            break;
+                        case CONSUME_TRIGGER:
+                            //todo: implement
+                            break;
+                        case ENABLE_TRIGGER:
+                            //todo: implement
+                            break;
+                        case DISABLE_TOOL:
+                            //todo: implement
+                            break;
+                        case ENABLE_TOOL:
+                            //todo: implement
+                            break;
+                        case END_SQPT:
+                            //todo: implement
+                            break;
+                        case DIALOG:
+                            getTool(Communicator.class).loadfile(action.getData());
+                            break;
+                    }
+                }
+            }
+        }
+
     }
 
     public void hideGears(boolean back, boolean journal) {

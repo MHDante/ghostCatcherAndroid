@@ -40,7 +40,7 @@ public class gcLocation {
         return result;
     }
 
-    public Uri getImage() {
+    public Uri getImageUri() {
         File f = new File(gcEngine.Access().root.getPath() + "/locations/" + name + ".png");
         if (!f.exists()) throw new RuntimeException("error opening loc image");
         return Uri.fromFile(f);
