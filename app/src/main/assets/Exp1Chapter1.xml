@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Chapter xmlns:xsi="http://www.w3.org/2001/XMLSchema" language="en-CA">
+    <Version></Version>
+    <chars>
+        <character id="prof_wolfe" name="Professor Wolfe">
+            <bio>An overconfident and distraught professor. Seems intent on catching ghosts,
+                whatever the consequence....
+            </bio>
+            <pose id="surprised" image="pose1.png"></pose>
+            <pose id="angry" image="pose2.png"></pose>
+        </character>
+        <character id="spirit_x" name="Spirit X">Booooooooooo</character>
+    </chars>
+    <locs>
+        <location id="rye_theatre" name="Ryerson Theatre" lat="43.65947" long="-79.37961">A theatre
+            with a spooooky past.
+        </location>
+        <location id="lake_devo" name="Lake Devo" lat="43.657527" long="-79.379790">The Reflection
+            of the moon in the lake gives off a supernatural impression.
+        </location>
+        <location id="mtcc" name="Metro Toronto C.C." lat="43.643805" long="-79.386837">A place for
+            good ideas to begin.
+        </location>
+        <location id="tmz" name="TransMediaZone" lat="43.658587" long="-79.377316">Strange things
+            are being developed there.
+        </location>
+    </locs>
+    <timeline>
+        <seq_pt id="00" name="Introduction">
+            <mysteries>
+                <mystery>
+                    <unsolved>Who is professor wolfe?</unsolved>
+                    <solved>Researcher for Ryerson university paranormal activities lab.</solved>
+                </mystery>
+                <mystery>
+                    <unsolved>How did I end up with this application?</unsolved>
+                    <solved>Spirit X leaked the application to the store.</solved>
+                </mystery>
+            </mysteries>
+            <tasks>
+                <task id="intro" enabled="true" visible="true" completed="true">Obtain the
+                    communicator
+                </task>
+            </tasks>
+            <triggers>
+                <trigger id="00" type="auto" data="">
+                    <action type="dialog" lock="true">gc_seq1_1</action>
+                    <action type="enable_tool" lock="true">locationmap</action>
+                </trigger>
+                <trigger id="01" type="tool" data="map">
+                    <action type="dialog" lock="true">gc_seq1_2</action>
+                    <action type="end_sqpt" lock=""></action>
+                </trigger>
+            </triggers>
+        </seq_pt>
+    </timeline>
+</Chapter>

@@ -17,21 +17,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.utils.Tuple;
 
 /**
  * Created by Dante on 07/03/14.
  */
 public class gcDialog {
 
-
-    Map<Integer, gcCharacter> portraits = new HashMap<>();
-    Map<Integer, String> parsed = new HashMap<>();
-    String text;
+    public String id;
+    public Map<Integer, Uri> portraits = new HashMap<>();
+    public Map<Integer, String> parsed = new HashMap<>();
+    public Uri audio;
 
     private gcDialog() {
     }
 
-    public static gcDialog get(gcSeqPt seqPt, String id) {
+    public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
         if (!seqPt.dialogCache.containsKey(id))
             loadDialog(seqPt, id);
         return seqPt.dialogCache.get(id);
@@ -48,25 +49,45 @@ public class gcDialog {
         StringBuilder total = new StringBuilder();
         String line;
         int time = 0;
+        gcCharacter chr = gcEngine.Access().getCharacter("static");
+        String pose = null;
+
+        gcDialog dialog = new gcDialog();
+
 
         while ((line = r.readLine()) != null) {
 
             switch (line.charAt(0)) {
                 case '#':
                     continue;
+                case '>':
+                    if (line.charAt(1) == '>') {
+                        if (!total.toString().isEmpty()) {
+                            dialog.portraits.put(time, chr.getPose(pose));
+                            dialog.parsed.put(time, total.toString());
+                        }
+                        chr = gcEngine.Access().getCharacter(line.substring(2).trim());
+                    }
+                case '<':
+                    if (line.charAt(1) == '<') {
+                        pose = (line.substring(2).trim());
+                    }
+                case '@':
+                    String[] times = line.substring(2).split(":");
+                    int minutes = Integer.parseInt(times[0]);
+                    int seconds = Integer.parseInt(times[1]);
+                    time = minutes * 60 + seconds;
 
+                default:
+                    total.append(line);
             }
 
-
-            total.append(line);
         }
-        currentString = total.toString();
 
-        drawableId = getResources().getIdentifier(file, "drawable", getActivity().getPackageName());
-        ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
-        imgV.setImageResource(drawableId);
-
-        gcAudio.playTrack(file, false);
+        dialog.portraits.put(time, chr.getPose(pose));
+        dialog.parsed.put(time, total.toString());
+        dialog.id = id;
+        seqPt.dialogCache.put(id, dialog);
     }
 
 }

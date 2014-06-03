@@ -79,9 +79,9 @@ public class Biocalibrate extends ToolFragment {
                                     LoadingBar.invalidate();
                                     if (totalDuration > 3000) {
                                         gcMain.triggerLocation();
-                                        if (Biocalibrate.hasBackStack) {
+                                        if (hasBackStack) {
                                             getActivity().onBackPressed();
-                                            Biocalibrate.hasBackStack = false;
+                                            hasBackStack = false;
                                         } else gcMain.swapTo(Communicator.class, false);
                                         if (MainActivity.debugLoc == 1) {
                                             gcMain.ShowTool("amplifier");

@@ -16,11 +16,21 @@ import ca.mixitmedia.ghostcatcher.app.R;
  * Created by Dante on 07/03/14.
  */
 public class gcLocation {
-    String id;
-    String name;
+    public String id;
+    public String name;
     double latitude;
+
+    public double getLatitude() {
+        return latitude;
+    }
+
     double longitude;
-    String description;
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String description;
 
     private gcLocation() {
     }
@@ -34,8 +44,8 @@ public class gcLocation {
         gcLocation result = new gcLocation();
         result.id = parser.getAttributeValue(null, "id");
         result.name = parser.getAttributeValue(null, "name");
-        result.latitude = Double.parseDouble(parser.getAttributeValue(null, "latitude"));
-        result.longitude = Double.parseDouble(parser.getAttributeValue(null, "longitude"));
+        result.latitude = Double.parseDouble(parser.getAttributeValue(null, "lat"));
+        result.longitude = Double.parseDouble(parser.getAttributeValue(null, "long"));
         result.description = parser.getAttributeValue(null, "description");
         return result;
     }

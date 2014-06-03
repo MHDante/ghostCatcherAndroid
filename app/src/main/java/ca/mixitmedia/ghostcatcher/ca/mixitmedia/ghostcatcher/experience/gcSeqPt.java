@@ -48,11 +48,16 @@ public class gcSeqPt {
     }
 
     private gcSeqPt() {
+        tasks = new ArrayList<>();
+        mysteries = new ArrayList<>();
+        triggers = new ArrayList<>();
+
     }
 
     public static gcSeqPt parse(XmlPullParser parser) throws IOException, XmlPullParserException {
         if (!parser.getName().equalsIgnoreCase("seq_pt"))
             throw new RuntimeException("Tried to parse something that wasn't a seqPt");
+
 
         gcSeqPt result = new gcSeqPt();
         result.id = parser.getAttributeValue(null, "id");
@@ -65,12 +70,13 @@ public class gcSeqPt {
                 case XmlPullParser.START_TAG:
                     switch (parser.getName().toLowerCase()) {
                         case "mystery":
-                            result.mysteries.add(Mystery.parse(parser));
+                            Mystery m = Mystery.parse(parser);
+                            result.mysteries.add(m);
                             break;
                         case "task":
                             result.tasks.add(Task.parse(parser));
                             break;
-                        case "triggers":
+                        case "trigger":
                             result.triggers.add(gcTrigger.parse(parser));
                             break;
                     }

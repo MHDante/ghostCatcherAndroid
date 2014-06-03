@@ -1,10 +1,12 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,10 +39,10 @@ public class Communicator extends ToolFragment {
     private boolean stopText = false;
     private List<View> tools;
 
-    public boolean bioCalib = false;
+    public boolean bioCalib = true;
     public boolean map = true;
-    public boolean imager = false;
-    public boolean amplifier = false;
+    public boolean imager = true;
+    public boolean amplifier = true;
 
 
     private int drawableId = 0;  //todo: hack
@@ -114,8 +116,22 @@ public class Communicator extends ToolFragment {
             pendingDialog = dialogId;
             return;
         }
-        gcDialog dialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
-        startDialog();
+        try {
+            gcDialog dialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
+
+            ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
+            Bitmap image = MediaStore.Images.Media.getBitmap(
+                    getActivity().getContentResolver(),
+                    dialog.portraits.get(0));
+
+            imgV.setImageBitmap(image);
+
+            gcAudio.playTrack(dialog.audio, false);
+            startDialog();
+        } catch (IOException e) {
+            throw new RuntimeException("Error Reading Dialog files");
+        }
+
 
     }
 

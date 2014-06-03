@@ -5,20 +5,13 @@
     android:layout_width="390dp"
     android:layout_height="640dp">
 
-    <ImageView
-        android:layout_width="335dp"
-        android:layout_height="550dp"
-        android:id="@+id/imageView2"
-        android:src="@drawable/plaquemetal"
-        android:layout_gravity="center" />
-
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="289dp"
-        android:layout_height="87dp"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="150dp"
-        android:weightSum="30">
+        android:layout_width="246dp"
+        android:layout_height="46dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:weightSum="30"
+        android:layout_marginBottom="140dp">
 
         <ImageView
             android:layout_width="1dp"
@@ -36,7 +29,7 @@
         android:src="@drawable/bio_calibrate_pressed"
         android:background="@android:color/transparent"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="250dp"
         android:layout_marginLeft="12dp"
         android:onClick="onClick" />
 
@@ -46,10 +39,10 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Calibrating"
         android:id="@+id/calibrating_text"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="175dp"
+        android:layout_gravity="center_horizontal|bottom"
         android:visibility="invisible"
-        android:textColor="#ff000000" />
+        android:textColor="#ff000000"
+        android:layout_marginBottom="150dp" />
 
     <ImageView
         android:layout_width="match_parent"

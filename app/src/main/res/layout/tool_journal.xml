@@ -5,14 +5,14 @@
     android:orientation="horizontal">
 
     <ViewSwitcher
-        android:layout_width="290dp"
-        android:layout_height="462dp"
+        android:layout_width="229dp"
+        android:layout_height="387dp"
         android:id="@+id/journal_switcher"
         android:background="#ff369aff"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="145dp">
 
-        <LinearLayout
+    <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -246,7 +246,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/moleskin">
+        android:background="@drawable/journal">
 
     </RelativeLayout>
 

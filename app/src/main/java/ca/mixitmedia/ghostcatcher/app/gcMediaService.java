@@ -134,15 +134,15 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             } else if (intent.getAction().equals(ACTION_STOP)) {
                 stop();
             } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
-                String track = intent.getStringExtra(EXTRA_TRACK);
+                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
                 looping = intent.getBooleanExtra(EXTRA_LOOP, false);
                 tracks = new ConcurrentLinkedQueue<Uri>();
-                tracks.add(engine.getSoundUri(track));
+                tracks.add(track);
                 startPlaying();
             } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
-                String track = intent.getStringExtra(EXTRA_TRACK);
+                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
                 looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks.add(engine.getSoundUri(track));
+                tracks.add(track);
                 if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
             }
         }

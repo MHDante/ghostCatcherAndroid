@@ -2,6 +2,7 @@ package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
@@ -43,7 +44,7 @@ public class gcAudio {
         ctxt().sendBroadcast(i);
     }
 
-    public static void playTrack(final String track, final boolean loop) {
+    public static void playTrack(final Uri track, final boolean loop) {
         if (!gcMediaService.isStarted) {
             ctxt().startService(new Intent(ctxt(), gcMediaService.class));
         }
@@ -62,7 +63,7 @@ public class gcAudio {
         }.run();
     }
 
-    public static void queueTrack(final String track, final boolean loop) {
+    public static void queueTrack(final Uri track, final boolean loop) {
         if (!gcMediaService.isStarted) {
             ctxt().startService(new Intent(ctxt(), gcMediaService.class));
         }

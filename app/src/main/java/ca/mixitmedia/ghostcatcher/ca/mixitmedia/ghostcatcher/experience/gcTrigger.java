@@ -4,6 +4,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public class gcTrigger {
         return actions;
     }
 
-    public enum Type {AUTO, TOOLFINISH, LOCATION, SCRIPTED}
+    public enum Type {AUTO, TOOL, LOCATION, SCRIPTED}
 
     private boolean enabled;
 
@@ -29,6 +30,9 @@ public class gcTrigger {
 
     List<gcAction> actions;
 
+    private gcTrigger() {
+        actions = new ArrayList<>();
+    }
 
     public boolean isEnabled() {
         return enabled;
@@ -41,7 +45,7 @@ public class gcTrigger {
 
         gcTrigger result = new gcTrigger();
         result.id = Integer.parseInt(parser.getAttributeValue(null, "id"));
-        result.type = Type.valueOf(parser.getAttributeValue(null, "name").toUpperCase());
+        result.type = Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
         result.data = parser.getAttributeValue(null, "data");
 
         int pEvent = parser.next();

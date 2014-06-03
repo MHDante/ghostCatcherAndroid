@@ -1,7 +1,9 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +22,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -83,32 +88,33 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     }
 
-    public ArrayList<Marker> markers = new ArrayList<Marker>();
+    public List<Marker> markers = new ArrayList<>();
 
     private void setUpMap() {
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
-        LatLngBounds b = new LatLngBounds(new LatLng(43.65486328474458, -79.38564497647212), new LatLng(43.66340903426289, -79.37292076230159));
-
+        //LatLngBounds b = new LatLngBounds(new LatLng(43.65486328474458, -79.38564497647212), new LatLng(43.66340903426289, -79.37292076230159));
         //GroundOverlayOptions newarkMap = new GroundOverlayOptions()
         //        .image(BitmapDescriptorFactory.fromResource(R.drawable.campus))
         //        .positionFromBounds(b);
         //map.addGroundOverlay(newarkMap);
 
-        locations = gcEngine.Access().getCurrentSeqPt().locations;
+        locations = gcEngine.Access().getCurrentSeqPt().getLocations();
+        if (locations.size() <= 0) return;
 
         for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
-            if (gcMain.getCurrentLocation() == null || locations.get(selectedLocation).id != gcMain.getCurrentLocation().id) {
+            gcLocation loc = locations.get(selectedLocation);
+            if (gcMain.getCurrentLocation() == null || !loc.id.equals(gcMain.getCurrentLocation().id)) {
                 markers.add(map.addMarker(new MarkerOptions()
-                        .position(new LatLng(locations.get(selectedLocation).latitude, locations.get(selectedLocation).longitude))
+                        .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
-                        .title(locations.get(selectedLocation).name)));
+                        .title(loc.name)));
                 // Google Marker IDs are held as Strings with an m prefix : m1, m2, m3, m4
 
             } else {
                 markers.add(map.addMarker(new MarkerOptions()
-                        .position(new LatLng(locations.get(selectedLocation).latitude, locations.get(selectedLocation).longitude))
+                        .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
-                        .title(locations.get(selectedLocation).name)));
+                        .title(loc.name)));
             }
         }
         setBanner(locations.get(selectedLocation - 1));
@@ -127,33 +133,42 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         TextView tv2 = (TextView) getView().findViewById(R.id.to_do);
         tv2.setText(loc.description);
         ImageView iv = (ImageView) getView().findViewById(R.id.imageThumbnail);
-        iv.setImageBitmap(loc.image);
+        try {
+            Bitmap image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), loc.getImageUri());
+            iv.setImageBitmap(image);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+
         MapFragment f = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         if (f != null)
             getFragmentManager().beginTransaction().remove(f).commit();
+        super.onDestroyView();
     }
 
+
     public boolean checkClick(View view) {
-        switch (view.getId()) {
-            case R.id.left:
-                int mod_result = (selectedLocation + markers.size() - 1) % markers.size();
-                Marker m = markers.get(mod_result);
-                m.showInfoWindow();
-                onMarkerClick(m);
-                return true;
-            case R.id.right:
-                int mod_result2 = (selectedLocation + markers.size() + 1) % markers.size();
-                Marker m2 = markers.get(mod_result2);
-                m2.showInfoWindow();
-                onMarkerClick(m2);
-                return true;
+        if (markers.size() > 0) {
+            switch (view.getId()) {
+                case R.id.left:
+                    int mod_result = (selectedLocation + markers.size() - 1) % markers.size();
+                    Marker m = markers.get(mod_result);
+                    m.showInfoWindow();
+                    onMarkerClick(m);
+                    return true;
+                case R.id.right:
+                    int mod_result2 = (selectedLocation + markers.size() + 1) % markers.size();
+                    Marker m2 = markers.get(mod_result2);
+                    m2.showInfoWindow();
+                    onMarkerClick(m2);
+                    return true;
+            }
         }
         return false;
     }
@@ -194,7 +209,9 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         //FrameLayout.LayoutParams LLParams
         //=  new WindowManager.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT);
 
-        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id && gcMain.getTool(Communicator.class).bioCalib) {
+        if (gcMain.getCurrentLocation() != null
+                && marker.getTitle().equals(gcMain.getCurrentLocation().name) //todo:hacks
+                && gcMain.getTool(Communicator.class).bioCalib) {
 
             ImageView iv = new ImageView(getActivity());
             iv.setImageResource(R.drawable.fingerprint);
@@ -217,7 +234,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (gcMain.getCurrentLocation() != null && Integer.parseInt(marker.getId().substring(1)) == gcMain.getCurrentLocation().id) {
+        if (gcMain.getCurrentLocation() != null && marker.getTitle().equals(gcMain.getCurrentLocation().name)) { //todo:hacks
             gcMain.swapTo(Biocalibrate.class, false);
         }
     }

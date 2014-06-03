@@ -26,7 +26,10 @@ public class Task {
         result.enabled = Boolean.parseBoolean(parser.getAttributeValue(null, "enabled"));
         result.visible = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
         result.completed = Boolean.parseBoolean(parser.getAttributeValue(null, "completed"));
-        result.description = parser.getText();
+        if (parser.next() == XmlPullParser.TEXT) {
+            result.description = parser.getText();
+        }
+
         return result;
     }
 }

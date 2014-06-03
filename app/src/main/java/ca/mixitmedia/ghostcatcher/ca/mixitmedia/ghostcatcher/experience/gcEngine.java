@@ -44,28 +44,25 @@ public class gcEngine {
 
 
     public static gcEngine Access() {
-        if (ourInstance == null)
-            ourInstance = new gcEngine();
+        if (ourInstance == null) throw new RuntimeException("gcEngine not Init'd");
         return ourInstance;
     }
 
-    public void init(Context context) {
-        this.context = context.getApplicationContext();
+    public static void init(Context context) {
+        ourInstance = new gcEngine(context);
     }
 
-    private gcEngine() {
+    private gcEngine(Context context) {
+        this.context = context;
         loader = new ChapterLoader("mixitmedia");
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();
-            InputStream in_s = context.getAssets().open("temp.xml");
+            InputStream in_s = context.getAssets().open("Exp1Chapter1.xml");
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in_s, null);
             parseXML(parser);
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -111,7 +108,15 @@ public class gcEngine {
         return "You must go defeat the dargon"; //todo: correct spelling of dragon
     }
 
-    public gcSeqPt getCurrentSeqPt(){
+    public gcCharacter getCharacter(String id) {
+        for (gcCharacter c : characters) {
+            if (c.getId().equals(id)) return c;
+        }
+        return null;
+
+    }
+
+    public gcSeqPt getCurrentSeqPt() {
         return seqPts.get(0);
     }
 

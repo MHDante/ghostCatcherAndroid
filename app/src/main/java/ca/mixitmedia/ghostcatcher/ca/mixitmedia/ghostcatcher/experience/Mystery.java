@@ -39,10 +39,14 @@ public class Mystery {
                 case XmlPullParser.START_TAG:
                     switch (parser.getName().toLowerCase()) {
                         case "unsolved":
-                            result.UnSolved = parser.getText();
+                            if (parser.next() == XmlPullParser.TEXT) {
+                                result.UnSolved = parser.getText();
+                            }
                             break;
                         case "solved":
-                            result.Solved = parser.getText();
+                            if (parser.next() == XmlPullParser.TEXT) {
+                                result.Solved = parser.getText();
+                            }
                             break;
                     }
                     break;

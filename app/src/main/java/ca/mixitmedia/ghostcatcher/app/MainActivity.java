@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.Tools.*;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAction;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcActionManager;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
@@ -35,7 +37,7 @@ import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigge
 public class MainActivity extends Activity implements
         LocationListener {
 
-    static final boolean debugging = true;
+    static final boolean debugging = false;
     public static int debugLoc = 2;
 
     public static boolean transitionInProgress;
@@ -48,10 +50,10 @@ public class MainActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gcEngine.Access().init(this);
+        gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        gearsBackground = (AnimationDrawable)findViewById(R.id.activity_bg).getBackground();
+        gearsBackground = (AnimationDrawable) findViewById(R.id.activity_bg).getBackground();
 
         ToolMap = new HashMap<Class, ToolFragment>() {{
             put(Communicator.class, Communicator.newInstance("Settings"));
@@ -142,7 +144,7 @@ public class MainActivity extends Activity implements
 
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         if (gcAudio.isPlaying()) gcAudio.pause();
         super.onPause();
     }
@@ -174,46 +176,27 @@ public class MainActivity extends Activity implements
 
     }
 
+    public void prepareLocation() {
+
+    }
+
     public void triggerLocation() {
         gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getTrigger(currentLocation);
         if (trigger != null) {
             if (trigger.getType() == gcTrigger.Type.LOCATION) {
-                for (gcAction action : trigger.getActions()) {
-                    if (action.isConsumed()) continue;
-                    switch (action.getType()) {
-                        case ACHIEVEMENT:
-                            //todo: implement
-                            break;
-                        case CHECK_TASK:
-                            //todo: implement
-                            break;
-                        case FINISH_TASK:
-                            //todo: implement
-                            break;
-                        case CONSUME_TRIGGER:
-                            //todo: implement
-                            break;
-                        case ENABLE_TRIGGER:
-                            //todo: implement
-                            break;
-                        case DISABLE_TOOL:
-                            //todo: implement
-                            break;
-                        case ENABLE_TOOL:
-                            //todo: implement
-                            break;
-                        case END_SQPT:
-                            //todo: implement
-                            break;
-                        case DIALOG:
-                            getTool(Communicator.class).loadfile(action.getData());
-                            break;
-                    }
-                }
+
             }
         }
 
     }
+
+    public gcActionManager actionManager = new gcActionManager() {
+        @Override
+        public void startDialog(String dialogId) {
+            getTool(Communicator.class).loadfile(dialogId);
+        }
+    };
+
 
     public void hideGears(boolean back, boolean journal) {
         View backGear = findViewById(R.id.back_gear);
@@ -285,7 +268,7 @@ public class MainActivity extends Activity implements
             currentLocation = null;
             return;
         }
-        List<gcLocation> locations = gcEngine.Access().getCurrentSeqPt().locations;
+        List<gcLocation> locations = gcEngine.Access().getCurrentSeqPt().getLocations();
         boolean hit = false;
 
         if (debugging) {
@@ -295,7 +278,7 @@ public class MainActivity extends Activity implements
             float accuracy = location.getAccuracy();
             for (gcLocation l : locations) {
                 float distance[] = new float[3]; // ugh, ref parameters.
-                Location.distanceBetween(l.latitude, l.longitude, location.getLatitude(), location.getLongitude(), distance);
+                Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
                 if (distance[0] < accuracy) {
                     currentLocation = l;
                     hit = true;

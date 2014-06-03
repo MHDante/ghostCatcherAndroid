@@ -49,14 +49,14 @@ public class Imager extends ToolFragment {
     @Override
     public boolean checkClick(View view) {
         if (view.getId() == R.id.back_gear_btn) {
-            MainActivity.debugLoc = 0;
-            gcMain.startDialogByLocation();
+            //MainActivity.debugLoc = 0;
+            //gcMain.startDialogByLocation();
 
             return false;
         } else {
 
         }
-            return true;
+        return true;
     }
 
     public static Imager newInstance(String settings) {
@@ -149,7 +149,7 @@ public class Imager extends ToolFragment {
     }
 
     public static Camera.Size getBestPreviewSize(int width, int height,
-                                           Camera.Parameters parameters) {
+                                                 Camera.Parameters parameters) {
         Camera.Size result = null;
 
         for (Camera.Size size : parameters.getSupportedPreviewSizes()) {

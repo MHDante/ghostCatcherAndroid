@@ -31,7 +31,7 @@ public class gcAction {
         DISABLE_TOOL,
         END_SQPT,
         ENABLE_TRIGGER,
-        FINISH_TASK,
+        COMPLETE_TASK,
         CHECK_TASK,
         ACHIEVEMENT,
         CONSUME_TRIGGER
@@ -51,9 +51,9 @@ public class gcAction {
             throw new RuntimeException("Tried to parse something that wasn't an action");
 
         gcAction result = new gcAction();
-        result.type = Type.valueOf(parser.getAttributeValue(null, "id"));
-        result.data = parser.getAttributeValue(null, "enabled");
+        result.type = Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
         result.lock = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
+        result.data = parser.getAttributeValue(null, "enabled");
 
         return result;
     }

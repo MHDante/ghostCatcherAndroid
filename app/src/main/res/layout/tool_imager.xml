@@ -6,8 +6,10 @@
 
     <android.view.SurfaceView
         android:id="@+id/camera_preview"
-        android:layout_width="fill_parent"
-        android:layout_height="366dp"></android.view.SurfaceView>
+        android:layout_width="235dp"
+        android:layout_height="289dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="145dp"></android.view.SurfaceView>
 
     <ImageView
         android:layout_width="match_parent"

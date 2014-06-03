@@ -1,5 +1,9 @@
 package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
+import android.net.Uri;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,8 +36,13 @@ public class gcCharacter {
 
     Map<String, String> poses = new HashMap<>();
 
-    public String getPose(String id) {
-        return poses.get(id);
+    public Uri getPose(String poseName) {
+        Uri root = Uri.fromFile(gcEngine.Access().root);
+        return root.buildUpon()
+                .appendPath("characters")
+                .appendPath(getId())
+                .appendPath(poseName + ".jpg")
+                .build();
     }
 
 
@@ -55,7 +64,10 @@ public class gcCharacter {
                 case XmlPullParser.START_TAG:
                     switch (parser.getName()) {
                         case "bio":
-                            result.bio = parser.getText();
+                            if (parser.next() == XmlPullParser.TEXT) {
+                                result.bio = parser.getText();
+                            }
+
                             break;
                         case "pose":
                             result.poses.put(parser.getAttributeValue(null, "id"),

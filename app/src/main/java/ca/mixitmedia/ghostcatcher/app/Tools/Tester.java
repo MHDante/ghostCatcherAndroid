@@ -1,16 +1,19 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.io.File;
+
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Tester extends ToolFragment {
-
 
 
     @Override
@@ -81,6 +84,8 @@ public class Tester extends ToolFragment {
 
     @Override
     public boolean checkClick(View view) {
+        Uri testSoundPath = Uri.fromFile(new File(gcEngine.Access().root.getPath() + "/testsound.mp3"));
+
         switch (view.getId()) {
             case R.id.tester_button_1:
                 gcAudio.play();
@@ -99,19 +104,19 @@ public class Tester extends ToolFragment {
                 //gcMain.swapTo("");
                 return true;
             case R.id.tester_button_5:
-                gcAudio.playTrack("main3", false);
+                gcAudio.playTrack(testSoundPath, false);
                 //gcMain.swapTo("");
                 return true;
             case R.id.tester_button_6:
-                gcAudio.queueTrack("main3", false);
+                gcAudio.queueTrack(testSoundPath, false);
                 //gcMain.swapTo("");
                 return true;
             case R.id.tester_button_7:
-                gcAudio.playTrack("main3", true);
+                gcAudio.playTrack(testSoundPath, true);
                 //gcMain.swapTo("");
                 return true;
             case R.id.tester_button_8:
-                gcAudio.queueTrack("main3", true);
+                gcAudio.queueTrack(testSoundPath, true);
                 //gcMain.swapTo("");
                 return true;
 
