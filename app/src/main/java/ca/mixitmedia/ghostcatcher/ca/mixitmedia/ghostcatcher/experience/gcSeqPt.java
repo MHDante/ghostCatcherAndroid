@@ -46,6 +46,15 @@ public class gcSeqPt {
         }
         return null;
     }
+    public gcTrigger getAutoTrigger() {
+        for (gcTrigger t : triggers) {
+            if (t.type == gcTrigger.Type.AUTO) { //todo: abstract.
+                return t;
+            }
+        }
+        return null;
+    }
+
 
     private gcSeqPt() {
         tasks = new ArrayList<>();
@@ -90,5 +99,6 @@ public class gcSeqPt {
         }
         throw new RuntimeException("SeqPt Parsing error : " + result.name);
     }
+
 
 }

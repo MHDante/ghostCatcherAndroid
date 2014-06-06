@@ -86,6 +86,4 @@ public abstract class gcActionManager {
 
     }
 
-    public void achievementAction() {
-    }
 }

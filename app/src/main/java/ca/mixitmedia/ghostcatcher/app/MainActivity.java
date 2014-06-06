@@ -181,11 +181,10 @@ public class MainActivity extends Activity implements
     }
 
     public void triggerLocation() {
-        gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getTrigger(currentLocation);
+        gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getAutoTrigger();
+        if (trigger == null) gcEngine.Access().getCurrentSeqPt().getTrigger(currentLocation);
         if (trigger != null) {
-            if (trigger.getType() == gcTrigger.Type.LOCATION) {
-
-            }
+                trigger.activate(actionManager);
         }
 
     }

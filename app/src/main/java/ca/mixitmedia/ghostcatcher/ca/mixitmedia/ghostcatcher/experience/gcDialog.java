@@ -39,7 +39,7 @@ public class gcDialog {
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
-        String seqPath = gcEngine.Access().root.getPath() + "/seq";
+        String seqPath = gcEngine.Access().root.getPath() + "/seq" + "/seq"+ seqPt.id;
         String textPath = seqPath + "/text/" + id + ".txt";
         String soundPath = seqPath + "/sounds/" + id + ".mp3";
 
@@ -54,9 +54,10 @@ public class gcDialog {
 
         gcDialog dialog = new gcDialog();
 
+        line = r.readLine();
 
         while ((line = r.readLine()) != null) {
-
+        if (line.equals("")) continue;
             switch (line.charAt(0)) {
                 case '#':
                     continue;
@@ -67,17 +68,17 @@ public class gcDialog {
                             dialog.parsed.put(time, total.toString());
                         }
                         chr = gcEngine.Access().getCharacter(line.substring(2).trim());
-                    }
+                    } break;
                 case '<':
                     if (line.charAt(1) == '<') {
                         pose = (line.substring(2).trim());
-                    }
+                    }break;
                 case '@':
                     String[] times = line.substring(2).split(":");
                     int minutes = Integer.parseInt(times[0]);
                     int seconds = Integer.parseInt(times[1]);
                     time = minutes * 60 + seconds;
-
+                    break;
                 default:
                     total.append(line);
             }

@@ -129,6 +129,7 @@ public class Communicator extends ToolFragment {
             gcAudio.playTrack(dialog.audio, false);
             startDialog();
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Error Reading Dialog files");
         }
 

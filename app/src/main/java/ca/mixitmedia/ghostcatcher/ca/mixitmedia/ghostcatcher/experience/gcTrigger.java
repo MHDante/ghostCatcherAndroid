@@ -20,6 +20,8 @@ public class gcTrigger {
         return actions;
     }
 
+
+
     public enum Type {AUTO, TOOL, LOCATION, SCRIPTED}
 
     private boolean enabled;
@@ -67,6 +69,40 @@ public class gcTrigger {
             pEvent = parser.next();
         }
         throw new RuntimeException("trigger Parsing error : " + result.id);
+    }
+
+    public void activate(gcActionManager actionManager) {
+        for(gcAction a : actions){
+            switch(a.getType()){
+                case DIALOG:
+                    actionManager.startDialog(a.getData());
+                            return;
+                case ENABLE_TOOL:
+                    actionManager.enableTool(a.getData());
+                            return;
+                case DISABLE_TOOL:
+                    actionManager.disableTool(a.getData());
+                            return;
+                case END_SQPT:
+                    actionManager.endSqPt(a.getData());
+                            return;
+                case ENABLE_TRIGGER:
+                    actionManager.enableTrigger(a.getData());
+                            return;
+                case COMPLETE_TASK:
+                    actionManager.completeTask(a.getData());
+                            return;
+                case CHECK_TASK:
+                    actionManager.checkTask(a.getData());
+                            return;
+                case ACHIEVEMENT:
+                    actionManager.achievement(a.getData());
+                            return;
+                case CONSUME_TRIGGER:
+                    actionManager.consumeTrigger(a.getData());
+                            return;
+            }
+        }
     }
 
 }
