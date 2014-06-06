@@ -1,0 +1,14 @@
+/assets
+/classes
+/dependency-cache
+/dex
+/exploded-aar
+/incremental
+/libs
+/manifests
+/ndk
+/pre-dexed
+/res
+/rs
+/source
+/symbols
