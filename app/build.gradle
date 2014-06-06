@@ -6,8 +6,8 @@ android {
 
     signingConfigs {
 
-        myCustomDebug {
-            storeFile file('../debug.keystore')
+        debug {
+            storeFile file('debug.keystore')
         }
 
     }
@@ -22,11 +22,15 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     buildTypes {
-        release {
+        debug {
             runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.myCustomDebug
+            signingConfig signingConfigs.debug
         }
+        //release {
+        //    runProguard false
+        //    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        //    signingConfig signingConfigs.debug
+        //}
     }
 }
 
