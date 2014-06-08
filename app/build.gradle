@@ -2,10 +2,9 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.2'
+    buildToolsVersion '19.1.0'
 
     signingConfigs {
-
         debug {
             storeFile file('debug.keystore')
         }
@@ -34,9 +33,18 @@ android {
     }
 }
 
+task copyApk(type: Copy) {
+    from 'build/apk'
+    into 'apk'
+}
+
 dependencies {
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.android.support:support-v4:19.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //compile files('libs/wikitudesdk.jar')
+}
+
+project.afterEvaluate {
+    prepareDebugDependencies.dependsOn("copyApk")
 }
