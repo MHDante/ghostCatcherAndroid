@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements
             put(Amplifier.class, Amplifier.newInstance("Settings"));
             put(Tester.class, Tester.newInstance("Settings"));
             put(Imager.class, Imager.newInstance("Settings"));
+            //
         }};
 
         if (savedInstanceState == null) {  //Avoid overlapping fragments.
