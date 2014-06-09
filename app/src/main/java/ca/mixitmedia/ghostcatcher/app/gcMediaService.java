@@ -17,10 +17,12 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 public class gcMediaService extends Service implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 
@@ -184,7 +186,11 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification() {
         int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
-        Uri ImgUri = engine.getCurrentSeqPt().getLocations().get(0).getImageUri();
+        List<gcLocation> locations = engine.getCurrentSeqPt().getLocations();
+
+
+        Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
+                Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/drawable/ghost");
         Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
         statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
         statusBarView.setTextViewText(R.id.title, "Ghost Catcher");

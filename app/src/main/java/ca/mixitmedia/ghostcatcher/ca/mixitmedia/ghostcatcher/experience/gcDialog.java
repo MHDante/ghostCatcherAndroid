@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +36,8 @@ public class gcDialog {
     public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
         if (!seqPt.dialogCache.containsKey(id))
             loadDialog(seqPt, id);
-        return seqPt.dialogCache.get(id);
+        gcDialog ret = seqPt.dialogCache.get(id);
+        return ret;
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
@@ -53,7 +55,7 @@ public class gcDialog {
         String pose = null;
 
         gcDialog dialog = new gcDialog();
-
+        dialog.audio = Uri.fromFile(new File(soundPath));
         line = r.readLine();
 
         while ((line = r.readLine()) != null) {

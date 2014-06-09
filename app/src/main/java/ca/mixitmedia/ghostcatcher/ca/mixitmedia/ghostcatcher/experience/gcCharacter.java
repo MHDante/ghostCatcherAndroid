@@ -41,7 +41,7 @@ public class gcCharacter {
         return root.buildUpon()
                 .appendPath("characters")
                 .appendPath(getId())
-                .appendPath(poseName + ".jpg")
+                .appendPath(poses.get(poseName))
                 .build();
     }
 
