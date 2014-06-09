@@ -26,11 +26,11 @@ public class gcAction {
     }
 
     public enum Type {
-        DIALOG,
+        //DIALOG,
         ENABLE_TOOL,
         DISABLE_TOOL,
         END_SQPT,
-        ENABLE_TRIGGER,
+        //ENABLE_TRIGGER,
         COMPLETE_TASK,
         CHECK_TASK,
         ACHIEVEMENT,
@@ -38,7 +38,7 @@ public class gcAction {
     }
 
     Type type;
-    String data;
+    //String data;
     boolean lock;
 
     private gcAction() {
