@@ -26,13 +26,13 @@ public class gcAction {
     }
 
     public enum Type {
-        DIALOG,
-        ENABLE_TOOL,
-        DISABLE_TOOL,
-        END_SQPT,
-        ENABLE_TRIGGER,
-        COMPLETE_TASK,
-        CHECK_TASK,
+        DIALOG, //start dialog
+        ENABLE_TOOL, //enable tool
+        DISABLE_TOOL,//son
+        END_SQPT,//i
+        ENABLE_TRIGGER,//am
+        COMPLETE_TASK,//dissapoint
+        CHECK_TASK,//
         ACHIEVEMENT,
         CONSUME_TRIGGER
     }
