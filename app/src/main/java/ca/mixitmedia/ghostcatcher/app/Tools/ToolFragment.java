@@ -67,7 +67,7 @@ public abstract class ToolFragment extends Fragment {
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-
+                        //todo:hack
                         Display display = getActivity().getWindowManager().getDefaultDisplay();
                         Point size = new Point();
                         display.getSize(size);
@@ -99,7 +99,7 @@ public abstract class ToolFragment extends Fragment {
             gcMain = (MainActivity) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement ToolInteractionListener");
+                    + " is not a GhostCatcher Activity");
         }
     }
 

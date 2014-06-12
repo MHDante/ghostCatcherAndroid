@@ -15,9 +15,11 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -63,8 +65,7 @@ public class MainActivity extends Activity implements
             put(Amplifier.class, Amplifier.newInstance("Settings"));
             put(Tester.class, Tester.newInstance("Settings"));
             put(Imager.class, Imager.newInstance("Settings"));
-            //
-            //
+
         }};
 
         if (savedInstanceState == null) {  //Avoid overlapping fragments.
@@ -241,6 +242,7 @@ public class MainActivity extends Activity implements
             return mDialog;
         }
     }
+
 
     /*
      * Handle results returned to the FragmentActivity

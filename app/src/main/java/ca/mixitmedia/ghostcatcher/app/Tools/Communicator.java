@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,7 +44,7 @@ public class Communicator extends ToolFragment {
     public boolean map = true;
     public boolean imager = true;
     public boolean amplifier = true;
-
+    public Queue<Integer> timeSlots;
 
     private int drawableId = 0;  //todo: hack
     private boolean userIsScrolling = false;
