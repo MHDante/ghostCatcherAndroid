@@ -5,48 +5,55 @@
     android:background="@drawable/gear_bg"
     android:id="@+id/activity_bg">
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/imageView5"
+        android:src="#b7000000" />
+
     <FrameLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragment_container" />
+        android:id="@+id/fragment_container">
 
-    <FrameLayout
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_gravity="left|bottom"
-        android:translationX="-200dp"
-        android:id="@+id/back_gear"
-        android:onClick="onClick">
+        <FrameLayout
+            android:layout_width="105dp"
+            android:layout_height="105dp"
+            android:layout_gravity="left|top"
+            android:translationX="-200dp"
+            android:id="@+id/back_gear"
+            android:onClick="onClick">
 
-        <ImageButton
-            android:layout_width="150dp"
-            android:layout_height="135dp"
-            android:src="@drawable/back_gear"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:layout_marginLeft="-30dp"
-            android:onClick="onClick"
-            android:id="@+id/back_gear_btn" />
-    </FrameLayout>
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="135dp"
+                android:src="@drawable/back_gear"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:layout_marginLeft="-30dp"
+                android:onClick="onClick"
+                android:id="@+id/back_gear_btn" />
+        </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:layout_gravity="right|bottom"
-        android:translationX="200dp"
-        android:id="@+id/journal_gear"
-        android:onClick="onClick">
+        <FrameLayout
+            android:layout_width="105dp"
+            android:layout_height="105dp"
+            android:layout_gravity="right|top"
+            android:translationX="200dp"
+            android:id="@+id/journal_gear"
+            android:onClick="onClick">
 
-        <ImageButton
-            android:layout_width="150dp"
-            android:layout_height="135dp"
-            android:src="@drawable/journal_gear"
-            android:background="@android:color/transparent"
-            android:scaleType="fitXY"
-            android:onClick="onClick"
-            android:focusableInTouchMode="true"
-            android:id="@+id/journal_gear_btn" />
+            <ImageButton
+                android:layout_width="150dp"
+                android:layout_height="135dp"
+                android:src="@drawable/journal_gear"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:onClick="onClick"
+                android:focusableInTouchMode="true"
+                android:id="@+id/journal_gear_btn" />
+        </FrameLayout>
     </FrameLayout>
 
     <SurfaceView
@@ -54,5 +61,37 @@
         android:layout_height="0px"
         android:id="@+id/surfaceView"
         android:layout_gravity="right|top" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:layout_gravity="left|center_vertical"
+        android:src="@drawable/frame_left"
+        android:scaleType="fitStart" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView3"
+        android:layout_gravity="center_vertical|right"
+        android:src="@drawable/frame_right"
+        android:scaleType="fitEnd" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView4"
+        android:layout_gravity="center_horizontal|bottom"
+        android:src="@drawable/ad_holder"
+        android:scaleType="fitEnd" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal|top"
+        android:src="@drawable/toolselector"
+        android:scaleType="fitStart" />
 
 </FrameLayout>

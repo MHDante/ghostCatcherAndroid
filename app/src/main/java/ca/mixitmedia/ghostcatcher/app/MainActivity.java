@@ -34,6 +34,7 @@ import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigger;
+import ca.mixitmedia.ghostcatcher.utils.Tuple;
 
 
 public class MainActivity extends Activity implements
@@ -42,8 +43,10 @@ public class MainActivity extends Activity implements
     static final boolean debugging = false;
     public static int debugLoc = 2;
 
+
     public static boolean transitionInProgress;
-    Map<Class, ToolFragment> ToolMap;
+    public Map<Class, Tuple<View, ToolFragment>> ToolMap;
+
     Location mCurrentLocation;
     public AnimationDrawable gearsBackground;
 
@@ -57,15 +60,14 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.activity_main);
         gearsBackground = (AnimationDrawable) findViewById(R.id.activity_bg).getBackground();
 
-        ToolMap = new HashMap<Class, ToolFragment>() {{
-            put(Communicator.class, Communicator.newInstance("Settings"));
-            put(Journal.class, Journal.newInstance("Settings"));
-            put(LocationMap.class, LocationMap.newInstance("Settings"));
-            put(Biocalibrate.class, Biocalibrate.newInstance("Settings"));
-            put(Amplifier.class, Amplifier.newInstance("Settings"));
-            put(Tester.class, Tester.newInstance("Settings"));
-            put(Imager.class, Imager.newInstance("Settings"));
-
+        ToolMap = new HashMap<Class, Tuple<View, ToolFragment>>() {{
+            put(Communicator.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_communicator), Communicator.newInstance("Settings")));
+            put(Journal.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_journal), Journal.newInstance("Settings")));
+            put(LocationMap.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_location_map), LocationMap.newInstance("Settings")));
+            put(Biocalibrate.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_biocalibrate), Biocalibrate.newInstance("Settings")));
+            put(Amplifier.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_amplifier), Amplifier.newInstance("Settings")));
+            put(Tester.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_tester), Tester.newInstance("Settings")));
+            put(Imager.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_imager), Imager.newInstance("Settings")));
         }};
 
         if (savedInstanceState == null) {  //Avoid overlapping fragments.
@@ -162,12 +164,12 @@ public class MainActivity extends Activity implements
         if (ToolMap.containsKey(toolType)) {
             if (addToBackStack) {
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, ToolMap.get(toolType))
+                        .replace(R.id.fragment_container, getTool(toolType))
                         .addToBackStack(null)
                         .commit();
             } else {
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, ToolMap.get(toolType))
+                        .replace(R.id.fragment_container, getTool(toolType))
                         .commit();
             }
         } else throw new RuntimeException("That Class is not a Tool, You Tool!");
@@ -351,9 +353,15 @@ public class MainActivity extends Activity implements
         return null;
     }
 
+    public <T extends ToolFragment> boolean isToolEnabled(Class<T> cls) {
+        if (ToolMap.containsKey(cls)) {
+            return ToolMap.get(cls).first.isEnabled();
+        } else throw new RuntimeException("Tool not Found");
+    }
+
     public <T extends ToolFragment> T getTool(Class<T> cls) {
         if (ToolMap.containsKey(cls)) {
-            return cls.cast(ToolMap.get(cls));
+            return cls.cast(ToolMap.get(cls).second);
         } else return null;
     }
 

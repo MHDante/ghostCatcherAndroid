@@ -1,5 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.animation.Animator;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -28,26 +29,18 @@ import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.utils.Tuple;
 
 /**
  * Created by Dante on 2014-04-14.
  */
 public class Communicator extends ToolFragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private String mParam1;
-    private String pendingDialog;
-    private boolean stopText = false;
-    private List<View> tools;
-
-    public boolean bioCalib = true;
-    public boolean map = true;
-    public boolean imager = true;
-    public boolean amplifier = true;
+    private gcDialog pendingDialog;
+    private boolean pause = false;
     public Queue<Integer> timeSlots;
-
-    private int drawableId = 0;  //todo: hack
     private boolean userIsScrolling = false;
+    TextView subtitleView;
 
     public Communicator() {
     }//req'd
@@ -55,9 +48,9 @@ public class Communicator extends ToolFragment {
     // TODO: Rename and change types and number of parameters
     public static Communicator newInstance(String param1) {
         Communicator fragment = new Communicator();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
+        //Bundle args = new Bundle();
+        //args.putString(ARG_PARAM1, param1);
+        //fragment.setArguments(args);
         return fragment;
     }
 
@@ -65,10 +58,12 @@ public class Communicator extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_communicator, container, false);
-        view.setPivotX(0);//TODO: Fix
-        view.setPivotY(view.getMeasuredHeight());
-        TextView tv = (TextView) (view.findViewById(R.id.subtitle_text_view));
-        ScrollView sv = (ScrollView) (view.findViewById(R.id.subtitle_scroll_view));
+        return view;
+    }
+
+    private void setUpSubtitleView() {
+        subtitleView = (TextView) (getView().findViewById(R.id.subtitle_text_view));
+        ScrollView sv = (ScrollView) (getView().findViewById(R.id.subtitle_scroll_view));
         sv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -79,33 +74,22 @@ public class Communicator extends ToolFragment {
                 return false;
             }
         });
-
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ocean_sans.ttf");
-        tv.setTypeface(font);
-        tv.setTextSize(20);
-
-        if (savedInstanceState != null) drawableId = savedInstanceState.getInt("drawableId");
-
-        if (drawableId != 0) {
-            ImageView imgV = (ImageView) view.findViewById(R.id.character_portrait);
-            imgV.setImageResource(drawableId);
-        }
-
-        return view;
+        subtitleView.setTypeface(font);
+        subtitleView.setTextSize(20);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         populateText("", false);
+        setUpSubtitleView();
 
     }
 
     private void populateText(String st, Boolean append) {
-        View v = getView().findViewById(R.id.subtitle_text_view);
-        TextView tv = (TextView) v;
-        String stPrev = (String) tv.getText();
-        if (append) st = stPrev + st;
+        TextView tv = (TextView) getView().findViewById(R.id.subtitle_text_view);
+        if (append) st = tv.getText() + st;
         tv.setText(st);
 
         ScrollView sv = (ScrollView) getView().findViewById(R.id.subtitle_scroll_view);
@@ -113,47 +97,43 @@ public class Communicator extends ToolFragment {
     }
 
     public void loadfile(String dialogId) {
-        if (getView() == null) {
-            pendingDialog = dialogId;
-            return;
-        }
         try {
-            gcDialog dialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
-
-            ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
-            Bitmap image = MediaStore.Images.Media.getBitmap(
-                    getActivity().getContentResolver(),
-                    dialog.portraits.get(0));
-
-            imgV.setImageBitmap(image);
-
-            gcAudio.playTrack(dialog.audio, false);
-            startDialog();
+            pendingDialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
+            if (getView() == null) return;
+            setupDialog();
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Error Reading Dialog files");
         }
+    }
 
+    public void setupDialog() throws IOException {
+        ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
+        Bitmap image = MediaStore.Images.Media.getBitmap(
+                getActivity().getContentResolver(),
+                pendingDialog.portraits.get(0));
 
+        imgV.setImageBitmap(image);
+
+        gcAudio.playTrack(pendingDialog.audio, false);
+        startDialog();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (pendingDialog != null) {
-            loadfile(pendingDialog);
-            pendingDialog = null;
-        } else if (getView() == null) throw new RuntimeException("View was null on Resume. Why?");
-
         gcMain.showGears();
-
-        if (!map) ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(255);
+        if (!gcMain.isToolEnabled(LocationMap.class))
+            ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(255);
         else ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(0);
-        if (!bioCalib) ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(255);
+        if (!gcMain.isToolEnabled(Biocalibrate.class))
+            ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(255);
         else ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(0);
-        if (!imager) ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(255);
+        if (!gcMain.isToolEnabled(Imager.class))
+            ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(255);
         else ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(0);
-        if (!amplifier) ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(255);
+        if (!gcMain.isToolEnabled(Amplifier.class))
+            ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(255);
         else ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(0);
     }
 
@@ -161,17 +141,18 @@ public class Communicator extends ToolFragment {
     public boolean checkClick(View view) {
         switch (view.getId()) {
             case R.id.tool_button_1:
-                if (map) gcMain.swapTo(LocationMap.class, true);
+                if (gcMain.isToolEnabled(LocationMap.class)) gcMain.swapTo(LocationMap.class, true);
                 return true;
             case R.id.tool_button_2:
                 Biocalibrate.hasBackStack = true;
-                if (bioCalib) gcMain.swapTo(Biocalibrate.class, true);
+                if (gcMain.isToolEnabled(Biocalibrate.class))
+                    gcMain.swapTo(Biocalibrate.class, true);
                 return true;
             case R.id.tool_button_3:
-                if (imager) gcMain.swapTo(Imager.class, true);
+                if (gcMain.isToolEnabled(Imager.class)) gcMain.swapTo(Imager.class, true);
                 return true;
             case R.id.tool_button_4:
-                if (amplifier) gcMain.swapTo(Amplifier.class, true);
+                if (gcMain.isToolEnabled(Amplifier.class)) gcMain.swapTo(Amplifier.class, true);
                 return true;
             case R.id.sound:
                 if (gcAudio.isPlaying()) gcAudio.pause();
@@ -182,7 +163,6 @@ public class Communicator extends ToolFragment {
             default:
                 return false;
         }
-
     }
 
     int counter;
@@ -231,7 +211,10 @@ public class Communicator extends ToolFragment {
     }
 
 
-    public void HideTool(String tool) {
+    public void HideTool(Class tool) {
+
+        gcMain.ToolMap.put(tool, new Tuple<>(false, gcMain.ToolMap.get(tool).second));
+        View v;
 
         if (tool.equals("map")) {
             if (getView() != null)
