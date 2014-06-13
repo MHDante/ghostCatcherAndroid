@@ -2,14 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gear_bg"
     android:id="@+id/activity_bg">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/imageView5"
-        android:src="#b7000000" />
+        android:src="@drawable/gear_bg"
+        android:alpha=".3" />
 
     <FrameLayout
         android:orientation="vertical"
@@ -21,7 +21,7 @@
             android:layout_width="105dp"
             android:layout_height="105dp"
             android:layout_gravity="left|top"
-            android:translationX="-200dp"
+            android:translationX="0dp"
             android:id="@+id/back_gear"
             android:onClick="onClick">
 
@@ -68,7 +68,8 @@
         android:id="@+id/imageView2"
         android:layout_gravity="left|center_vertical"
         android:src="@drawable/frame_left"
-        android:scaleType="fitStart" />
+        android:scaleType="fitStart"
+        android:adjustViewBounds="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -76,7 +77,8 @@
         android:id="@+id/imageView3"
         android:layout_gravity="center_vertical|right"
         android:src="@drawable/frame_right"
-        android:scaleType="fitEnd" />
+        android:scaleType="fitEnd"
+        android:adjustViewBounds="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -84,14 +86,104 @@
         android:id="@+id/imageView4"
         android:layout_gravity="center_horizontal|bottom"
         android:src="@drawable/ad_holder"
-        android:scaleType="fitEnd" />
+        android:scaleType="fitEnd"
+        android:adjustViewBounds="true" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_gravity="center_horizontal|top"
-        android:src="@drawable/toolselector"
-        android:scaleType="fitStart" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_gravity="center_horizontal|top"
+            android:src="@drawable/toolselector"
+            android:scaleType="fitStart"
+            android:visibility="visible"
+            android:adjustViewBounds="true" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignBottom="@+id/imageView"
+            android:weightSum="2"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:weightSum="100">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="17" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="22"></FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:id="@+id/frameLayout"
+                    android:layout_weight="22" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="22"></FrameLayout>
+
+                <Space
+                    android:layout_width="20px"
+                    android:layout_height="20px"
+                    android:id="@+id/space"
+                    android:layout_weight="17" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:weightSum="100">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:id="@+id/space2"
+                    android:layout_weight="17" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="22"></FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:id="@+id/frameLayout3"
+                    android:layout_weight="22" />
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:id="@+id/frameLayout2"
+                    android:layout_weight="22" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:id="@+id/space3"
+                    android:layout_weight="17" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </FrameLayout>
