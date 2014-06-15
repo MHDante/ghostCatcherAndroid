@@ -1,6 +1,7 @@
 package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
 import android.content.res.AssetManager;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.util.SparseArray;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ public class gcDialog {
     public Map<Integer, Uri> portraits = new HashMap<>();
     public Map<Integer, String> parsed = new HashMap<>();
     public Uri audio;
+    public int duration;
 
     private gcDialog() {
     }
@@ -56,6 +58,9 @@ public class gcDialog {
 
         gcDialog dialog = new gcDialog();
         dialog.audio = Uri.fromFile(new File(soundPath));
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(soundPath);
+        dialog.duration = (int) Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
         line = r.readLine();
 
         while ((line = r.readLine()) != null) {
@@ -76,7 +81,7 @@ public class gcDialog {
                         pose = (line.substring(2).trim());
                     }break;
                 case '@':
-                    String[] times = line.substring(2).split(":");
+                    String[] times = line.substring(1).split(":");
                     int minutes = Integer.parseInt(times[0]);
                     int seconds = Integer.parseInt(times[1]);
                     time = minutes * 60 + seconds;

@@ -56,16 +56,25 @@ public class Journal extends ToolFragment {
         gcMain.hideGears(false, true);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        gcMain.showGears();
+    }
+
+    @Override
+    public int getGlyphID() {
+        return (R.drawable.icon_journal);
+    }
+
     public boolean checkClick(View view) {
-        if (view.getId() == R.id.journal_gear_btn) return true;
         return false;
     }
 
-    public static Journal newInstance(String settings) {
-        Journal fragment = new Journal();
-        Bundle args = new Bundle();
-        args.putString("settings", settings);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    protected int getAnimatorId(boolean enter) {
+        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_left;
     }
+
+
 }

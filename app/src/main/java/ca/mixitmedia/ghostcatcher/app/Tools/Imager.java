@@ -48,23 +48,12 @@ public class Imager extends ToolFragment {
 
     @Override
     public boolean checkClick(View view) {
-        if (view.getId() == R.id.back_gear_btn) {
-            //MainActivity.debugLoc = 0;
-            //gcMain.startDialogByLocation();
-
-            return false;
-        } else {
-
-        }
-        return true;
+        return false;
     }
 
-    public static Imager newInstance(String settings) {
-        Imager fragment = new Imager();
-        Bundle args = new Bundle();
-        args.putString("settings", settings);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public int getGlyphID() {
+        return (R.drawable.icon_imager);
     }
 
     @Override

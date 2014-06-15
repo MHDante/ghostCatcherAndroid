@@ -26,11 +26,16 @@ public abstract class ToolFragment extends Fragment {
 
     public abstract boolean checkClick(View view);
 
+    public abstract int getGlyphID();
+
     @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
 
 
-        Animator anim = setupAnimator(enter);
+        int animatorId = getAnimatorId(enter);
+        setupAnimator(enter);
+        Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
+        ;
         if (anim != null) getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
         anim.addListener(new AnimatorListenerAdapter() {
 
@@ -60,43 +65,17 @@ public abstract class ToolFragment extends Fragment {
         return anim;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getView().getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        //todo:hack
-                        Display display = getActivity().getWindowManager().getDefaultDisplay();
-                        Point size = new Point();
-                        display.getSize(size);
-                        int width = size.x;
-                        int height = size.y;
-
-                        View view = getView();
-                        ViewGroup.LayoutParams layout = view.getLayoutParams();
-
-                        float maxWidth = view.getWidth();
-                        float maxHeight = view.getHeight();
-
-                        if (height > maxHeight || width > maxWidth) {
-                            float ratio = Math.min(maxWidth / width, maxHeight / height);
-                            layout.width = (int) (width * ratio);
-                            layout.height = (int) (height * ratio);
-                        }
-                        view.setLayoutParams(layout);
-                        view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                }
-        );
+    protected int getAnimatorId(boolean enter) {
+        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right;
     }
+
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             gcMain = (MainActivity) activity;
+
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " is not a GhostCatcher Activity");
@@ -104,24 +83,34 @@ public abstract class ToolFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        gcMain.ToolMap.get(this.getClass()).setSelected(false);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        gcMain.ToolMap.get(this.getClass()).setSelected(true);
+        super.onResume();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         gcMain = null;
+
     }
 
 
-    public Animator setupAnimator(boolean enter) {
-        final int animatorId = (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right;
+    public void setupAnimator(boolean enter) {
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        final Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
         getView().setPivotX(width / 2);
         getView().setPivotY(height + width / 2);
         //Log.d("Pivot", "enter: " + enter + "PivotY:" + getView().getPivotY() + "PivotX:" + getView().getPivotX());
-        return anim;
     }
 
     public void afterAnimation(boolean enter) {

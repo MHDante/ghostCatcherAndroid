@@ -1,21 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
 
-    <android.view.SurfaceView
-        android:id="@+id/camera_preview"
-        android:layout_width="235dp"
-        android:layout_height="289dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="145dp"></android.view.SurfaceView>
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignBottom="@+id/imagerFrame"
+        android:weightSum="100">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="9" />
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="62"
+            android:weightSum="100">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="20" />
+
+            <android.view.SurfaceView
+                android:id="@+id/camera_preview"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="60"></android.view.SurfaceView>
+        </TableRow>
+
+    </TableLayout>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imagerFrame"
         android:src="@drawable/imager"
-        android:scaleType="fitXY" />
+        android:adjustViewBounds="true" />
 
-</FrameLayout>
+</RelativeLayout>

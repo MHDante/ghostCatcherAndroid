@@ -47,9 +47,13 @@
                     <action type="dialog" lock="true">gc_seq1_1</action>
                     <action type="enable_tool" lock="true">locationmap</action>
                 </trigger>
-                <trigger id="01" type="tool" data="map">
-                    <action type="dialog" lock="true">gc_seq1_2</action>
+                <trigger id="01" type="tool" data="location_map">
+                <action type="dialog" lock="true">gc_seq1_2</action>
                     <action type="end_sqpt" lock=""></action>
+                </trigger>
+                <trigger id="02" type="location" data="tmz">
+                    <action type="enable_tool" lock="true">imager</action>
+                    <action type="disable_tool" lock="">location_map</action>
                 </trigger>
             </triggers>
         </seq_pt>

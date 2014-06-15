@@ -18,15 +18,12 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -37,7 +34,6 @@ import ca.mixitmedia.ghostcatcher.utils.Utils;
 public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
 
     GoogleMap map;
-    SeekBar bar;
     public List<gcLocation> locations;
     int selectedLocation;
 
@@ -46,7 +42,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.activity_map, container, false);
+        View view = inflater.inflate(R.layout.tool_location_map, container, false);
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setOnMarkerClickListener(this);
         map.setInfoWindowAdapter(this);
@@ -59,33 +55,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     @Override
     public void onResume() {
         super.onResume();
-
         if (map != null) setUpMap();
-
-        bar = (SeekBar) getView().findViewById(R.id.seekBar);
-        bar.setMax((int) map.getMaxZoomLevel() / 2);
-        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                map.animateCamera(CameraUpdateFactory.zoomTo((float) progress + map.getMaxZoomLevel() / 2));
-            }
-        });
-
-        map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition cameraPosition) {
-                bar.setProgress((int) (cameraPosition.zoom - map.getMaxZoomLevel() / 2));
-            }
-        });
-
     }
 
     public List<Marker> markers = new ArrayList<>();
@@ -173,14 +143,6 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         return false;
     }
 
-    public static LocationMap newInstance(String settings) {
-        LocationMap fragment = new LocationMap();
-        Bundle args = new Bundle();
-        args.putString("settings", settings);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -200,6 +162,11 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     @Override
+    public int getGlyphID() {
+        return (R.drawable.icon_location_map);
+    }
+
+    @Override
     public View getInfoContents(Marker marker) {
 
         LinearLayout lv = new LinearLayout(getActivity());
@@ -211,7 +178,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
         if (gcMain.getCurrentLocation() != null
                 && marker.getTitle().equals(gcMain.getCurrentLocation().name) //todo:hacks
-                && gcMain.getTool(Communicator.class).bioCalib) {
+                && gcMain.isToolEnabled(Biocalibrate.class)) {
 
             ImageView iv = new ImageView(getActivity());
             iv.setImageResource(R.drawable.fingerprint);
@@ -235,7 +202,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     @Override
     public void onInfoWindowClick(Marker marker) {
         if (gcMain.getCurrentLocation() != null && marker.getTitle().equals(gcMain.getCurrentLocation().name)) { //todo:hacks
-            gcMain.swapTo(Biocalibrate.class, false);
+            gcMain.swapTo(Biocalibrate.class);
         }
     }
 }

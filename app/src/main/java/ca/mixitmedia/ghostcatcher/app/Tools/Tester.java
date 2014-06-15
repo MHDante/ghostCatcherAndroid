@@ -125,12 +125,9 @@ public class Tester extends ToolFragment {
         }
     }
 
-
-    public static Tester newInstance(String settings) {
-        Tester fragment = new Tester();
-        Bundle args = new Bundle();
-        args.putString("settings", settings);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public int getGlyphID() {
+        return (R.drawable.icon_ghost_catcher);
     }
+
 }

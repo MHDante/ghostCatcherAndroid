@@ -41,7 +41,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static boolean isPaused;
     static Notification status;
     gcEngine engine = gcEngine.Access();
-    MediaPlayer mPlayer = null;
+    public static MediaPlayer mPlayer = null;
     static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
 
     boolean looping;
@@ -181,6 +181,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             Log.e("AudioPlayer", "Error:" + e.getMessage());
         }
         isStarted = true;
+
     }
 
     void updateNotification() {

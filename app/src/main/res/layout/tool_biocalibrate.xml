@@ -1,25 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="390dp"
-    android:layout_height="640dp">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="246dp"
-        android:layout_height="46dp"
-        android:layout_gravity="center_horizontal|bottom"
-        android:weightSum="30"
-        android:layout_marginBottom="140dp">
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignBottom="@+id/fingerprint_mask"
+        android:weightSum="80">
 
-        <ImageView
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:id="@+id/loading_bar"
-            android:src="#ff00ff00"
-            style=" " />
-    </LinearLayout>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="56" />
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="9"
+            android:weightSum="10">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="2.5" />
+
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="5">
+
+                <ProgressBar
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/calibrate_bar"
+                    android:indeterminate="false"
+                    style="?android:attr/progressBarStyleHorizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Calibrating"
+                    android:id="@+id/calibrating_text"
+                    android:layout_gravity="center"
+                    android:visibility="invisible"
+                    android:textColor="#ff000000"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true" />
+            </FrameLayout>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="2.5" />
+        </TableRow>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="15" />
+    </TableLayout>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -29,27 +72,18 @@
         android:src="@drawable/bio_calibrate_pressed"
         android:background="@android:color/transparent"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="250dp"
-        android:layout_marginLeft="12dp"
-        android:onClick="onClick" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Calibrating"
-        android:id="@+id/calibrating_text"
-        android:layout_gravity="center_horizontal|bottom"
-        android:visibility="invisible"
-        android:textColor="#ff000000"
-        android:layout_marginBottom="150dp" />
+        android:onClick="onClick"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true" />
 
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fingerprint_mask"
         android:src="@drawable/bio_calibrate_unpressed"
-        android:scaleType="centerCrop"
-        android:focusableInTouchMode="false" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:adjustViewBounds="true" />
 
-</FrameLayout>
+</RelativeLayout>

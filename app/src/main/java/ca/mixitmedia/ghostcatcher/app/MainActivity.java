@@ -8,7 +8,10 @@ import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.gesture.Gesture;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,10 +19,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -35,17 +41,18 @@ import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigger;
 import ca.mixitmedia.ghostcatcher.utils.Tuple;
+import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 
 public class MainActivity extends Activity implements
-        LocationListener {
+        LocationListener, View.OnClickListener {
 
     static final boolean debugging = false;
     public static int debugLoc = 2;
 
 
     public static boolean transitionInProgress;
-    public Map<Class, Tuple<View, ToolFragment>> ToolMap;
+    public Map<Class, ToolLightButton> ToolMap;
 
     Location mCurrentLocation;
     public AnimationDrawable gearsBackground;
@@ -58,16 +65,15 @@ public class MainActivity extends Activity implements
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        gearsBackground = (AnimationDrawable) findViewById(R.id.activity_bg).getBackground();
-
-        ToolMap = new HashMap<Class, Tuple<View, ToolFragment>>() {{
-            put(Communicator.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_communicator), Communicator.newInstance("Settings")));
-            put(Journal.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_journal), Journal.newInstance("Settings")));
-            put(LocationMap.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_location_map), LocationMap.newInstance("Settings")));
-            put(Biocalibrate.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_biocalibrate), Biocalibrate.newInstance("Settings")));
-            put(Amplifier.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_amplifier), Amplifier.newInstance("Settings")));
-            put(Tester.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_tester), Tester.newInstance("Settings")));
-            put(Imager.class, new Tuple<View, ToolFragment>(findViewById(R.id.light_imager), Imager.newInstance("Settings")));
+        gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
+        ToolMap = new HashMap<Class, ToolLightButton>() {{
+            put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
+            put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
+            put(LocationMap.class, getToolLight(LocationMap.class, R.id.tool_light_1));
+            put(Biocalibrate.class, getToolLight(Biocalibrate.class, R.id.tool_light_2));
+            put(Amplifier.class, getToolLight(Amplifier.class, R.id.tool_light_3));
+            put(Tester.class, getToolLight(Tester.class, R.id.tool_light_4));
+            put(Imager.class, getToolLight(Imager.class, R.id.tool_light_5));
         }};
 
         if (savedInstanceState == null) {  //Avoid overlapping fragments.
@@ -77,11 +83,79 @@ public class MainActivity extends Activity implements
         }
         handleIntent(getIntent());
         onLocationChanged(null);
+        detector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+
+            private int swipe_Min_Distance = 100;
+            private int swipe_Max_Distance = 350;
+            private int swipe_Min_Velocity = 100;
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                                   float velocityY) {
+
+                final float xDistance = Math.abs(e1.getX() - e2.getX());
+                final float yDistance = Math.abs(e1.getY() - e2.getY());
+
+                velocityX = Math.abs(velocityX);
+                velocityY = Math.abs(velocityY);
+                boolean result = false;
+
+                if (velocityX > this.swipe_Min_Velocity && xDistance > this.swipe_Min_Distance) {
+                    if (e1.getX() > e2.getX()) {
+                        if (!(getCurrentFragment() instanceof Journal))
+                            onClick(ToolMap.get(Journal.class));
+                    } else {
+                        if (!(getCurrentFragment() instanceof Communicator))
+                            onClick(ToolMap.get(Communicator.class));
+                    }
+                    result = true;
+                } else if (velocityY > this.swipe_Min_Velocity && yDistance > this.swipe_Min_Distance) {
+                    if (e1.getY() > e2.getY()) {
+                        if (toolHolderShown && !transitionInProgress)
+                            toggleToolMenu();
+                    } else {
+                        if (!toolHolderShown && !transitionInProgress)
+                            toggleToolMenu();
+                    }
+                    result = true;
+                }
+                return result;
+            }
+        });
+    }
+
+
+    GestureDetector detector;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent me) {
+        // Call onTouchEvent of SimpleGestureFilter class
+        this.detector.onTouchEvent(me);
+        return super.dispatchTouchEvent(me);
+    }
+
+    private <T extends ToolFragment> ToolLightButton getToolLight(Class<T> cls, int resID) {
+        ToolLightButton ret = (ToolLightButton) findViewById(resID);
+        try {
+            ret.setToolFragment(cls.newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        ret.setSrc(BitmapFactory.decodeResource(getResources(), ret.getToolFragment().getGlyphID()));
+        ret.setEnabled(true);
+        ret.setOnClickListener(this);
+        return ret;
     }
 
     @Override
     protected void onResume() {
         gcAudio.play();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (toolHolderShown) toggleToolMenu();
+            }
+        }, 500);
         super.onResume();
     }
 
@@ -92,18 +166,18 @@ public class MainActivity extends Activity implements
 
     private void handleIntent(Intent intent) {
         if (intent.getAction() != null && intent.getAction().equals("android.nfc.action.TECH_DISCOVERED")) {
-            ShowTool("biocalib");
+            ShowTool(Biocalibrate.class);
             debugLoc = 1;
             onLocationChanged(mCurrentLocation);
         }
     }
 
     private Handler decorViewHandler = new Handler();
-
+    private boolean useDecorView;
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
+        if (hasFocus && useDecorView) {
             decorViewHandler.post(decor_view_settings);
         }
     }
@@ -120,30 +194,63 @@ public class MainActivity extends Activity implements
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
         //todo: abstract
         if (tf.checkClick(view)) return;
+
+        if (view instanceof ToolLightButton) {
+
+            final ToolLightButton button = (ToolLightButton) view;
+            if (tf.getClass() == Communicator.class && button.getToolFragment() == tf) {
+                finish();
+                return;
+            }
+            if (button.isEnabled() && !button.isSelected()) {
+                if (toolHolderShown) {
+                    toggleToolMenu();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            swapTo(button.getToolFragment().getClass());
+                        }
+                    }, 400);
+                } else {
+                    swapTo(button.getToolFragment().getClass());
+                }
+
+            }
+        }
+
         switch (view.getId()) {
-            case R.id.back_gear_btn:
-                //hideGears("back");
-                onBackPressed();
-                break;
-            case R.id.journal_gear_btn:
-                swapTo(Journal.class, true);
+            case R.id.tool_holder_tab:
+                toggleToolMenu();
                 break;
 
         }
     }
 
+    boolean toolHolderShown = true;
+
+    private void toggleToolMenu() {
+
+        View toolHolder = findViewById(R.id.tool_holder);
+        if (toolHolderShown) {
+            toolHolder.animate().translationY((toolHolder.getMeasuredHeight() / 7) * -6);
+            findViewById(R.id.journal_gear).animate().rotationBy(360);
+            findViewById(R.id.back_gear).animate().rotationBy(-360);
+        } else {
+            toolHolder.animate().translationY(0);
+            findViewById(R.id.journal_gear).animate().rotationBy(-360);
+            findViewById(R.id.back_gear).animate().rotationBy(360);
+        }
+        toolHolderShown = !toolHolderShown;
+    }
+
     @Override
     public void onBackPressed() {
-        FragmentManager fm = getFragmentManager();
-        if (fm.getBackStackEntryCount() > 0) {
-            //Log.i("MainActivity", "popping backstack");
-            fm.popBackStack();
-            findViewById(R.id.journal_gear).setVisibility(0);
-        } else {
-            Log.i("MainActivity", "nothing on backstack, calling super");
+        Log.d("Main", "OnBackPressed");
+        Fragment f = getCurrentFragment();
+        if (f instanceof Communicator) {
             super.onBackPressed();
-            //startActivity(new Intent(this, ImagerFragment.class));
-
+        } else {
+            onClick(ToolMap.get(Communicator.class));
         }
     }
 
@@ -160,18 +267,11 @@ public class MainActivity extends Activity implements
         super.onDestroy();
     }
 
-    public void swapTo(Class toolType, boolean addToBackStack) {
+    public void swapTo(Class toolType) {
         if (ToolMap.containsKey(toolType)) {
-            if (addToBackStack) {
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, getTool(toolType))
-                        .addToBackStack(null)
-                        .commit();
-            } else {
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, getTool(toolType))
                         .commit();
-            }
         } else throw new RuntimeException("That Class is not a Tool, You Tool!");
 
     }
@@ -198,6 +298,28 @@ public class MainActivity extends Activity implements
         @Override
         public void startDialog(String dialogId) {
             getTool(Communicator.class).loadfile(dialogId);
+        }
+
+        @Override
+        public void enableTool(String toolName) {
+            for (Class c : ToolMap.keySet()) {
+                if (c.getSimpleName().replaceAll("[^a-zA-Z0-9]", "").toLowerCase().equals(toolName.toLowerCase())) {
+                    ToolMap.get(c).setEnabled(true);
+                    return;
+                }
+            }
+            throw new RuntimeException("Could not Find Tool: " + toolName);
+        }
+
+        @Override
+        public void disableTool(String toolName) {
+            for (Class c : ToolMap.keySet()) {
+                if (c.getSimpleName().replaceAll("[^a-zA-Z0-9]", "").toLowerCase().equals(toolName.toLowerCase())) {
+                    ToolMap.get(c).setEnabled(false);
+                    return;
+                }
+            }
+            throw new RuntimeException("Could not Find Tool: " + toolName);
         }
     };
 
@@ -307,12 +429,12 @@ public class MainActivity extends Activity implements
 
     }
 
-    public void ShowTool(String tool) {
-        getTool(Communicator.class).ShowTool(tool);
+    public void ShowTool(Class tool) {
+        ToolMap.get(tool).setEnabled(true);
     }
 
-    public void HideTool(String tool) {
-        getTool(Communicator.class).HideTool(tool);
+    public void HideTool(Class tool) {
+        ToolMap.get(tool).setEnabled(false);
     }
 
     private final int NOTIF_ID = 2013567;
@@ -343,25 +465,27 @@ public class MainActivity extends Activity implements
         //todo:implement
     }
 
-    public <T extends ToolFragment> T CurrentToolFragment(Class<T> cls) {
-        FragmentManager f = getFragmentManager();
-        Fragment ff = f.findFragmentById(R.id.fragment_container);
-        Class c = ff.getClass();
-        if (c == cls) {
-            return cls.cast(getFragmentManager().findFragmentById(R.id.fragment_container));
+    public Fragment getCurrentFragment() {
+        return getFragmentManager().findFragmentById(R.id.fragment_container);
+    }
+
+    public <T extends ToolFragment> T getCurrentToolFragment(Class<T> cls) {
+        Fragment tf = getCurrentFragment();
+        if (tf.getClass().equals(cls)) {
+            return cls.cast(tf);
         }
         return null;
     }
 
     public <T extends ToolFragment> boolean isToolEnabled(Class<T> cls) {
         if (ToolMap.containsKey(cls)) {
-            return ToolMap.get(cls).first.isEnabled();
+            return ToolMap.get(cls).isEnabled();
         } else throw new RuntimeException("Tool not Found");
     }
 
     public <T extends ToolFragment> T getTool(Class<T> cls) {
         if (ToolMap.containsKey(cls)) {
-            return cls.cast(ToolMap.get(cls).second);
+            return cls.cast(ToolMap.get(cls).getToolFragment());
         } else return null;
     }
 
@@ -383,9 +507,7 @@ public class MainActivity extends Activity implements
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+        if (useDecorView && (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
             decorViewHandler.postDelayed(decor_view_settings, 500);
         }
         return super.onKeyDown(keyCode, event);

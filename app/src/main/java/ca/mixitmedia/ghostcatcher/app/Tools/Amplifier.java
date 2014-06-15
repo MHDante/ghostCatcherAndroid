@@ -27,6 +27,11 @@ public class Amplifier extends ToolFragment {
     }
 
     @Override
+    public int getGlyphID() {
+        return (R.drawable.icon_amplifier);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
     }
@@ -37,7 +42,7 @@ public class Amplifier extends ToolFragment {
             case R.id.amplifier_button:
 
                 mSoundPool.stop(dialogueStream);
-                AudioManager audioMan = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
+                AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
                 float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
                 dialogueStream = mSoundPool.play(testSoundClip, streamVolume, streamVolume, 1, 0, 1f);
 
@@ -46,11 +51,5 @@ public class Amplifier extends ToolFragment {
                 return false;
         }
     }
-    public static Amplifier newInstance(String settings) {
-        Amplifier fragment = new Amplifier();
-        Bundle args = new Bundle();
-        args.putString("settings", settings);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 }

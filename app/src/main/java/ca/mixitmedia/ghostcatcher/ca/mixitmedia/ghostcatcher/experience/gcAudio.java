@@ -87,4 +87,15 @@ public class gcAudio {
         ctxt().sendBroadcast(i);
     }
 
+    public static int getDuration() {
+        if (!gcMediaService.isStarted) {
+            Log.e("audio", "Can't get duration if it doesn't exist");
+            return -1;
+        }
+        return gcMediaService.duration / 1000;
+    }
+
+    public static int getPosition() {
+        return gcMediaService.mPlayer.getCurrentPosition();
+    }
 }

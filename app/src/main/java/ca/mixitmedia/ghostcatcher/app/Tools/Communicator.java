@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
@@ -30,34 +32,30 @@ import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Tuple;
+import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 /**
  * Created by Dante on 2014-04-14.
  */
 public class Communicator extends ToolFragment {
 
-    private gcDialog pendingDialog;
+    private gcDialog currentDialog;
+    private boolean dialogPending;
+    private boolean isStarted;
     private boolean pause = false;
-    public Queue<Integer> timeSlots;
     private boolean userIsScrolling = false;
     TextView subtitleView;
+    List<Integer> intervals = new ArrayList<>();
 
     public Communicator() {
     }//req'd
 
-    // TODO: Rename and change types and number of parameters
-    public static Communicator newInstance(String param1) {
-        Communicator fragment = new Communicator();
-        //Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        //fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_communicator, container, false);
+        imgV = (ImageView) view.findViewById(R.id.character_portrait);
         return view;
     }
 
@@ -98,8 +96,11 @@ public class Communicator extends ToolFragment {
 
     public void loadfile(String dialogId) {
         try {
-            pendingDialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
-            if (getView() == null) return;
+            currentDialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
+            if (getView() == null) {
+                dialogPending = true;
+                return;
+            }
             setupDialog();
         } catch (IOException e) {
             e.printStackTrace();
@@ -107,58 +108,54 @@ public class Communicator extends ToolFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        try {
+            if (dialogPending) {
+                dialogPending = !dialogPending;
+                setupDialog();
+                isStarted = true;
+            }
+            if (isStarted) {
+
+                Bitmap image = MediaStore.Images.Media.getBitmap(
+                        getActivity().getContentResolver(),
+                        currentDialog.portraits.get(intervalCounter));
+
+                imgV.setImageBitmap(image);
+            } else imgV.setImageDrawable(getResources().getDrawable(R.drawable.shine));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error Reading Dialog files");
+        }
+    }
+
+    ImageView imgV;
+
     public void setupDialog() throws IOException {
-        ImageView imgV = (ImageView) getView().findViewById(R.id.character_portrait);
-        Bitmap image = MediaStore.Images.Media.getBitmap(
-                getActivity().getContentResolver(),
-                pendingDialog.portraits.get(0));
-
-        imgV.setImageBitmap(image);
-
-        gcAudio.playTrack(pendingDialog.audio, false);
+        gcAudio.playTrack(currentDialog.audio, false);
+        for (int interval : currentDialog.parsed.keySet()) intervals.add(interval);
+        intervals.add(currentDialog.duration);
+        //int secondsElapsed = gcAudio.getPosition();
         startDialog();
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        gcMain.showGears();
-        if (!gcMain.isToolEnabled(LocationMap.class))
-            ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(255);
-        else ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(0);
-        if (!gcMain.isToolEnabled(Biocalibrate.class))
-            ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(255);
-        else ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(0);
-        if (!gcMain.isToolEnabled(Imager.class))
-            ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(255);
-        else ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(0);
-        if (!gcMain.isToolEnabled(Amplifier.class))
-            ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(255);
-        else ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(0);
+    public int getGlyphID() {
+        return (R.drawable.icon_communicator);
     }
 
     @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
-            case R.id.tool_button_1:
-                if (gcMain.isToolEnabled(LocationMap.class)) gcMain.swapTo(LocationMap.class, true);
-                return true;
-            case R.id.tool_button_2:
-                Biocalibrate.hasBackStack = true;
-                if (gcMain.isToolEnabled(Biocalibrate.class))
-                    gcMain.swapTo(Biocalibrate.class, true);
-                return true;
-            case R.id.tool_button_3:
-                if (gcMain.isToolEnabled(Imager.class)) gcMain.swapTo(Imager.class, true);
-                return true;
-            case R.id.tool_button_4:
-                if (gcMain.isToolEnabled(Amplifier.class)) gcMain.swapTo(Amplifier.class, true);
-                return true;
             case R.id.sound:
                 if (gcAudio.isPlaying()) gcAudio.pause();
                 else gcAudio.play();
                 //populateText("Hello world. ", true);
-                stopText = !stopText;
+                pause = !pause;
                 return true;
             default:
                 return false;
@@ -179,26 +176,50 @@ public class Communicator extends ToolFragment {
         isTimerRunning = true;
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                if (!stopText)
+                if (!pause)
                     counter += 1;  //increase every sec
                 mHandler.obtainMessage(1).sendToTarget();
 
             }
-        }, 0, 60);
+        }, 0, 50);
     }
 
-    private String displayString = "";
+    int intervalCounter = 0;
+    float currentPosition = 0f;
+
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            if (currentString != null && counter > currentString.length()) {
-                currentString = null;
-                timer.cancel();
-            } else {
-                if (currentString != null) displayString = currentString.substring(0, counter);
-                if (getView() != null) {
-                    populateText(displayString, false);
+            currentPosition += 50f;
+            if (currentPosition > intervals.get(intervalCounter + 1) * 1000) {
+                intervalCounter++;
+                if (intervalCounter >= intervals.size() - 1) {
+                    timer.cancel();
+                    imgV.setImageDrawable(getResources().getDrawable(R.drawable.shine));
+                    isStarted = false;
+                    return;
+                }
+                try {
+                    Bitmap image = MediaStore.Images.Media.getBitmap(
+                            getActivity().getContentResolver(),
+                            currentDialog.portraits.get(intervalCounter));
+                    imgV.setImageBitmap(image);
+                } catch (IOException | NullPointerException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
+            int num = intervals.get(intervalCounter);
+            int stringLength = currentDialog.parsed.get(num).length();
+            int difference = (intervals.get(intervalCounter + 1) - num) * 1000;
+            int timePerLetter = (difference / stringLength);
+
+            int currentLength = (int) (currentPosition - num) / timePerLetter;
+
+            String displayString = currentDialog.parsed.get(num).substring(0, Math.min(currentLength, currentDialog.parsed.get(num).length() - 1));
+            if (getView() != null) {
+                populateText(displayString, false);
+            }
+
         }
     };
 
@@ -206,58 +227,7 @@ public class Communicator extends ToolFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
-        outState.putInt("drawableId", drawableId);
         super.onSaveInstanceState(outState);
     }
 
-
-    public void HideTool(Class tool) {
-
-        gcMain.ToolMap.put(tool, new Tuple<>(false, gcMain.ToolMap.get(tool).second));
-        View v;
-
-        if (tool.equals("map")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(255);
-            map = false;
-        }
-        if (tool.equals("biocalib")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(255);
-            bioCalib = false;
-        }
-        if (tool.equals("amplifier")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(255);
-            amplifier = false;
-        }
-        if (tool.equals("imager")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(255);
-            imager = false;
-        }
-    }
-
-    public void ShowTool(String tool) {
-        if (tool.equals("map")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_1)).setImageAlpha(0);
-            map = true;
-        }
-        if (tool.equals("biocalib")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_2)).setImageAlpha(0);
-            bioCalib = true;
-        }
-        if (tool.equals("amplifier")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_3)).setImageAlpha(0);
-            amplifier = true;
-        }
-        if (tool.equals("imager")) {
-            if (getView() != null)
-                ((ImageView) getView().findViewById(R.id.tool_button_4)).setImageAlpha(0);
-            imager = true;
-        }
-    }
 }
