@@ -73,7 +73,7 @@ public class Journal extends ToolFragment {
 
     @Override
     protected int getAnimatorId(boolean enter) {
-        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_left;
+        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
     }
 
 
