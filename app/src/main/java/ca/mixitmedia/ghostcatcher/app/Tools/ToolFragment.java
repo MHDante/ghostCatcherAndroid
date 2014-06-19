@@ -53,7 +53,7 @@ public abstract class ToolFragment extends Fragment {
                     //gcMain.gearsBackground.start();
                 }
             }
-
+//dtfdt
             @Override
             public void onAnimationEnd(Animator animation) {
                 MainActivity.transitionInProgress = false;
