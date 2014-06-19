@@ -163,13 +163,14 @@ public class MainActivity extends Activity implements
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else {
+            }
+            else {
                 Toast.makeText(getApplicationContext(), "File doesn't exist. Downloading...", Toast.LENGTH_LONG).show();
                 // Trigger Async Task (onPreExecute method)
                 new DownloadZipFile().execute(url);
-
             }
-        } else {
+        }
+        else {
             if (file.exists()) {
                 file.delete();
             }
