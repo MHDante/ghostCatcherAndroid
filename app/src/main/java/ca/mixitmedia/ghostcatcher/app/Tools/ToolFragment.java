@@ -66,7 +66,7 @@ public abstract class ToolFragment extends Fragment {
     }
 
     protected int getAnimatorId(boolean enter) {
-        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right;
+        return ((enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right);
     }
 
 

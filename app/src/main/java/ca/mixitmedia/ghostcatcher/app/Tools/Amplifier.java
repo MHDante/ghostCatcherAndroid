@@ -19,21 +19,16 @@ public class Amplifier extends ToolFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
         testSoundClip = mSoundPool.load(getActivity(), R.raw.gc_audio_amplifier, 1);
-
         return view;
     }
 
     @Override
     public int getGlyphID() {
         return (R.drawable.icon_amplifier);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     @Override

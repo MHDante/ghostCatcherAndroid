@@ -12,7 +12,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,7 +60,8 @@ public class gcEngine {
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();
-            InputStream in_s = context.getAssets().open("Exp1Chapter1.xml");
+            String textPath = root.getPath() + "/Exp1Chapter1.xml";
+            InputStream in_s = new BufferedInputStream(new FileInputStream(textPath));
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in_s, null);
             parseXML(parser);

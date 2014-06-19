@@ -56,7 +56,7 @@ public class Biocalibrate extends ToolFragment {
                     pressed = true;
                     if (!started) {
                         gcMain.hideGears(true, true);
-                        gcMain.HideTool(Biocalibrate.class);
+                        gcMain.hideTool(Biocalibrate.class);
                         mSoundPool.stop(soundEffectStream);
                         AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
                         float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);

@@ -55,7 +55,7 @@ public class MainActivity extends Activity implements
     public Map<Class, ToolLightButton> ToolMap;
 
     Location mCurrentLocation;
-    //public AnimationDrawable gearsBackground;
+    public AnimationDrawable gearsBackground;
 
     //////////////////LifeCycle
 
@@ -65,7 +65,8 @@ public class MainActivity extends Activity implements
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        //gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
+        ToolFragment t;
+        gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
         ToolMap = new HashMap<Class, ToolLightButton>() {{
             put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
             put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
@@ -75,6 +76,9 @@ public class MainActivity extends Activity implements
             put(Tester.class, getToolLight(Tester.class, R.id.tool_light_4));
             put(Imager.class, getToolLight(Imager.class, R.id.tool_light_5));
         }};
+        showTool(Communicator.class);
+        showTool(Journal.class);
+
 
         if (savedInstanceState == null) {  //Avoid overlapping fragments.
             getFragmentManager().beginTransaction()
@@ -166,7 +170,7 @@ public class MainActivity extends Activity implements
 
     private void handleIntent(Intent intent) {
         if (intent.getAction() != null && intent.getAction().equals("android.nfc.action.TECH_DISCOVERED")) {
-            ShowTool(Biocalibrate.class);
+            showTool(Biocalibrate.class);
             debugLoc = 1;
             onLocationChanged(mCurrentLocation);
         }
@@ -190,7 +194,7 @@ public class MainActivity extends Activity implements
 
     public void onClick(View view) {
         //get current fragment
-        if (transitionInProgress) return;
+        if (transitionInProgress) return; //todo:hack
         ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
         //todo: abstract
         if (tf.checkClick(view)) return;
@@ -429,11 +433,11 @@ public class MainActivity extends Activity implements
 
     }
 
-    public void ShowTool(Class tool) {
+    public void showTool(Class tool) {
         ToolMap.get(tool).setEnabled(true);
     }
 
-    public void HideTool(Class tool) {
+    public void hideTool(Class tool) {
         ToolMap.get(tool).setEnabled(false);
     }
 
