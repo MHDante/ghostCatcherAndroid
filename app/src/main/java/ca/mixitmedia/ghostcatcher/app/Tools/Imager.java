@@ -187,4 +187,16 @@ public class Imager extends ToolFragment {
         }
     };
 
+    @Override
+    public pivotOrientation getPivotOrientation(boolean enter) {
+        return pivotOrientation.RIGHT;
+    }
+
+    protected int getAnimatorId(boolean enter) {
+        if(enter) gcMain.playSound(gcMain.sounds.leverRoll);
+        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_left;
+    }
+
+
+
 }

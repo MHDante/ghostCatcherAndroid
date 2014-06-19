@@ -15,6 +15,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -50,23 +52,30 @@ public class MainActivity extends Activity implements
     static final boolean debugging = false;
     public static int debugLoc = 2;
 
-
     public static boolean transitionInProgress;
     public Map<Class, ToolLightButton> ToolMap;
 
     Location mCurrentLocation;
     public AnimationDrawable gearsBackground;
+    public final int SOUND_POOL_MAX_STREAMS = 4;
+    public SoundPool soundPool;
+    public Sounds sounds;
 
     //////////////////LifeCycle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        soundPool = new SoundPool(SOUND_POOL_MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+
+        sounds = new Sounds(soundPool);
+
         super.onCreate(savedInstanceState);
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         ToolFragment t;
-        gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
+        //gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
         ToolMap = new HashMap<Class, ToolLightButton>() {{
             put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
             put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
@@ -353,6 +362,10 @@ public class MainActivity extends Activity implements
     private final static int
             CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
+    public int playSound(int soundName) {
+        return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
+    }
+
     // Define a DialogFragment that displays the error dialog
     public static class ErrorDialogFragment extends DialogFragment {
         // Global field to contain the error dialog
@@ -516,5 +529,19 @@ public class MainActivity extends Activity implements
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    public class Sounds{
+        public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip;
+
+        public Sounds(SoundPool soundPool){
+            testSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+            metalClick = soundPool.load(MainActivity.this, R.raw.metal_click, 1);
+            leverRoll = soundPool.load(MainActivity.this, R.raw.lever_roll, 1);
+            strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.strange_mechanical_noise, 1);
+            creepyChains = soundPool.load(MainActivity.this, R.raw.creepy_chains, 1);
+        }
+    }
+
+
 }
 

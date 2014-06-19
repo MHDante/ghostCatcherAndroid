@@ -12,17 +12,13 @@ import ca.mixitmedia.ghostcatcher.app.R;
 
 public class Amplifier extends ToolFragment {
 
-    private static final int MAX_STREAMS = 2;
-    private SoundPool mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
     private int dialogueStream = 0;
-    private int testSoundClip;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
-        testSoundClip = mSoundPool.load(getActivity(), R.raw.gc_audio_amplifier, 1);
         return view;
     }
 
@@ -36,15 +32,26 @@ public class Amplifier extends ToolFragment {
         switch (view.getId()) {
             case R.id.amplifier_button:
 
-                mSoundPool.stop(dialogueStream);
+                gcMain.soundPool.stop(dialogueStream);
                 AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
                 float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
-                dialogueStream = mSoundPool.play(testSoundClip, streamVolume, streamVolume, 1, 0, 1f);
+                dialogueStream = gcMain.playSound(gcMain.sounds.testSoundClip);
 
                 return true;
             default:
                 return false;
         }
     }
+
+    @Override
+    public pivotOrientation getPivotOrientation(boolean enter) {
+        return pivotOrientation.LEFT;
+    }
+
+    protected int getAnimatorId(boolean enter) {
+        if(enter) gcMain.playSound(gcMain.sounds.leverRoll);
+        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right;
+    }
+
 
 }

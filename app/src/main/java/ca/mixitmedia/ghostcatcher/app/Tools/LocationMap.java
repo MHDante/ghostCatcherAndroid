@@ -205,4 +205,10 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
             gcMain.swapTo(Biocalibrate.class);
         }
     }
+
+    protected int getAnimatorId(boolean enter) {
+        if(enter) gcMain.playSound(gcMain.sounds.strangeMetalNoise);
+        return (enter) ? R.animator.transition_in_from_top : R.animator.transition_out_from_bottom;
+    }
+
 }

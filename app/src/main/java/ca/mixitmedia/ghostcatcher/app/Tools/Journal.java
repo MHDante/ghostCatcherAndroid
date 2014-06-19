@@ -74,8 +74,14 @@ public class Journal extends ToolFragment {
     }
 
     @Override
+    public pivotOrientation getPivotOrientation(boolean enter) {
+        return pivotOrientation.BOTTOM;
+    }
+
+    @Override
     protected int getAnimatorId(boolean enter) {
-        return (enter) ? R.animator.fade_in : R.animator.fade_out;
+        if(enter) gcMain.playSound(gcMain.sounds.metalClick);
+        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
     }
 
 }

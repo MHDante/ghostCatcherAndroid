@@ -242,4 +242,9 @@ public class Communicator extends ToolFragment {
         super.onSaveInstanceState(outState);
     }
 
+    protected int getAnimatorId(boolean enter) {
+        if(enter) gcMain.playSound(gcMain.sounds.metalClick);
+        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_left;
+    }
+
 }
