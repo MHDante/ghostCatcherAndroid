@@ -84,7 +84,7 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:id="@+id/imageThumbnail"
-                            android:src="@drawable/ryerson_theatre"
+                            android:src="@drawable/shine"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:scaleType="centerCrop"
