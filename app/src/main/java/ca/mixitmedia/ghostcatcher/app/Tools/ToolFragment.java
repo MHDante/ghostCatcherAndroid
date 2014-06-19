@@ -43,7 +43,7 @@ public abstract class ToolFragment extends Fragment {
             public void onAnimationStart(Animator animation) {
                 MainActivity.transitionInProgress = true;
                 if (enter) {
-                    gcMain.gearsBackground.start();
+                    //gcMain.gearsBackground.start();
                 }
             }
 
@@ -53,7 +53,7 @@ public abstract class ToolFragment extends Fragment {
                 if (getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
 
                 if (enter) {
-                    gcMain.gearsBackground.stop();
+                    //gcMain.gearsBackground.stop();
                 }
 
                 afterAnimation(enter);
@@ -66,7 +66,7 @@ public abstract class ToolFragment extends Fragment {
     }
 
     protected int getAnimatorId(boolean enter) {
-        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right;
+        return ((enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right);
     }
 
 
