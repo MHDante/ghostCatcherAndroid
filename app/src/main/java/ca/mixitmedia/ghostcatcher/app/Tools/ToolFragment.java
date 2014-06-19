@@ -28,6 +28,13 @@ public abstract class ToolFragment extends Fragment {
 
     public abstract int getGlyphID();
 
+    protected enum pivotOrientation{
+        LEFT,   //Pivot from the left
+        RIGHT,  //Pivot from the right
+        TOP,    //Pivot from the top
+        BOTTOM; //Pivot from the bottom
+    }
+
     @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
 
@@ -101,6 +108,9 @@ public abstract class ToolFragment extends Fragment {
 
     }
 
+    public pivotOrientation getPivotOrientation(boolean enter){
+        return pivotOrientation.BOTTOM;
+    }
 
     public void setupAnimator(boolean enter) {
         Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -108,8 +118,28 @@ public abstract class ToolFragment extends Fragment {
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        getView().setPivotX(width / 2);
-        getView().setPivotY(height + width / 2);
+
+        pivotOrientation orientation = getPivotOrientation(enter);
+
+        switch(orientation){
+            case TOP: getView().setPivotX(width / 2);
+                getView().setPivotY(-(width / 2));
+                break;
+
+            case BOTTOM: getView().setPivotX(width / 2);
+                getView().setPivotY(height + width / 2);
+                break;
+
+            case LEFT:getView().setPivotX(-(width / 2));
+                getView().setPivotY(height / 2);
+                break;
+
+            case RIGHT:getView().setPivotX(width + (width / 2));
+                getView().setPivotY(height / 2);
+                break;
+
+        }
+
         //Log.d("Pivot", "enter: " + enter + "PivotY:" + getView().getPivotY() + "PivotX:" + getView().getPivotX());
     }
 

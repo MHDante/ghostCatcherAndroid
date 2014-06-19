@@ -1,6 +1,8 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,8 +75,7 @@ public class Journal extends ToolFragment {
 
     @Override
     protected int getAnimatorId(boolean enter) {
-        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
+        return (enter) ? R.animator.fade_in : R.animator.fade_out;
     }
-
 
 }
