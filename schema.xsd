@@ -65,7 +65,7 @@
                                                             </xs:all>
                                                             <xs:attribute name="id"
                                                                 type="xs:string" />
-                                                            <xs:attribute name="solved"
+                                                            <xs:attribute name="is_solved"
                                                                 type="xs:boolean" />
                                                         </xs:complexType>
                                                     </xs:element>

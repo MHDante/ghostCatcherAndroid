@@ -82,31 +82,31 @@ public class gcTrigger {
             switch(a.getType()){
                 case DIALOG:
                     actionManager.startDialog(a.getData());
-                            return;
+                    continue;
                 case ENABLE_TOOL:
                     actionManager.enableTool(a.getData());
-                            return;
+                    continue;
                 case DISABLE_TOOL:
                     actionManager.disableTool(a.getData());
-                            return;
+                    continue;
                 case END_SQPT:
                     actionManager.endSqPt(a.getData());
-                            return;
+                    continue;
                 case ENABLE_TRIGGER:
                     actionManager.enableTrigger(a.getData());
-                            return;
+                    continue;
                 case COMPLETE_TASK:
                     actionManager.completeTask(a.getData());
-                            return;
+                    continue;
                 case CHECK_TASK:
                     actionManager.checkTask(a.getData());
-                            return;
+                    continue;
                 case ACHIEVEMENT:
                     actionManager.achievement(a.getData());
-                            return;
+                    continue;
                 case CONSUME_TRIGGER:
                     actionManager.consumeTrigger(a.getData());
-                            return;
+                    continue;
             }
         }
     }

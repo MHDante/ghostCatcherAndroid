@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +34,7 @@ import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.utils.Tuple;
+import ca.mixitmedia.ghostcatcher.utils.Utils;
 import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 /**
@@ -119,7 +121,8 @@ public class Communicator extends ToolFragment {
                 setupDialog();
                 isStarted = true;
             }
-            if (portrait != null) imgV.setImageBitmap(portrait);
+            if (portrait != null) imgV.setImageBitmap(MediaStore.Images.Media.getBitmap(
+                    getActivity().getContentResolver(), portrait));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Error Reading Dialog files");
@@ -141,12 +144,14 @@ public class Communicator extends ToolFragment {
         //int secondsElapsed = gcAudio.getPosition();
         startDialog();
 
-        Bitmap image = MediaStore.Images.Media.getBitmap(
-                getActivity().getContentResolver(),
-                currentDialog.portraits.get(intervalCounter));
+        if (gcMain != null) {
+            Bitmap image = MediaStore.Images.Media.getBitmap(
+                    getActivity().getContentResolver(),
+                    currentDialog.portraits.get(intervalCounter));
 
-        imgV.setImageBitmap(image);
-        portrait = image;
+            imgV.setImageBitmap(image);
+        }
+        portrait = currentDialog.portraits.get(intervalCounter);
     }
 
     @Override
@@ -192,7 +197,7 @@ public class Communicator extends ToolFragment {
 
     int intervalCounter = 0;
     float currentPosition = 0f;
-    Bitmap portrait;
+    Uri portrait;
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             currentPosition += 50f;
@@ -200,22 +205,22 @@ public class Communicator extends ToolFragment {
                 intervalCounter++;
                 if (intervalCounter >= intervals.size() - 1) {
                     timer.cancel();
-                    try {
+                    if (gcMain != null)
                         imgV.setImageDrawable(gcMain.getResources().getDrawable(R.drawable.shine));
-                    } catch (IllegalStateException e) {
-                        e.printStackTrace();
-                        portrait = BitmapFactory.decodeResource(gcMain.getResources(), R.drawable.shine);
-                    }
+
+                    portrait = Utils.resIdToUri(R.drawable.shine);
                     isStarted = false;
                     return;
                 }
                 try {
+                    if (gcMain != null) {
                     Bitmap image = MediaStore.Images.Media.getBitmap(
                             getActivity().getContentResolver(),
                             currentDialog.portraits.get(intervalCounter));
                     imgV.setImageBitmap(image);
-                    portrait = image;
-                } catch (IOException | NullPointerException e) {
+                    }
+                    portrait = currentDialog.portraits.get(intervalCounter);
+                } catch (IOException e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);
                 }

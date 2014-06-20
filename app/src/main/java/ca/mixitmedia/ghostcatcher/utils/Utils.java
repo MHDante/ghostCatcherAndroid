@@ -10,7 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.DisplayMetrics;
+
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Dante on 07/03/14.
@@ -29,6 +32,10 @@ public class Utils {
         }
     }
 
+    public static Uri resIdToUri(int resId) {
+        return Uri.parse("android.resource://" + gcEngine.Access().context.getPackageName()
+                + "/" + resId);
+    }
     public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();

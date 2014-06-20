@@ -1,5 +1,6 @@
 package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
+import android.app.AlertDialog;
 import android.net.Uri;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -38,6 +39,11 @@ public class gcCharacter {
 
     public Uri getPose(String poseName) {
         Uri root = Uri.fromFile(gcEngine.Access().root);
+        if (!poses.containsKey(poseName)) {
+            new AlertDialog.Builder(gcEngine.Access().context)
+                    .setMessage("Character " + name + "does not have a pose with id: " + poseName)
+                    .create().show();
+        }
         return root.buildUpon()
                 .appendPath("characters")
                 .appendPath(getId())

@@ -1,5 +1,6 @@
 package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
+import android.app.AlertDialog;
 import android.content.res.AssetManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -93,6 +94,11 @@ public class gcDialog {
         }
 
         dialog.portraits.put(time, chr.getPose(pose));
+        if (!new File(chr.getPose(pose).getPath()).exists()) {
+            new AlertDialog.Builder(gcEngine.Access().context)
+                    .setMessage("File doesn't exist for pose " + pose + " for character " + chr.name)
+                    .create().show();
+        }
         dialog.parsed.put(time, total.toString());
         dialog.id = id;
         seqPt.dialogCache.put(id, dialog);

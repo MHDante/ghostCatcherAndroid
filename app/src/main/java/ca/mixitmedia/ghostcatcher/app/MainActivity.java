@@ -103,7 +103,6 @@ public class MainActivity extends Activity implements
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        ToolFragment t;
         //gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
         ToolMap = new HashMap<Class, ToolLightButton>() {{
             put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
@@ -422,7 +421,7 @@ public class MainActivity extends Activity implements
             throw new RuntimeException(e);
         }
         ret.setSrc(BitmapFactory.decodeResource(getResources(), ret.getToolFragment().getGlyphID()));
-        ret.setEnabled(true);
+        ret.setEnabled(false);
         ret.setOnClickListener(this);
         return ret;
     }
@@ -803,10 +802,10 @@ public class MainActivity extends Activity implements
 
         public Sounds(SoundPool soundPool){
             testSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
-            metalClick = soundPool.load(MainActivity.this, R.raw.metal_click, 1);
-            leverRoll = soundPool.load(MainActivity.this, R.raw.lever_roll, 1);
-            strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.strange_mechanical_noise, 1);
-            creepyChains = soundPool.load(MainActivity.this, R.raw.creepy_chains, 1);
+            metalClick = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+            leverRoll = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+            strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+            creepyChains = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
         }
     }
 
