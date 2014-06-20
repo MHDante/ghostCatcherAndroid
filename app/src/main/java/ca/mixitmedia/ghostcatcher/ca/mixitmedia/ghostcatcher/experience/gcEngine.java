@@ -40,7 +40,6 @@ public class gcEngine {
 
     public Context context;
 
-    ChapterLoader loader;
 
     XmlPullParserFactory pullParserFactory;
 
@@ -56,7 +55,7 @@ public class gcEngine {
 
     private gcEngine(Context context) {
         this.context = context;
-        //loader = new ChapterLoader("mixitmedia");
+
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();
