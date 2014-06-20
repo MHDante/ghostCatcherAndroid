@@ -11,10 +11,12 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
@@ -25,8 +27,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -57,11 +63,18 @@ public class StartScreen extends Activity {
         url = this.getString(R.string.url);
         File file = new File(zipFile);
 
-        if (!fileDir.exists()) {
+        Button bStart = (Button) findViewById(R.id.button1);
+        Button bNew = (Button) findViewById(R.id.button2);
+        Button bSettings = (Button) findViewById(R.id.button3);
 
+        if (!fileDir.exists()) {
+            Log.d("@@@","@@@@@@@");
             if (file.exists()) {
                 try {
-                    unzip();
+                    if (getMD5EncryptedString(zipFile).equals("1674e6bb3187899a82359639ad0ce488"))
+                        unzip();
+                    else
+                        Log.d("UNZIP","CORRUPT FILE. MAN THE HARPOONS");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -97,11 +110,27 @@ public class StartScreen extends Activity {
         }
     }
 
+    public static String getMD5EncryptedString(String zipFile){
+        MessageDigest mdEnc = null;
+        try {
+            mdEnc = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("Exception while encrypting to md5");
+            e.printStackTrace();
+        } // Encryption algorithm
+        mdEnc.update(zipFile.getBytes(), 0, zipFile.length());
+        String md5 = new BigInteger(1, mdEnc.digest()).toString(16);
+        while ( md5.length() < 32 ) {
+            md5 = "0"+md5;
+        }
+        return md5;
+    }
+
     public void showDialog() throws Exception
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
 
-        builder.setMessage("Ghost Catcher needs to download a file. Overage charges may apply. \nDo you want to continue?");
+        builder.setMessage("Ghost Catcher needs to download a file. Overage charges may apply. \n\nDo you want to continue?");
 
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
