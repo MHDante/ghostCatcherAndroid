@@ -7,11 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +28,6 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
@@ -70,13 +67,18 @@ public class StartScreen extends Activity {
         if (!fileDir.exists()) {
             Log.d("@@@","@@@@@@@");
             if (file.exists()) {
-                try {
-                    if (getMD5EncryptedString(zipFile).equals("1674e6bb3187899a82359639ad0ce488"))
+                Log.d("###","#$#$#");
+                Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
+                if ( fileToMD5(zipFile).equals("1674e6bb3187899a82359639ad0ce488") ) {
+                    try {
+                        Log.d("UNZIP", "NOT CORRUPT FILE. MAN THE HARPOONS. YAAAY");
                         unzip();
-                    else
-                        Log.d("UNZIP","CORRUPT FILE. MAN THE HARPOONS");
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
                 }
             }
             else {
@@ -103,27 +105,47 @@ public class StartScreen extends Activity {
                 e.printStackTrace();
             }
         }
-        else {
+        /*else {
             if (file.exists()) {
                 file.delete();
+            }
+        }*/
+    }
+
+    public static String fileToMD5(String filePath) {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(filePath);
+            byte[] buffer = new byte[1024];
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            int numRead = 0;
+            while (numRead != -1) {
+                numRead = inputStream.read(buffer);
+                if (numRead > 0)
+                    digest.update(buffer, 0, numRead);
+            }
+            byte [] md5Bytes = digest.digest();
+            return convertHashToString(md5Bytes);
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    public static String getMD5EncryptedString(String zipFile){
-        MessageDigest mdEnc = null;
-        try {
-            mdEnc = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("Exception while encrypting to md5");
-            e.printStackTrace();
-        } // Encryption algorithm
-        mdEnc.update(zipFile.getBytes(), 0, zipFile.length());
-        String md5 = new BigInteger(1, mdEnc.digest()).toString(16);
-        while ( md5.length() < 32 ) {
-            md5 = "0"+md5;
+    private static String convertHashToString(byte[] md5Bytes) {
+        String returnVal = "";
+        for (int i = 0; i < md5Bytes.length; i++) {
+            returnVal += Integer.toString(( md5Bytes[i] & 0xff ) + 0x100, 16).substring(1);
         }
-        return md5;
+        return returnVal;
     }
 
     public void showDialog() throws Exception
