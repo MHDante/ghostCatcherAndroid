@@ -40,7 +40,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static boolean isStarted;
     public static boolean isPaused;
     static Notification status;
-    gcEngine engine = gcEngine.Access();
+    gcEngine engine;
     public static MediaPlayer mPlayer = null;
     static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
 
@@ -62,6 +62,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         i.addAction(ACTION_QUEUE_TRACK);
         i.addAction(ACTION_END_LOOP);
 
+        engine = gcEngine.Access();
         registerReceiver(receiver, i);
         receiverRegistered = true;
         mPlayer = new MediaPlayer();
