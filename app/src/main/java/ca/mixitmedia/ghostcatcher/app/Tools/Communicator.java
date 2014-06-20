@@ -33,6 +33,7 @@ import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigger;
 import ca.mixitmedia.ghostcatcher.utils.Tuple;
 import ca.mixitmedia.ghostcatcher.utils.Utils;
 import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
@@ -205,17 +206,21 @@ public class Communicator extends ToolFragment {
                 intervalCounter++;
                 if (intervalCounter >= intervals.size() - 1) {
                     timer.cancel();
-                    if (gcMain != null)
+                    if (gcMain != null) {
                         imgV.setImageDrawable(gcMain.getResources().getDrawable(R.drawable.shine));
-
+                        if (gcEngine.Access().getCurrentSeqPt().getAutoTrigger() != null)
+                            gcMain.triggerLocation();
+                    }
                     portrait = Utils.resIdToUri(R.drawable.shine);
                     isStarted = false;
+
+
                     return;
                 }
                 try {
                     if (gcMain != null) {
                     Bitmap image = MediaStore.Images.Media.getBitmap(
-                            getActivity().getContentResolver(),
+                            gcMain.getContentResolver(),
                             currentDialog.portraits.get(intervalCounter));
                     imgV.setImageBitmap(image);
                     }

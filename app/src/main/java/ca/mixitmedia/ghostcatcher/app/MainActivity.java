@@ -16,12 +16,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
@@ -56,15 +61,10 @@ import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 public class MainActivity extends Activity implements
         LocationListener, View.OnClickListener {
 
-    static final boolean debugging = false;
-    public static int debugLoc = 2;
-
-
     public static boolean transitionInProgress;
     public Map<Class, ToolLightButton> ToolMap;
 
-    Location mCurrentLocation;
-    public AnimationDrawable gearsBackground;
+    //Location mCurrentLocation;
     public final int SOUND_POOL_MAX_STREAMS = 4;
     public SoundPool soundPool;
     public Sounds sounds;
@@ -83,7 +83,6 @@ public class MainActivity extends Activity implements
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
         ToolMap = new HashMap<Class, ToolLightButton>() {{
             put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
             put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
@@ -184,10 +183,33 @@ public class MainActivity extends Activity implements
     }
 
     private void handleIntent(Intent intent) {
-        if (intent.getAction() != null && intent.getAction().equals("android.nfc.action.TECH_DISCOVERED")) {
-            showTool(Biocalibrate.class);
-            debugLoc = 1;
-            onLocationChanged(mCurrentLocation);
+        if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+            Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            if (rawMsgs != null) {
+                NdefMessage[] msgs = new NdefMessage[rawMsgs.length];
+                for (int i = 0; i < rawMsgs.length; i++) {
+                    msgs[i] = (NdefMessage) rawMsgs[i];
+                }
+                for (NdefMessage message : msgs) {
+                    for (NdefRecord record : message.getRecords()) {
+                        Uri uri = record.toUri(); //Ignore the api warning, this is for demo, during which we will have api 16 at least
+
+                        if (uri != null) {
+                            if (uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
+
+                                String path = uri.getLastPathSegment();
+                                String[] tokens = path.split("\\.");
+                                String type = tokens[1];
+                                String id = tokens[0];
+                                if (type.equals("location")) {
+                                    onLocationChanged(gcEngine.Access().getCurrentSeqPt().getLocation(id).asAndroidLocation());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -341,6 +363,11 @@ public class MainActivity extends Activity implements
             }
             throw new RuntimeException("Could not Find Tool: " + toolName);
         }
+
+        @Override
+        public void enableTrigger(String triggerId) {
+            gcEngine.Access().getCurrentSeqPt().getTrigger(Integer.parseInt(triggerId)).setEnabled(true);
+        }
     };
 
 
@@ -415,25 +442,22 @@ public class MainActivity extends Activity implements
     @Override
     public void onLocationChanged(Location location) {
 
-        if (location == null && !debugging) {
+        if (location == null) {
             currentLocation = null;
             return;
         }
         List<gcLocation> locations = gcEngine.Access().getCurrentSeqPt().getLocations();
         boolean hit = false;
 
-        if (debugging) {
-            currentLocation = locations.get(debugLoc);
-            hit = true;
-        } else {
-            float accuracy = location.getAccuracy();
-            for (gcLocation l : locations) {
-                float distance[] = new float[3]; // ugh, ref parameters.
-                Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
-                if (distance[0] < accuracy) {
-                    currentLocation = l;
-                    hit = true;
-                }
+        float accuracy = location.getAccuracy();
+        for (gcLocation l : locations) {
+            float distance[] = new float[3]; // ugh, ref parameters.
+            Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
+            if (distance[0] <= accuracy) {
+                currentLocation = l;
+                if (gcEngine.Access().getCurrentSeqPt().getTrigger(l).isEnabled())
+                    ToolMap.get(Biocalibrate.class).setEnabled(true);
+                hit = true;
             }
         }
 
@@ -450,7 +474,6 @@ public class MainActivity extends Activity implements
                 }
             }
         }
-
     }
 
     public void showTool(Class tool) {

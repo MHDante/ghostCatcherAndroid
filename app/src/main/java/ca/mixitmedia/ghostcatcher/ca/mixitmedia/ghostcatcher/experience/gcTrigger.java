@@ -12,14 +12,6 @@ import java.util.List;
  */
 public class gcTrigger {
 
-    public Type getType() {
-        return type;
-    }
-
-    public List<gcAction> getActions() {
-        return actions;
-    }
-
 
     public enum Type {
         AUTO,
@@ -30,21 +22,45 @@ public class gcTrigger {
         SCRIPTED
     }
 
-    private boolean enabled;
+    boolean enabled;
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean value) {
+        enabled = value;
+    }
     int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int value) {
+        id = value;
+    }
     Type type;
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type value) {
+        type = value;
+    }
     String data;
 
     List<gcAction> actions;
+
+    public List<gcAction> getActions() {
+        return actions;
+    }
 
     private gcTrigger() {
         actions = new ArrayList<>();
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
 
     public static gcTrigger parse(XmlPullParser parser)
             throws IOException, XmlPullParserException {
@@ -78,10 +94,14 @@ public class gcTrigger {
     }
 
     public void activate(gcActionManager actionManager) {
+        int hitLock = 0;
+        Iterate:
         for(gcAction a : actions){
+            hitLock++;
             switch(a.getType()){
                 case DIALOG:
                     actionManager.startDialog(a.getData());
+                    if (a.lock) break Iterate;
                     continue;
                 case ENABLE_TOOL:
                     actionManager.enableTool(a.getData());
@@ -109,6 +129,8 @@ public class gcTrigger {
                     continue;
             }
         }
+        if (hitLock < actions.size()) this.setType(Type.AUTO);
+        gcEngine.Access().getCurrentSeqPt().triggers.remove(this);
     }
 
 }

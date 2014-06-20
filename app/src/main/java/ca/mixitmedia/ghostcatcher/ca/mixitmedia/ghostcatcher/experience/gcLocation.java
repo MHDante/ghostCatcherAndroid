@@ -2,6 +2,7 @@ package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -33,6 +34,13 @@ public class gcLocation {
     public String description;
 
     private gcLocation() {
+    }
+
+    public Location asAndroidLocation() {
+        Location loc = new Location("dummyProvider");
+        loc.setLatitude(latitude);
+        loc.setLongitude(longitude);
+        return loc;
     }
 
     public static gcLocation parse(XmlPullParser parser)

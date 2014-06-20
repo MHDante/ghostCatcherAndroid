@@ -5,6 +5,16 @@
     android:layout_height="match_parent"
     android:id="@+id/activity_bg">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView5"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/gear_animation_0000"
+        android:alpha=".4" />
+
     <FrameLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
