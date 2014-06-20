@@ -60,12 +60,14 @@ public class StartScreen extends Activity {
         url = this.getString(R.string.url);
         File file = new File(zipFile);
 
-        Button bStart = (Button) findViewById(R.id.button1);
-        Button bNew = (Button) findViewById(R.id.button2);
+        Button bCont = (Button) findViewById(R.id.button1);
+        Button bNew   =   (Button) findViewById(R.id.button2);
         Button bSettings = (Button) findViewById(R.id.button3);
+        Button bCredits = (Button) findViewById(R.id.button4);
+
+        bCont.setEnabled(false);
 
         if (!fileDir.exists()) {
-            Log.d("@@@","@@@@@@@");
             if (file.exists()) {
                 Log.d("###","#$#$#");
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
