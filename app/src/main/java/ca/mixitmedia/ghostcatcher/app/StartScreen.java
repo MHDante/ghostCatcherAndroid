@@ -1,8 +1,10 @@
 package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -55,20 +57,7 @@ public class StartScreen extends Activity {
             return false;
     }*/
 
-    void chkStatus(){
-        //final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        //final android.net.NetworkInfo wifi =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        //final android.net.NetworkInfo mobile =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if( wifi.isAvailable() ){
-           Toast.makeText(this, "Wifi" , Toast.LENGTH_LONG).show();
-        }
-        else if( mobile.isAvailable() ){
-            Toast.makeText(this, "Mobile 3G " , Toast.LENGTH_LONG).show();
-        }
-        else  {
-            Toast.makeText(this, "No Network " , Toast.LENGTH_LONG).show();
-        }
-   }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +68,6 @@ public class StartScreen extends Activity {
         final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         final android.net.NetworkInfo wifi =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         final android.net.NetworkInfo mobile =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
 
         url = this.getString(R.string.url);
         File file = new File(zipFile);
@@ -99,11 +87,22 @@ public class StartScreen extends Activity {
                     new DownloadZipFile().execute(url);
                 else if (mobile.isAvailable()) {
                     //DownloadAre you sure? If yes, ...
-                    Toast.makeText(this,"ARE YOU SURE?",Toast.LENGTH_LONG).show();
-                    new DownloadZipFile().execute(url);
+                    //Toast.makeText(this,"ARE YOU SURE?",Toast.LENGTH_LONG).show();
+                    try {
+                        showDialog();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 else
                     Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();
+            }
+        }
+        else if(fileDir.list().length == 0) {
+            try {
+                unzip();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         else {
@@ -111,6 +110,32 @@ public class StartScreen extends Activity {
                 file.delete();
             }
         }
+    }
+
+    public void showDialog() throws Exception
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
+
+        builder.setMessage("Ghost Catcher needs to download a file. Overage charges may apply. \nDo you want to continue?");
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                new DownloadZipFile().execute(url);
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
     }
 
     //-This is method is used for Download Zip file from server and store in Desire location.
@@ -217,8 +242,8 @@ public class StartScreen extends Activity {
                 mProgressDialog.setMax(zipfile.size());
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = (ZipEntry) e.nextElement();
-                    unzipEntry(zipfile, entry, destinationPath);
                     isExtracted++;
+                    unzipEntry(zipfile, entry, destinationPath);
                     mProgressDialog.setProgress((isExtracted * 100) / fileCount);
                 }
 
@@ -228,16 +253,13 @@ public class StartScreen extends Activity {
             } catch (Exception e) {
                 return false;
             }
-
             return true;
         }
-
 
         @Override
         protected void onPostExecute(Boolean result) {
             mProgressDialog.dismiss();
         }
-
 
         private void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir) throws IOException {
 
@@ -251,7 +273,6 @@ public class StartScreen extends Activity {
                 createDir(outputFile.getParentFile());
             }
 
-            // Log.v("", "Extracting: " + entry);
             BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
 
@@ -288,7 +309,7 @@ public class StartScreen extends Activity {
                 ZipInputStream zin = new ZipInputStream(fin);
                 ZipEntry ze = null;
                 while ((ze = zin.getNextEntry()) != null) {
-                    Log.v("Decompress", "Unzipping " + ze.getName());
+                    Log.d("Decompress", "Unzipping " + ze.getName());
 
                     if (ze.isDirectory()) {
                         dirChecker(ze.getName());
