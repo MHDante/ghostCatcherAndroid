@@ -7,7 +7,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,17 +15,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
-import android.net.Uri;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
-import android.nfc.NfcAdapter;
-import android.os.AsyncTask;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
@@ -36,16 +28,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 import ca.mixitmedia.ghostcatcher.app.Tools.*;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAction;
@@ -61,6 +49,9 @@ import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 public class MainActivity extends Activity implements
         LocationListener, View.OnClickListener {
 
+    static final boolean debugging = false;
+    public static int debugLoc = 2;
+
     public static boolean transitionInProgress;
     public Map<Class, ToolLightButton> ToolMap;
 
@@ -71,7 +62,6 @@ public class MainActivity extends Activity implements
 
     //////////////////LifeCycle
 
-    //////////////////LifeCycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -474,6 +464,7 @@ public class MainActivity extends Activity implements
                 }
             }
         }
+
     }
 
     public void showTool(Class tool) {
@@ -561,16 +552,18 @@ public class MainActivity extends Activity implements
     }
 
     public class Sounds{
-        public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip;
+        public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip;
 
         public Sounds(SoundPool soundPool){
             testSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
-            metalClick = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
-            leverRoll = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
-            strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
-            creepyChains = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+            metalClick = soundPool.load(MainActivity.this, R.raw.metal_click, 1);
+            leverRoll = soundPool.load(MainActivity.this, R.raw.lever_roll, 1);
+            strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.strange_mechanical_noise, 1);
+            creepyChains = soundPool.load(MainActivity.this, R.raw.creepy_chains, 1);
+            calibrateSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
         }
     }
 
 
 }
+
