@@ -25,10 +25,7 @@ import ca.mixitmedia.ghostcatcher.app.R;
  */
 public class Biocalibrate extends ToolFragment {
 
-    private static final int MAX_STREAMS = 2;
-    private SoundPool mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
     private int soundEffectStream = 0;
-    private int calibrateSoundClip;
     private boolean started;
     long lastDown;
     long totalDuration;
@@ -39,7 +36,7 @@ public class Biocalibrate extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_biocalibrate, container, false);
-        calibrateSoundClip = mSoundPool.load(getActivity(), R.raw.gc_audio_amplifier, 1);
+
         started = false;
         pressed = false;
         totalDuration = 0;
@@ -57,10 +54,10 @@ public class Biocalibrate extends ToolFragment {
                     if (!started) {
                         gcMain.hideGears(true, true);
                         gcMain.hideTool(Biocalibrate.class);
-                        mSoundPool.stop(soundEffectStream);
+                        gcMain.soundPool.stop(soundEffectStream);
                         AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
                         float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
-                        soundEffectStream = mSoundPool.play(calibrateSoundClip, streamVolume, streamVolume, 1, 0, 1f);
+                        soundEffectStream = gcMain.playSound(gcMain.sounds.calibrateSoundClip);
                         started = true;
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
@@ -83,7 +80,7 @@ public class Biocalibrate extends ToolFragment {
                                 }
                             }
                         }, 100);
-                    } else mSoundPool.resume(soundEffectStream);
+                    } else gcMain.soundPool.resume(soundEffectStream);
 
                     //getView().findViewById(R.id.fingerprint_mask).setVisibility(1);
                     getView().findViewById(R.id.calibrating_text).setVisibility(View.VISIBLE);
@@ -91,7 +88,7 @@ public class Biocalibrate extends ToolFragment {
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     pressed = false;
-                    mSoundPool.pause(soundEffectStream);
+                    gcMain.soundPool.pause(soundEffectStream);
                     totalDuration += System.currentTimeMillis() - lastDown;
                     getView().findViewById(R.id.calibrating_text).setVisibility(View.INVISIBLE);
                     getView().findViewById(R.id.fingerprint_mask).bringToFront();
