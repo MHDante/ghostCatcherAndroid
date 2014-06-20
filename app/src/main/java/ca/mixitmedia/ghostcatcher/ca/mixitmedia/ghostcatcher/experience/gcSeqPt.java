@@ -27,7 +27,7 @@ public class gcSeqPt {
     public List<gcLocation> getLocations() {
         List<gcLocation> locations = new ArrayList<>();
         for (gcTrigger t : triggers) {
-            if (t.type == gcTrigger.Type.LOCATION) { //todo: abstract.
+            if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
                 for (gcLocation l : gcEngine.Access().locations) {
                     if (t.data.equals(l.id))
                         locations.add(l);
@@ -39,7 +39,7 @@ public class gcSeqPt {
 
     public gcTrigger getTrigger(gcLocation loc) {
         for (gcTrigger t : triggers) {
-            if (t.type == gcTrigger.Type.LOCATION) { //todo: abstract.
+            if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
                 if (t.data.equalsIgnoreCase(loc.id) && t.isEnabled())
                     return t;
             }

@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements
     public Map<Class, ToolLightButton> ToolMap;
 
     Location mCurrentLocation;
-    public AnimationDrawable gearsBackground;
+    //public AnimationDrawable gearsBackground;
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +85,8 @@ public class MainActivity extends Activity implements
     String unzipLocation = Environment.getExternalStorageDirectory() + "/";
     private String zipFile = Environment.getExternalStorageDirectory() + "/mixitmedia.zip";
 
-    //////////////////LifeCycle
 
+    //////////////////LifeCycle
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +95,7 @@ public class MainActivity extends Activity implements
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
         ToolFragment t;
-        gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
+        //gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
         ToolMap = new HashMap<Class, ToolLightButton>() {{
             put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
             put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
