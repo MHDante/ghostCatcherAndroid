@@ -13,9 +13,8 @@
     <ImageView
         android:src="@drawable/logo"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="250dp"
         android:layout_gravity="center"
-        android:layout_weight="1"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
@@ -51,6 +50,26 @@
         android:text="@string/start_activity_b4"
         android:id="@+id/button4"
         android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:id="@+id/">
+
+        <ImageView
+            android:src="@drawable/ru_logo"
+            android:layout_width="50dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/imageView2"
+            android:adjustViewBounds="false" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView3"
+            android:layout_gravity="right" />
+    </LinearLayout>
 
 
 </LinearLayout>
