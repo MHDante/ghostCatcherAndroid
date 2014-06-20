@@ -38,25 +38,10 @@ public class StartScreen extends Activity {
 
     private ProgressDialog mProgressDialog;
 
-    //private static String url = "http://mhdante.com/mixitmedia.zip";
     private String url;
     private File fileDir = new File(Environment.getExternalStorageDirectory(), "/mixitmedia");
     String unzipLocation = Environment.getExternalStorageDirectory() + "/";
     private String zipFile = Environment.getExternalStorageDirectory() + "/mixitmedia.zip";
-
-
-    /*private boolean checkConnection(Context context) {
-
-        final ConnectivityManager mConnectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        final NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        } else
-            return false;
-    }*/
-
 
 
     @Override
