@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.mhdante.com"
+    xmlns="http://www.mhdante.com" elementFormDefault="qualified">
+
+    <xs:element name="chapter">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="chars">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="character" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="bio" type="xs:string" />
+                                        <xs:element name="pose" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:attribute name="id" type="xs:string" />
+                                                <xs:attribute name="image" type="xs:string" />
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="xs:string" />
+                                    <xs:attribute name="name" type="xs:string" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="locs">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="location" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute name="id" type="xs:string" />
+                                            <xs:attribute name="name" type="xs:string" />
+                                            <xs:attribute name="lat" type="xs:decimal" />
+                                            <xs:attribute name="long" type="xs:decimal" />
+                                            <xs:attribute name="tagline" type="xs:string" />
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="timeline">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="seq_pt" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="mysteries">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="mystery"
+                                                        maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:all>
+                                                                <xs:element name="solved"
+                                                                    type="xs:string" />
+                                                                <xs:element name="unsolved"
+                                                                    type="xs:string" />
+                                                            </xs:all>
+                                                            <xs:attribute name="id"
+                                                                type="xs:string" />
+                                                            <xs:attribute name="solved"
+                                                                type="xs:boolean" />
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="tasks">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="task" maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:simpleContent>
+                                                                <xs:extension base="xs:string">
+                                                                    <xs:attribute name="id"
+                                                                        type="xs:string" />
+                                                                    <xs:attribute name="enabled"
+                                                                        type="xs:boolean" />
+                                                                    <xs:attribute name="visible"
+                                                                        type="xs:boolean" />
+                                                                    <xs:attribute name="completed"
+                                                                        type="xs:boolean" />
+                                                                </xs:extension>
+                                                            </xs:simpleContent>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="triggers">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="trigger"
+                                                        maxOccurs="unbounded">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="action"
+                                                                    maxOccurs="unbounded">
+                                                                    <xs:complexType>
+                                                                        <xs:simpleContent>
+                                                                            <xs:extension
+                                                                                base="xs:string">
+                                                                                <xs:attribute
+                                                                                    name="type">
+                                                                                    <xs:simpleType>
+                                                                                        <xs:restriction
+                                                                                            base="xs:string">
+                                                                                            <xs:enumeration
+                                                                                                value="DIALOG" />
+                                                                                            <xs:enumeration
+                                                                                                value="ENABLE_TOOL" />
+                                                                                            <xs:enumeration
+                                                                                                value="DISABLE_TOOL" />
+                                                                                            <xs:enumeration
+                                                                                                value="END_SQPT" />
+                                                                                            <xs:enumeration
+                                                                                                value="ENABLE_TRIGGER" />
+                                                                                            <xs:enumeration
+                                                                                                value="COMPLETE_TASK" />
+                                                                                            <xs:enumeration
+                                                                                                value="CHECK_TASK" />
+                                                                                            <xs:enumeration
+                                                                                                value="ACHIEVEMENT" />
+                                                                                            <xs:enumeration
+                                                                                                value="CONSUME_TRIGGER" />
+                                                                                        </xs:restriction>
+                                                                                    </xs:simpleType>
+                                                                                </xs:attribute>
+                                                                                <xs:attribute
+                                                                                    name="lock"
+                                                                                    type="xs:boolean" />
+                                                                            </xs:extension>
+                                                                        </xs:simpleContent>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                            <xs:attribute name="id"
+                                                                type="xs:string" />
+                                                            <xs:attribute name="type">
+                                                                <xs:simpleType>
+                                                                    <xs:restriction
+                                                                        base="xs:string">
+                                                                        <xs:enumeration
+                                                                            value="AUTO" />
+                                                                        <xs:enumeration
+                                                                            value="TOOL_SUCCESS" />
+                                                                        <xs:enumeration
+                                                                            value="TOOL_FAILURE" />
+                                                                        <xs:enumeration
+                                                                            value="LOCATION_ENTER" />
+                                                                        <xs:enumeration
+                                                                            value="LOCATION_EXIT" />
+                                                                        <xs:enumeration
+                                                                            value="SCRIPTED" />
+                                                                    </xs:restriction>
+                                                                </xs:simpleType>
+                                                            </xs:attribute>
+                                                            <xs:attribute name="data"
+                                                                type="xs:string" />
+                                                            <xs:attribute name="enabled"
+                                                                type="xs:boolean" />
+                                                            <xs:attribute name="timelimit"
+                                                                type="xs:string" />
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                    <xs:attribute name="id" type="xs:integer" />
+                                    <xs:attribute name="name" type="xs:string" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+
+
+
+
+
+

@@ -21,8 +21,14 @@ public class gcTrigger {
     }
 
 
-
-    public enum Type {AUTO, TOOL, LOCATION, SCRIPTED}
+    public enum Type {
+        AUTO,
+        TOOL_SUCCESS,
+        TOOL_FAILURE,
+        LOCATION_ENTER,
+        LOCATION_EXIT,
+        SCRIPTED
+    }
 
     private boolean enabled;
 

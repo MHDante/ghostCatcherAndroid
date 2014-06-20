@@ -90,6 +90,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        downloadFile();
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
@@ -156,6 +157,10 @@ public class MainActivity extends Activity implements
         });
 
         /////////////////////////////////////////////////////////////////////////////////////////////////
+
+    }
+
+    private void downloadFile() {
         File file = new File(zipFile);
 
 
