@@ -54,9 +54,6 @@ import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 public class MainActivity extends Activity implements
         LocationListener, View.OnClickListener {
 
-    static final boolean debugging = false;
-    public static int debugLoc = 2;
-
     public static boolean transitionInProgress;
     public Map<Class, ToolLightButton> ToolMap;
 
@@ -556,10 +553,10 @@ public class MainActivity extends Activity implements
         return super.onKeyDown(keyCode, event);
     }
 
-    public class Sounds{
+    public class Sounds {
         public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip;
 
-        public Sounds(SoundPool soundPool){
+        public Sounds(SoundPool soundPool) {
             testSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
             metalClick = soundPool.load(MainActivity.this, R.raw.metal_click, 1);
             leverRoll = soundPool.load(MainActivity.this, R.raw.lever_roll, 1);
