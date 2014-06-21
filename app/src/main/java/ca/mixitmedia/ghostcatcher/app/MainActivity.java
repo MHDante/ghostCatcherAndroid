@@ -33,8 +33,11 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -147,6 +150,9 @@ public class MainActivity extends Activity implements
                     result = true;
                 } else if (velocityY > this.swipe_Min_Velocity && yDistance > this.swipe_Min_Distance) {
                     if(getCurrentFragment() instanceof LocationMap){
+                        if(toolHolderShown){
+                            gestureAreaTop = findViewById(R.id.tool_holder).getHeight();
+                        }
                         if((e1.getY() < gestureAreaTop) || (e1.getY() > gestureAreaBottom)){
                             if(e1.getY() > e2.getY()) {
                                 if (toolHolderShown && !transitionInProgress)
@@ -404,8 +410,8 @@ public class MainActivity extends Activity implements
         View journalGear = findViewById(R.id.journal_gear);
         backGear.animate().setListener(null);
         journalGear.animate().setListener(null);
-        if (back) backGear.animate().translationX(-200);
-        if (journal) journalGear.animate().translationX(200);
+        if (back) backGear.animate().translationX(-(backGear.getWidth()));
+        if (journal) journalGear.animate().translationX(backGear.getWidth());
     }
 
     public void showGears() {
@@ -416,6 +422,52 @@ public class MainActivity extends Activity implements
         journalGear.animate().setListener(null);
         backGear.animate().translationX(0);
         journalGear.animate().translationX(0);
+    }
+
+    public void hideFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
+        View left_frame, right_frame, ad_holder, fragment_container;
+
+        left_frame = findViewById(R.id.left_frame);
+        right_frame = findViewById(R.id.right_frame);
+        ad_holder = findViewById(R.id.ad_holder);
+        fragment_container = findViewById(R.id.fragment_container);
+
+        left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
+        right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
+        ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
+
+        RelativeLayout.LayoutParams fragmentContainerParams = (RelativeLayout.LayoutParams) fragment_container.getLayoutParams();
+        fragmentContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        fragmentContainerParams.addRule(RelativeLayout.ABOVE, 0);
+
+        fragment_container.setLayoutParams(fragmentContainerParams);
+        fragment_container.invalidate();
+
+        ad_holder.setVisibility(View.GONE);
+
+        isAdHolderShowing = false;
+        isLeftFrameShowing = false;
+        isRightFrameShowing = false;
+
+    }
+
+    public void showFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
+        View left_frame, right_frame, ad_holder;
+
+        left_frame = findViewById(R.id.left_frame);
+        right_frame = findViewById(R.id.right_frame);
+        ad_holder = findViewById(R.id.ad_holder);
+
+        left_frame.animate().translationX(0).setDuration(1000);
+        right_frame.animate().translationX(0).setDuration(1000);
+        ad_holder.animate().translationY(0).setDuration(1000);
+
+        ad_holder.setVisibility(View.VISIBLE);
+
+        isAdHolderShowing = true;
+        isLeftFrameShowing = true;
+        isRightFrameShowing = true;
+
     }
 
     //GOOGLE SERVICES CODE

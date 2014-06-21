@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
 import ca.mixitmedia.ghostcatcher.app.R;
@@ -48,6 +49,12 @@ public class Journal extends ToolFragment {
             }
         });
 
+        RelativeLayout.LayoutParams fragmentContainerParams = (RelativeLayout.LayoutParams) container.getLayoutParams();
+        fragmentContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        fragmentContainerParams.addRule(RelativeLayout.ABOVE, 0);
+
+        container.setLayoutParams(fragmentContainerParams);
+        container.invalidate();
 
         return view;
     }
@@ -80,7 +87,13 @@ public class Journal extends ToolFragment {
 
     @Override
     protected int getAnimatorId(boolean enter) {
-        if(enter) gcMain.playSound(gcMain.sounds.metalClick);
+        if(enter){
+            gcMain.playSound(gcMain.sounds.metalClick);
+            gcMain.hideFrame(true,true,true);
+        }
+        else
+            gcMain.showFrame(false,false,false);
+
         return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
     }
 

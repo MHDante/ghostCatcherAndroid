@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView5"
+        android:id="@+id/gear_animation"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -18,7 +18,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView3"
+        android:id="@+id/right_frame"
         android:layout_gravity="center_vertical|right"
         android:src="@drawable/frame_right"
         android:scaleType="fitEnd"
@@ -37,7 +37,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
+        android:id="@+id/left_frame"
         android:layout_gravity="left|center_vertical"
         android:src="@drawable/frame_left"
         android:scaleType="fitStart"
@@ -50,14 +50,14 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView4"
+        android:id="@+id/ad_holder"
         android:layout_gravity="center_horizontal|bottom"
         android:src="@drawable/ad_holder"
         android:scaleType="fitEnd"
         android:adjustViewBounds="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/imageView3"
-        android:layout_alignEnd="@+id/imageView3"
+        android:layout_alignRight="@+id/right_frame"
+        android:layout_alignEnd="@+id/right_frame"
         android:layout_marginTop="-40dp" />
 
     <FrameLayout
@@ -67,7 +67,7 @@
         android:id="@+id/fragment_container"
         android:layout_alignParentLeft="true"
         android:visibility="visible"
-        android:layout_above="@+id/imageView4"
+        android:layout_above="@+id/ad_holder"
         android:layout_below="@+id/surfaceView">
 
     </FrameLayout>
@@ -85,7 +85,7 @@
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_alignBottom="@+id/imageView"
+            android:layout_alignBottom="@+id/tool_selector"
             android:visibility="visible"
             android:gravity="top"
             android:weightSum="28">
@@ -204,7 +204,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView"
+            android:id="@+id/tool_selector"
             android:layout_gravity="center_horizontal|top"
             android:src="@drawable/toolselector"
             android:scaleType="fitStart"
