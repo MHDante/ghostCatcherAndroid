@@ -15,15 +15,6 @@
         android:src="@drawable/gear_animation_0000"
         android:alpha=".4" />
 
-    <FrameLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_container"
-        android:layout_alignParentLeft="true"
-        android:visibility="visible"
-        android:layout_above="@+id/imageView4"
-        android:layout_below="@+id/surfaceView">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,7 +27,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    </FrameLayout>
 
     <SurfaceView
         android:layout_width="0px"
@@ -81,12 +71,6 @@
         android:layout_below="@+id/surfaceView">
 
     </FrameLayout>
-
-    <SurfaceView
-        android:layout_width="0px"
-        android:layout_height="40dp"
-        android:id="@+id/surfaceView"
-        android:layout_gravity="right|top" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
