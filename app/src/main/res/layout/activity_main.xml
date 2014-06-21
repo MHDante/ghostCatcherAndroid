@@ -5,23 +5,17 @@
     android:layout_height="match_parent"
     android:id="@+id/activity_bg">
 
-    <FrameLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_container"
-        android:layout_alignParentLeft="true"
-        android:visibility="visible"
-        android:layout_above="@+id/imageView4"
-        android:layout_below="@+id/surfaceView">
-
-    </FrameLayout>
-
-    <SurfaceView
-        android:layout_width="0px"
-        android:layout_height="40dp"
-        android:id="@+id/surfaceView"
-        android:layout_gravity="right|top" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView3"
+        android:layout_gravity="center_vertical|right"
+        android:src="@drawable/frame_right"
+        android:scaleType="fitEnd"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -39,18 +33,6 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView3"
-        android:layout_gravity="center_vertical|right"
-        android:src="@drawable/frame_right"
-        android:scaleType="fitEnd"
-        android:adjustViewBounds="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/imageView4"
         android:layout_gravity="center_horizontal|bottom"
         android:src="@drawable/ad_holder"
@@ -60,6 +42,24 @@
         android:layout_alignRight="@+id/imageView3"
         android:layout_alignEnd="@+id/imageView3"
         android:layout_marginTop="-40dp" />
+
+    <FrameLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_container"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"
+        android:layout_above="@+id/imageView4"
+        android:layout_below="@+id/surfaceView">
+
+    </FrameLayout>
+
+    <SurfaceView
+        android:layout_width="0px"
+        android:layout_height="40dp"
+        android:id="@+id/surfaceView"
+        android:layout_gravity="right|top" />
 
     <RelativeLayout
         android:layout_width="fill_parent"

@@ -123,8 +123,10 @@ public class MainActivity extends Activity implements
 
                 float gestureAreaLeft, gestureAreaRight,gestureAreaTop,gestureAreaBottom;
 
-                gestureAreaLeft = width * (15 /100);
-                gestureAreaRight = width - (width * (20 /100));
+                gestureAreaLeft = width * (15f /100f);
+                gestureAreaRight = width - gestureAreaLeft;
+                gestureAreaTop = height * (15f/100f);
+                gestureAreaBottom = height - gestureAreaTop;
 
                 if (velocityX > this.swipe_Min_Velocity && xDistance > this.swipe_Min_Distance) {
                     if(getCurrentFragment() instanceof LocationMap){
@@ -146,7 +148,18 @@ public class MainActivity extends Activity implements
 
                     result = true;
                 } else if (velocityY > this.swipe_Min_Velocity && yDistance > this.swipe_Min_Distance) {
-                    if (e1.getY() > e2.getY()) {
+                    if(getCurrentFragment() instanceof LocationMap){
+                        if((e1.getY() < gestureAreaTop) || (e1.getY() > gestureAreaBottom)){
+                            if(e1.getY() > e2.getY()) {
+                                if (toolHolderShown && !transitionInProgress)
+                                    toggleToolMenu();
+                            } else {
+                                if (!toolHolderShown && !transitionInProgress)
+                                    toggleToolMenu();
+                            }
+                        }
+                    }
+                    else if(e1.getY() > e2.getY()) {
                         if (toolHolderShown && !transitionInProgress)
                             toggleToolMenu();
                     } else {
