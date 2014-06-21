@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.gesture.Gesture;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -26,6 +27,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -111,17 +113,51 @@ public class MainActivity extends Activity implements
                 velocityY = Math.abs(velocityY);
                 boolean result = false;
 
+                Display display = MainActivity.this.getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;
+                int height = size.y;
+
+                float gestureAreaLeft, gestureAreaRight,gestureAreaTop,gestureAreaBottom;
+
+                gestureAreaLeft = width * (15f /100f);
+                gestureAreaRight = width - gestureAreaLeft;
+                gestureAreaTop = height * (15f/100f);
+                gestureAreaBottom = height - gestureAreaTop;
+
                 if (velocityX > this.swipe_Min_Velocity && xDistance > this.swipe_Min_Distance) {
-                    if (e1.getX() > e2.getX()) {
+                    if(getCurrentFragment() instanceof LocationMap){
+                        if((e1.getX() < gestureAreaLeft) || (e1.getX() > gestureAreaRight)){
+                            if (e1.getX() > e2.getX()) {
+                                    onClick(ToolMap.get(Journal.class));
+                            } else {
+                                    onClick(ToolMap.get(Communicator.class));
+                            }
+                        }
+                    }
+                    else if (e1.getX() > e2.getX()) {
                         if (!(getCurrentFragment() instanceof Journal))
                             onClick(ToolMap.get(Journal.class));
                     } else {
                         if (!(getCurrentFragment() instanceof Communicator))
                             onClick(ToolMap.get(Communicator.class));
                     }
+
                     result = true;
                 } else if (velocityY > this.swipe_Min_Velocity && yDistance > this.swipe_Min_Distance) {
-                    if (e1.getY() > e2.getY()) {
+                    if(getCurrentFragment() instanceof LocationMap){
+                        if((e1.getY() < gestureAreaTop) || (e1.getY() > gestureAreaBottom)){
+                            if(e1.getY() > e2.getY()) {
+                                if (toolHolderShown && !transitionInProgress)
+                                    toggleToolMenu();
+                            } else {
+                                if (!toolHolderShown && !transitionInProgress)
+                                    toggleToolMenu();
+                            }
+                        }
+                    }
+                    else if(e1.getY() > e2.getY()) {
                         if (toolHolderShown && !transitionInProgress)
                             toggleToolMenu();
                     } else {
