@@ -37,13 +37,6 @@ public class gcSeqPt {
         return locations;
     }
 
-    public gcLocation getLocation(String id) {
-        for (gcLocation location : getLocations()) {
-            if (location.id.equals(id)) return location;
-        }
-        return null;
-    }
-
     public gcTrigger getTrigger(gcLocation loc) {
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
@@ -54,6 +47,7 @@ public class gcSeqPt {
         }
         return null;
     }
+
     public gcTrigger getAutoTrigger() {
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.AUTO) { //todo: abstract.

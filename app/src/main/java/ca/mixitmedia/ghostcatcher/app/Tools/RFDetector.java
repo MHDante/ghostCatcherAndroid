@@ -25,9 +25,6 @@ import ca.mixitmedia.ghostcatcher.app.R;
 
 public class RFDetector extends ToolFragment implements SensorEventListener, LocationListener {
 
-    public static final int GPS_MIN_UPDATE_TIME_MS = 3000; //3 seconds
-    public static final int GPS_MIN_UPDATE_DISTANCE_M = 0; //0 meters
-
     TextView latitudeTextView;
     TextView longitudeTextView;
     TextView compassTextView;
@@ -36,8 +33,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
     ImageView compassFace;
 
     SensorManager sensorManager;
-    LocationManager locationManager;
-
     double latitude;
     double longitude;
 
@@ -91,7 +86,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
 
         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
 
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
         destination = new Location("dummyprovider");
         destination.setLatitude(43.652202);
         destination.setLongitude(-79.5814);
@@ -105,7 +100,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
         //register listener for the sensors
         registerSensor(Sensor.TYPE_ORIENTATION);
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_MIN_UPDATE_TIME_MS, GPS_MIN_UPDATE_DISTANCE_M, this);
+
     }
 
     public void registerSensor(int sensorType) {
@@ -117,7 +112,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
     @Override
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
-        locationManager.removeUpdates(this); //stop location updates
         super.onPause();
     }
 

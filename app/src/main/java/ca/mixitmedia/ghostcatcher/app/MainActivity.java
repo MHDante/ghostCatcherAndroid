@@ -4,18 +4,15 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.gesture.Gesture;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -26,15 +23,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -43,13 +38,12 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.Tools.*;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAction;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcActionManager;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcSeqPt;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigger;
-import ca.mixitmedia.ghostcatcher.utils.Tuple;
 import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 
@@ -59,10 +53,18 @@ public class MainActivity extends Activity implements
     public static boolean transitionInProgress;
     public Map<Class, ToolLightButton> ToolMap;
 
-    //Location mCurrentLocation;
+    public Location getCurrentGPSLocation() {
+        return currentGPSLocation;
+    }
+
+    LocationManager locationManager;
+    Location currentGPSLocation;
     public final int SOUND_POOL_MAX_STREAMS = 4;
     public SoundPool soundPool;
     public Sounds sounds;
+
+    public static final int GPS_MIN_UPDATE_TIME_MS = 3000; //3 seconds
+    public static final int GPS_MIN_UPDATE_DISTANCE_M = 0; //0 meters
 
     //////////////////LifeCycle
 
@@ -72,7 +74,7 @@ public class MainActivity extends Activity implements
         soundPool = new SoundPool(SOUND_POOL_MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
 
         sounds = new Sounds(soundPool);
-
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         super.onCreate(savedInstanceState);
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -203,6 +205,10 @@ public class MainActivity extends Activity implements
                 if (toolHolderShown) toggleToolMenu();
             }
         }, 500);
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPS_MIN_UPDATE_TIME_MS, GPS_MIN_UPDATE_DISTANCE_M, this);
+
+
         super.onResume();
     }
 
@@ -231,7 +237,9 @@ public class MainActivity extends Activity implements
                                 String type = tokens[1];
                                 String id = tokens[0];
                                 if (type.equals("location")) {
-                                    onLocationChanged(gcEngine.Access().getCurrentSeqPt().getLocation(id).asAndroidLocation());
+                                    gcLocation loc = gcEngine.Access().getLocation(id);
+                                    Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG);
+                                    onLocationChanged(loc.asAndroidLocation());
                                 }
                             }
                         }
@@ -329,6 +337,7 @@ public class MainActivity extends Activity implements
     @Override
     protected void onPause() {
         if (gcAudio.isPlaying()) gcAudio.pause();
+        locationManager.removeUpdates(this); //stop location updates
         super.onPause();
     }
 
@@ -358,7 +367,7 @@ public class MainActivity extends Activity implements
 
     public void triggerLocation() {
         gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getAutoTrigger();
-        if (trigger == null) gcEngine.Access().getCurrentSeqPt().getTrigger(currentLocation);
+        if (trigger == null) gcEngine.Access().getCurrentSeqPt().getTrigger(playerLocationInStory);
         if (trigger != null) {
             trigger.activate(actionManager);
         }
@@ -461,29 +470,36 @@ public class MainActivity extends Activity implements
     }
 
 
-    private gcLocation currentLocation;
+    private gcLocation playerLocationInStory;
 
-    public gcLocation getCurrentLocation() {
-        return currentLocation;
+    public gcLocation getPlayerLocationInStory() {
+        return playerLocationInStory;
     }
 
     //
     @Override
     public void onLocationChanged(Location location) {
 
+        ToolFragment tf = (ToolFragment) getCurrentFragment();
+
+        if (tf instanceof LocationListener) {
+            ((LocationListener) tf).onLocationChanged(location);
+        }
+
+
         if (location == null) {
-            currentLocation = null;
+            playerLocationInStory = null;
             return;
         }
-        List<gcLocation> locations = gcEngine.Access().getCurrentSeqPt().getLocations();
+        List<gcLocation> storyLocations = gcEngine.Access().getCurrentSeqPt().getLocations();
         boolean hit = false;
-
         float accuracy = location.getAccuracy();
-        for (gcLocation l : locations) {
+
+        for (gcLocation l : storyLocations) {
             float distance[] = new float[3]; // ugh, ref parameters.
             Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
             if (distance[0] <= accuracy) {
-                currentLocation = l;
+                playerLocationInStory = l;
                 gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getTrigger(l);
                 if (trigger.isEnabled())
                     ToolMap.get(Biocalibrate.class).setEnabled(true);
@@ -492,11 +508,11 @@ public class MainActivity extends Activity implements
         }
 
         if (hit) {
-            ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+
             if (tf instanceof LocationMap) {
                 LocationMap m = (LocationMap) tf;
                 for (gcLocation l : m.locations) {
-                    if (l == currentLocation) {
+                    if (l == playerLocationInStory) {
                         m.markers.get(m.locations.indexOf(l)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2));
                     } else {
                         m.markers.get(m.locations.indexOf(l)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));

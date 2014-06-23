@@ -9,14 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -73,7 +70,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
         for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
             gcLocation loc = locations.get(selectedLocation);
-            if (gcMain.getCurrentLocation() == null || !loc.id.equals(gcMain.getCurrentLocation().id)) {
+            if (gcMain.getPlayerLocationInStory() == null || !loc.id.equals(gcMain.getPlayerLocationInStory().id)) {
                 markers.add(map.addMarker(new MarkerOptions()
                         .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
@@ -176,8 +173,8 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         //FrameLayout.LayoutParams LLParams
         //=  new WindowManager.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT);
 
-        if (gcMain.getCurrentLocation() != null
-                && marker.getTitle().equals(gcMain.getCurrentLocation().name) //todo:hacks
+        if (gcMain.getPlayerLocationInStory() != null
+                && marker.getTitle().equals(gcMain.getPlayerLocationInStory().name) //todo:hacks
                 && gcMain.isToolEnabled(Biocalibrate.class)) {
 
             ImageView iv = new ImageView(getActivity());
@@ -201,13 +198,13 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (gcMain.getCurrentLocation() != null && marker.getTitle().equals(gcMain.getCurrentLocation().name)) { //todo:hacks
+        if (gcMain.getPlayerLocationInStory() != null && marker.getTitle().equals(gcMain.getPlayerLocationInStory().name)) { //todo:hacks
             gcMain.swapTo(Biocalibrate.class);
         }
     }
 
     protected int getAnimatorId(boolean enter) {
-        if(enter) gcMain.playSound(gcMain.sounds.strangeMetalNoise);
+        if (enter) gcMain.playSound(gcMain.sounds.strangeMetalNoise);
         return (enter) ? R.animator.transition_in_from_top : R.animator.transition_out_from_bottom;
     }
 

@@ -49,6 +49,14 @@ public class gcEngine {
         return ourInstance;
     }
 
+    public gcLocation getLocation(String id) {
+        for (gcLocation location : locations) {
+            if (location.id.equals(id))
+                return location;
+        }
+        return null;
+    }
+
     public static void init(Context context) {
         ourInstance = new gcEngine(context);
     }
