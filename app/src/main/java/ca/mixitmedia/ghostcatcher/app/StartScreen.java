@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
@@ -27,36 +27,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import ca.mixitmedia.ghostcatcher.app.R;
-
 public class StartScreen extends Activity {
 
     private ProgressDialog mProgressDialog;
 
-    //private static String url = "http://mhdante.com/mixitmedia.zip";
     private String url;
     private File fileDir = new File(Environment.getExternalStorageDirectory(), "/mixitmedia");
     String unzipLocation = Environment.getExternalStorageDirectory() + "/";
     private String zipFile = Environment.getExternalStorageDirectory() + "/mixitmedia.zip";
-
-
-    /*private boolean checkConnection(Context context) {
-
-        final ConnectivityManager mConnectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        final NetworkInfo netInfo = mConnectivityManager.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        } else
-            return false;
-    }*/
-
 
 
     @Override
@@ -72,13 +57,27 @@ public class StartScreen extends Activity {
         url = this.getString(R.string.url);
         File file = new File(zipFile);
 
-        if (!fileDir.exists()) {
+        Button bCont = (Button) findViewById(R.id.button1);
+        Button bNew   =   (Button) findViewById(R.id.button2);
+        Button bSettings = (Button) findViewById(R.id.button3);
+        Button bCredits = (Button) findViewById(R.id.button4);
 
+        bCont.setEnabled(false);
+
+        if (!fileDir.exists()) {
             if (file.exists()) {
-                try {
-                    unzip();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Log.d("###","#$#$#");
+                Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
+                if ( fileToMD5(zipFile).equals("1674e6bb3187899a82359639ad0ce488") ) {
+                    try {
+                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+                        unzip();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
                 }
             }
             else {
@@ -89,7 +88,7 @@ public class StartScreen extends Activity {
                     //DownloadAre you sure? If yes, ...
                     //Toast.makeText(this,"ARE YOU SURE?",Toast.LENGTH_LONG).show();
                     try {
-                        showDialog();
+                        internetDialog();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -105,18 +104,87 @@ public class StartScreen extends Activity {
                 e.printStackTrace();
             }
         }
-        else {
+        /*else {
             if (file.exists()) {
                 file.delete();
+            }
+        }*/
+    }
+
+    public static String fileToMD5(String filePath) {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(filePath);
+            byte[] buffer = new byte[1024];
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            int numRead = 0;
+            while (numRead != -1) {
+                numRead = inputStream.read(buffer);
+                if (numRead > 0)
+                    digest.update(buffer, 0, numRead);
+            }
+            byte [] md5Bytes = digest.digest();
+            return convertHashToString(md5Bytes);
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    public void showDialog() throws Exception
+    public void settingsDialog(View v) throws Exception{
+
+        AlertDialog dialog;
+
+        //AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
+
+        final String[] items = {" 1 "," 2 "," 3 "," 4 "};
+
+        final ArrayList selectedItems = new ArrayList();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMultiChoiceItems(items, null,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    // indexSelected contains the index of item (of which checkbox checked)
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                        if (isChecked) {
+                            // If the user checked the item, add it to the selected items
+                            // write your code when user checked the checkbox
+                            selectedItems.add(indexSelected);
+                        } else if (selectedItems.contains(indexSelected)) {
+                            // Else, if the item is already in the array, remove it
+                            // write your code when user unchecked the checkbox
+                            selectedItems.remove(Integer.valueOf(indexSelected));
+                        }
+                    }
+                });
+        builder.setTitle("IS THIS WHAT YOU WANTED DANTE?");
+
+        dialog = builder.create();//AlertDialog dialog; create like this outside onClick
+        dialog.show();
+    }
+
+    private static String convertHashToString(byte[] md5Bytes) {
+        String returnVal = "";
+        for (int i = 0; i < md5Bytes.length; i++) {
+            returnVal += Integer.toString(( md5Bytes[i] & 0xff ) + 0x100, 16).substring(1);
+        }
+        return returnVal;
+    }
+
+    public void internetDialog() throws Exception
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
 
-        builder.setMessage("Ghost Catcher needs to download a file. Overage charges may apply. \nDo you want to continue?");
+        builder.setMessage("Ghost Catcher needs to download a file. Overage charges may apply. \n\nDo you want to continue?");
 
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
