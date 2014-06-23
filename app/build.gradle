@@ -34,7 +34,7 @@ android {
 }
 
 task copyApk(type: Copy) {
-    from 'build/apk'
+    from 'build/outputs/apk'
     into 'apk'
 }
 
@@ -42,7 +42,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:4.2.42'
     compile 'com.android.support:support-v4:19.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //compile files('libs/wikitudesdk.jar')
 }
 
 project.afterEvaluate {
