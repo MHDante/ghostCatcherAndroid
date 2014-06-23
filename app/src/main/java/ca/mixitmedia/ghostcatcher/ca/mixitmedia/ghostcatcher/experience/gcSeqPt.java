@@ -47,8 +47,9 @@ public class gcSeqPt {
     public gcTrigger getTrigger(gcLocation loc) {
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
-                if (t.data.equalsIgnoreCase(loc.id) && t.isEnabled())
-                    return t;
+                if (t.data.equalsIgnoreCase(loc.id))
+                    if (t.isEnabled())
+                        return t;
             }
         }
         return null;

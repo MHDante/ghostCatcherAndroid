@@ -85,6 +85,7 @@ public class MainActivity extends Activity implements
             put(Amplifier.class, getToolLight(Amplifier.class, R.id.tool_light_3));
             put(Tester.class, getToolLight(Tester.class, R.id.tool_light_4));
             put(Imager.class, getToolLight(Imager.class, R.id.tool_light_5));
+            put(RFDetector.class, getToolLight(RFDetector.class, R.id.tool_light_6));
         }};
         showTool(Communicator.class);
         showTool(Journal.class);
@@ -483,7 +484,8 @@ public class MainActivity extends Activity implements
             Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
             if (distance[0] <= accuracy) {
                 currentLocation = l;
-                if (gcEngine.Access().getCurrentSeqPt().getTrigger(l).isEnabled())
+                gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getTrigger(l);
+                if (trigger.isEnabled())
                     ToolMap.get(Biocalibrate.class).setEnabled(true);
                 hit = true;
             }

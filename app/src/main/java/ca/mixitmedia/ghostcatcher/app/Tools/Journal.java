@@ -1,5 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.app.ActionBar;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
 import ca.mixitmedia.ghostcatcher.app.R;
