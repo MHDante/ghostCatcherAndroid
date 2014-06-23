@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:text="@string/start_activity_b3"
         android:id="@+id/button3"
+        android:onClick="settingsDialog"
         android:layout_gravity="center_horizontal" />
 
     <Button

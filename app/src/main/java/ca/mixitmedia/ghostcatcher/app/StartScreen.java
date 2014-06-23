@@ -25,17 +25,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import ca.mixitmedia.ghostcatcher.app.R;
 
 public class StartScreen extends Activity {
 
@@ -73,7 +70,7 @@ public class StartScreen extends Activity {
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
                 if ( fileToMD5(zipFile).equals("1674e6bb3187899a82359639ad0ce488") ) {
                     try {
-                        Log.d("UNZIP", "NOT CORRUPT FILE. MAN THE HARPOONS. YAAAY");
+                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
                         unzip();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -91,7 +88,7 @@ public class StartScreen extends Activity {
                     //DownloadAre you sure? If yes, ...
                     //Toast.makeText(this,"ARE YOU SURE?",Toast.LENGTH_LONG).show();
                     try {
-                        showDialog();
+                        internetDialog();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -142,6 +139,39 @@ public class StartScreen extends Activity {
         }
     }
 
+    public void settingsDialog(View v) throws Exception{
+
+        AlertDialog dialog;
+
+        //AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
+
+        final String[] items = {" 1 "," 2 "," 3 "," 4 "};
+
+        final ArrayList selectedItems = new ArrayList();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMultiChoiceItems(items, null,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    // indexSelected contains the index of item (of which checkbox checked)
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                        if (isChecked) {
+                            // If the user checked the item, add it to the selected items
+                            // write your code when user checked the checkbox
+                            selectedItems.add(indexSelected);
+                        } else if (selectedItems.contains(indexSelected)) {
+                            // Else, if the item is already in the array, remove it
+                            // write your code when user unchecked the checkbox
+                            selectedItems.remove(Integer.valueOf(indexSelected));
+                        }
+                    }
+                });
+        builder.setTitle("IS THIS WHAT YOU WANTED DANTE?");
+
+        dialog = builder.create();//AlertDialog dialog; create like this outside onClick
+        dialog.show();
+    }
+
     private static String convertHashToString(byte[] md5Bytes) {
         String returnVal = "";
         for (int i = 0; i < md5Bytes.length; i++) {
@@ -150,7 +180,7 @@ public class StartScreen extends Activity {
         return returnVal;
     }
 
-    public void showDialog() throws Exception
+    public void internetDialog() throws Exception
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
 
