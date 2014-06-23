@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -52,24 +52,27 @@
         android:layout_gravity="center_horizontal" />
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:id="@+id/">
+        android:id="@+id/LinearLayout02"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent">
 
         <ImageView
             android:src="@drawable/ru_logo"
-            android:layout_width="50dp"
-            android:layout_height="fill_parent"
-            android:id="@+id/imageView2"
+            android:id="@+id/ImageView2"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="left"
             android:adjustViewBounds="false" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:src="@drawable/tmz_logo"
             android:id="@+id/imageView3"
-            android:layout_gravity="right" />
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="right"
+            android:adjustViewBounds="false" />
     </LinearLayout>
-
 
 </LinearLayout>
