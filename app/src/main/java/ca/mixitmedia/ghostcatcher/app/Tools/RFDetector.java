@@ -6,8 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +18,27 @@ import android.widget.TextView;
 import ca.mixitmedia.ghostcatcher.app.R;
 
 /**
- * Created by Alexander on 2014-06-17.
+ * Created by Alexander on 2014-06-17
  */
 
-public class RFDetector extends ToolFragment implements SensorEventListener, LocationListener {
+public class RFDetector extends ToolFragment implements SensorEventListener {
 
-    TextView latitudeTextView;
+	/**
+	 * references to the UI elements
+	 */
+	TextView latitudeTextView;
     TextView longitudeTextView;
     TextView compassTextView;
     TextView destinationTextView;
 
     ImageView compassFace;
 
-    SensorManager sensorManager;
-    double latitude;
-    double longitude;
+	/**
+	 * SensorManager is used to register/unregister this class as a SensorEventListener
+	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html">SensorManager</a>
+	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorEventListener.html">SensorEventListener</a>
+	 */
+	SensorManager sensorManager;
 
     /**
      * The angle between magnetic north and the front of the device
@@ -61,7 +65,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
      */
     float relativeBearing;
 
-    Location destination;
+	/**
+	 * debug
+	 */
+	Location destination;
 
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
@@ -94,22 +101,24 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
         return view;
     }
 
-    @Override
+	/**
+	 * Registers this fragment to resume receiving sensor data
+	 */
+	@Override
     public void onResume() {
         super.onResume();
         //register listener for the sensors
-        registerSensor(Sensor.TYPE_ORIENTATION);
+	    sensorManager.registerListener(this,
+			    sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+			    SensorManager.SENSOR_DELAY_GAME);
 
 
     }
 
-    public void registerSensor(int sensorType) {
-        sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(sensorType),
-                SensorManager.SENSOR_DELAY_GAME);
-    }
-
-    @Override
+	/**
+	 * Unregisters this fragment to pause receiving sensor data
+	 */
+	@Override
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
         super.onPause();
@@ -123,11 +132,11 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
     @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
-            case R.id.amplifier_button:
+            /*case R.id.amplifier_button:
 
                 System.out.println("button pressed");
 
-                return true;
+                return true;*/
             default:
                 return false;
         }
@@ -181,33 +190,15 @@ public class RFDetector extends ToolFragment implements SensorEventListener, Loc
         relativeBearing = newRelativeBearing;
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
+	/**
+	 * called by the onLocationChanged of the parent MainActivity
+	 * @param location of the user's device
+	 */
+	public void onLocationChanged(Location location) {
         // called when the listener is notified with a location update from the GPS
-        System.out.println();
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
         bearing = (location.bearingTo(destination) + 360) % 360;
 
-        // proven working:
-        //bearing = location.bearingTo(destination);
-
-        latitudeTextView.setText("Lat: " + latitude);
-        longitudeTextView.setText("Long: " + longitude);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        //stub
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        //stub
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        //stub
-    }
+	    latitudeTextView.setText("Lat: " + location.getLatitude());
+	    longitudeTextView.setText("Long: " + location.getLongitude());
+	}
 }
