@@ -58,7 +58,7 @@
         android:layout_width="fill_parent">
 
         <ImageView
-            android:src="@drawable/ru_logo"
+            android:src="@drawable/shine"
             android:id="@+id/ImageView2"
             android:layout_width="0px"
             android:layout_height="match_parent"

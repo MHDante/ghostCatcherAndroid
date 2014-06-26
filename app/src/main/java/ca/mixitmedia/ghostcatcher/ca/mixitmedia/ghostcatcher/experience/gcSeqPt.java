@@ -16,6 +16,7 @@ import ca.mixitmedia.ghostcatcher.app.R;
 /**
  * Created by Dante on 07/03/14.
  */
+
 public class gcSeqPt {
     String id;
     String name;
