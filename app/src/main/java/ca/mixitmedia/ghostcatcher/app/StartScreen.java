@@ -66,9 +66,8 @@ public class StartScreen extends Activity {
 
         if (!fileDir.exists()) {
             if (file.exists()) {
-                Log.d("###","#$#$#");
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                if ( fileToMD5(zipFile).equals("1674e6bb3187899a82359639ad0ce488") ) {
+                if ( fileToMD5(zipFile).equals("8d4279da23b5b6af907b099db58dc910") ) {
                     try {
                         Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
                         unzip();
@@ -104,11 +103,6 @@ public class StartScreen extends Activity {
                 e.printStackTrace();
             }
         }
-        /*else {
-            if (file.exists()) {
-                file.delete();
-            }
-        }*/
     }
 
     public static String fileToMD5(String filePath) {
@@ -141,9 +135,12 @@ public class StartScreen extends Activity {
 
     public void settingsDialog(View v) throws Exception{
 
-        AlertDialog dialog;
 
-        //AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
+        //Inflate listview
+        //Listview inside scrollview inside linear layout
+
+
+        AlertDialog dialog;
 
         final String[] items = {" 1 "," 2 "," 3 "," 4 "};
 
@@ -157,21 +154,20 @@ public class StartScreen extends Activity {
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
                             // If the user checked the item, add it to the selected items
-                            // write your code when user checked the checkbox
                             selectedItems.add(indexSelected);
                         } else if (selectedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
-                            // write your code when user unchecked the checkbox
                             selectedItems.remove(Integer.valueOf(indexSelected));
                         }
                     }
                 });
         builder.setTitle("IS THIS WHAT YOU WANTED DANTE?");
 
-        dialog = builder.create();//AlertDialog dialog; create like this outside onClick
+        dialog = builder.create();
         dialog.show();
     }
 
+    //From internet
     private static String convertHashToString(byte[] md5Bytes) {
         String returnVal = "";
         for (int i = 0; i < md5Bytes.length; i++) {
@@ -273,7 +269,6 @@ public class StartScreen extends Activity {
                 try {
                     unzip();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
