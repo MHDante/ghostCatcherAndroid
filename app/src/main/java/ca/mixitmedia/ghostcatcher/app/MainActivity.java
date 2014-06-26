@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements
     public Map<Class, ToolLightButton> ToolMap;
 
     Location mCurrentLocation;
-    public AnimationDrawable gearsBackground;
+    //public AnimationDrawable gearsBackground;
 
     //////////////////LifeCycle
 
@@ -72,7 +72,7 @@ public class MainActivity extends Activity implements
         gcEngine.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
+        //gearsBackground = (AnimationDrawable) findViewById(R.id.gearsbg).getBackground();
         ToolMap = new HashMap<Class, ToolLightButton>() {{
             put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
             put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
