@@ -66,7 +66,6 @@ public class StartScreen extends Activity {
 
         if (!fileDir.exists()) {
             if (file.exists()) {
-                Log.d("###","#$#$#");
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
                 if ( fileToMD5(zipFile).equals("1674e6bb3187899a82359639ad0ce488") ) {
                     try {
