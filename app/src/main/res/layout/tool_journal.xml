@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:weightSum="100"
-        android:layout_alignBottom="@+id/tool_selector">
+        android:layout_alignBottom="@+id/overlay">
 
         <Space
             android:layout_width="0dp"
@@ -79,7 +79,7 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:id="@+id/imageBullet1"
+                                    android:id="@+id/bullet_check1"
                                     android:src="@drawable/bullet_check"
                                     android:layout_margin="15dp" />
 
@@ -105,7 +105,7 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:id="@+id/imageView2"
+                                    android:id="@+id/bullet_check2"
                                     android:src="@drawable/bullet_check"
                                     android:layout_margin="15dp" />
 
@@ -130,7 +130,7 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:id="@+id/right_frame"
+                                    android:id="@+id/bullet_check3"
                                     android:src="@drawable/bullet_check"
                                     android:layout_margin="15dp" />
 
@@ -155,7 +155,7 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:id="@+id/imageView5"
+                                    android:id="@+id/bullet_check4"
                                     android:src="@drawable/bullet_check"
                                     android:layout_margin="15dp" />
 
@@ -223,7 +223,7 @@
                     <ImageView
                         android:layout_width="150dp"
                         android:layout_height="150dp"
-                        android:id="@+id/imageView7"
+                        android:id="@+id/character_bio1"
                         android:src="@drawable/gc_seq1"
                         android:layout_marginTop="40dp" />
 
@@ -272,7 +272,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tool_selector"
+        android:id="@+id/overlay"
         android:src="@drawable/journal"
         android:adjustViewBounds="true"
         android:layout_alignParentLeft="true"

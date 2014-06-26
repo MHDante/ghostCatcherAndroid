@@ -1,26 +1,20 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import java.io.IOException;
-
-import android.content.Context;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.utils.*;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Imager extends ToolFragment {
 
@@ -41,9 +35,14 @@ public class Imager extends ToolFragment {
         previewHolder = preview.getHolder();
         previewHolder.addCallback(surfaceCallback);
         previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        ImagerFrame = (ImageView) v.findViewById(R.id.imagerFrame);
-        return v;
+        ImagerFrame = (ImageView) v.findViewById(R.id.overlay);
 
+        ImageView overlay = (ImageView) v.findViewById(R.id.overlay);
+
+        Uri rootUri = Uri.fromFile(gcEngine.Access().root);
+        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("imager").appendPath("imager.png").build());
+
+        return v;
     }
 
     @Override

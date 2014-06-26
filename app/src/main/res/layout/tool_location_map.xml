@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:weightSum="100"
-        android:layout_alignBottom="@+id/tool_selector">
+        android:layout_alignBottom="@+id/overlay">
 
         <Space
             android:layout_width="0dp"
@@ -50,27 +50,17 @@
                     android:layout_alignParentTop="true"
                     android:layout_gravity="center_horizontal|bottom">
 
-                    <RelativeLayout
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:background="#bd000000"
-                        android:clickable="false">
+                        android:weightSum="100"
+                        android:baselineAligned="false"
+                        android:background="#ffadabaf">
 
                         <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/right"
-                            android:src="@drawable/btn_playback_play"
-                            android:background="@android:color/transparent"
-                            android:adjustViewBounds="true"
-                            android:onClick="onClick"
-                            android:layout_alignBottom="@+id/imageThumbnail"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
                             android:id="@+id/left"
                             android:src="@drawable/btn_playback_play"
                             android:scaleX="-1"
@@ -78,10 +68,11 @@
                             android:onClick="onClick"
                             android:layout_alignBottom="@+id/imageThumbnail"
                             android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true" />
+                            android:layout_alignParentStart="true"
+                            android:layout_weight="10" />
 
                         <ImageView
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="50dp"
                             android:id="@+id/imageThumbnail"
                             android:src="@drawable/shine"
@@ -90,17 +81,19 @@
                             android:scaleType="centerCrop"
                             android:layout_alignParentTop="true"
                             android:layout_toRightOf="@+id/left"
-                            android:layout_marginBottom="40dp" />
+                            android:layout_marginBottom="40dp"
+                            android:layout_weight="20" />
 
                         <LinearLayout
                             android:orientation="vertical"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_toLeftOf="@+id/right"
                             android:layout_toRightOf="@+id/imageThumbnail"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:layout_weight="60">
 
                             <TextView
                                 android:id="@+id/title"
@@ -132,7 +125,21 @@
                                 android:gravity="center"
                                 android:textColor="#ffffffff" />
                         </LinearLayout>
-                    </RelativeLayout>
+
+                        <ImageButton
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/right"
+                            android:src="@drawable/btn_playback_play"
+                            android:background="@android:color/transparent"
+                            android:adjustViewBounds="true"
+                            android:onClick="onClick"
+                            android:layout_alignBottom="@+id/imageThumbnail"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_weight="10" />
+
+                    </LinearLayout>
                 </ViewFlipper>
             </FrameLayout>
         </TableRow>
@@ -141,7 +148,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tool_selector"
+        android:id="@+id/overlay"
         android:src="@drawable/map_overlay"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
