@@ -680,7 +680,11 @@ public class MainActivity extends Activity implements
 		return super.onKeyDown(keyCode, event);
 	}
 
-	// Define a DialogFragment that displays the error dialog
+    public int playSound(int soundName) {
+        return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
+    }
+
+    // Define a DialogFragment that displays the error dialog
 	public static class ErrorDialogFragment extends DialogFragment {
 		// Global field to contain the error dialog
 		private Dialog mDialog;
