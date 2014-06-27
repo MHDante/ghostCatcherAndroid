@@ -1,0 +1,11 @@
+﻿gc_seq14_2
+
+#map
+
+#bio_calibrate
+
+>>ghost_machine
+<<pose1
+
+7, Spirit X has called us. You are out of time... Use the RF Detector, then use the Imager. I won't be able to help you soon... Hurry.
+

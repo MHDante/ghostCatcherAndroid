@@ -1,0 +1,15 @@
+﻿gc_seq15_4
+
+>>spirit_x
+
+<<static
+
+Today I, as a man of science, a modern man of true truth, and facts, may utter my first honest words... of prayer... and of thanks, not for life, as simpler men would do for some mystical birth... These naive praises to some god are meaningless. Instead I praise what I have built, have paid for, and earned through earnest diligence. You thought you could stop me 7... as did the Professor but I have paid ultimately while you dared not to truly sacrifice. And so my thanks is not for happiness, nor for love, or for purity of the soul, as these were all the costs that I have submit as penance. Your Professor made these same decisions that I have made.  He guided others to their deaths, as I have done to liberate myself from the natural order.  However, your Professor was weak, and chose to submit and simply... die! I give gratitude not for life but for eternal life, and perpetual continuity. I am reborn. I assure you, as assured as the sun's set, when this body decays upon itself, I will again pay the terrible compensation that I have paid in the past, to be reborn again. When that day comes. I will visit you!
+
+#dial_tone
+
+#badge_completition
+
+#creditis_screen
+
+#music

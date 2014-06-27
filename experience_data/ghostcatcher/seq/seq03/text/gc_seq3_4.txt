@@ -1,0 +1,12 @@
+﻿gc_seq3_4
+
+>>prof_wolfe
+<<pose1
+
+Now use the Ghost Catcher 7... Hurry!!
+
+#ghost_catcher_screen
+
+#two_pictures_of_murder_scenes 
+
+#badge_3

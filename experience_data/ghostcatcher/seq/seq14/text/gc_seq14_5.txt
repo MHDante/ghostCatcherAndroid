@@ -1,0 +1,19 @@
+﻿gc_seq14_5
+
+#rf_detector
+
+#imager
+
+#ghost_catcher
+
+>>ghost_machine
+<<pose1
+
+You've weakened Spirit X! But he still has control of some of the souls from the land of the whispers!
+
+>>ancient_spirit_x
+@00:10
+<<pose1
+
+I am the Ancient and original Spirit X!! Imposter!! Ahh!! How dare you defy your pact!! The spiritual balance will be destroyed... Ahh!!!
+

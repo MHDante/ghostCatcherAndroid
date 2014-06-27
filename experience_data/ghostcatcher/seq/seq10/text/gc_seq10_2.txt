@@ -1,0 +1,17 @@
+﻿gc_seq10_2
+
+#rf_detector
+
+#imager
+
+>>guardian_1
+<<pose1
+
+Which mortal dares interfere with matters of the spirit realms!! You will pay!!
+
+>>prof_wolfe
+@00:09
+<<pose1
+
+If you are hearing this recording then you have successfully captured the image of the first Guardian spirit. You are having better luck than me. Now use the Ghost Catcher!
+

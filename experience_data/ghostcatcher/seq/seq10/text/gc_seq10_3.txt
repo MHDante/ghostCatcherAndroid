@@ -1,0 +1,10 @@
+﻿gc_seq10_3
+
+#ghost_catcher
+
+>>prof_wolfe
+<<static
+
+Only two more to go. Find the to the remaining guardian spirits, get their image, and capture them...
+
+#map

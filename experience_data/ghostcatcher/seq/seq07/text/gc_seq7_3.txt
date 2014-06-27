@@ -1,0 +1,98 @@
+﻿gc_seq7_3
+
+#image_resonator_screen
+
+#image_of_death_certificate
+
+#badge_6
+
+>>prof_wolfe
+<<pose1
+
+Finally I... huh, we, have managed to track his signature... 7, I have to be honest... For once... It was not me who first devised of this hideous machine. I was just... a leach, capitalizing in the moment of my greatest weakness. Years ago I found the notes of Theodore Laurier. He outlined what I thought were preposterous notions of bridging the world of the living with that of the spirit realm. It was he who designed and eventually paid the ultimate price for his life's work.
+
+#whispers
+
+>>angry_crowd
+@00:
+<<static
+
+Witch craft!, men of science have no business unearthing such devilish things
+ungodly", heathen!
+
+>>spirit_x
+@00:44
+<<static
+
+Calvin, you have betrayed me.
+
+
+>>calvin_cook
+@00:47
+<<static
+You have betrayed us all, as well as yourself with your evil endeavors!!
+
+>>judge
+@00:54
+<<static
+
+I find you guilty of all charges of meddling with the ungodly. Can you pay the said price for your life?
+
+>>spirit_x
+@01:01
+<<static
+
+That is an impossible sum to pay! I object!!
+
+<<judge
+@01:06
+>>static
+
+You object?! You... object?! Given the grave severity of your crimes... I sentence you to death... You devil! I damn you to immediate death. Hang him before he can do more harm to our immortal souls.
+
+#angry_crowd
+
+>>judge
+@01:26
+<<static
+
+Speak your last words you devil.
+
+>>spirit_x
+@01:31
+<<static
+
+Those things that great men devise will one day free us.... Free us from that which you dare not consider... our own mortality. The painful truths that we should face, yet you fear. You fight the truth, while I, through my work, explore a salvation, a liberation that with all your will you! wish to refute. We are men, we stand at the gate of infinity... at the moment of decision, and you cower whilst I stare fate in the eyes and tell you I defy man’s greatest fear. I Dr. Theodore Laurier dares to call out that which makes you tremor...”
+
+>>judge
+@02:33
+<<static
+End it!!
+
+>>spirit_x
+@02:35
+<<static
+
+I state for the record that your greatest of all fears... I fear not!!”
+
+>>judge
+@02:43
+<<static
+
+End it now!!
+
+>>spirit_x
+@02:46
+<<static
+
+I look into your soul and I see weakness...
+
+#whsipers_end
+
+#badge_7
+
+>>prof_wolfe
+@03:03
+<<pose1
+
+You really have come through for us 7... I... I'm sorry for the wrongs that I have done. I have put you and others in grave danger... And now because of my mistakes... Spirit X is hunting you. I must do something... I... I have a confession. I have been able to build a protective field that can act as protection from Spirit X and his evil forces. But I was only able gain enough stability to protect one living person from the reach of Spirit X and his possessed spirits. I have always chosen to protect myself at the expense of everyone around me... My former assistants... My Wife... Everyone... This time is going to be different... I have lost everything that matters! I am bestowing the protective measures... to you 7... I will be in great peril, but this is the only way... Go to the man made pond. Once you get there my protective measures will be transferred to you.

@@ -1,0 +1,18 @@
+﻿gc_seq3_3
+
+>>spirit_x
+<<pose1
+
+I see you... I will consume you 7... 
+
+#creepy_laughter
+
+#music_intensifies
+
+>>prof_wolf
+@00:20
+<<pose1
+
+There it is 7!!! There is not much time. The spirit is very close!! Use the RF Detector to find out where it is!
+
+#rf_detector_screen

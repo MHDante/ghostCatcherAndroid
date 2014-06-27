@@ -1,0 +1,11 @@
+﻿gc_seq6_1
+
+#bio_calibrate
+
+#whispers
+
+>>ghost_machine
+<<pose1
+
+Hello! Are you there? I know you are there... I can feel you... The bad man that Daddy calls Spirit X is gone... for now... He is busy... Bad things happen after the bad man is busy.  Daddy wanted to help me so he brought me here, to the land of the whispers... but living in the land of the whispers is like... a nightmare, that never ends. The bad man tricked us into coming... He uses me, and the others, to hurt people... but Daddy will stop him... Help us stop him!! Save me... Please save me... Daddy save me...
+

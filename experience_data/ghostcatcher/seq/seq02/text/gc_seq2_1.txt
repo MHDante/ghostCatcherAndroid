@@ -1,0 +1,8 @@
+﻿gc_seq2_1
+
+>>prof_wolfe
+<<pose1
+
+7 can you hear me? This is horrible absolutely catastrophic. You took too long! I had to return to the laboratory to tend to the machine. Listen 7... Do not be alarmed... You are in grave danger!! I am reading an extremely aggressive paranormal energy in your vicinity. It is aware of your presence. Do exactly as I instruct. Do you hear me! Exactly as I say!! Fortunately for you, I have equipped your devise with a tool that can track this entity... The RF Detector... Oh my, it is moving closer to you but I can't see exactly where it is... stay calm. Use the RF Detector. Touch the screen and turn until it reveals the direction of the spirit.
+
+#start_rf_detector

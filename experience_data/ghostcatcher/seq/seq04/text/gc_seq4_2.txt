@@ -1,0 +1,54 @@
+﻿gc_seq4_2
+
+#picture_of_dead_assistant.
+
+#two_other_images_appear 
+
+>>spirit_x
+<<pose1
+
+You have been tricked. Tricked by the so called Professor... Wolfe! Tricked into risking your own life... If only you knew the true value of life... You're still not convinced, are you?  Well... Why would Professor Wolfe send you to do his work if it was not certain to doom you?  He put you in harm's way for his own benefit. Do you even wonder why Professor Wolfe would put you and others before you in such danger.... Oh! he has his reasons!! I know you have heard the whispers. Within them are the truth about your Professor. Still not convinced?
+
+#whispers
+
+#child_and_professor_wolfe_laughing
+
+>>prof_wolfe
+@00:49
+<<pose1
+
+I love you  Samara my dear... you are truly my sunshine. No matter what happens... Always remember that...
+
+>>ghost_machine
+@00:58
+<<pose1
+
+I love you too Daddy!... Umm... Daddy...
+
+>>prof_wolfe
+@01:03
+<<pose1
+
+Yes my love?
+
+>>ghost_machine
+@01:04
+<<pose1
+
+Am I... Am I going to be better soon? Did the doctor get the medicine to make me all better?
+
+>>prof_wolfe
+@01:11
+<<pose1
+
+Umm, yes of course darling... it's... its going to... to be just fine. Daddy knows lots of smart people that can help to make it all better my dear. Don't you worry... Daddy won't let anything happen to you.
+
+#whispers_end
+
+#badge_4
+
+>>spirit_x
+@01:35
+<<pose1
+
+7, You are following a fool! A fool who is chasing a failed dream. Let me ask you this. Do you believe in anyone who calls themselves Professor? I suppose you want more proof. The answers are right in front of you. If you would simply choose to look at the obvious. Go to the next location and I will show you the truth.

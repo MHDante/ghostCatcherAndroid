@@ -1,0 +1,17 @@
+﻿gc_seq14_3
+
+#rf_detector
+
+#imager
+
+>>ancient_spirit_x
+<<pose1
+
+Which human dares awaken me from my slumber?!
+
+>>ghost_machine
+@00:08
+<<pose1
+
+Now that he has awakened use the RF Detector to find Spirit X... Hurry!
+

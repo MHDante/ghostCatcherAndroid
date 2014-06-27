@@ -1,0 +1,8 @@
+﻿gc_seq7_2
+
+#rf_detector
+
+>>prof_wolfe
+<<pose1
+
+OK, we got it! Now use the Imager to capture a picture of Spirit X.

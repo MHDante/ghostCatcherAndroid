@@ -1,0 +1,16 @@
+﻿gc_seq12_2
+
+#ghost_catcher
+
+>>prof_wolfe
+<<static
+
+You were apparently successful! You have truly earned my respect... Even if it is post mortem.
+
+#badge_8
+
+>>ghost_machine
+@00:07
+<<pose1
+
+Hello Daddy... You know who sent me?!

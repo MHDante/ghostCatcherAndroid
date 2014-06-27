@@ -1,0 +1,64 @@
+﻿gc_seq5_1
+
+#bio_calibrate
+		
+#audio_resonator
+		
+#whispers
+
+>>doctor
+<<static
+
+We are losing her... There is nothing we can do.
+
+>>prof_wolfe
+@00:04
+<<static
+
+There's nothing you can do!! Well then Doctor... We have no use for you!! I am taking her to my laboratory now!
+
+>>doctor
+@00:11
+<<static
+
+Even considering your resources at the University... It is better that she stays here Professor...
+
+>>prof_wolfe
+@00:16
+<<static
+
+I will not leave Samara to die here!!
+
+>>doctor
+@00:18
+<<static
+
+I know about your research... I know what you are planning... What you are proposing isn't ethical... It isn't right Steven!
+
+>>prof_wolfe
+@00:26
+<<static
+
+I am not proposing anything!! You already said there is nothing you can do for her, so get out of my way and let me help my daughter!!
+
+>>ghost_machine
+@00:36
+<<pose1
+
+Is it going to be OK? I'm scared. Where are we going Daddy?
+
+>>prof_wolfe
+@00:43
+<<static
+
+I am going to make it better honey... It'll all be OK... It'll all be OK. I promise... I can't lose you...
+
+#whispers_end
+
+>>spirit_x
+@00:56
+<<static
+
+There was some validity in Professor Wolfe's research. It could have even worked if his arrogance didn't cloud his judgment. As a result Wolfe's stupidity caused an abundance of unnecessary suffering. 7, Use the Imager Tool. You are finally ready to look the truth in the eye!
+
+#badge_5

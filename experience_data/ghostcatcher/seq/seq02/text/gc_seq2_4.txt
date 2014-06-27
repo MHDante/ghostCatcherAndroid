@@ -1,0 +1,145 @@
+﻿gc_seq2_4
+
+>>prof_wolfe
+<<pose1
+
+7... 7, you have upset Spirit X! That monster thirsts for souls... Now that he sees you he is going to come after you!!  You'd better pay attention 7. I... I discovered the writings of a man who was once known as Laurier, Laurier is now Spirit X. A few years ago he was interested in the occult and so he...
+
+#whispers
+
+#flashback
+
+>>calvin_cook
+@00:32
+<<static
+
+My dear friend Theodor Laurier... It is good to see you! You have been far too recluse as of recent, locked away in this filthy laboratory... Working as you call it. Everyone has been concerned about you. People are wondering if you have gone insane. I told them to rest assured... you were born insane!!
+
+>>spirit_x
+@00:53
+<<static
+
+I am better than I have ever been Calvin... And it's no one's business where I invest my time, so long as I come up with results! I am quite busy so if you'll excuse me, I must continue my work...
+
+>>calvin_cook
+@01:05
+<<static
+
+We all looked forward to seeing you when the circus came to town... I suppose you were too busy for your friends... Too busy with your... work?
+
+>>spirit_x
+@01:15
+<<static
+
+I am busy with my work now...
+
+>>calvin_cook
+@01:20
+<<static
+
+Oh?!?! Is this what we can thank for your reclusiveness?! What sort of strange piano is this that you toil on building at such strange hours?
+
+>>spirit_x
+@01:28
+<<static
+
+Sir this is much more than a simple piano... This machine shall bridge worlds.
+
+>>calvin_cook
+@01:35
+<<static
+
+You wouldn't have me believe that you are building a ship of some type would you?
+
+>>spirit_x
+@01:39
+<<static
+
+No indeed, this vessel has no business crossing sea nor land. It will however traverse time... in a sense.
+
+>>calvin_cook
+@01:48
+<<static
+
+A time machine haha! Impossible old friend. Impossible
+
+>>spirit_x
+@01:54
+<<static
+
+That is exactly why I keep to myself.
+
+>>calvin_cook
+@01:58
+<<static
+
+What sort of book is this? 'Secrets of the Paranormal Mechanism'?
+
+>>spirit_x
+@02:03
+<<static
+
+Don't touch that!
+
+>>calvin_cook
+@02:04
+<<static
+
+Is this how you waist the University's resources?
+
+>>spirit_x
+@02:08
+<<static
+
+How dare you! This is serious work!!
+
+>>calvin_cook
+@02:11
+<<static
+
+OK calm down Theodore, I am just concerned. We are all concerned about you since your disappearance...
+
+>>spirit_x
+@02:19
+<<static
+
+I have hardly disappeared, I have been here trying to work! Fine, let me tell you why I am so consumed by this work that you believe to be so meaningless... What I will reveal to the world shall be truly transcendental... You see, my description of this contraption... as a time machine... is somewhat simplified. This machine allows me to tap into... the spirit realm... My work will allow me to connect with a powerful spirit energy that surrounds us... An energy that is eternal!!
+
+>>calvin_cook
+@02:52
+<<static
+
+I am sure it will be quite the novelty, but why don't we get out or this repulsive workshop for a distraction... Why don't we visit the theatre!!
+
+>>spirit_x
+@03:04
+<<static
+
+I am not interested in the theater Cook... or any other distraction!
+
+>>calvin_cook
+@03:08
+<<static
+
+Listen to me Laurier, what would the Dean say if he knew you were pouring so much time and resource into this pet project? You know... I could report you for this frivolous waist of time know!
+
+>>spirit_x
+@03:22
+<<static
+
+Frivolous?! Why am I not surprised that you don't believe in me... Let me show you something... Friend... Walk inside... You're not afraid are you?
+
+>>calvin_cook
+@03:35
+<<static
+#screams
+
+#end_flashback
+
+>>prof_wolfe
+@03:43
+<<pose1
+
+And that is precisely when you will... 7, are you following? Pay attention to me, everything is at stake here. I need you to go to the near by location... You will see a statue. I need you to go there and get some readings. Go quickly before Spirit X is able to track you down. This information will help us to stop Spirit X once and for all. I will contact you when you get there.
+
+#badge_2

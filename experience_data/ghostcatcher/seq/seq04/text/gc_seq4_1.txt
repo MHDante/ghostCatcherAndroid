@@ -1,0 +1,11 @@
+﻿gc_seq4_1
+
+#bio_calibrate
+
+>>spirit_x
+<<pose1
+
+I know what you are thinking... You thought trapping a ghost was impossible. It is in fact possible... Another realm has been affirmed to you. A doorway into a parallel world has been revealed. I Spirit X stand at that doorway as the guardian of knowledge that should have remained... unknown to your simple mind! This is your misfortune. But you have been made aware of this other dimension... You have captured a spirit!!! 7, you should pretend capturing spirits is impossible... your life certainly depends on it.
+
+#imager_screen
+

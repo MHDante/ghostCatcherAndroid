@@ -1,0 +1,24 @@
+﻿gc_seq14_1
+
+#bio-calibrate
+
+>>ghost_machine
+<<pose1
+
+Hello... this place should be safe from the bad man, but not for long. There is a special energy here... Daddy wasn't a bad man.... Daddy loved me very much... That is why he did bad things...  to protect me... But Dad can't help me now. Daddy told me what to do.... I can help you. You need to set me free... Please set me free. I don't want to live in the land of the whispers anymore... Oh, no! He is almost here... Spirit X has found us!!
+
+#whispers_and_footsteps
+
+>>spirit_x
+@00:57
+<<static
+
+I see you have found my stray sheep... Do you know what is going to happen to you now? Your torment will be unbearable. I will make sure that... it is even more horrific than the fates of my regular prey!!
+
+>>ghost_machine
+@01:26
+<<pose1
+
+Go to the field, deep under it is hidden... the ancient Spirit X.  
+
+

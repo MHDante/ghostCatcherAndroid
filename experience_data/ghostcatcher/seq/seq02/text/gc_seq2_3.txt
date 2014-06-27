@@ -1,0 +1,36 @@
+﻿gc_seq2_3
+
+>>prof_wolfe
+<<pose1
+
+Yes, yes, you've done it! I somehow knew you had it in you!! I mean you did take your sweet time but in the end you did come through... We've got it! It shouldn't be long now...
+
+>>ghost_machine
+@00:
+<<static
+
+Hello... Daddy!!
+
+>>prof_wolfe
+@00:
+<<pose1
+
+Hello Samara my love...
+
+>>ghost_machine
+@00:
+<<static
+
+Why did it take you so long to come to me? I miss you... It's scary in the land of the whispers Daddy!
+
+>>prof_wolfe
+@0
+<<pose1
+
+I tried...  I tried to...
+
+>>ghost_machine
+@0
+<<static
+
+Daddy, he is coming for me... He is going to make me... I... I'm scared... Daddy?! Are you there Daddy?!
