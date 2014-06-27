@@ -7,7 +7,7 @@
       <pose id="angry" image="angry.png" />
     </character>
     <character id="spirit_x" name="Spirit X">
-      <bio>Devours the souls of the living.  Spirit X may be the only one to tell you the truth.</bio>
+      <bio>Devours the souls of the living...  Spirit X may be the only one to tell you the truth.</bio>
       <pose id="scary" image="scary.png" />
     </character>
     <character id="ghostmachine" name="Ghost Machine">
