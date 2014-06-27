@@ -57,6 +57,8 @@ import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 public class MainActivity extends Activity implements
         LocationListener, View.OnClickListener {
 
+	static final int GPS_SLOW_MIN_UPDATE_TIME_MS = 60000; //60 seconds
+	static final int GPS_SLOW_MIN_UPDATE_DISTANCE_M = 50; //50 meters
 	private final static int
 			CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	public static boolean transitionInProgress;
@@ -98,12 +100,18 @@ public class MainActivity extends Activity implements
 			gcEngine.Access().getCurrentSeqPt().getTrigger(Integer.parseInt(triggerId)).setEnabled(true);
 		}
 	};
-	LocationManager locationManager;
-	Location currentGPSLocation;
 
     //////////////////LifeCycle
-    int GPSMinUpdateTimeMS = 3000; //3 seconds
-	int GPSMinupdateDistanceM = 0; //0 meters
+    LocationManager locationManager;
+	Location currentGPSLocation;
+	/**
+	 * the minimal GPS update interval, in milliseconds
+	 */
+	int GPSMinUpdateTimeMS;
+	/**
+	 * the minimal GPS update interval, in meters.
+	 */
+	int GPSMinUpdateDistanceM;
 	GestureDetector detector;
 	boolean toolHolderShown = true;
 	private Handler decorViewHandler = new Handler();
@@ -121,10 +129,6 @@ public class MainActivity extends Activity implements
 			);
 		}
 	};
-
-	public Location getCurrentGPSLocation() {
-		return currentGPSLocation;
-	}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,8 +158,8 @@ public class MainActivity extends Activity implements
 		    getFragmentManager().beginTransaction()
 				    .add(R.id.fragment_container, getTool(Biocalibrate.class))
 				    .commit();
-        }
-	    handleIntent(getIntent());
+	    }
+	    onNewIntent(getIntent());
 	    onLocationChanged(null);
 	    detector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
 
@@ -249,58 +253,37 @@ public class MainActivity extends Activity implements
 	    return ret;
     }
 
-	@Override
-	protected void onResume() {
-		gcAudio.play();
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if (toolHolderShown) toggleToolMenu();
-			}
-		}, 500);
-
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPSMinUpdateTimeMS, GPSMinupdateDistanceM, this);
-
-
-		super.onResume();
-	}
-
     @Override
     protected void onNewIntent(Intent intent) {
-	    handleIntent(intent);
-    }
+	    if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+		    Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+		    if (rawMsgs != null) {
+			    NdefMessage[] msgs = new NdefMessage[rawMsgs.length];
+			    for (int i = 0; i < rawMsgs.length; i++) {
+				    msgs[i] = (NdefMessage) rawMsgs[i];
+			    }
+			    for (NdefMessage message : msgs) {
+				    for (NdefRecord record : message.getRecords()) {
+					    Uri uri = record.toUri(); //Ignore the api warning, this is for demo, during which we will have api 16 at least
 
-	private void handleIntent(Intent intent) {
-		if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-			Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-			if (rawMsgs != null) {
-				NdefMessage[] msgs = new NdefMessage[rawMsgs.length];
-				for (int i = 0; i < rawMsgs.length; i++) {
-					msgs[i] = (NdefMessage) rawMsgs[i];
-				}
-				for (NdefMessage message : msgs) {
-					for (NdefRecord record : message.getRecords()) {
-						Uri uri = record.toUri(); //Ignore the api warning, this is for demo, during which we will have api 16 at least
+					    if (uri != null) {
+						    if (uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
 
-						if (uri != null) {
-							if (uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
-
-								String path = uri.getLastPathSegment();
-								String[] tokens = path.split("\\.");
-								String type = tokens[1];
-								String id = tokens[0];
-								if (type.equals("location")) {
-									gcLocation loc = gcEngine.Access().getLocation(id);
-									Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG);
-									onLocationChanged(loc.asAndroidLocation());
-								}
-							}
-						}
-					}
-				}
-			}
-
-        }
+							    String path = uri.getLastPathSegment();
+							    String[] tokens = path.split("\\.");
+							    String type = tokens[1];
+							    String id = tokens[0];
+							    if (type.equals("location")) {
+								    gcLocation loc = gcEngine.Access().getLocation(id);
+								    Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG);
+								    onLocationChanged(loc.asAndroidLocation());
+							    }
+						    }
+					    }
+				    }
+			    }
+		    }
+	    }
     }
 
     @Override
@@ -309,11 +292,6 @@ public class MainActivity extends Activity implements
 	    if (hasFocus && useDecorView) {
 		    decorViewHandler.post(decor_view_settings);
 	    }
-    }
-
-    @Override
-    protected void onStart() {
-	    super.onStart();
     }
 
     public void onClick(View view) {
@@ -386,6 +364,20 @@ public class MainActivity extends Activity implements
 	    locationManager.removeUpdates(this); //stop location updates
 	    super.onPause();
     }
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		gcAudio.play();
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (toolHolderShown) toggleToolMenu();
+			}
+		}, 500);
+		requestSlowGPSUpdates();
+	}
 
 	@Override
 	protected void onDestroy() {
@@ -481,11 +473,10 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onLocationChanged(Location location) {
-
 		ToolFragment tf = (ToolFragment) getCurrentFragment();
 
-		if (tf instanceof LocationListener) {
-			((LocationListener) tf).onLocationChanged(location);
+		if (tf instanceof RFDetector) {
+			((RFDetector) tf).onLocationChanged(location);
 		}
 
 		if (location == null) {
@@ -544,28 +535,51 @@ public class MainActivity extends Activity implements
 	 * @param GPSMinUpdateTimeMS the minimal GPS update interval, in milliseconds
 	 */
 	public void setGPSMinimumTimeInterval(int GPSMinUpdateTimeMS) {
-		if (GPSMinUpdateTimeMS < 0) {
-			throw new IllegalArgumentException("GPSMinupdateDistanceM cannot be negative");
-		}
-		this.GPSMinUpdateTimeMS = GPSMinUpdateTimeMS;
-		locationManager.removeUpdates(this);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPSMinUpdateTimeMS, GPSMinupdateDistanceM, this);
+		setGPSUpdates(GPSMinUpdateTimeMS, this.GPSMinUpdateDistanceM);
 	}
 
 	/**
 	 * reconfigures GPS updates to occur at the requested minimum distance interval
 	 *
-	 * @param GPSMinupdateDistanceM the minimal GPS update interval, in meters.
+	 * @param GPSMinUpdateDistanceM the minimal GPS update interval, in meters.
 	 */
-	public void setGPSMinimumDistanceInterval(int GPSMinupdateDistanceM) {
-		if (GPSMinupdateDistanceM < 0) {
-			throw new IllegalArgumentException("GPSMinupdateDistanceM cannot be negative");
-		}
-		this.GPSMinupdateDistanceM = GPSMinupdateDistanceM;
-		locationManager.removeUpdates(this);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPSMinUpdateTimeMS, GPSMinupdateDistanceM, this);
+	public void setGPSMinimumDistanceInterval(int GPSMinUpdateDistanceM) {
+		setGPSUpdates(this.GPSMinUpdateTimeMS, GPSMinUpdateDistanceM);
 	}
 
+	/**
+	 * reconfigures GPS updates to occur at the requested minimum time and distance intervals
+	 *
+	 * @param GPSMinUpdateTimeMS    the minimal GPS update interval, in milliseconds
+	 * @param GPSMinUpdateDistanceM the minimal GPS update interval, in meters.
+	 */
+	public void setGPSUpdates(int GPSMinUpdateTimeMS, int GPSMinUpdateDistanceM) {
+		if (GPSMinUpdateTimeMS < 0 || GPSMinUpdateDistanceM < 0) {
+			throw new IllegalArgumentException("GPSMinUpdateTimeMS and GPSMinUpdateDistanceM  cannot be negative");
+		}
+
+		this.GPSMinUpdateTimeMS = GPSMinUpdateTimeMS;
+		this.GPSMinUpdateDistanceM = GPSMinUpdateDistanceM;
+
+		locationManager.removeUpdates(this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, GPSMinUpdateTimeMS, GPSMinUpdateDistanceM, this);
+	}
+
+	/**
+	 * reconfigures GPS updates to occur at the minumum every 6s and 50 meters
+	 */
+	public void requestSlowGPSUpdates() {
+		setGPSUpdates(GPS_SLOW_MIN_UPDATE_TIME_MS, GPS_SLOW_MIN_UPDATE_DISTANCE_M);
+	}
+
+	/**
+	 * returns the most recent known location of the user.
+	 *
+	 * @return the most recent known location of the user.
+	 */
+	public Location getCurrentGPSLocation() {
+		return currentGPSLocation;
+	}
 
 	public Fragment getCurrentFragment() {
 		return getFragmentManager().findFragmentById(R.id.fragment_container);

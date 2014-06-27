@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import ca.mixitmedia.ghostcatcher.app.R;
@@ -29,10 +30,11 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	TextView latitudeTextView;
     TextView longitudeTextView;
     TextView compassTextView;
-    TextView destinationTextView;
+	TextView destinationProximityTextView;
 
-    ImageView compassFace;
+	ImageView arrowImageView;
 
+	ProgressBar proximityBar;
 	/**
 	 * SensorManager is used to register/unregister this class as a SensorEventListener
 	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html">SensorManager</a>
@@ -65,19 +67,17 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      */
     float relativeBearing;
 
+
+	/**
+	 * Distance to the destination in meters
+	 */
+	float proximity;
+
+
 	/**
 	 * debug
 	 */
 	Location destination;
-
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
-
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,16 +87,25 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         latitudeTextView = (TextView) view.findViewById(R.id.latitude);
         longitudeTextView = (TextView) view.findViewById(R.id.longitude);
         compassTextView = (TextView) view.findViewById(R.id.compassText);
-        destinationTextView = (TextView) view.findViewById(R.id.destinationAngle);
+	    destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
-        compassFace = (ImageView) view.findViewById(R.id.compassFace);
+	    arrowImageView = (ImageView) view.findViewById(R.id.arrowImage);
 
-        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+	    proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
 
+	    sensorManager = (SensorManager) gcMain.getSystemService(Context.SENSOR_SERVICE);
 
-        destination = new Location("dummyprovider");
-        destination.setLatitude(43.652202);
-        destination.setLongitude(-79.5814);
+	    destination = new Location("dummyProvider");
+	    destination.setLatitude(43.652202);
+	    destination.setLongitude(-79.5814);
+
+	    //set initial data right away, if available
+	    gcMain.setGPSUpdates(3000, 0); //TODO: set to be distance dependant
+	    Location currentLocation = gcMain.getCurrentGPSLocation();
+	    if (currentLocation != null) {
+		    System.out.println("Cached location loaded");
+		    onLocationChanged(currentLocation);
+	    }
 
         return view;
     }
@@ -111,9 +120,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	    sensorManager.registerListener(this,
 			    sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 			    SensorManager.SENSOR_DELAY_GAME);
-
-
-    }
+		gcMain.setGPSUpdates(3000, 0); //TODO: set to be distance dependant
+	}
 
 	/**
 	 * Unregisters this fragment to pause receiving sensor data
@@ -121,7 +129,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	@Override
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
-        super.onPause();
+		gcMain.requestSlowGPSUpdates(); //slow down gps updates
+		super.onPause();
     }
 
     @Override
@@ -130,24 +139,16 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     }
 
     @Override
-    public boolean checkClick(View view) {
-        switch (view.getId()) {
-            /*case R.id.amplifier_button:
-
-                System.out.println("button pressed");
-
-                return true;*/
-            default:
-                return false;
-        }
-    }
-
-    @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         //stub
     }
 
-    @Override
+	/**
+	 * Reads the deprecated (argh!) orientation pseudo-sensor to get device heading
+	 *
+	 * @param event
+	 */
+	@Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
             // get the angle around the z-axis rotated
@@ -157,19 +158,15 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
     /**
      * updates heading of the device and rotates the arrow
-     *
      * @param newHeading the new heading, range: [0, 360), increasing clockwise from North
      */
     private void updateHeading(float newHeading) {
         newHeading = Math.round(newHeading);
-
         compassTextView.setText("Heading: " + Float.toString(newHeading) + " degrees");
         //float newRelativeBearing = Math.round(-(heading - bearing) % 360);
 
         // proven working:
         float newRelativeBearing = Math.round((newHeading - bearing + 360) % 360);
-
-        destinationTextView.setText("Bearing: " + newRelativeBearing);
 
         // create a rotation animation (reverse turn newHeading degrees)
         RotateAnimation ra = new RotateAnimation(
@@ -185,8 +182,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         ra.setFillAfter(true);
 
         // Start the animation
-        compassFace.startAnimation(ra);
-        heading = -newHeading;
+	    arrowImageView.startAnimation(ra);
+	    heading = -newHeading;
         relativeBearing = newRelativeBearing;
     }
 
@@ -197,8 +194,12 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	public void onLocationChanged(Location location) {
         // called when the listener is notified with a location update from the GPS
         bearing = (location.bearingTo(destination) + 360) % 360;
+		proximity = destination.distanceTo(location);
 
-	    latitudeTextView.setText("Lat: " + location.getLatitude());
-	    longitudeTextView.setText("Long: " + location.getLongitude());
+		//TODO: copy proximity stuff
+
+		destinationProximityTextView.setText("Proximity: " + proximity + " m");
+		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
+		longitudeTextView.setText("Long: " + location.getLongitude()+"°");
 	}
 }

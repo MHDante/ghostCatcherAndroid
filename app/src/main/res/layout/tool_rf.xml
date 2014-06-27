@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+	android:layout_height="wrap_content">
 
-    <TableLayout
+	<TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:weightSum="100"
+		android:layout_alignBottom="@+id/imageView"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
+		android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
-        android:layout_alignBottom="@+id/imageView"
-        android:background="@drawable/rf_background">
+		android:background="@drawable/rf_background"
+		android:weightSum="100">
 
-        <Space
+		<Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="11" />
 
         <TableRow
-            android:layout_height="0px"
             android:layout_width="wrap_content"
+			android:layout_height="0px"
             android:layout_weight="51"
             android:weightSum="100">
 
@@ -33,69 +33,81 @@
                 android:layout_weight="14" />
 
             <ImageView
-                android:id="@+id/compassFace"
-                android:src="@drawable/rf_arrow"
+				android:id="@+id/arrowImage"
+				android:layout_width="0px"
+				android:layout_height="match_parent"
+				android:layout_weight="73"
+				android:adjustViewBounds="true"
                 android:gravity="center"
-                android:layout_height="match_parent"
-                android:layout_width="0px"
-                android:layout_weight="73"
-                android:adjustViewBounds="true" />
-        </TableRow>
+				android:src="@drawable/rf_arrow"/>
+		</TableRow>
 
     </TableLayout>
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@drawable/rf_overlay"
-        android:adjustViewBounds="true"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+		android:layout_alignParentTop="true"
+		android:adjustViewBounds="true"
+		android:src="@drawable/rf_overlay"/>
 
-    <LinearLayout
-        android:layout_height="wrap_content"
+	<LinearLayout
         android:layout_width="fill_parent"
-        android:layout_weight="1">
+		android:layout_height="wrap_content"
+		android:layout_marginTop="350dp"
+		android:layout_weight="1">
 
-        <TextView
+		<TextView
             android:id="@+id/latitude"
-            android:text="GPS Latitude"
-            android:layout_weight="1"
-            android:background="#b0b0b0"
+			android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_width="0px" />
+			android:layout_weight="1"
+			android:background="#b0b0b0"
+			android:text="GPS Latitude"
+			android:textColor="#FF000000"/>
 
-        <TextView
+		<TextView
             android:id="@+id/longitude"
-            android:text="GPS Longitude"
-            android:layout_weight="1"
-            android:background="#b0b0b0"
+			android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_width="0px" />
-    </LinearLayout>
+			android:layout_weight="1"
+			android:background="#b0b0b0"
+			android:text="GPS Longitude"
+			android:textColor="#FF000000"/>
+	</LinearLayout>
 
     <LinearLayout
-        android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:layout_weight="1"
-        android:layout_marginTop="30dp">
+		android:layout_height="wrap_content"
+		android:layout_marginTop="367dp"
+		android:layout_weight="1">
 
-        <TextView
+		<TextView
             android:id="@+id/compassText"
-            android:text="Compass Azimut"
-            android:layout_weight="1"
-            android:background="#b0b0b0"
+			android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_width="0px" />
+			android:layout_weight="1"
+			android:background="#b0b0b0"
+			android:text="Compass Azimut"
+			android:textColor="#FF000000"/>
 
-        <TextView
-            android:id="@+id/destinationAngle"
-            android:text="Desination Angle"
-            android:layout_weight="1"
-            android:background="#b0b0b0"
+		<TextView
+			android:id="@+id/destinationProximityText"
+			android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_width="0px" />
-    </LinearLayout>
+			android:layout_weight="1"
+			android:background="#b0b0b0"
+			android:text="Destination Proximity"
+			android:textColor="#FF000000"/>
+	</LinearLayout>
+
+	<ProgressBar
+		android:id="@+id/proximityBar"
+		style="?android:attr/progressBarStyleHorizontal"
+		android:layout_width="400dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="385dp"/>
 
 </RelativeLayout>

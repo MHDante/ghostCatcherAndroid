@@ -32,6 +32,7 @@ public abstract class ToolFragment extends Fragment {
 
 	/**
 	 * Sets the toolbar icon of the ToolFragment
+	 *
 	 * @return the resource ID of the toolbar icon
 	 */
 	public abstract int getGlyphID();
@@ -146,7 +147,8 @@ public abstract class ToolFragment extends Fragment {
 
 		}
 
-		//Log.d("Pivot", "enter: " + enter + "PivotY:" + getView().getPivotY() + "PivotX:" + getView().getPivotX());
+		//Log.d("Pivot", "enter: " + enter + "PivotY:" +
+		// getView().getPivotY() + "PivotX:" + getView().getPivotX());
 	}
 
 	public void afterAnimation(boolean enter) {
