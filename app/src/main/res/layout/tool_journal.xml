@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:weightSum="100"
-        android:layout_alignBottom="@+id/imageView">
+        android:layout_alignBottom="@+id/tool_selector">
 
         <Space
             android:layout_width="0dp"
@@ -130,7 +130,7 @@
                                 <ImageView
                                     android:layout_width="30dp"
                                     android:layout_height="30dp"
-                                    android:id="@+id/imageView3"
+                                    android:id="@+id/right_frame"
                                     android:src="@drawable/bullet_check"
                                     android:layout_margin="15dp" />
 
@@ -272,7 +272,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/tool_selector"
         android:src="@drawable/journal"
         android:adjustViewBounds="true"
         android:layout_alignParentLeft="true"

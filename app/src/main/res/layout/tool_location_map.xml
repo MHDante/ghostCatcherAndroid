@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:weightSum="100"
-        android:layout_alignBottom="@+id/imageView">
+        android:layout_alignBottom="@+id/tool_selector">
 
         <Space
             android:layout_width="0dp"
@@ -141,7 +141,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
+        android:id="@+id/tool_selector"
         android:src="@drawable/map_overlay"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
