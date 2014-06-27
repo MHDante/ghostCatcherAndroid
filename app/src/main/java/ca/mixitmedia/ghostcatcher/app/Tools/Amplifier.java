@@ -3,12 +3,15 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Amplifier extends ToolFragment {
 
@@ -19,6 +22,12 @@ public class Amplifier extends ToolFragment {
 
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
+
+        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+
+        Uri rootUri = Uri.fromFile(gcEngine.Access().root);
+        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("amplifier").appendPath("amplifier_overlay.png").build());
+
         return view;
     }
 

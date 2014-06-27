@@ -13,7 +13,7 @@
         android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="0dp"
-        android:layout_alignBottom="@+id/tool_selector">
+        android:layout_alignBottom="@+id/overlay">
 
         <Space
             android:layout_width="0dp"
@@ -59,7 +59,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tool_selector"
+        android:id="@+id/overlay"
         android:src="@drawable/amplifier_overlay"
         android:adjustViewBounds="true"
         android:layout_alignParentLeft="true"

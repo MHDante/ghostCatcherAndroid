@@ -7,7 +7,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_alignBottom="@+id/imagerFrame"
+        android:layout_alignBottom="@+id/overlay"
         android:weightSum="100">
 
         <Space
@@ -40,7 +40,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imagerFrame"
+        android:id="@+id/overlay"
         android:src="@drawable/imager"
         android:adjustViewBounds="true" />
 

@@ -29,8 +29,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
@@ -58,6 +56,9 @@ public class MainActivity extends Activity implements
     public static boolean transitionInProgress;
     public Map<Class, ToolLightButton> ToolMap;
 
+    public Map<String, Uri> imageFileLocationMap;
+
+    //Location mCurrentLocation;
     public Location getCurrentGPSLocation() {
         return currentGPSLocation;
     }
@@ -180,6 +181,26 @@ public class MainActivity extends Activity implements
                 return result;
             }
         });
+
+        createImageURIs();
+
+        ImageView frame_right = (ImageView) findViewById(R.id.frame_right);
+        ImageView frame_left = (ImageView) findViewById(R.id.frame_left);
+        ImageView ad_holder = (ImageView) findViewById(R.id.ad_holder);
+        ImageView tool_selector = (ImageView) findViewById(R.id.overlay);
+        ImageView back_button = (ImageView) findViewById(R.id.back_button);
+        ImageView journal_button = (ImageView) findViewById(R.id.journal_button);
+
+        frame_left.setImageURI(imageFileLocationMap.get("frame_left"));
+        frame_right.setImageURI(imageFileLocationMap.get("frame_right"));
+        ad_holder.setImageURI(imageFileLocationMap.get("ad_holder"));
+        tool_selector.setImageURI(imageFileLocationMap.get("tool_selector"));
+        back_button.setImageURI(imageFileLocationMap.get("gear_button"));
+        journal_button.setImageURI(imageFileLocationMap.get("gear_button"));
+
+        frame_left.setScaleType(ImageView.ScaleType.FIT_START);
+        frame_right.setScaleType(ImageView.ScaleType.FIT_END);
+
     }
 
     GestureDetector detector;
@@ -199,7 +220,7 @@ public class MainActivity extends Activity implements
             throw new RuntimeException(e);
         }
         ret.setSrc(BitmapFactory.decodeResource(getResources(), ret.getToolFragment().getGlyphID()));
-        ret.setEnabled(false);
+        ret.setEnabled(true);
         ret.setOnClickListener(this);
         return ret;
     }
@@ -439,8 +460,8 @@ public class MainActivity extends Activity implements
     public void hideFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
         View left_frame, right_frame, ad_holder, fragment_container;
 
-        left_frame = findViewById(R.id.left_frame);
-        right_frame = findViewById(R.id.right_frame);
+        left_frame = findViewById(R.id.frame_left);
+        right_frame = findViewById(R.id.bullet_check3);
         ad_holder = findViewById(R.id.ad_holder);
         fragment_container = findViewById(R.id.fragment_container);
 
@@ -466,8 +487,8 @@ public class MainActivity extends Activity implements
     public void showFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
         View left_frame, right_frame, ad_holder;
 
-        left_frame = findViewById(R.id.left_frame);
-        right_frame = findViewById(R.id.right_frame);
+        left_frame = findViewById(R.id.frame_left);
+        right_frame = findViewById(R.id.bullet_check3);
         ad_holder = findViewById(R.id.ad_holder);
 
         left_frame.animate().translationX(0).setDuration(1000);
@@ -674,6 +695,19 @@ public class MainActivity extends Activity implements
         }
     }
 
+    public void createImageURIs(){
+        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
+
+        imageFileLocationMap = new HashMap<String,Uri>(){{
+            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("main_screen2.png").build());
+            put("frame_left", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_left.png").build());
+            put("frame_right", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_right.png").build());
+            put("ad_holder", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("ad_holder.png").build());
+            put("tool_selector", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("toolselector.png").build());
+            put("gear_button", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("back_gear.png").build());
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+        }};
+    }
 
 }
 

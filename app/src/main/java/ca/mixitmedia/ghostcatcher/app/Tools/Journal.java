@@ -1,21 +1,26 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.net.Uri;
 import android.app.ActionBar;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterViewFlipper;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Journal extends ToolFragment {
+
+    Map<String, Uri> imageFileLocationMap;
 
     ViewSwitcher viewSwitcher;
     ImageButton bio;
@@ -30,6 +35,8 @@ public class Journal extends ToolFragment {
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.journal_switcher);
         bio = (ImageButton) view.findViewById(R.id.arrow_bio);
         todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
+
+        createImageURIs();
 
         bio.setOnClickListener(new View.OnClickListener() {
 
@@ -56,6 +63,22 @@ public class Journal extends ToolFragment {
 
         container.setLayoutParams(fragmentContainerParams);
         container.invalidate();
+
+        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+        ImageView bullet1 = (ImageView) view.findViewById(R.id.bullet_check1);
+        ImageView bullet2 = (ImageView) view.findViewById(R.id.bullet_check2);
+        ImageView bullet3 = (ImageView) view.findViewById(R.id.bullet_check3);
+        ImageView bullet4 = (ImageView) view.findViewById(R.id.bullet_check4);
+        ImageButton arrow_right = (ImageButton) view.findViewById(R.id.arrow_to_do);
+        ImageButton arrow_right_bio = (ImageButton) view.findViewById(R.id.arrow_bio);
+
+        overlay.setImageURI(imageFileLocationMap.get("overlay"));
+        bullet1.setImageURI(imageFileLocationMap.get("bullet_check"));
+        bullet2.setImageURI(imageFileLocationMap.get("bullet_check"));
+        bullet3.setImageURI(imageFileLocationMap.get("bullet_check"));
+        bullet4.setImageURI(imageFileLocationMap.get("bullet_check"));
+        arrow_right.setImageURI(imageFileLocationMap.get("arrow_right"));
+        arrow_right_bio.setImageURI(imageFileLocationMap.get("arrow_right"));
 
         return view;
     }
@@ -96,6 +119,17 @@ public class Journal extends ToolFragment {
             gcMain.showFrame(false,false,false);
 
         return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
+    }
+
+    public void createImageURIs(){
+        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
+
+        imageFileLocationMap = new HashMap<String,Uri>(){{
+            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("journal").appendPath("journal.png").build());
+            put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
+            put("arrow_right", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("arrow_right.png").build());
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+        }};
     }
 
 }

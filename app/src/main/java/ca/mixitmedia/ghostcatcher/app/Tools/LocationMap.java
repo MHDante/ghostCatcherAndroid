@@ -2,11 +2,13 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +22,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -34,6 +38,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     public List<gcLocation> locations;
     int selectedLocation;
 
+    Map<String, Uri> imageFileLocationMap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +49,20 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         map.setOnMarkerClickListener(this);
         map.setInfoWindowAdapter(this);
         map.setOnInfoWindowClickListener(this);
+
+        createImageURIs();
+
+        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+        ImageButton right_button = (ImageButton) view.findViewById(R.id.right);
+        ImageButton left_button = (ImageButton) view.findViewById(R.id.left);
+
+        overlay.setImageURI(imageFileLocationMap.get("overlay"));
+        left_button.setImageURI(imageFileLocationMap.get("arrow"));
+        right_button.setImageURI(imageFileLocationMap.get("arrow"));
+
+        left_button.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        right_button.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
         return view;
 
 
@@ -206,6 +225,17 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     protected int getAnimatorId(boolean enter) {
         if (enter) gcMain.playSound(gcMain.sounds.strangeMetalNoise);
         return (enter) ? R.animator.transition_in_from_top : R.animator.transition_out_from_bottom;
+    }
+
+    public void createImageURIs(){
+        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
+
+        imageFileLocationMap = new HashMap<String,Uri>(){{
+            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("map").appendPath("map_overlay.png").build());
+            put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
+            put("arrow", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("btn_playback_play.png").build());
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+        }};
     }
 
 }
