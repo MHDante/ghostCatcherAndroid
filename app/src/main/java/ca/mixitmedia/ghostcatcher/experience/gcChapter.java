@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
+package ca.mixitmedia.ghostcatcher.experience;
 
 /**
  * Created by Dante on 07/03/14.

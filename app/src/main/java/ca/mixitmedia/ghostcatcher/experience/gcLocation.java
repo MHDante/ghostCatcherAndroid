@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
+package ca.mixitmedia.ghostcatcher.experience;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

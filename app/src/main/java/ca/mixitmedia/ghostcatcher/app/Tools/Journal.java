@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Journal extends ToolFragment {
 
@@ -69,16 +69,15 @@ public class Journal extends ToolFragment {
         ImageView bullet2 = (ImageView) view.findViewById(R.id.bullet_check2);
         ImageView bullet3 = (ImageView) view.findViewById(R.id.bullet_check3);
         ImageView bullet4 = (ImageView) view.findViewById(R.id.bullet_check4);
-        ImageButton arrow_right = (ImageButton) view.findViewById(R.id.arrow_to_do);
-        ImageButton arrow_right_bio = (ImageButton) view.findViewById(R.id.arrow_bio);
+
 
         overlay.setImageURI(imageFileLocationMap.get("overlay"));
         bullet1.setImageURI(imageFileLocationMap.get("bullet_check"));
         bullet2.setImageURI(imageFileLocationMap.get("bullet_check"));
         bullet3.setImageURI(imageFileLocationMap.get("bullet_check"));
         bullet4.setImageURI(imageFileLocationMap.get("bullet_check"));
-        arrow_right.setImageURI(imageFileLocationMap.get("arrow_right"));
-        arrow_right_bio.setImageURI(imageFileLocationMap.get("arrow_right"));
+        todo.setImageURI(imageFileLocationMap.get("arrow_right"));
+        bio.setImageURI(imageFileLocationMap.get("arrow_right"));
 
         return view;
     }

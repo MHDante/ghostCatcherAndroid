@@ -11,6 +11,7 @@ import android.view.View;
 
 import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 public abstract class ToolFragment extends Fragment {
 

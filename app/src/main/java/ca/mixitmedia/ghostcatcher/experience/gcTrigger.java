@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
+package ca.mixitmedia.ghostcatcher.experience;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -31,6 +31,7 @@ public class gcTrigger {
     public void setEnabled(boolean value) {
         enabled = value;
     }
+
     int id;
 
     public int getId() {
@@ -40,6 +41,7 @@ public class gcTrigger {
     public void setId(int value) {
         id = value;
     }
+
     Type type;
 
     public Type getType() {
@@ -49,6 +51,7 @@ public class gcTrigger {
     public void setType(Type value) {
         type = value;
     }
+
     String data;
 
     List<gcAction> actions;
@@ -96,9 +99,9 @@ public class gcTrigger {
     public void activate(gcActionManager actionManager) {
         int hitLock = 0;
         Iterate:
-        for(gcAction a : actions){
+        for (gcAction a : actions) {
             hitLock++;
-            switch(a.getType()){
+            switch (a.getType()) {
                 case DIALOG:
                     actionManager.startDialog(a.getData());
                     if (a.lock) break Iterate;

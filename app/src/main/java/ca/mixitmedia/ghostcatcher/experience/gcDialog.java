@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
+package ca.mixitmedia.ghostcatcher.experience;
 
 import android.app.AlertDialog;
 import android.content.res.AssetManager;
@@ -44,7 +44,7 @@ public class gcDialog {
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
-        String seqPath = gcEngine.Access().root.getPath() + "/seq" + "/seq"+ seqPt.id;
+        String seqPath = gcEngine.Access().root.getPath() + "/seq" + "/seq" + seqPt.id;
         String textPath = seqPath + "/text/" + id + ".txt";
         String soundPath = seqPath + "/sounds/" + id + ".mp3";
 
@@ -65,7 +65,7 @@ public class gcDialog {
         line = r.readLine();
 
         while ((line = r.readLine()) != null) {
-        if (line.equals("")) continue;
+            if (line.equals("")) continue;
             switch (line.charAt(0)) {
                 case '#':
                     continue;
@@ -76,11 +76,13 @@ public class gcDialog {
                             dialog.parsed.put(time, total.toString());
                         }
                         chr = gcEngine.Access().getCharacter(line.substring(2).trim());
-                    } break;
+                    }
+                    break;
                 case '<':
                     if (line.charAt(1) == '<') {
                         pose = (line.substring(2).trim());
-                    }break;
+                    }
+                    break;
                 case '@':
                     String[] times = line.substring(1).split(":");
                     int minutes = Integer.parseInt(times[0]);

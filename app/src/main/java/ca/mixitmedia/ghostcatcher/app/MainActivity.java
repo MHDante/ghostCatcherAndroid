@@ -41,11 +41,12 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.Tools.*;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcActionManager;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcLocation;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigger;
+import ca.mixitmedia.ghostcatcher.experience.gcActionManager;
+import ca.mixitmedia.ghostcatcher.experience.gcAudio;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.experience.gcLocation;
+import ca.mixitmedia.ghostcatcher.experience.gcSeqPt;
+import ca.mixitmedia.ghostcatcher.experience.gcTrigger;
 import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 

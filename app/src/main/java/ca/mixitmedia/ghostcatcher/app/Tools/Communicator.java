@@ -7,10 +7,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,11 +20,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -30,10 +39,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcAudio;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcDialog;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcTrigger;
+import ca.mixitmedia.ghostcatcher.experience.gcAudio;
+import ca.mixitmedia.ghostcatcher.experience.gcDialog;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.experience.gcTrigger;
 import ca.mixitmedia.ghostcatcher.utils.Tuple;
 import ca.mixitmedia.ghostcatcher.utils.Utils;
 import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
@@ -168,6 +177,7 @@ public class Communicator extends ToolFragment {
 
     @Override
     public boolean checkClick(View view) {
+
         switch (view.getId()) {
             case R.id.sound:
                 if (gcAudio.isPlaying()) gcAudio.pause();
@@ -175,8 +185,40 @@ public class Communicator extends ToolFragment {
                 //populateText("Hello world. ", true);
                 pause = !pause;
                 return true;
+
+            case R.id.help:
+                new ProximityTest().execute("sup");
+                return true;
             default:
                 return false;
+        }
+    }
+
+    private class ProximityTest extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                BufferedReader in = null;
+                HttpClient httpclient = new DefaultHttpClient();
+
+                HttpGet request = new HttpGet();
+                URI website = new URI("http://mixitmedia.ca/proximity/writetest.php?action=write&location=zacklocation&status=activated");
+                request.setURI(website);
+                HttpResponse response = httpclient.execute(request);
+                in = new BufferedReader(new InputStreamReader(
+                        response.getEntity().getContent()));
+                return in.readLine();
+            } catch (Exception e) {
+                Log.e("log_tag", "Error in http connection " + e.toString());
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -225,10 +267,10 @@ public class Communicator extends ToolFragment {
                 }
                 try {
                     if (gcMain != null) {
-                    Bitmap image = MediaStore.Images.Media.getBitmap(
-                            gcMain.getContentResolver(),
-                            currentDialog.portraits.get(intervalCounter));
-                    imgV.setImageBitmap(image);
+                        Bitmap image = MediaStore.Images.Media.getBitmap(
+                                gcMain.getContentResolver(),
+                                currentDialog.portraits.get(intervalCounter));
+                        imgV.setImageBitmap(image);
                     }
                     portrait = currentDialog.portraits.get(intervalCounter);
                 } catch (IOException e) {
@@ -259,7 +301,7 @@ public class Communicator extends ToolFragment {
     }
 
     protected int getAnimatorId(boolean enter) {
-        if(enter) gcMain.playSound(gcMain.sounds.metalClick);
+        if (enter) gcMain.playSound(gcMain.sounds.metalClick);
         return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_left;
     }
 

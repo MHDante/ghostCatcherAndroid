@@ -1,4 +1,4 @@
-package ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience;
+package ca.mixitmedia.ghostcatcher.experience;
 
 
 import com.google.android.gms.games.achievement.Achievement;
