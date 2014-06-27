@@ -377,7 +377,7 @@ public class StartScreen extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.start_screen, menu);
         return true;
-    }
+    }//
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
