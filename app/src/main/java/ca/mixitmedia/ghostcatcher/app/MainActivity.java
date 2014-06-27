@@ -461,7 +461,7 @@ public class MainActivity extends Activity implements
         View left_frame, right_frame, ad_holder, fragment_container;
 
         left_frame = findViewById(R.id.frame_left);
-        right_frame = findViewById(R.id.bullet_check3);
+        right_frame = findViewById(R.id.frame_right);
         ad_holder = findViewById(R.id.ad_holder);
         fragment_container = findViewById(R.id.fragment_container);
 
