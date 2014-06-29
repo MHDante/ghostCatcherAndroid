@@ -54,7 +54,7 @@ public class StartScreen extends Activity {
         Log.d("Filepaths 2 :", cacheDir);
         unzipLocation = getExternalFilesDir("mixitmedia").getPath();
         Log.d("Filepaths 3 :", unzipLocation);
-        zipFile = cacheDir+"/mixitmedia.zip";
+        zipFile = cacheDir+"/exp.zip";
         Log.d("Filepaths 4 :", zipFile);
 
         super.onCreate(savedInstanceState);
@@ -74,11 +74,13 @@ public class StartScreen extends Activity {
         Button bCredits = (Button) findViewById(R.id.button4);
 
         bCont.setEnabled(false);
+        bCredits.setEnabled(false);
+
 
         if (!fileDir.exists()) {
             if (file.exists()) {
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                if ( fileToMD5(zipFile).equals("8d4279da23b5b6af907b099db58dc910") ) {
+                if ( fileToMD5(zipFile).equals("e30fa973ee4d9573b907b00d376e67aa") ) {
                     try {
                         Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
 
@@ -321,9 +323,6 @@ public class StartScreen extends Activity {
                     unzipEntry(zipfile, entry, unzipLocation);
                     mProgressDialog.setProgress((isExtracted * 100) / fileCount);
                 }
-
-                //UnzipUtil d = new UnzipUtil(zipFile, unzipLocation);
-                //d.unzip();
 
             } catch (Exception e) {
                 return false;
