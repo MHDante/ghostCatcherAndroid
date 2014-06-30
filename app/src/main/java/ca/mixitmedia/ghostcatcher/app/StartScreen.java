@@ -39,13 +39,24 @@ public class StartScreen extends Activity {
     private ProgressDialog mProgressDialog;
 
     private String url;
-    private File fileDir = new File(Environment.getExternalStorageDirectory(), "/mixitmedia");
-    String unzipLocation = Environment.getExternalStorageDirectory() + "/";
-    private String zipFile = Environment.getExternalStorageDirectory() + "/mixitmedia.zip";
+    private File fileDir;
+    private String cacheDir;
+    private String unzipLocation;
+    private String zipFile;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
+        Log.d("Filepaths 1 :", fileDir.getPath());
+        cacheDir = getExternalCacheDir().getPath();
+        Log.d("Filepaths 2 :", cacheDir);
+        unzipLocation = getExternalFilesDir("mixitmedia").getPath();
+        Log.d("Filepaths 3 :", unzipLocation);
+        zipFile = cacheDir+"/exp.zip";
+        Log.d("Filepaths 4 :", zipFile);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
 
@@ -63,13 +74,16 @@ public class StartScreen extends Activity {
         Button bCredits = (Button) findViewById(R.id.button4);
 
         bCont.setEnabled(false);
+        bCredits.setEnabled(false);
+
 
         if (!fileDir.exists()) {
             if (file.exists()) {
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                if ( fileToMD5(zipFile).equals("8d4279da23b5b6af907b099db58dc910") ) {
+                if ( fileToMD5(zipFile).equals("e30fa973ee4d9573b907b00d376e67aa") ) {
                     try {
                         Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+
                         unzip();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -231,7 +245,7 @@ public class StartScreen extends Activity {
                 InputStream input = new BufferedInputStream(url.openStream(), 10 * 1024);
 
                 // Output stream to write file in SD card
-                OutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory().getPath() + "/mixitmedia.zip");
+                OutputStream output = new FileOutputStream(zipFile);
 
                 byte data[] = new byte[1024];
                 long total = 0;
@@ -275,7 +289,7 @@ public class StartScreen extends Activity {
         }
     }
 
-    //This is the method for unzip file which is store your location. And unzip folder will                 store as per your desire location.
+    //Extract zip calls Asynctask
     public void unzip() throws IOException {
         mProgressDialog = new ProgressDialog(StartScreen.this);
         mProgressDialog.setMessage("Extracting the downloaded file...");
@@ -283,7 +297,7 @@ public class StartScreen extends Activity {
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
 
-        new UnZipTask().execute(zipFile, unzipLocation);
+        new UnZipTask().execute(zipFile);
     }
 
 
@@ -295,8 +309,8 @@ public class StartScreen extends Activity {
 
             String filePath = params[0];
             Log.d("FILE PATH IS", filePath);
-            String destinationPath = params[1];
-            Log.d("DEST PATH IS", destinationPath);
+
+            Log.d("UNZIP LOCATION IS", unzipLocation);
 
             File archive = new File(filePath);
             try {
@@ -306,12 +320,9 @@ public class StartScreen extends Activity {
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = (ZipEntry) e.nextElement();
                     isExtracted++;
-                    unzipEntry(zipfile, entry, destinationPath);
+                    unzipEntry(zipfile, entry, unzipLocation);
                     mProgressDialog.setProgress((isExtracted * 100) / fileCount);
                 }
-
-                UnzipUtil d = new UnzipUtil(zipFile, unzipLocation);
-                d.unzip();
 
             } catch (Exception e) {
                 return false;
@@ -327,14 +338,13 @@ public class StartScreen extends Activity {
         private void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir) throws IOException {
 
             if (entry.isDirectory()) {
-                createDir(new File(outputDir, entry.getName()));
+                String name = entry.getName();
+                createDir(new File(outputDir +'/'+ name));
                 return;
             }
 
-            File outputFile = new File(outputDir, entry.getName());
-            if (!outputFile.getParentFile().exists()) {
-                createDir(outputFile.getParentFile());
-            }
+            File outputFile = new File(outputDir  +'/'+ entry.getName());
+
 
             BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
@@ -355,54 +365,6 @@ public class StartScreen extends Activity {
         }
     }
 
-    public class UnzipUtil {
-        private String zipFile;
-        private String location;
-
-        public UnzipUtil(String zipFile, String location) {
-            this.zipFile = zipFile;
-            this.location = location;
-
-            dirChecker("");
-        }
-
-        public void unzip() {
-            try {
-                FileInputStream fin = new FileInputStream(zipFile);
-                ZipInputStream zin = new ZipInputStream(fin);
-                ZipEntry ze = null;
-                while ((ze = zin.getNextEntry()) != null) {
-                    Log.d("Decompress", "Unzipping " + ze.getName());
-
-                    if (ze.isDirectory()) {
-                        dirChecker(ze.getName());
-                    } else {
-                        FileOutputStream fout = new FileOutputStream(location + ze.getName());
-
-                        byte[] buffer = new byte[8192];
-                        int len;
-                        while ((len = zin.read(buffer)) != -1) {
-                            fout.write(buffer, 0, len);
-                        }
-                        fout.close();
-
-                        zin.closeEntry();
-
-                    }
-                }
-                zin.close();
-            } catch (Exception e) {
-                Log.e("Decompress", "unzip", e);
-            }
-        }
-
-        private void dirChecker(String dir) {
-            File f = new File(location + dir);
-            if (!f.isDirectory()) {
-                f.mkdirs();
-            }
-        }
-    }
 
     public void start(View view){
         Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
@@ -414,7 +376,7 @@ public class StartScreen extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.start_screen, menu);
         return true;
-    }
+    }//
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

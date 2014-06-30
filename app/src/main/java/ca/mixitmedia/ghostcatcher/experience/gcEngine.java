@@ -36,10 +36,8 @@ public class gcEngine {
     public List<gcSeqPt> seqPts;
     public List<gcLocation> locations;
 
-    public File root = new File(Environment.getExternalStorageDirectory(), "mixitmedia");
-
     public Context context;
-
+    public File root = new File(Environment.getExternalStorageDirectory()+"/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher");
 
     XmlPullParserFactory pullParserFactory;
 
