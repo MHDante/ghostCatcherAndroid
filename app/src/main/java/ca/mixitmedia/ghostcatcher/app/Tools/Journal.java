@@ -95,8 +95,8 @@ public class Journal extends ToolFragment {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_journal);
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("journal_button_glyph"));
     }
 
     public boolean checkClick(View view) {
@@ -127,6 +127,7 @@ public class Journal extends ToolFragment {
             put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("journal").appendPath("journal.png").build());
             put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
             put("arrow_right", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("arrow_right.png").build());
+            put("journal_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_journal.png").build());
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }

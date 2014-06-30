@@ -15,6 +15,7 @@ import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Tester extends ToolFragment {
 
+    Uri rootUri = Uri.fromFile(gcEngine.Access().root);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -126,8 +127,8 @@ public class Tester extends ToolFragment {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_ghost_catcher);
+    public Uri getGlyphUri() {
+        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_ghost_catcher.png").build());
     }
 
 }

@@ -174,8 +174,8 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_location_map);
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("map_button_glyph"));
     }
 
     @Override
@@ -230,6 +230,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
             put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("map").appendPath("map_overlay.png").build());
             put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
             put("arrow", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("btn_playback_play.png").build());
+            put("map_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_location_map.png").build());
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }

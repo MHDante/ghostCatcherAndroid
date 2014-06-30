@@ -60,6 +60,8 @@ public class Communicator extends ToolFragment {
     TextView subtitleView;
     List<Integer> intervals = new ArrayList<>();
 
+    Uri rootUri = Uri.fromFile(gcEngine.Access().root);
+
     public Communicator() {
     }//req'd
 
@@ -71,8 +73,6 @@ public class Communicator extends ToolFragment {
         imgV = (ImageView) view.findViewById(R.id.character_portrait);
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
-
-        Uri rootUri = Uri.fromFile(gcEngine.Access().root);
         overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("communicator").appendPath("main_screen2.png").build());
 
         return view;
@@ -171,8 +171,8 @@ public class Communicator extends ToolFragment {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_communicator);
+    public Uri getGlyphUri() {
+        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_communicator.png").build());
     }
 
     @Override

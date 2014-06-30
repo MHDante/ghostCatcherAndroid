@@ -8,6 +8,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
@@ -139,8 +140,8 @@ public class MainActivity extends Activity implements
 	    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 	    setContentView(R.layout.activity_main);
 	    ToolMap = new HashMap<Class, ToolLightButton>() {{
-		    put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
-		    put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
+		    put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_back));
+		    put(Journal.class, getToolLight(Journal.class, R.id.tool_light_journal));
 		    put(LocationMap.class, getToolLight(LocationMap.class, R.id.tool_light_1));
 		    put(Biocalibrate.class, getToolLight(Biocalibrate.class, R.id.tool_light_2));
 		    put(Amplifier.class, getToolLight(Amplifier.class, R.id.tool_light_3));
@@ -241,7 +242,20 @@ public class MainActivity extends Activity implements
         ImageView tool_selector = (ImageView) findViewById(R.id.overlay);
         ImageView back_button = (ImageView) findViewById(R.id.back_button);
         ImageView journal_button = (ImageView) findViewById(R.id.journal_button);
+        ImageView background = (ImageView) findViewById(R.id.background);
 
+        ToolLightButton back_button_light = (ToolLightButton)findViewById(R.id.tool_light_back);
+        ToolLightButton journal_button_light = (ToolLightButton)findViewById(R.id.tool_light_journal);
+
+        ToolLightButton button1 = (ToolLightButton)findViewById(R.id.tool_light_1);
+        ToolLightButton button2 = (ToolLightButton)findViewById(R.id.tool_light_2);
+        ToolLightButton button3 = (ToolLightButton)findViewById(R.id.tool_light_3);
+        ToolLightButton button4 = (ToolLightButton)findViewById(R.id.tool_light_4);
+        ToolLightButton button5 = (ToolLightButton)findViewById(R.id.tool_light_5);
+        ToolLightButton button6 = (ToolLightButton)findViewById(R.id.tool_light_6);
+        ToolLightButton button7 = (ToolLightButton)findViewById(R.id.tool_light_7);
+
+        background.setImageURI(imageFileLocationMap.get("background"));
         frame_left.setImageURI(imageFileLocationMap.get("frame_left"));
         frame_right.setImageURI(imageFileLocationMap.get("frame_right"));
         ad_holder.setImageURI(imageFileLocationMap.get("ad_holder"));
@@ -251,6 +265,7 @@ public class MainActivity extends Activity implements
 
         frame_left.setScaleType(ImageView.ScaleType.FIT_START);
         frame_right.setScaleType(ImageView.ScaleType.FIT_END);
+
 
     }
 
@@ -268,7 +283,12 @@ public class MainActivity extends Activity implements
 	    } catch (InstantiationException | IllegalAccessException e) {
 		    throw new RuntimeException(e);
         }
-        ret.setSrc(BitmapFactory.decodeResource(getResources(), ret.getToolFragment().getGlyphID()));
+        /*
+        * TODO: So I'm getting a NullPointerException which shouldn't come from the URI path builder but I
+        * tried the toString method and other getPath methods so I think it's the decodeFile method but I can't really
+        * think of another way to get a bitmap from a URI.
+        */
+        ret.setSrc(BitmapFactory.decodeFile(ret.getToolFragment().getGlyphUri().getEncodedPath()));
         ret.setEnabled(true);
         ret.setOnClickListener(this);
         return ret;
@@ -454,25 +474,15 @@ public class MainActivity extends Activity implements
 	}
 
     public void hideFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
-        View left_frame, right_frame, ad_holder, fragment_container;
+        View left_frame, right_frame, ad_holder;
 
         left_frame = findViewById(R.id.frame_left);
         right_frame = findViewById(R.id.frame_right);
         ad_holder = findViewById(R.id.ad_holder);
-        fragment_container = findViewById(R.id.fragment_container);
 
         left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
         right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
         ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
-
-        RelativeLayout.LayoutParams fragmentContainerParams = (RelativeLayout.LayoutParams) fragment_container.getLayoutParams();
-        fragmentContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        fragmentContainerParams.addRule(RelativeLayout.ABOVE, 0);
-
-        fragment_container.setLayoutParams(fragmentContainerParams);
-        fragment_container.invalidate();
-
-        ad_holder.setVisibility(View.GONE);
 
         isAdHolderShowing = false;
         isLeftFrameShowing = false;
@@ -481,17 +491,18 @@ public class MainActivity extends Activity implements
     }
 
     public void showFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
-        View left_frame, right_frame, ad_holder;
+        ImageView left_frame, right_frame, ad_holder;
 
-        left_frame = findViewById(R.id.frame_left);
-        right_frame = findViewById(R.id.bullet_check3);
-        ad_holder = findViewById(R.id.ad_holder);
+        left_frame = (ImageView) findViewById(R.id.frame_left);
+        right_frame = (ImageView) findViewById(R.id.frame_right);
+        ad_holder = (ImageView) findViewById(R.id.ad_holder);
+
+        left_frame.setScaleType(ImageView.ScaleType.FIT_START);
+        right_frame.setScaleType(ImageView.ScaleType.FIT_END);
 
         left_frame.animate().translationX(0).setDuration(1000);
         right_frame.animate().translationX(0).setDuration(1000);
         ad_holder.animate().translationY(0).setDuration(1000);
-
-        ad_holder.setVisibility(View.VISIBLE);
 
         isAdHolderShowing = true;
         isLeftFrameShowing = true;
@@ -721,11 +732,17 @@ public class MainActivity extends Activity implements
 
         imageFileLocationMap = new HashMap<String,Uri>(){{
             put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("main_screen2.png").build());
+            put("background", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("background.png").build());
             put("frame_left", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_left.png").build());
             put("frame_right", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_right.png").build());
             put("ad_holder", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("ad_holder.png").build());
             put("tool_selector", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("toolselector.png").build());
             put("gear_button", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("back_gear.png").build());
+
+            put("button_lit", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("button_lit.png").build());
+            put("button_unlit", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("button_unlit.png").build());
+            put("button_disabled", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("button_disabled.png").build());
+
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
