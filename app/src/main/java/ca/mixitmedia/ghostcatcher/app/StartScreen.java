@@ -210,7 +210,7 @@ public class StartScreen extends Activity {
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
 
-        builder.setMessage("Ghost Catcher needs to download a file. Overage charges may apply. \n\nDo you want to continue?");
+        builder.setMessage("Ghost Catcher needs to download a file. Data charges may apply. \n\nDo you want to continue?");
 
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
