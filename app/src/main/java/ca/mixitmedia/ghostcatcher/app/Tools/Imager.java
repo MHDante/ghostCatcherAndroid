@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
@@ -39,8 +41,7 @@ public class Imager extends ToolFragment {
 
         ImageView overlay = (ImageView) v.findViewById(R.id.overlay);
 
-        Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("imager").appendPath("imager.png").build());
+        overlay.setImageURI(Uri.fromFile(new File(gcEngine.Access().root + "/skins/imager/imager.png")));
 
         return v;
     }

@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -717,16 +718,17 @@ public class MainActivity extends Activity implements
     }
 
     public void createImageURIs(){
-        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-
+        //final String rootUri = Uri.fromFile(new File(gcEngine.Access().root));
+        final File test = new File(gcEngine.Access().root + "/skins/components/back_gear.png");
+        if (!test.exists())  throw new RuntimeException("Messed up");
         imageFileLocationMap = new HashMap<String,Uri>(){{
-            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("main_screen2.png").build());
-            put("frame_left", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_left.png").build());
-            put("frame_right", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_right.png").build());
-            put("ad_holder", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("ad_holder.png").build());
-            put("tool_selector", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("toolselector.png").build());
-            put("gear_button", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("back_gear.png").build());
-            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+            put("overlay", Uri.fromFile(new File(gcEngine.Access().root + "/skins/main_frame/main_screen2.png")));
+            put("frame_left", Uri.fromFile(new File(gcEngine.Access().root + "/skins/main_frame/frame_left.png")));
+            put("frame_right", Uri.fromFile(new File(gcEngine.Access().root + "/skins/main_frame/frame_right.png")));
+            put("ad_holder", Uri.fromFile(new File(gcEngine.Access().root + "/skins/main_frame/ad_holder.png")));
+            put("tool_selector", Uri.fromFile(new File(gcEngine.Access().root + "/skins/main_frame/toolselector.png")));
+            put("gear_button", Uri.fromFile(test));
+            put("test", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/error_default.png")));
         }};
     }
 

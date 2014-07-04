@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -72,8 +73,7 @@ public class Communicator extends ToolFragment {
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
 
-        Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("communicator").appendPath("main_screen2.png").build());
+        overlay.setImageURI(Uri.fromFile(new File(gcEngine.Access().root + "/skins/communicator/main_screen2.png")));
 
         return view;
     }

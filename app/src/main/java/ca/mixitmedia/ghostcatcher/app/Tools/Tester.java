@@ -84,7 +84,7 @@ public class Tester extends ToolFragment {
 
     @Override
     public boolean checkClick(View view) {
-        Uri testSoundPath = Uri.fromFile(new File(gcEngine.Access().root.getPath() + "/testsound.mp3"));
+        Uri testSoundPath = Uri.fromFile(new File(gcEngine.Access().root + "/testsound.mp3"));
 
         switch (view.getId()) {
             case R.id.tester_button_1:

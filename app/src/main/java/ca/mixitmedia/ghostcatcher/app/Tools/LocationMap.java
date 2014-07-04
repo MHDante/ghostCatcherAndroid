@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -224,13 +225,12 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     public void createImageURIs(){
-        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
 
         imageFileLocationMap = new HashMap<String,Uri>(){{
-            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("map").appendPath("map_overlay.png").build());
-            put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
-            put("arrow", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("btn_playback_play.png").build());
-            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+            put("overlay", Uri.fromFile(new File(gcEngine.Access().root + "/skins/map/map_overlay.png")));
+            put("bullet_check", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/bullet_check.png")));
+            put("arrow", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/btn_playback_play.png")));
+            put("test", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/error_default.png")));
         }};
     }
 

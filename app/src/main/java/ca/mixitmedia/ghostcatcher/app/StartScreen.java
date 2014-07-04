@@ -314,15 +314,18 @@ public class StartScreen extends Activity {
 
             File archive = new File(filePath);
             try {
-                ZipFile zipfile = new ZipFile(archive);
-                int fileCount = zipfile.size();
-                mProgressDialog.setMax(zipfile.size());
-                for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                    ZipEntry entry = (ZipEntry) e.nextElement();
-                    isExtracted++;
-                    unzipEntry(zipfile, entry, unzipLocation);
-                    mProgressDialog.setProgress((isExtracted * 100) / fileCount);
-                }
+                //ZipFile zipfile = new ZipFile(archive);
+                //int fileCount = zipfile.size();
+                //mProgressDialog.setMax(zipfile.size());
+                //for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+                //    ZipEntry entry = (ZipEntry) e.nextElement();
+                //    isExtracted++;
+                //    unzipEntry(zipfile, entry, unzipLocation);
+                //    mProgressDialog.setProgress((isExtracted * 100) / fileCount);
+                //}
+//
+                UnzipUtil d = new UnzipUtil(zipFile, unzipLocation);
+                d.unzip();
 
             } catch (Exception e) {
                 return false;
@@ -364,7 +367,55 @@ public class StartScreen extends Activity {
             }
         }
     }
+    public class UnzipUtil {
+        private String zipFile;
+        private String location;
 
+        public UnzipUtil(String zipFile, String location) {
+            this.zipFile = zipFile;
+            this.location = location;
+
+            dirChecker("");
+        }
+
+        public void unzip() {
+            try {
+                FileInputStream fin = new FileInputStream(zipFile);
+                ZipInputStream zin = new ZipInputStream(fin);
+                ZipEntry ze = null;
+                while ((ze = zin.getNextEntry()) != null) {
+                    Log.d("Decompress", "Unzipping " + ze.getName());
+
+                    if (ze.isDirectory()) {
+                        dirChecker(ze.getName());
+                    } else {
+                        FileOutputStream fout = new FileOutputStream(new File(location+ "/"+ ze.getName()));
+                        Log.e("uz", location+ "/"+ ze.getName());
+                        byte[] buffer = new byte[8192];
+                        int len;
+                        while ((len = zin.read(buffer)) != -1) {
+                            fout.write(buffer, 0, len);
+                        }
+                        fout.close();
+
+                        zin.closeEntry();
+
+                    }
+                }
+                zin.close();
+            } catch (Exception e) {
+                Log.e("Decompress", "unzip", e);
+            }
+        }
+
+        private void dirChecker(String dir) {
+            File f = new File(location + "/" + dir);
+            if (!f.isDirectory()) {
+                Log.e("DirChecker", dir);
+                f.mkdirs();
+            }
+        }
+    }
 
     public void start(View view){
         Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
