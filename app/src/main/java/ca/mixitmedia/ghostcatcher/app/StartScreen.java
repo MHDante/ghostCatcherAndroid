@@ -2,6 +2,7 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -154,7 +155,7 @@ public class StartScreen extends Activity {
         //Listview inside scrollview inside linear layout
 
 
-        AlertDialog dialog;
+       /* AlertDialog dialog;
 
         final String[] items = {" 1 "," 2 "," 3 "," 4 "};
 
@@ -178,6 +179,21 @@ public class StartScreen extends Activity {
         builder.setTitle("IS THIS WHAT YOU WANTED DANTE?");
 
         dialog = builder.create();
+        dialog.show();*/
+
+        final Dialog dialog = new Dialog(StartScreen.this);
+        dialog.setContentView(R.layout.dialog_view);
+        dialog.setTitle("Settings");
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.button10);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
         dialog.show();
     }
 
@@ -194,7 +210,7 @@ public class StartScreen extends Activity {
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
 
-        builder.setMessage("Ghost Catcher needs to download a file. Overage charges may apply. \n\nDo you want to continue?");
+        builder.setMessage("Ghost Catcher needs to download a file. Data charges may apply. \n\nDo you want to continue?");
 
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
@@ -422,22 +438,7 @@ public class StartScreen extends Activity {
         startActivity(myIntent);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.start_screen, menu);
-        return true;
-    }//
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
+
 }
