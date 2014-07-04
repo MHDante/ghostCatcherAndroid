@@ -60,12 +60,6 @@ public class gcLocation extends Location {
 		this.name = name;
 	}
 
-    public Uri getImageUri() {
-        File f = new File(gcEngine.Access().root + "/locations/" + id + ".png");
-        if (!f.exists())
-            throw new RuntimeException("error opening loc image: " + f.getAbsolutePath());
-        return Uri.fromFile(f);
-    }
 	public String getDescription() {
 		return description;
 	}

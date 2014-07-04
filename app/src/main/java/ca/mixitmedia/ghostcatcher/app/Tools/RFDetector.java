@@ -132,7 +132,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         ImageView compass_arrow = (ImageView) view.findViewById(R.id.arrowImage);
-        ImageView background = (ImageView) view.findViewById(R.id.background);
+        ImageView background = (ImageView) view.findViewById(R.id.rf_background);
 
         overlay.setImageURI(imageFileLocationMap.get("overlay"));
         compass_arrow.setImageURI(imageFileLocationMap.get("compass_arrow"));
@@ -279,4 +279,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
+    public void updateDestination() {
+        destination = gcMain.getPlayerLocationInStory();
+        }
+
 }
