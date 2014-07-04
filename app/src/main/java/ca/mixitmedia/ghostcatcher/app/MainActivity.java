@@ -31,7 +31,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -40,30 +39,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ca.mixitmedia.ghostcatcher.app.Tools.*;
+import ca.mixitmedia.ghostcatcher.app.Tools.Amplifier;
+import ca.mixitmedia.ghostcatcher.app.Tools.Biocalibrate;
+import ca.mixitmedia.ghostcatcher.app.Tools.Communicator;
+import ca.mixitmedia.ghostcatcher.app.Tools.Imager;
+import ca.mixitmedia.ghostcatcher.app.Tools.Journal;
+import ca.mixitmedia.ghostcatcher.app.Tools.LocationMap;
+import ca.mixitmedia.ghostcatcher.app.Tools.RFDetector;
+import ca.mixitmedia.ghostcatcher.app.Tools.Tester;
+import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 import ca.mixitmedia.ghostcatcher.experience.gcActionManager;
 import ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
-import ca.mixitmedia.ghostcatcher.experience.gcSeqPt;
 import ca.mixitmedia.ghostcatcher.experience.gcTrigger;
 import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 
 public class MainActivity extends Activity implements
-        LocationListener, View.OnClickListener {
+		LocationListener, View.OnClickListener {
 
-    public Map<String, Uri> imageFileLocationMap;
+	public Map<String, Uri> imageFileLocationMap;
 	static final int GPS_SLOW_MIN_UPDATE_TIME_MS = 60000; //60 seconds
 	static final int GPS_SLOW_MIN_UPDATE_DISTANCE_M = 50; //50 meters
-	private final static int
-			CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+	//private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 	public static boolean transitionInProgress;
-    public final int SOUND_POOL_MAX_STREAMS = 4;
-	private final int NOTIF_ID = 2013567;
+	public final int SOUND_POOL_MAX_STREAMS = 4;
+	private final static int NOTIF_ID = 2013567;
 	public Map<Class, ToolLightButton> ToolMap;
 	public SoundPool soundPool;
-    public Sounds sounds;
+	public Sounds sounds;
 	public gcActionManager actionManager = new gcActionManager() {
 		@Override
 		public void startDialog(String dialogId) {
@@ -98,8 +103,8 @@ public class MainActivity extends Activity implements
 		}
 	};
 
-    //////////////////LifeCycle
-    LocationManager locationManager;
+	//////////////////LifeCycle
+	LocationManager locationManager;
 	Location currentGPSLocation;
 	/**
 	 * the minimal GPS update interval, in milliseconds
@@ -127,264 +132,264 @@ public class MainActivity extends Activity implements
 		}
 	};
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 
-	    soundPool = new SoundPool(SOUND_POOL_MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+		soundPool = new SoundPool(SOUND_POOL_MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
 
-	    sounds = new Sounds(soundPool);
-	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-	    super.onCreate(savedInstanceState);
-	    gcEngine.init(this);
-	    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-	    setContentView(R.layout.activity_main);
-	    ToolMap = new HashMap<Class, ToolLightButton>() {{
-		    put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
-		    put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
-		    put(LocationMap.class, getToolLight(LocationMap.class, R.id.tool_light_1));
-		    put(Biocalibrate.class, getToolLight(Biocalibrate.class, R.id.tool_light_2));
-		    put(Amplifier.class, getToolLight(Amplifier.class, R.id.tool_light_3));
-		    put(Tester.class, getToolLight(Tester.class, R.id.tool_light_4));
-		    put(Imager.class, getToolLight(Imager.class, R.id.tool_light_5));
-		    put(RFDetector.class, getToolLight(RFDetector.class, R.id.tool_light_6));
-	    }};
-	    showTool(Communicator.class);
-	    showTool(Journal.class);
+		sounds = new Sounds(soundPool);
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		super.onCreate(savedInstanceState);
+		gcEngine.init(this);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		setContentView(R.layout.activity_main);
+		ToolMap = new HashMap<Class, ToolLightButton>() {{
+			put(Communicator.class, getToolLight(Communicator.class, R.id.tool_light_left));
+			put(Journal.class, getToolLight(Journal.class, R.id.tool_light_right));
+			put(LocationMap.class, getToolLight(LocationMap.class, R.id.tool_light_1));
+			put(Biocalibrate.class, getToolLight(Biocalibrate.class, R.id.tool_light_2));
+			put(Amplifier.class, getToolLight(Amplifier.class, R.id.tool_light_3));
+			put(Tester.class, getToolLight(Tester.class, R.id.tool_light_4));
+			put(Imager.class, getToolLight(Imager.class, R.id.tool_light_5));
+			put(RFDetector.class, getToolLight(RFDetector.class, R.id.tool_light_6));
+		}};
+		showTool(Communicator.class);
+		showTool(Journal.class);
 
-	    if (savedInstanceState == null) {  //Avoid overlapping fragments.
-		    getFragmentManager().beginTransaction()
-				    .add(R.id.fragment_container, getTool(Biocalibrate.class))
-				    .commit();
-	    }
-	    onNewIntent(getIntent());
-	    onLocationChanged(null);
-	    detector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+		if (savedInstanceState == null) {  //Avoid overlapping fragments.
+			getFragmentManager().beginTransaction()
+					.add(R.id.fragment_container, getTool(Biocalibrate.class))
+					.commit();
+		}
+		onNewIntent(getIntent());
+		onLocationChanged(null);
+		detector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
 
-		    private int swipe_Min_Distance = 100;
-		    private int swipe_Min_Velocity = 100;
+			private int swipe_Min_Distance = 100;
+			private int swipe_Min_Velocity = 100;
 
-		    @Override
-		    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-		                           float velocityY) {
+			@Override
+			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			                       float velocityY) {
 
-			    final float xDistance = Math.abs(e1.getX() - e2.getX());
-			    final float yDistance = Math.abs(e1.getY() - e2.getY());
+				final float xDistance = Math.abs(e1.getX() - e2.getX());
+				final float yDistance = Math.abs(e1.getY() - e2.getY());
 
-			    velocityX = Math.abs(velocityX);
-			    velocityY = Math.abs(velocityY);
-			    boolean result = false;
+				velocityX = Math.abs(velocityX);
+				velocityY = Math.abs(velocityY);
+				boolean result = false;
 
-			    Display display = MainActivity.this.getWindowManager().getDefaultDisplay();
-			    Point size = new Point();
-			    display.getSize(size);
-			    int width = size.x;
-			    int height = size.y;
+				Display display = MainActivity.this.getWindowManager().getDefaultDisplay();
+				Point size = new Point();
+				display.getSize(size);
+				int width = size.x;
+				int height = size.y;
 
-			    float gestureAreaLeft, gestureAreaRight, gestureAreaTop, gestureAreaBottom;
+				float gestureAreaLeft, gestureAreaRight, gestureAreaTop, gestureAreaBottom;
 
-			    gestureAreaLeft = width * (15f / 100f);
-			    gestureAreaRight = width - gestureAreaLeft;
-			    gestureAreaTop = height * (15f / 100f);
-			    gestureAreaBottom = height - gestureAreaTop;
+				gestureAreaLeft = width * (15f / 100f);
+				gestureAreaRight = width - gestureAreaLeft;
+				gestureAreaTop = height * (15f / 100f);
+				gestureAreaBottom = height - gestureAreaTop;
 
-			    if (velocityX > this.swipe_Min_Velocity && xDistance > this.swipe_Min_Distance) {
-				    if (getCurrentFragment() instanceof LocationMap) {
-					    if ((e1.getX() < gestureAreaLeft) || (e1.getX() > gestureAreaRight)) {
-						    if (e1.getX() > e2.getX()) {
-							    onClick(ToolMap.get(Journal.class));
-						    } else {
-							    onClick(ToolMap.get(Communicator.class));
-						    }
-					    }
-				    } else if (e1.getX() > e2.getX()) {
-					    if (!(getCurrentFragment() instanceof Journal))
-						    onClick(ToolMap.get(Journal.class));
-				    } else {
-					    if (!(getCurrentFragment() instanceof Communicator))
-						    onClick(ToolMap.get(Communicator.class));
-				    }
+				if (velocityX > this.swipe_Min_Velocity && xDistance > this.swipe_Min_Distance) {
+					if (getCurrentFragment() instanceof LocationMap) {
+						if ((e1.getX() < gestureAreaLeft) || (e1.getX() > gestureAreaRight)) {
+							if (e1.getX() > e2.getX()) {
+								onClick(ToolMap.get(Journal.class));
+							} else {
+								onClick(ToolMap.get(Communicator.class));
+							}
+						}
+					} else if (e1.getX() > e2.getX()) {
+						if (!(getCurrentFragment() instanceof Journal))
+							onClick(ToolMap.get(Journal.class));
+					} else {
+						if (!(getCurrentFragment() instanceof Communicator))
+							onClick(ToolMap.get(Communicator.class));
+					}
 
-                    result = true;
-                } else if (velocityY > this.swipe_Min_Velocity && yDistance > this.swipe_Min_Distance) {
-                    if(getCurrentFragment() instanceof LocationMap){
-                        if(toolHolderShown){
-                            gestureAreaTop = findViewById(R.id.tool_holder).getHeight();
-                        }
-                        if((e1.getY() < gestureAreaTop) || (e1.getY() > gestureAreaBottom)){
-                            if(e1.getY() > e2.getY()) {
-                                if (toolHolderShown && !transitionInProgress)
-                                    toggleToolMenu();
-                            } else {
-                                if (!toolHolderShown && !transitionInProgress)
-                                    toggleToolMenu();
-                            }
-                        }
-                    }
-                    else if(e1.getY() > e2.getY()) {
-                        if (toolHolderShown && !transitionInProgress)
-                            toggleToolMenu();
-                    } else {
-                        if (!toolHolderShown && !transitionInProgress)
-                            toggleToolMenu();
-                    }
-                    result = true;
-                }
-                return result;
-            }
-        });
+					result = true;
+				} else if (velocityY > this.swipe_Min_Velocity && yDistance > this.swipe_Min_Distance) {
+					if(getCurrentFragment() instanceof LocationMap){
+						if(toolHolderShown){
+							gestureAreaTop = findViewById(R.id.tool_holder).getHeight();
+						}
+						if((e1.getY() < gestureAreaTop) || (e1.getY() > gestureAreaBottom)){
+							if(e1.getY() > e2.getY()) {
+								if (toolHolderShown && !transitionInProgress)
+									toggleToolMenu();
+							} else {
+								if (!toolHolderShown && !transitionInProgress)
+									toggleToolMenu();
+							}
+						}
+					}
+					else if(e1.getY() > e2.getY()) {
+						if (toolHolderShown && !transitionInProgress)
+							toggleToolMenu();
+					} else {
+						if (!toolHolderShown && !transitionInProgress)
+							toggleToolMenu();
+					}
+					result = true;
+				}
+				return result;
+			}
+		});
 
-        createImageURIs();
+		createImageURIs();
 
-        ImageView frame_right = (ImageView) findViewById(R.id.frame_right);
-        ImageView frame_left = (ImageView) findViewById(R.id.frame_left);
-        ImageView ad_holder = (ImageView) findViewById(R.id.ad_holder);
-        ImageView tool_selector = (ImageView) findViewById(R.id.overlay);
-        ImageView back_button = (ImageView) findViewById(R.id.back_button);
-        ImageView journal_button = (ImageView) findViewById(R.id.journal_button);
+		ImageView frame_right = (ImageView) findViewById(R.id.frame_right);
+		ImageView frame_left = (ImageView) findViewById(R.id.frame_left);
+		ImageView ad_holder = (ImageView) findViewById(R.id.ad_holder);
+		ImageView tool_selector = (ImageView) findViewById(R.id.overlay);
+		ImageView back_button = (ImageView) findViewById(R.id.back_button);
+		ImageView journal_button = (ImageView) findViewById(R.id.journal_button);
 
-        frame_left.setImageURI(imageFileLocationMap.get("frame_left"));
-        frame_right.setImageURI(imageFileLocationMap.get("frame_right"));
-        ad_holder.setImageURI(imageFileLocationMap.get("ad_holder"));
-        tool_selector.setImageURI(imageFileLocationMap.get("tool_selector"));
-        back_button.setImageURI(imageFileLocationMap.get("gear_button"));
-        journal_button.setImageURI(imageFileLocationMap.get("gear_button"));
+		frame_left.setImageURI(imageFileLocationMap.get("frame_left"));
+		frame_right.setImageURI(imageFileLocationMap.get("frame_right"));
+		ad_holder.setImageURI(imageFileLocationMap.get("ad_holder"));
+		tool_selector.setImageURI(imageFileLocationMap.get("tool_selector"));
+		back_button.setImageURI(imageFileLocationMap.get("gear_button"));
+		journal_button.setImageURI(imageFileLocationMap.get("gear_button"));
 
-        frame_left.setScaleType(ImageView.ScaleType.FIT_START);
-        frame_right.setScaleType(ImageView.ScaleType.FIT_END);
+		frame_left.setScaleType(ImageView.ScaleType.FIT_START);
+		frame_right.setScaleType(ImageView.ScaleType.FIT_END);
 
-    }
+	}
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent me) {
-	    // Call onTouchEvent of SimpleGestureFilter class
-	    this.detector.onTouchEvent(me);
-	    return super.dispatchTouchEvent(me);
-    }
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent me) {
+		// Call onTouchEvent of SimpleGestureFilter class
+		this.detector.onTouchEvent(me);
+		return super.dispatchTouchEvent(me);
+	}
 
-    private <T extends ToolFragment> ToolLightButton getToolLight(Class<T> cls, int resID) {
-	    ToolLightButton ret = (ToolLightButton) findViewById(resID);
-	    try {
-		    ret.setToolFragment(cls.newInstance());
-	    } catch (InstantiationException | IllegalAccessException e) {
-		    throw new RuntimeException(e);
-        }
-        ret.setSrc(BitmapFactory.decodeResource(getResources(), ret.getToolFragment().getGlyphID()));
-        ret.setEnabled(true);
-        ret.setOnClickListener(this);
-        return ret;
-    }
+	private <T extends ToolFragment> ToolLightButton getToolLight(Class<T> cls, int resID) {
+		ToolLightButton ret = (ToolLightButton) findViewById(resID);
+		try {
+			ret.setToolFragment(cls.newInstance());
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+		ret.setSrc(BitmapFactory.decodeResource(getResources(), ret.getToolFragment().getGlyphID()));
+		ret.setEnabled(true);
+		ret.setOnClickListener(this);
+		return ret;
+	}
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-	    if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-		    Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-		    if (rawMsgs != null) {
-			    NdefMessage[] msgs = new NdefMessage[rawMsgs.length];
-			    for (int i = 0; i < rawMsgs.length; i++) {
-				    msgs[i] = (NdefMessage) rawMsgs[i];
-			    }
-			    for (NdefMessage message : msgs) {
-				    for (NdefRecord record : message.getRecords()) {
-					    Uri uri = record.toUri(); //Ignore the api warning, this is for demo, during which we will have api 16 at least
+	@Override
+	protected void onNewIntent(Intent intent) {
+		if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+			Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+			if (rawMsgs != null) {
+				NdefMessage[] msgs = new NdefMessage[rawMsgs.length];
+				for (int i = 0; i < rawMsgs.length; i++) {
+					msgs[i] = (NdefMessage) rawMsgs[i];
+				}
+				for (NdefMessage message : msgs) {
+					for (NdefRecord record : message.getRecords()) {
+						Uri uri = record.toUri(); //Ignore the api warning, this is for demo, during which we will have api 16 at least
 
-					    if (uri != null) {
-						    if (uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
+						if (uri != null) {
+							if (uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
 
-							    String path = uri.getLastPathSegment();
-							    String[] tokens = path.split("\\.");
-							    String type = tokens[1];
-							    String id = tokens[0];
-							    if (type.equals("location")) {
-								    gcLocation loc = gcEngine.Access().getLocation(id);
-								    Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG);
-								    onLocationChanged(loc.asAndroidLocation());
-							    }
-						    }
-					    }
-				    }
-			    }
-		    }
-	    }
-    }
+								String path = uri.getLastPathSegment();
+								String[] tokens = path.split("\\.");
+								String type = tokens[1];
+								String id = tokens[0];
+								if (type.equals("location")) {
+									gcLocation loc = gcEngine.Access().getLocation(id);
+									Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG);
+									onLocationChanged(loc);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-	    super.onWindowFocusChanged(hasFocus);
-	    if (hasFocus && useDecorView) {
-		    decorViewHandler.post(decor_view_settings);
-	    }
-    }
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus && useDecorView) {
+			decorViewHandler.post(decor_view_settings);
+		}
+	}
 
-    public void onClick(View view) {
-	    //get current fragment
-	    if (transitionInProgress) return; //todo:hack
-	    ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
-	    //todo: abstract
-	    if (tf.checkClick(view)) return;
+	public void onClick(View view) {
+		//get current fragment
+		if (transitionInProgress) return; //todo:hack
+		ToolFragment tf = (ToolFragment) getFragmentManager().findFragmentById(R.id.fragment_container);
+		//todo: abstract
+		if (tf.checkClick(view)) return;
 
-	    if (view instanceof ToolLightButton) {
+		if (view instanceof ToolLightButton) {
 
-		    final ToolLightButton button = (ToolLightButton) view;
-		    if (tf.getClass() == Communicator.class && button.getToolFragment() == tf) {
-			    finish();
-			    return;
-		    }
-		    if (button.isEnabled() && !button.isSelected()) {
-			    if (toolHolderShown) {
-				    toggleToolMenu();
-				    new Handler().postDelayed(new Runnable() {
-					    @Override
-					    public void run() {
-						    swapTo(button.getToolFragment().getClass());
-					    }
-				    }, 400);
-			    } else {
-				    swapTo(button.getToolFragment().getClass());
-			    }
+			final ToolLightButton button = (ToolLightButton) view;
+			if (tf.getClass() == Communicator.class && button.getToolFragment() == tf) {
+				finish();
+				return;
+			}
+			if (button.isEnabled() && !button.isSelected()) {
+				if (toolHolderShown) {
+					toggleToolMenu();
+					new Handler().postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							swapTo(button.getToolFragment().getClass());
+						}
+					}, 400);
+				} else {
+					swapTo(button.getToolFragment().getClass());
+				}
 
-		    }
-	    }
+			}
+		}
 
-	    switch (view.getId()) {
-		    case R.id.tool_holder_tab:
-			    toggleToolMenu();
-			    break;
+		switch (view.getId()) {
+			case R.id.tool_holder_tab:
+				toggleToolMenu();
+				break;
 
-	    }
-    }
+		}
+	}
 
-    private void toggleToolMenu() {
+	private void toggleToolMenu() {
 
-	    View toolHolder = findViewById(R.id.tool_holder);
-	    if (toolHolderShown) {
-		    toolHolder.animate().translationY((toolHolder.getMeasuredHeight() / 7) * -6);
-		    findViewById(R.id.journal_gear).animate().rotationBy(360);
-		    findViewById(R.id.back_gear).animate().rotationBy(-360);
-	    } else {
-		    toolHolder.animate().translationY(0);
-		    findViewById(R.id.journal_gear).animate().rotationBy(-360);
-		    findViewById(R.id.back_gear).animate().rotationBy(360);
-	    }
-	    toolHolderShown = !toolHolderShown;
-    }
+		View toolHolder = findViewById(R.id.tool_holder);
+		if (toolHolderShown) {
+			toolHolder.animate().translationY((toolHolder.getMeasuredHeight() / 7) * -6);
+			findViewById(R.id.journal_gear).animate().rotationBy(360);
+			findViewById(R.id.back_gear).animate().rotationBy(-360);
+		} else {
+			toolHolder.animate().translationY(0);
+			findViewById(R.id.journal_gear).animate().rotationBy(-360);
+			findViewById(R.id.back_gear).animate().rotationBy(360);
+		}
+		toolHolderShown = !toolHolderShown;
+	}
 
-    @Override
-    public void onBackPressed() {
-	    Log.d("Main", "OnBackPressed");
-	    Fragment f = getCurrentFragment();
-	    if (f instanceof Communicator) {
-		    super.onBackPressed();
-	    } else {
-		    onClick(ToolMap.get(Communicator.class));
-	    }
-    }
+	@Override
+	public void onBackPressed() {
+		Log.d("Main", "OnBackPressed");
+		Fragment f = getCurrentFragment();
+		if (f instanceof Communicator) {
+			super.onBackPressed();
+		} else {
+			onClick(ToolMap.get(Communicator.class));
+		}
+	}
 
-    @Override
-    protected void onPause() {
-	    if (gcAudio.isPlaying()) gcAudio.pause();
-	    locationManager.removeUpdates(this); //stop location updates
-	    super.onPause();
-    }
+	@Override
+	protected void onPause() {
+		if (gcAudio.isPlaying()) gcAudio.pause();
+		locationManager.removeUpdates(this); //stop location updates
+		super.onPause();
+	}
 
 	@Override
 	protected void onResume() {
@@ -413,13 +418,13 @@ public class MainActivity extends Activity implements
 					.commit();
 		} else throw new RuntimeException("That Class is not a Tool, You Tool!");
 
-    }
+	}
 
-    public void startDialog(String dialog) {
+	public void startDialog(String dialog) {
 
-    }
+	}
 
-    //GOOGLE SERVICES CODE
+	//GOOGLE SERVICES CODE
 
 	public void prepareLocation() {
 
@@ -432,16 +437,16 @@ public class MainActivity extends Activity implements
 			trigger.activate(actionManager);
 		}
 
-    }
+	}
 
-    public void hideGears(boolean back, boolean journal) {
-        View backGear = findViewById(R.id.back_gear);
-        View journalGear = findViewById(R.id.journal_gear);
-        backGear.animate().setListener(null);
-        journalGear.animate().setListener(null);
-        if (back) backGear.animate().translationX(-(backGear.getWidth()));
-        if (journal) journalGear.animate().translationX(backGear.getWidth());
-    }
+	public void hideGears(boolean back, boolean journal) {
+		View backGear = findViewById(R.id.back_gear);
+		View journalGear = findViewById(R.id.journal_gear);
+		backGear.animate().setListener(null);
+		journalGear.animate().setListener(null);
+		if (back) backGear.animate().translationX(-(backGear.getWidth()));
+		if (journal) journalGear.animate().translationX(backGear.getWidth());
+	}
 
 	public void showGears() {
 		View backGear = findViewById(R.id.back_gear);
@@ -453,53 +458,53 @@ public class MainActivity extends Activity implements
 		journalGear.animate().translationX(0);
 	}
 
-    public void hideFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
-        View left_frame, right_frame, ad_holder, fragment_container;
+	public void hideFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
+		View left_frame, right_frame, ad_holder, fragment_container;
 
-        left_frame = findViewById(R.id.frame_left);
-        right_frame = findViewById(R.id.frame_right);
-        ad_holder = findViewById(R.id.ad_holder);
-        fragment_container = findViewById(R.id.fragment_container);
+		left_frame = findViewById(R.id.frame_left);
+		right_frame = findViewById(R.id.frame_right);
+		ad_holder = findViewById(R.id.ad_holder);
+		fragment_container = findViewById(R.id.fragment_container);
 
-        left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
-        right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
-        ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
+		left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
+		right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
+		ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
 
-        RelativeLayout.LayoutParams fragmentContainerParams = (RelativeLayout.LayoutParams) fragment_container.getLayoutParams();
-        fragmentContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        fragmentContainerParams.addRule(RelativeLayout.ABOVE, 0);
+		RelativeLayout.LayoutParams fragmentContainerParams = (RelativeLayout.LayoutParams) fragment_container.getLayoutParams();
+		fragmentContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+		fragmentContainerParams.addRule(RelativeLayout.ABOVE, 0);
 
-        fragment_container.setLayoutParams(fragmentContainerParams);
-        fragment_container.invalidate();
+		fragment_container.setLayoutParams(fragmentContainerParams);
+		fragment_container.invalidate();
 
-        ad_holder.setVisibility(View.GONE);
+		ad_holder.setVisibility(View.GONE);
 
-        isAdHolderShowing = false;
-        isLeftFrameShowing = false;
-        isRightFrameShowing = false;
+		isAdHolderShowing = false;
+		isLeftFrameShowing = false;
+		isRightFrameShowing = false;
 
-    }
+	}
 
-    public void showFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
-        View left_frame, right_frame, ad_holder;
+	public void showFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
+		View left_frame, right_frame, ad_holder;
 
-        left_frame = findViewById(R.id.frame_left);
-        right_frame = findViewById(R.id.bullet_check3);
-        ad_holder = findViewById(R.id.ad_holder);
+		left_frame = findViewById(R.id.frame_left);
+		right_frame = findViewById(R.id.bullet_check3);
+		ad_holder = findViewById(R.id.ad_holder);
 
-        left_frame.animate().translationX(0).setDuration(1000);
-        right_frame.animate().translationX(0).setDuration(1000);
-        ad_holder.animate().translationY(0).setDuration(1000);
+		left_frame.animate().translationX(0).setDuration(1000);
+		right_frame.animate().translationX(0).setDuration(1000);
+		ad_holder.animate().translationY(0).setDuration(1000);
 
-        ad_holder.setVisibility(View.VISIBLE);
+		ad_holder.setVisibility(View.VISIBLE);
 
-        isAdHolderShowing = true;
-        isLeftFrameShowing = true;
-        isRightFrameShowing = true;
+		isAdHolderShowing = true;
+		isLeftFrameShowing = true;
+		isRightFrameShowing = true;
 
-    }
+	}
 
-    //GOOGLE SERVICES CODE
+	//GOOGLE SERVICES CODE
 
 	/*
 	 * Handle results returned to the FragmentActivity
@@ -513,9 +518,9 @@ public class MainActivity extends Activity implements
 		return;
 	}
 
-    public gcLocation getPlayerLocationInStory() {
-	    return playerLocationInStory;
-    }
+	public gcLocation getPlayerLocationInStory() {
+		return playerLocationInStory;
+	}
 
 	public void showTool(Class tool) {
 		ToolMap.get(tool).setEnabled(true);
@@ -525,16 +530,16 @@ public class MainActivity extends Activity implements
 		ToolMap.get(tool).setEnabled(false);
 	}
 
-    public void showLocationNotification() {
-        Notification.Builder mBuilder =
-                new Notification.Builder(this)
-                        .setSmallIcon(R.drawable.ghost)
-                        .setContentTitle("Ghost Catcher")
-                        .setContentText("You have arrived to your next location!");
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(NOTIF_ID, mBuilder.getNotification());      //Oh come on, google, one is depreciated, the other is unsupported. :(
-    }
+	public void showLocationNotification() {
+		Notification.Builder mBuilder =
+				new Notification.Builder(this)
+						.setSmallIcon(R.drawable.ghost)
+						.setContentTitle("Ghost Catcher")
+						.setContentText("You have arrived to your next location!");
+		NotificationManager mNotificationManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(NOTIF_ID, mBuilder.getNotification());      //Oh come on, google, one is depreciated, the other is unsupported. :(
+	}
 
 	@Override
 	public void onLocationChanged(Location location) {
@@ -579,38 +584,38 @@ public class MainActivity extends Activity implements
 		}
 	}
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        //todo:implement
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        //todo:implement
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        //todo:implement
-    }
-
-	/**
-	 * reconfigures GPS updates to occur at the requested minimum time interval
-	 *
-	 * @param GPSMinUpdateTimeMS the minimal GPS update interval, in milliseconds
-	 */
-	public void setGPSMinimumTimeInterval(int GPSMinUpdateTimeMS) {
-		setGPSUpdates(GPSMinUpdateTimeMS, this.GPSMinUpdateDistanceM);
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		//todo:implement
 	}
 
-	/**
-	 * reconfigures GPS updates to occur at the requested minimum distance interval
-	 *
-	 * @param GPSMinUpdateDistanceM the minimal GPS update interval, in meters.
-	 */
-	public void setGPSMinimumDistanceInterval(int GPSMinUpdateDistanceM) {
-		setGPSUpdates(this.GPSMinUpdateTimeMS, GPSMinUpdateDistanceM);
+	@Override
+	public void onProviderEnabled(String provider) {
+		//todo:implement
 	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		//todo:implement
+	}
+
+//	/**
+//	 * reconfigures GPS updates to occur at the requested minimum time interval
+//	 *
+//	 * @param GPSMinUpdateTimeMS the minimal GPS update interval, in milliseconds
+//	 */
+//	public void setGPSMinimumTimeInterval(int GPSMinUpdateTimeMS) {
+//		setGPSUpdates(GPSMinUpdateTimeMS, this.GPSMinUpdateDistanceM);
+//	}
+//
+//	/**
+//	 * reconfigures GPS updates to occur at the requested minimum distance interval
+//	 *
+//	 * @param GPSMinUpdateDistanceM the minimal GPS update interval, in meters.
+//	 */
+//	public void setGPSMinimumDistanceInterval(int GPSMinUpdateDistanceM) {
+//		setGPSUpdates(this.GPSMinUpdateTimeMS, GPSMinUpdateDistanceM);
+//	}
 
 	/**
 	 * reconfigures GPS updates to occur at the requested minimum time and distance intervals
@@ -650,28 +655,28 @@ public class MainActivity extends Activity implements
 		return getFragmentManager().findFragmentById(R.id.fragment_container);
 	}
 
-    public <T extends ToolFragment> T getCurrentToolFragment(Class<T> cls) {
-        Fragment tf = getCurrentFragment();
-        if (tf.getClass().equals(cls)) {
-            return cls.cast(tf);
-        }
-        return null;
-    }
+	public <T extends ToolFragment> T getCurrentToolFragment(Class<T> cls) {
+		Fragment tf = getCurrentFragment();
+		if (tf.getClass().equals(cls)) {
+			return cls.cast(tf);
+		}
+		return null;
+	}
 
-    public <T extends ToolFragment> boolean isToolEnabled(Class<T> cls) {
-        if (ToolMap.containsKey(cls)) {
-            return ToolMap.get(cls).isEnabled();
-        } else throw new RuntimeException("Tool not Found");
-    }
+	public <T extends ToolFragment> boolean isToolEnabled(Class<T> cls) {
+		if (ToolMap.containsKey(cls)) {
+			return ToolMap.get(cls).isEnabled();
+		} else throw new RuntimeException("Tool not Found");
+	}
 
-    public <T extends ToolFragment> T getTool(Class<T> cls) {
-        if (ToolMap.containsKey(cls)) {
-            return cls.cast(ToolMap.get(cls).getToolFragment());
-        } else return null;
-    }
+	public <T extends ToolFragment> T getTool(Class<T> cls) {
+		if (ToolMap.containsKey(cls)) {
+			return cls.cast(ToolMap.get(cls).getToolFragment());
+		} else return null;
+	}
 
 
-    ///////////////////////////DECOR VIEW CODE
+	///////////////////////////DECOR VIEW CODE
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -681,11 +686,11 @@ public class MainActivity extends Activity implements
 		return super.onKeyDown(keyCode, event);
 	}
 
-    public int playSound(int soundName) {
-        return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
-    }
+	public int playSound(int soundName) {
+		return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
+	}
 
-    // Define a DialogFragment that displays the error dialog
+	// Define a DialogFragment that displays the error dialog
 	public static class ErrorDialogFragment extends DialogFragment {
 		// Global field to contain the error dialog
 		private Dialog mDialog;
@@ -701,34 +706,32 @@ public class MainActivity extends Activity implements
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			return mDialog;
 		}
-    }
+	}
 
-    public class Sounds {
-        public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip;
+	public class Sounds {
+		public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip;
 
-        public Sounds(SoundPool soundPool) {
-            testSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
-            metalClick = soundPool.load(MainActivity.this, R.raw.metal_click, 1);
-            leverRoll = soundPool.load(MainActivity.this, R.raw.lever_roll, 1);
-            strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.strange_mechanical_noise, 1);
-            creepyChains = soundPool.load(MainActivity.this, R.raw.creepy_chains, 1);
-            calibrateSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
-        }
-    }
+		public Sounds(SoundPool soundPool) {
+			testSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+			metalClick = soundPool.load(MainActivity.this, R.raw.metal_click, 1);
+			leverRoll = soundPool.load(MainActivity.this, R.raw.lever_roll, 1);
+			strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.strange_mechanical_noise, 1);
+			creepyChains = soundPool.load(MainActivity.this, R.raw.creepy_chains, 1);
+			calibrateSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+		}
+	}
 
-    public void createImageURIs(){
-        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
+	public void createImageURIs(){
+		final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
 
-        imageFileLocationMap = new HashMap<String,Uri>(){{
-            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("main_screen2.png").build());
-            put("frame_left", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_left.png").build());
-            put("frame_right", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_right.png").build());
-            put("ad_holder", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("ad_holder.png").build());
-            put("tool_selector", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("toolselector.png").build());
-            put("gear_button", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("back_gear.png").build());
-            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
-        }};
-    }
-
+		imageFileLocationMap = new HashMap<String,Uri>(){{
+			put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("main_screen2.png").build());
+			put("frame_left", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_left.png").build());
+			put("frame_right", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("frame_right.png").build());
+			put("ad_holder", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("ad_holder.png").build());
+			put("tool_selector", rootUri.buildUpon().appendPath("skins").appendPath("main_frame").appendPath("toolselector.png").build());
+			put("gear_button", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("back_gear.png").build());
+			put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+		}};
+	}
 }
-

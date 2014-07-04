@@ -1,7 +1,5 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 
@@ -11,58 +9,63 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
 import java.io.IOException;
 
-import ca.mixitmedia.ghostcatcher.app.R;
-
 /**
  * Created by Dante on 07/03/14.
  */
-public class gcLocation {
-    public String id;
-    public String name;
-    double latitude;
+public class gcLocation extends Location {
+	String id;
+	String name;
+	String description;
 
-    public double getLatitude() {
-        return latitude;
-    }
+	private gcLocation() {
+		super("gcLocation Provider");
+	}
 
-    double longitude;
+	public static gcLocation parse(XmlPullParser parser)
+			throws IOException, XmlPullParserException {
 
-    public double getLongitude() {
-        return longitude;
-    }
+		if (!parser.getName().equals("location"))
+			throw new RuntimeException("Tried to parse something that wasn't a location");
 
-    public String description;
+		gcLocation result = new gcLocation();
+		result.setId(parser.getAttributeValue(null, "id"));
+		result.setName(parser.getAttributeValue(null, "name"));
+		result.setLatitude(Double.parseDouble(parser.getAttributeValue(null, "lat")));
+		result.setLongitude(Double.parseDouble(parser.getAttributeValue(null, "long")));
+		result.setDescription(parser.getAttributeValue(null, "description"));
+		return result;
+	}
 
-    private gcLocation() {
-    }
+	public Uri getImageUri() {
+		File f = new File(gcEngine.Access().root.getPath() + "/locations/" + getId() + ".png");
+		if (!f.exists())
+			//TODO: this should be a FileNotFoundException.
+			throw new RuntimeException("error opening loc image: " + f.getAbsolutePath());
+		return Uri.fromFile(f);
+	}
 
-    public Location asAndroidLocation() {
-        Location loc = new Location("dummyProvider");
-        loc.setLatitude(latitude);
-        loc.setLongitude(longitude);
-        return loc;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public static gcLocation parse(XmlPullParser parser)
-            throws IOException, XmlPullParserException {
+	public void setId(String id) {
+		this.id = id;
+	}
 
-        if (!parser.getName().equals("location"))
-            throw new RuntimeException("Tried to parse something that wasn't a location");
+	public String getName() {
+		return name;
+	}
 
-        gcLocation result = new gcLocation();
-        result.id = parser.getAttributeValue(null, "id");
-        result.name = parser.getAttributeValue(null, "name");
-        result.latitude = Double.parseDouble(parser.getAttributeValue(null, "lat"));
-        result.longitude = Double.parseDouble(parser.getAttributeValue(null, "long"));
-        result.description = parser.getAttributeValue(null, "description");
-        return result;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Uri getImageUri() {
-        File f = new File(gcEngine.Access().root.getPath() + "/locations/" + id + ".png");
-        if (!f.exists())
-            throw new RuntimeException("error opening loc image: " + f.getAbsolutePath());
-        return Uri.fromFile(f);
-    }
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }
 
