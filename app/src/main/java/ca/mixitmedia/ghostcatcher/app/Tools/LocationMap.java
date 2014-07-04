@@ -41,6 +41,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     Map<String, Uri> imageFileLocationMap;
 
+    public LocationMap(){createImageURIs();    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -51,7 +52,6 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         map.setInfoWindowAdapter(this);
         map.setOnInfoWindowClickListener(this);
 
-        createImageURIs();
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         ImageButton right_button = (ImageButton) view.findViewById(R.id.right);

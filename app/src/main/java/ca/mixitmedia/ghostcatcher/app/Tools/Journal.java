@@ -27,6 +27,8 @@ public class Journal extends ToolFragment {
     ImageButton bio;
     ImageButton todo;
 
+    public Journal(){createImageURIs();};
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -37,7 +39,7 @@ public class Journal extends ToolFragment {
         bio = (ImageButton) view.findViewById(R.id.arrow_bio);
         todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
 
-        createImageURIs();
+
 
         bio.setOnClickListener(new View.OnClickListener() {
 

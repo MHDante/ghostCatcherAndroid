@@ -40,6 +40,8 @@ public class Biocalibrate extends ToolFragment {
 
     Map<String, Uri> imageFileLocationMap;
 
+    public Biocalibrate(){
+        createImageURIs();}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -111,7 +113,6 @@ public class Biocalibrate extends ToolFragment {
             }
         });
 
-        createImageURIs();
 
 
 

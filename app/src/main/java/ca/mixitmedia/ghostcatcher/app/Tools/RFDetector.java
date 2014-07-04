@@ -86,6 +86,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
     Map<String, Uri> imageFileLocationMap;
 
+    public RFDetector(){
+        createImageURIs();
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -114,7 +118,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		    onLocationChanged(currentLocation);
 	    }
 
-        createImageURIs();
+
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         ImageView compass_arrow = (ImageView) view.findViewById(R.id.arrowImage);
