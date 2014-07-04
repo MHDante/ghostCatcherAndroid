@@ -96,8 +96,8 @@ public class Journal extends ToolFragment {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_journal);
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("journal_button_glyph"));
     }
 
     public boolean checkClick(View view) {
@@ -122,11 +122,13 @@ public class Journal extends ToolFragment {
     }
 
     public void createImageURIs(){
+        final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
-            put("overlay", Uri.fromFile(new File(gcEngine.Access().root + "/skins/journal/journal.png")));
-            put("bullet_check", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/bullet_check.png")));
-            put("arrow_right", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/arrow_right.png")));
-            put("test", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/error_default.png")));
+            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("journal").appendPath("journal.png").build());
+            put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
+            put("arrow_right", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("arrow_right.png").build());
+            put("journal_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_journal.png").build());
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
 

@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Point;
+import android.net.Uri;
 import android.view.Display;
 import android.view.View;
 
@@ -36,7 +37,7 @@ public abstract class ToolFragment extends Fragment {
 	 *
 	 * @return the resource ID of the toolbar icon
 	 */
-	public abstract int getGlyphID();
+	public abstract Uri getGlyphUri();
 
 	@Override
 	public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {

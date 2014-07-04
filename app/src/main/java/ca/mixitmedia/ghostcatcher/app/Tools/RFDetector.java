@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Alexander on 2014-06-17
@@ -79,6 +84,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 */
 	Location destination;
 
+    Map<String, Uri> imageFileLocationMap;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -107,6 +114,16 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		    onLocationChanged(currentLocation);
 	    }
 
+        createImageURIs();
+
+        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+        ImageView compass_arrow = (ImageView) view.findViewById(R.id.arrowImage);
+        ImageView background = (ImageView) view.findViewById(R.id.background);
+
+        overlay.setImageURI(imageFileLocationMap.get("overlay"));
+        compass_arrow.setImageURI(imageFileLocationMap.get("compass_arrow"));
+        background.setImageURI(imageFileLocationMap.get("background"));
+
         return view;
     }
 
@@ -134,8 +151,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_rf_detector);
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("rf_button_glyph"));
     }
 
     @Override
@@ -202,4 +219,16 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
 		longitudeTextView.setText("Long: " + location.getLongitude()+"°");
 	}
+
+    public void createImageURIs(){
+        final Uri rootUri = gcEngine.Access().root;
+        imageFileLocationMap = new HashMap<String,Uri>(){{
+            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_overlay.png").build());
+            put("compass_arrow", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_arrow.png").build());
+            put("background", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_background.png").build());
+            put("rf_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_rf_detector.png").build());
+
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+        }};
+    }
 }

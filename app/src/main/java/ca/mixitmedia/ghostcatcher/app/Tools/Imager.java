@@ -27,6 +27,7 @@ public class Imager extends ToolFragment {
     private boolean inPreview = false;
     private boolean cameraConfigured = false;
 
+    final Uri rootUri = gcEngine.Access().root;
     public Imager() {
     }
 
@@ -40,8 +41,7 @@ public class Imager extends ToolFragment {
         ImagerFrame = (ImageView) v.findViewById(R.id.overlay);
 
         ImageView overlay = (ImageView) v.findViewById(R.id.overlay);
-
-        overlay.setImageURI(Uri.fromFile(new File(gcEngine.Access().root + "/skins/imager/imager.png")));
+        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("imager").appendPath("imager.png").build());
 
         return v;
     }
@@ -52,8 +52,9 @@ public class Imager extends ToolFragment {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_imager);
+    public Uri getGlyphUri() {
+        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_imager.png").build());
+
     }
 
     @Override

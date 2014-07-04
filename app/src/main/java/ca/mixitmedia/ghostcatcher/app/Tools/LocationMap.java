@@ -175,8 +175,8 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_location_map);
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("map_button_glyph"));
     }
 
     @Override
@@ -225,12 +225,13 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     public void createImageURIs(){
-
+        final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
-            put("overlay", Uri.fromFile(new File(gcEngine.Access().root + "/skins/map/map_overlay.png")));
-            put("bullet_check", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/bullet_check.png")));
-            put("arrow", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/btn_playback_play.png")));
-            put("test", Uri.fromFile(new File(gcEngine.Access().root + "/skins/components/error_default.png")));
+            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("map").appendPath("map_overlay.png").build());
+            put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
+            put("arrow", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("btn_playback_play.png").build());
+            put("map_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_location_map.png").build());
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
 

@@ -37,7 +37,7 @@ public class gcEngine {
     public List<gcLocation> locations;
 
     public Context context;
-    public String root;// = new File(Environment.getExternalStorageDirectory()+"/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher");
+    public Uri root;// = new File(Environment.getExternalStorageDirectory()+"/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher");
 
     XmlPullParserFactory pullParserFactory;
 
@@ -61,7 +61,7 @@ public class gcEngine {
 
     private gcEngine(Context context) {
         this.context = context;
-        root = new File(context.getExternalFilesDir("mixitmedia"), "ghostcatcher").getAbsolutePath();
+        root = Uri.parse(new File(context.getExternalFilesDir("mixitmedia"), "ghostcatcher").getAbsolutePath() );
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();

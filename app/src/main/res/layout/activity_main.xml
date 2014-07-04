@@ -6,9 +6,9 @@
     android:id="@+id/activity_bg">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gear_animation"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/background"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -110,7 +110,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/tool_light_1"
-                    android:layout_weight="120" />
+                    android:layout_weight="120"/>
 
                 <ca.mixitmedia.ghostcatcher.views.ToolLightButton
                     android:layout_width="0dp"
@@ -164,7 +164,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="120"
-                    android:id="@+id/tool_light_7" />
+                    android:id="@+id/tool_light_7"/>
 
                 <Space
                     android:layout_width="0dp"
@@ -249,7 +249,7 @@
                 <ca.mixitmedia.ghostcatcher.views.ToolLightButton
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
-                    android:id="@+id/tool_light_left"
+                    android:id="@+id/tool_light_back"
                     android:layout_weight="56" />
 
                 <Space
@@ -310,7 +310,7 @@
                 <ca.mixitmedia.ghostcatcher.views.ToolLightButton
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
-                    android:id="@+id/tool_light_right"
+                    android:id="@+id/tool_light_journal"
                     android:layout_weight="56" />
 
                 <Space

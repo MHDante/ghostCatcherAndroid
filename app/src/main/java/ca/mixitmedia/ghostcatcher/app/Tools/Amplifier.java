@@ -18,7 +18,7 @@ import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 public class Amplifier extends ToolFragment {
 
     private int dialogueStream = 0;
-
+    final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -26,15 +26,14 @@ public class Amplifier extends ToolFragment {
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
-
-        overlay.setImageURI(Uri.fromFile(new File(gcEngine.Access().root + "/skins/amplifier/amplifier_overlay.png")));
+        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("amplifier").appendPath("amplifier_overlay.png").build());
 
         return view;
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_amplifier);
+    public Uri getGlyphUri() {
+        return ( rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_amplifier.png").build());
     }
 
     @Override
