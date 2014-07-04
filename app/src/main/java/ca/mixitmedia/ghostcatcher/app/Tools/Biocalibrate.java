@@ -2,6 +2,8 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 
 
 import android.content.Context;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -16,8 +18,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 
 /**
@@ -32,6 +38,10 @@ public class Biocalibrate extends ToolFragment {
     boolean pressed;
     ProgressBar LoadingBar;
 
+    Map<String, Uri> imageFileLocationMap;
+
+    public Biocalibrate(){
+        createImageURIs();}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -43,6 +53,12 @@ public class Biocalibrate extends ToolFragment {
 
         LoadingBar = (ProgressBar) view.findViewById(R.id.calibrate_bar);
         LoadingBar.setMax(100);
+
+        ImageView overlay_pressed = (ImageView) view.findViewById(R.id.biocalibrate_btn);
+        ImageView overlay_unpressed = (ImageView) view.findViewById(R.id.fingerprint_mask);
+
+        overlay_pressed.setImageURI(imageFileLocationMap.get("pressed"));
+        overlay_unpressed.setImageURI(imageFileLocationMap.get("unpressed"));
 
         ImageButton fingerPrint = (ImageButton) view.findViewById(R.id.biocalibrate_btn);
         fingerPrint.setOnTouchListener(new View.OnTouchListener() {
@@ -96,12 +112,16 @@ public class Biocalibrate extends ToolFragment {
                 return false;
             }
         });
+
+
+
+
         return view;
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_biocalibrate);
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("bio_calibrate_glyph"));
     }
 
     @Override
@@ -120,6 +140,17 @@ public class Biocalibrate extends ToolFragment {
     protected int getAnimatorId(boolean enter) {
         if(enter) gcMain.playSound(gcMain.sounds.strangeMetalNoise);
         return (enter) ? R.animator.transition_in_from_top : R.animator.transition_out_from_bottom;
+    }
+
+    public void createImageURIs(){
+        final Uri rootUri = gcEngine.Access().root;
+        imageFileLocationMap = new HashMap<String,Uri>(){{
+            put("unpressed", rootUri.buildUpon().appendPath("skins").appendPath("bio_calibrate").appendPath("bio_calibrate_unpressed.png").build());
+            put("pressed", rootUri.buildUpon().appendPath("skins").appendPath("bio_calibrate").appendPath("bio_calibrate_pressed.png").build());
+            put("bio_calibrate_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_biocalibrate.png").build());
+
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+        }};
     }
 
 }

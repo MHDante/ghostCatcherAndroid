@@ -1,0 +1,21 @@
+﻿gc_seq3_5
+
+>>static
+<<pose1
+#whispers_and_laughter
+
+>>spirit_x
+@00:07
+<<pose1
+
+How dare you meddle in matters that that are clearly... far beyond your authority simpleton! 7, you are foolish to stand in my way!!
+
+>>prof_wolfe
+@00:19
+<<pose1
+
+He knows what we are doing... How could he know what we are up to? I took every precaution...  I rebuilt the entire system from the ground up after 6 had died. They thought I made her enact the killings 
+
+#angy_growls 
+
+but it was that monster Spirit X!! 7, time is running out. Spirit X's demonic halo will soon descend upon you... you must make haste. We need to capture more spirit energy 7, before Spirit X gets even stronger!! Go to the location where 6 was killed, near the man made pond, there is significant spirit energy there. We must harness that energy and defeate Spirit X. It is our only hope. I'll... I'll try to hold Spirit X back!!

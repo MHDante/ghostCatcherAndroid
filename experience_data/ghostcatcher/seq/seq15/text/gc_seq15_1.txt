@@ -1,0 +1,13 @@
+﻿gc_seq15_1
+
+#bio_calibrate
+
+#whispers_and_footsteps
+
+>>spirit_x
+@00:33
+<<pose1
+
+7, didn't you even suspect that I knew what was going on all along? You have been a fool more than once today! Professor Wolfe's daughter, This Ghost Machine, serves me! You forget?!”
+
+

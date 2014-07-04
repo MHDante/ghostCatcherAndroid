@@ -1,0 +1,37 @@
+﻿gc_seq8_1
+
+#map screen
+
+#bio-calibrate screen
+
+>>prof_wolfe
+<<pose1
+I see that you are there! The protective mechanism is transferring the shielding energy to you... Oh my god, Spirt x is here!
+
+#wispers 
+
+>>spirit_x 
+@00:21
+<<pose1
+
+Finally you are utterly unprotected. Once I am through with you I will send 7 the way of your other collaborators.
+
+>>ghost_machine
+@00:31
+<<static
+
+This is all happening because of you. Daddy this is all your fault!!
+
+>>prof_wolfe
+@00:38
+<<pose1
+
+I did it because I love her! I know I shouldn't have tampered with the balance of life but I couldn't bare to see you go!!
+
+#whispers_end
+
+>>prof_wolfe
+@00:52
+<<pose1
+
+7!! You must stop Spirit X at all cost!! If Spirit X comes back to life he will be no normal man. He will maintain his powers over life and death and he will use them to perpetuate his own existence at the expense of all the living. 7, you need to come this vicinity and capture all of the spirit signatures to deprive Spirit X of the energy he needs to reanimate. ow that we have sampled his signature it will be easier to locate him and trap him... as long as he doesn't grow stronger. The window will be small... be careful 7!!

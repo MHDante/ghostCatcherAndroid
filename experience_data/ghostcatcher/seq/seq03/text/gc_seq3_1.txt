@@ -1,0 +1,10 @@
+﻿gc_seq3_1
+
+#bio_calibrate
+
+>>prof_wolfe
+<<pose1
+
+I have little faith that you can figure out the painfully obvious so I am going to walk you through this. Use the Thermal Imager to see if there is residual spirit impressions in the area.
+
+#imager_screen

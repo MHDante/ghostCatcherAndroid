@@ -1,0 +1,13 @@
+﻿gc_seq7_1
+
+#bio_calibrate
+
+#audio_resonator_screen
+
+#sounds_of_screams
+
+>>prof_wolfe
+@00:13
+<<pose1
+
+7, use you're tools! We can't let Spirit X succeed. He will soon have enough spirit energy to gain the ultimate power that he aspires for! Use the RF Detector. Press the button and turn until the tool notifies you of the spirit's direction.

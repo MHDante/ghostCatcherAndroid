@@ -17,6 +17,7 @@ import ca.mixitmedia.ghostcatcher.utils.Utils;
 /**
  * Created by Dante on 2014-06-13.
  */
+
 public class ToolLightButton extends View {
 
     public boolean isSelected() {

@@ -3,28 +3,37 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import java.io.File;
 
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Amplifier extends ToolFragment {
 
     private int dialogueStream = 0;
-
+    final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
+
+        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("amplifier").appendPath("amplifier_overlay.png").build());
+
         return view;
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_amplifier);
+    public Uri getGlyphUri() {
+        return ( rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_amplifier.png").build());
     }
 
     @Override

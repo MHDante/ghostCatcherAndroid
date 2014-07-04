@@ -1,0 +1,17 @@
+﻿gc_seq11_1
+
+#bio_calibrate
+
+#rf_detector
+
+#imager
+
+>>guardian_2
+<<pose1
+
+A mortal dares meddle with the power of the spirit realms!!
+
+#ghost_catcher
+
+#map
+

@@ -2,9 +2,7 @@ package ca.mixitmedia.ghostcatcher.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,7 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 
-import ca.mixitmedia.ghostcatcher.ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Dante on 07/03/14.
@@ -36,6 +34,7 @@ public class Utils {
         return Uri.parse("android.resource://" + gcEngine.Access().context.getPackageName()
                 + "/" + resId);
     }
+
     public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable) drawable).getBitmap();
@@ -54,12 +53,6 @@ public class Utils {
         dialog.setTitle(title);
         dialog.setMessage(message);
         dialog.setNeutralButton("OK", null);
-//        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//            @Override
-//            public void onDismiss(DialogInterface dialog) {
-//                onDismiss.run();
-//            }
-//        });
         dialog.create().show();
     }
 

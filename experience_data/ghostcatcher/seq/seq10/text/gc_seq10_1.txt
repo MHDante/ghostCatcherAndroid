@@ -1,0 +1,9 @@
+﻿gc_seq10_1
+
+#bio_calibrate
+
+>>prof_wolfe
+<<pose1
+
+There are three spirits that guard the resting place of the original Spirit X. Use the RF Detector to scan the area and find each of the guardians. You must then use the imager to see the spirit and then capture it with the Ghost Catcher. Once you capture all three the location of the ancient predecessor of Spirit X will be revealed.
+

@@ -1,0 +1,13 @@
+﻿gc_seq12_1
+
+#bio_calibrate
+
+#rf_detector
+
+#imager
+
+>>guardian_3
+<<pose1
+
+How dare a mortal capture my likeness!! You will pay!!
+

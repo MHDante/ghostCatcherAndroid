@@ -1,0 +1,8 @@
+﻿gc_seq3_2
+
+>>prof_wolfe
+<<pose1
+
+Ummm... No residual imaging is present... Hmm. Although I doubt myself, I am assuming that you haven't mucked something up. This is what happens when you are forced to work with amateurs.  Try the Audio Amplifier, this will tell us if there are any resonating sonic signals in the area.
+
+#audio_amplifier_option_available

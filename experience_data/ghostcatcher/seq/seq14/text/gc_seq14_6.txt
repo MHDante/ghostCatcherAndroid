@@ -1,0 +1,16 @@
+﻿gc_seq14_6
+
+#rf_detector
+
+#imager
+
+#two_images_appear
+
+#badge_9
+
+>>ghost_machine
+<<pose1
+
+Spirit X is has killed the ancient Spirit X. He knows that there can only be one. Now that he has killed the Ancient Spirit X we won't be able to stop him... Unless...  I... I have an idea!  I can help you to kill Spirit X... I will make it all stop from the inside...  From inside the machine... I will break the bridge to the land of the whispers.... But I will die with Spirit X... My Mommy and Daddy are both gone... It is time for me to go away too... Spirit X is not far from you. He hasn't had time to gain his energy back. Find him and use the Ghost Catcher. I will shut down the Machine when you get him...
+
+#map

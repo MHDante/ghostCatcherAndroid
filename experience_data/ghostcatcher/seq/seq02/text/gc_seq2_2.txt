@@ -1,0 +1,11 @@
+﻿gc_seq2_2
+
+>>prof_wolfe
+<<pose1
+
+OK, now that we know where it is you need to trap the spirit, but you have agitated it! There isn't much time, move quickly! Use the Ghost Catcher by pressing and holding the screen to activate it. It will take time to charge.
+
+#start_imager_tool
+
+#start_ghost_catcher_tool
+

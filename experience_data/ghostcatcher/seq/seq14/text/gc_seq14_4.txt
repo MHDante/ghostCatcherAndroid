@@ -1,0 +1,34 @@
+﻿gc_seq14_4
+
+#rf_detector
+
+#imager
+
+#ghost_catcher
+
+>>spirit_x
+<<pose1
+
+You think I am that weak?
+
+#laughter_screaming
+
+#imager
+
+#whispers
+
+#imager
+
+>>ghost_machine
+@00:10
+<<pose1
+
+Run... Run!! We are coming, We are close, We will suck their souls one by one until we find you.
+
+>>ancient_spirit_x
+@00:23
+<<pose1
+
+There can only be one Spirit X... You must all be destroyed for your tampering!!!
+
+#whispers_end

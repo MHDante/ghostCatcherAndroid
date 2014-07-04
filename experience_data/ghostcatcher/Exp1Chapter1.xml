@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<chapter xmlns="http://www.mhdante.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mhdante.com https://raw.githubusercontent.com/MHDante/ghostCatcherAndroid/master/schema.xsd">
+  <chars>
+    <character id="prof_wolfe" name="Professor Wolfe">
+      <bio>Professor Wolfe introduced himself when I inadvertently downloaded this Ghost Catcher app.  He's an overconfident yet distraught. He seems intent on catching ghosts, whatever the consequence....</bio>
+      <pose id="pose1" image="smug.png" />
+      <pose id="angry" image="angry.png" />
+    </character>
+    <character id="spirit_x" name="Spirit X">
+      <bio>Devours the souls of the living...  Spirit X may be the only one to tell you the truth.</bio>
+      <pose id="scary" image="scary.png" />
+    </character>
+    <character id="ghostmachine" name="Ghost Machine">
+      <bio>The Professor has, or had, a daughter... could she have something to do with Professor Wolfe’s compulsion to tamper with the natural order.</bio>
+      <pose id="scared" image="scared.png" />
+      <pose id="evil" image="evil.png" />
+    </character>
+    <character id="nocharacter" name="Static">
+      <bio />
+      <pose id="scared" image="pose1.png" />
+    </character>
+    <character id="ancient_spirit_x" name="Ancient Spirit X">
+      <bio>Ancient Spirit X was the original ruler of the spirit realm in this land. I have to revive him in order to stop the current Spirit X from ruling .... There can only be one Spirit X in existence. Ancient Spirit X plans to destroy both Spirit X and myself in order to solidify his control and feed off of the souls of the living.</bio>
+      <pose />
+    </character>
+    <character id="guardian1" name="Guardian 1">
+      <bio>One of Ancient Spirit X's guardians</bio>
+      <pose id="evil" image="pose1.png" />
+    </character>
+    <character id="guardian2" name="Guardian 2">
+      <bio>One of Ancient Spirit X's guardians</bio>
+      <pose id="evil" image="pose1.png" />
+    </character>
+    <character id="guardian3" name="Guardian 3">
+      <bio>One of Ancient Spirit X's guardians</bio>
+      <pose id="evil" image="pose1.png" />
+    </character>
+  </chars>
+  <locs>
+    <location id="community_park_south" name="South Side of the Community Park" lat="43.65800" long="-79.37884" tagline="Professor Laurier's recruiting ground">It is said that long ago a groundskeeper kidnapped unsuspecting passers by to feed the quasi scientific research of Doctor Laurier.  Failure after failure on Laurier’s part to achieve his goal of raising the dead  led to the need to dispose of countless bodies.  The groundskeeper unwittingly  buried the corpses in the very place where the victims were originally abducted.</location>
+    <location id="rye_theatre" name="Ryerson Theatre" lat="43.65947" long="-79.37961" tagline="Once a pharmacy, Laurier's lab, now a hunted theatre">Ryerson’s Theatre arts building was originally erected in 1885.  The building was at that time a pharmacy where one Doctor Theodore Laurier secretly experimented upon the dead performing autopsies in order attempt to resurrect these unfortunate souls for his own devilish unknown reasons.</location>
+    <location id="lake_devo" name="The Pond “Lake Devo”" lat="43.657527" long="-79.379790" tagline="Eerie impressions reflect off its surface ">Built in 1978, since its creation there has been no shortage of mysterious encounters.  Young loves have seen eirie supernatural impressions reflecting of the lake on moon flooded nights.</location>
+    <location id="tmz" name="TransMediaZone" lat="43.658587" long="-79.377316" tagline="Strange things are being developed there.">The RTA School of Media built this space for two reasons.  One, to allow for a place of expression and to mask a secrete reason for this Zone is to recruit young brilliant minds to study impressions that were captured from the minds of those who are believed to have crossed beyond the world of the living.  The impressions were captured to old analogue machines and are widely thought to be lost.  They live hidden in a secret vault inside the Zone.</location>
+    <location id="rcc" name="Rogers Communication Center" lat="43.65800" long="-79.37858" tagline="Here rests somber clues regarding an ancient force">Soon after the Rogers Communication Centre (RCC) was built in 1992 broadcast student and Professors alike saw somber clues as to an ancient force that is at play in the area.  They reported cryptic messages spliced old archival footage that struck fear into their very souls.</location>
+    <location id="rcc_south" name="Rogers Communication Center South" lat="43.65829" long="-79.37766" tagline="Here lives somber clues as to an ancient force">Soon after the Rogers Communication Centre (RCC) was built in 1992 broadcast student and Professors alike saw somber clues as to an ancient force that is at play in the area.  They reported cryptic messages spliced old archival footage that struck fear into their very souls.</location>
+    <location id="arch" name="Architecture Building" lat="43.65842" long="-79.37695" tagline="Mysterious forms have always been produced in this place">Built in 1981, the ARCH building has gained infamy after Professor Paul Carlter claimed to have unlocked the power magical shapes that he was constructing.  The Professor was hard at work one night when he went missing.  Some say he was trapped in another realm.  Some say he simply chose to leave.</location>
+    <location id="rcc_courtyard" name="RCC Courtyard" lat="43.65905" long="-79.37684" tagline="Beneath these grounds is the resting place of Laurier’s victims">It is said that long ago a groundskeeper kidnapped unsuspecting passers by from this community park to feed the quasi scientific research of Doctor Laurier.  Failure after failure on Laurier’s part to achieve his goal of raising the dead  led to the need to dispose of countless bodies.  The groundskeeper unwittingly  buried the corpses in the very place where the victims were originally abducted.</location>
+    <location id="she_building" name="SHE Building" lat="43.65918" long="-79.37758" tagline="The 13th floor was designed and built as a part of a secret “phantasmic research laboratory”">It is a little known fact that there is a 13th floor on the marvelous SHE building. That floor was designed and built as a part of a secret “phantasmic research laboratory”. It was chosen due to the paranormal  energies that were registered in the area. When the plan became known to unsuspecting funders it was cancelled and fake windows and walls were installed. Every effort was taken to erase it from history.</location>
+    <location id="jorg" name="Jorgenson Hall" lat="43.65985" long="-79.37785" tagline="" />
+    <location id="library" name="Library Building" lat="43.65909" long="-79.38071" tagline="" />
+    <location id="near_pond" name="Pond" lat="43.65799" long="-79.38021" tagline="" />
+    <location id="ce_building" name="Continuing Education" lat="43.65739" long="-79.37994" tagline="" />
+    <location id="ce_building2" name="Continuing Education" lat="43.65687" long="-79.37978" tagline="" />
+    <location id="near_church" name="The Church" lat="43.65731" long="-79.37869" tagline="" />
+    <location id="field_again" name="The Field" lat="43.65867" long="-79.37977" tagline="" />
+    <location id="rcc_finale" name="RCC Building" lat="43.65867" long="-79.37977" tagline="" />
+  </locs>
+  <timeline>
+    <seq_pt id="01" name="Introduction">
+      <mysteries>
+        <mystery>
+          <solved>Researcher for Ryerson university paranormal activities lab.</solved>
+          <unsolved>Who is professor wolfe?</unsolved>
+        </mystery>
+        <mystery>
+          <unsolved>How did I end up with this application?</unsolved>
+          <solved>Spirit X leaked the application to the store.</solved>
+        </mystery>
+      </mysteries>
+      <tasks>
+        <task id="go_to_rcc" enabled="true" visible="true" completed="false">Go to the RCC</task>
+        <task id="catch_Slimer_ghost" enabled="true" visible="true" completed="false">Catch the ghost</task>
+      </tasks>
+      <triggers>
+        <trigger id="00" type="AUTO" data="" enabled="true" timelimit="">
+          <action type="ENABLE_TOOL" lock="false">locationmap</action>
+          <action type="ENABLE_TOOL" lock="false">rfdetector</action>
+          <action type="DIALOG" lock="true">gc_seq1_1</action>
+          <action type="ENABLE_TRIGGER" lock="false">01</action>
+        </trigger>
+        <trigger id="01" type="LOCATION_ENTER" data="arch" enabled="false" timelimit="">
+          <action type="DIALOG" lock="true">gc_seq1_2</action>
+          <action type="END_SQPT" lock="true">02</action>
+        </trigger>
+      </triggers>
+    </seq_pt>
+    <seq_pt id="02" name="Reveal">
+      <mysteries>
+        <mystery id="00">
+          <solved>It seems no one can be trusted</solved>
+          <unsolved>Can I really trust Professor Wolfe</unsolved>
+        </mystery>
+      </mysteries>
+      <tasks>
+        <task id="go_to_rcc" enabled="true" visible="true" completed="false">Go to the RCC</task>
+        <task id="catch_Slimer_ghost" enabled="true" visible="true" completed="false">Catch the ghost</task>
+      </tasks>
+      <triggers>
+        <trigger id="00" type="AUTO" data="" enabled="false" timelimit="">
+          <action type="ENABLE_TOOL" lock="false">amplifier</action>
+          <action type="DIALOG" lock="true">gc_seq2_1</action>
+          <action type="ENABLE_TOOL" lock="false">ghostcatcher</action>
+          <action type="ENABLE_TOOL" lock="false">imager</action>
+        </trigger>
+        <trigger id="01" type="TOOL_SUCCESS" data="amplifier" enabled="false" timelimit="60s">
+          <action type="DIALOG" lock="true">gc_seq2_2</action>
+          <action type="DIALOG" lock="true">gc_seq2_3</action>
+          <action type="ENABLE_TOOL" lock="false">imager</action>
+          <action type="DIALOG" lock="true">gc_seq2_4</action>
+        </trigger>
+      </triggers>
+    </seq_pt>
+  </timeline>
+</chapter>

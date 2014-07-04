@@ -1,0 +1,14 @@
+﻿gc_seq5_2
+
+#imager_tool
+
+#newspaper_image
+
+>>spirit_x
+<<pose1
+
+You are no fool, I can see that. If you were a fool I would never show you what I am revealing.  I would have destroyed you before revealing the true power behind  what I have invented.  My gateway into the land of the whispers. That former Professor... Wolfe was never smart enough to understand. He simply bumbled about in the dark. If you continue along your witless path... then I promise you... I will ruthlessly show you how I have achieved my immortality!!
+
+#map_screen
+
+
