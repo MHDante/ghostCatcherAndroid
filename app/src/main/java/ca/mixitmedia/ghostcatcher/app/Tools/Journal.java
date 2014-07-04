@@ -1,9 +1,14 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.net.Uri;
 import android.app.ActionBar;
 import android.graphics.Point;
 import android.os.Bundle;
+
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +21,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import ca.mixitmedia.ghostcatcher.app.JournalFragment.ToDoList;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
@@ -23,9 +29,14 @@ public class Journal extends ToolFragment {
 
     Map<String, Uri> imageFileLocationMap;
 
-    ViewSwitcher viewSwitcher;
+    ViewPager viewPager;
     ImageButton bio;
     ImageButton todo;
+
+    ToDoList toDoList;
+    ToDoList toDoList2;
+    ToDoList toDoList3;
+    ToDoList toDoList4;
 
     public Journal(){createImageURIs();};
 
@@ -35,19 +46,25 @@ public class Journal extends ToolFragment {
         View view = inflater.inflate(R.layout.tool_journal, container, false);
         view.setPivotX(0);
         view.setPivotY(view.getMeasuredHeight());
-        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.journal_switcher);
-        bio = (ImageButton) view.findViewById(R.id.arrow_bio);
+        viewPager = (ViewPager) view.findViewById(R.id.journal_pager);
+        //bio = (ImageButton) view.findViewById(R.id.arrow_bio);
         todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
 
+        viewPager.setAdapter(new JournalPagerAdapter(getFragmentManager()));
 
 
-        bio.setOnClickListener(new View.OnClickListener() {
+        toDoList = new ToDoList();
+        toDoList2 = new ToDoList();
+        toDoList3 = new ToDoList();
+        toDoList4 = new ToDoList();
+
+        /*bio.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
 
                 //Toast.makeText(getApplicationContext(), "Showing previous view..", Toast.LENGTH_SHORT).show();
-                viewSwitcher.showPrevious();
+                //viewPager.showPrevious();
             }
         });
         todo.setOnClickListener(new View.OnClickListener() {
@@ -56,9 +73,9 @@ public class Journal extends ToolFragment {
             public void onClick(View arg0) {
 
                 //Toast.makeText(getApplicationContext(), "Showing previous view..", Toast.LENGTH_SHORT).show();
-                viewSwitcher.showNext();
+                //viewPager.showNext();
             }
-        });
+        });*/
 
         RelativeLayout.LayoutParams fragmentContainerParams = (RelativeLayout.LayoutParams) container.getLayoutParams();
         fragmentContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
@@ -74,15 +91,49 @@ public class Journal extends ToolFragment {
         ImageView bullet4 = (ImageView) view.findViewById(R.id.bullet_check4);
 
 
-        overlay.setImageURI(imageFileLocationMap.get("overlay"));
+        /*overlay.setImageURI(imageFileLocationMap.get("overlay"));
         bullet1.setImageURI(imageFileLocationMap.get("bullet_check"));
         bullet2.setImageURI(imageFileLocationMap.get("bullet_check"));
         bullet3.setImageURI(imageFileLocationMap.get("bullet_check"));
         bullet4.setImageURI(imageFileLocationMap.get("bullet_check"));
         todo.setImageURI(imageFileLocationMap.get("arrow_right"));
-        bio.setImageURI(imageFileLocationMap.get("arrow_right"));
+        bio.setImageURI(imageFileLocationMap.get("arrow_right"));*/
 
         return view;
+    }
+
+    public class JournalPagerAdapter extends FragmentPagerAdapter {
+
+        public JournalPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+                    return toDoList;
+                case 1:
+                    return toDoList2;
+                case 2:
+                    return toDoList3;
+                case 3:
+                    return toDoList4;
+                default:
+                    throw new ArrayIndexOutOfBoundsException(position);
+            }
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return false;
+        }
     }
 
     @Override
@@ -102,8 +153,25 @@ public class Journal extends ToolFragment {
         return (imageFileLocationMap.get("journal_button_glyph"));
     }
 
+    @Override
     public boolean checkClick(View view) {
-        return false;
+        switch (view.getId()) {
+
+            case R.id.tab1:
+                viewPager.setCurrentItem(0);
+                return true;
+            case R.id.tab2:
+                viewPager.setCurrentItem(1);
+                return true;
+            case R.id.tab3:
+                viewPager.setCurrentItem(2);
+                return true;
+            case R.id.tab4:
+                viewPager.setCurrentItem(3);
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
