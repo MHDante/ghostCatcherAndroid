@@ -20,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,9 +43,9 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     public LocationMap(){createImageURIs();    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_location_map, container, false);
+
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setOnMarkerClickListener(this);
         map.setInfoWindowAdapter(this);
@@ -65,8 +64,6 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         right_button.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         return view;
-
-
     }
 
     @Override
@@ -207,7 +204,6 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
         return lv;
 
-
         //original text gets reset here
         //return null;
     }
@@ -220,8 +216,11 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     protected int getAnimatorId(boolean enter) {
-        if (enter) gcMain.playSound(gcMain.sounds.strangeMetalNoise);
-        return (enter) ? R.animator.transition_in_from_top : R.animator.transition_out_from_bottom;
+        if (enter) {
+			gcMain.playSound(gcMain.sounds.strangeMetalNoise);
+			return R.animator.transition_in_from_top;
+		}
+        return R.animator.transition_out_from_bottom;
     }
 
     public void createImageURIs(){

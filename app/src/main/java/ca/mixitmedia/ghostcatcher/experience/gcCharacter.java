@@ -3,8 +3,6 @@ package ca.mixitmedia.ghostcatcher.experience;
 import android.app.AlertDialog;
 import android.net.Uri;
 
-import com.google.android.gms.maps.model.BitmapDescriptor;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -14,11 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class gcCharacter {
 
     String id;
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
     public String getId() {
         return id;
@@ -26,6 +28,9 @@ public class gcCharacter {
 
     String name;
 
+	public void setName(String name) {
+		this.name = name;
+	}
     public String getName() {
         return name;
     }
@@ -47,17 +52,15 @@ public class gcCharacter {
         return Uri.fromFile(new File(gcEngine.Access().root +"/characters/" + getId() +"/"+ poses.get(poseName)));
     }
 
-
-    private gcCharacter() {
-    }
+    private gcCharacter() {}
 
     public static gcCharacter parse(XmlPullParser parser) throws IOException, XmlPullParserException {
         if (!parser.getName().equals("character"))
             throw new RuntimeException("Tried to parse something that wasn't a character");
 
         gcCharacter result = new gcCharacter();
-        result.id = parser.getAttributeValue(null, "id");
-        result.name = parser.getAttributeValue(null, "name");
+        result.setId(parser.getAttributeValue(null, "id"));
+        result.setName(parser.getAttributeValue(null, "name"));
 
         int pEvent = parser.next();
 

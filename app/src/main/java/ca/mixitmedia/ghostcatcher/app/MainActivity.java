@@ -1,14 +1,9 @@
 package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
@@ -31,12 +26,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +112,6 @@ public class MainActivity extends Activity implements
 	GestureDetector detector;
 	boolean toolHolderShown = true;
 	private Handler decorViewHandler = new Handler();
-	private boolean useDecorView;
 	private gcLocation playerLocationInStory;
 	private Runnable decor_view_settings = new Runnable() {
 		public void run() {
@@ -250,16 +242,16 @@ public class MainActivity extends Activity implements
         ImageView journal_button = (ImageView) findViewById(R.id.journal_button);
         ImageView background = (ImageView) findViewById(R.id.background);
 
-        ToolLightButton back_button_light = (ToolLightButton)findViewById(R.id.tool_light_back);
-        ToolLightButton journal_button_light = (ToolLightButton)findViewById(R.id.tool_light_journal);
-
-        ToolLightButton button1 = (ToolLightButton)findViewById(R.id.tool_light_1);
-        ToolLightButton button2 = (ToolLightButton)findViewById(R.id.tool_light_2);
-        ToolLightButton button3 = (ToolLightButton)findViewById(R.id.tool_light_3);
-        ToolLightButton button4 = (ToolLightButton)findViewById(R.id.tool_light_4);
-        ToolLightButton button5 = (ToolLightButton)findViewById(R.id.tool_light_5);
-        ToolLightButton button6 = (ToolLightButton)findViewById(R.id.tool_light_6);
-        ToolLightButton button7 = (ToolLightButton)findViewById(R.id.tool_light_7);
+//TODO: URIify the ToolLightButtons
+//		ToolLightButton back_button_light = (ToolLightButton)findViewById(R.id.tool_light_back);
+//     	ToolLightButton journal_button_light = (ToolLightButton)findViewById(R.id.tool_light_journal);
+//        ToolLightButton button1 = (ToolLightButton)findViewById(R.id.tool_light_1);
+//        ToolLightButton button2 = (ToolLightButton)findViewById(R.id.tool_light_2);
+//        ToolLightButton button3 = (ToolLightButton)findViewById(R.id.tool_light_3);
+//        ToolLightButton button4 = (ToolLightButton)findViewById(R.id.tool_light_4);
+//        ToolLightButton button5 = (ToolLightButton)findViewById(R.id.tool_light_5);
+//        ToolLightButton button6 = (ToolLightButton)findViewById(R.id.tool_light_6);
+//        ToolLightButton button7 = (ToolLightButton)findViewById(R.id.tool_light_7);
 
         background.setImageURI(imageFileLocationMap.get("background"));
         frame_left.setImageURI(imageFileLocationMap.get("frame_left"));
@@ -317,7 +309,7 @@ public class MainActivity extends Activity implements
 								String id = tokens[0];
 								if (type.equals("location")) {
 									gcLocation loc = gcEngine.Access().getLocation(id);
-									Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG);
+									Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
 									onLocationChanged(loc);
 								}
 							}
@@ -331,7 +323,7 @@ public class MainActivity extends Activity implements
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus && useDecorView) {
+		if (hasFocus) {
 			decorViewHandler.post(decor_view_settings);
 		}
 	}
@@ -436,16 +428,6 @@ public class MainActivity extends Activity implements
 
 	}
 
-	public void startDialog(String dialog) {
-
-	}
-
-	//GOOGLE SERVICES CODE
-
-	public void prepareLocation() {
-
-	}
-
 	public void triggerLocation() {
 		gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getAutoTrigger();
 		if (trigger == null) gcEngine.Access().getCurrentSeqPt().getTrigger(playerLocationInStory);
@@ -474,24 +456,19 @@ public class MainActivity extends Activity implements
 		journalGear.animate().translationX(0);
 	}
 
-    public void hideFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
+    public void hideFrame(boolean showLeftFrame, boolean showRightFrame, boolean showAdFrame){
         View left_frame, right_frame, ad_holder;
 
         left_frame = findViewById(R.id.frame_left);
         right_frame = findViewById(R.id.frame_right);
         ad_holder = findViewById(R.id.ad_holder);
 
-		left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
-		right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
-		ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
-
-        isAdHolderShowing = false;
-        isLeftFrameShowing = false;
-        isRightFrameShowing = false;
-
+		if (showLeftFrame) left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
+		if (showRightFrame) right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
+		if (showAdFrame) ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
 	}
 
-    public void showFrame(Boolean isLeftFrameShowing, Boolean isRightFrameShowing, Boolean isAdHolderShowing){
+    public void showFrame(boolean showLeftFrame, boolean showRightFrame, boolean showAdHolder){
         ImageView left_frame, right_frame, ad_holder;
 
         left_frame = (ImageView) findViewById(R.id.frame_left);
@@ -501,14 +478,9 @@ public class MainActivity extends Activity implements
         left_frame.setScaleType(ImageView.ScaleType.FIT_START);
         right_frame.setScaleType(ImageView.ScaleType.FIT_END);
 
-        left_frame.animate().translationX(0).setDuration(1000);
-        right_frame.animate().translationX(0).setDuration(1000);
-        ad_holder.animate().translationY(0).setDuration(1000);
-
-        isAdHolderShowing = true;
-        isLeftFrameShowing = true;
-        isRightFrameShowing = true;
-
+        if (showLeftFrame) left_frame.animate().translationX(0).setDuration(1000);
+        if (showRightFrame) right_frame.animate().translationX(0).setDuration(1000);
+        if (showAdHolder) ad_holder.animate().translationY(0).setDuration(1000);
 	}
 
 	//GOOGLE SERVICES CODE
@@ -522,7 +494,6 @@ public class MainActivity extends Activity implements
 			int requestCode, int resultCode, Intent data) {
 		// Decide what to do based on the original request code
 		//TODO: Error Handling
-		return;
 	}
 
 	public gcLocation getPlayerLocationInStory() {
@@ -535,17 +506,6 @@ public class MainActivity extends Activity implements
 
 	public void hideTool(Class tool) {
 		ToolMap.get(tool).setEnabled(false);
-	}
-
-	public void showLocationNotification() {
-		Notification.Builder mBuilder =
-				new Notification.Builder(this)
-						.setSmallIcon(R.drawable.ghost)
-						.setContentTitle("Ghost Catcher")
-						.setContentText("You have arrived to your next location!");
-		NotificationManager mNotificationManager =
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(NOTIF_ID, mBuilder.getNotification());      //Oh come on, google, one is depreciated, the other is unsupported. :(
 	}
 
 	@Override
@@ -687,7 +647,7 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (useDecorView && (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+		if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
 			decorViewHandler.postDelayed(decor_view_settings, 500);
 		}
 		return super.onKeyDown(keyCode, event);
@@ -695,24 +655,6 @@ public class MainActivity extends Activity implements
 
 	public int playSound(int soundName) {
 		return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
-	}
-
-	// Define a DialogFragment that displays the error dialog
-	public static class ErrorDialogFragment extends DialogFragment {
-		// Global field to contain the error dialog
-		private Dialog mDialog;
-
-		// Default constructor. Sets the dialog field to null
-		public ErrorDialogFragment() {
-			super();
-			mDialog = null;
-		}
-
-		// Return a Dialog to the DialogFragment.
-		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			return mDialog;
-		}
 	}
 
 	public class Sounds {

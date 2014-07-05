@@ -1,16 +1,11 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import java.io.File;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -33,19 +28,15 @@ public class Amplifier extends ToolFragment {
 
     @Override
     public Uri getGlyphUri() {
-        return ( rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_amplifier.png").build());
+        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_amplifier.png").build());
     }
 
     @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
             case R.id.amplifier_button:
-
                 gcMain.soundPool.stop(dialogueStream);
-                AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-                float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
                 dialogueStream = gcMain.playSound(gcMain.sounds.testSoundClip);
-
                 return true;
             default:
                 return false;
@@ -58,8 +49,11 @@ public class Amplifier extends ToolFragment {
     }
 
     protected int getAnimatorId(boolean enter) {
-        if(enter) gcMain.playSound(gcMain.sounds.leverRoll);
-        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right;
+        if (enter) {
+			gcMain.playSound(gcMain.sounds.leverRoll);
+			return R.animator.rotate_in_from_left;
+		}
+        return R.animator.rotate_out_to_right;
     }
 
 

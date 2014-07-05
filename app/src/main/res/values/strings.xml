@@ -15,5 +15,6 @@
     <string name="start_activity_b3">Settings</string>
     <string name="start_activity_b4">Credits</string>
     <string name="url">http://mixitmedia.ca/exp.zip</string>
+    <string name="proximity_activation_url">http://mixitmedia.ca/proximity/writetest.php?action=write&amp;amp;location=zacklocation&amp;amp;status=activated</string>
 
 </resources>

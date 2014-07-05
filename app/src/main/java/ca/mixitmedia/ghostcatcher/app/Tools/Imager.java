@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.File;
-
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
@@ -54,7 +52,6 @@ public class Imager extends ToolFragment {
     @Override
     public Uri getGlyphUri() {
         return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_imager.png").build());
-
     }
 
     @Override
@@ -166,7 +163,6 @@ public class Imager extends ToolFragment {
             camera.startPreview();
             inPreview = true;
             Log.d("Surface:", "StartPreview");
-
         }
     }
 
@@ -194,10 +190,10 @@ public class Imager extends ToolFragment {
     }
 
     protected int getAnimatorId(boolean enter) {
-        if(enter) gcMain.playSound(gcMain.sounds.leverRoll);
-        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_left;
+        if (enter) {
+			gcMain.playSound(gcMain.sounds.leverRoll);
+			return R.animator.rotate_in_from_right;
+		}
+        return R.animator.rotate_out_to_left;
     }
-
-
-
 }

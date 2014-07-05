@@ -84,7 +84,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 * Faster updates are neceassary for accuracy at close proximity, but use significantly more
 	 * battery energy, and heats up the phone.
 	 */
-	enum ApproxDistance{CLOSE, MEDIUM, FAR, FAR_FAR_AWAY};
+	enum ApproxDistance{CLOSE, MEDIUM, FAR, FAR_FAR_AWAY}
 	ApproxDistance approxDistance;
 
 	/**
@@ -96,7 +96,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
     public RFDetector(){
         createImageURIs();
-    };
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -109,6 +109,12 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
 		arrowImageView = (ImageView) view.findViewById(R.id.arrowImage);
+		ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+		ImageView background = (ImageView) view.findViewById(R.id.rf_background);
+
+		overlay.setImageURI(imageFileLocationMap.get("overlay"));
+		arrowImageView.setImageURI(imageFileLocationMap.get("compass_arrow"));
+		background.setImageURI(imageFileLocationMap.get("background"));
 
 		proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
 		proximityBar.setMax(1000);
@@ -127,16 +133,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 			System.out.println("Cached location loaded");
 			onLocationChanged(currentLocation);
 		}
-
-
-
-        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
-        ImageView compass_arrow = (ImageView) view.findViewById(R.id.arrowImage);
-        ImageView background = (ImageView) view.findViewById(R.id.rf_background);
-
-        overlay.setImageURI(imageFileLocationMap.get("overlay"));
-        compass_arrow.setImageURI(imageFileLocationMap.get("compass_arrow"));
-        background.setImageURI(imageFileLocationMap.get("background"));
 
         return view;
     }
@@ -279,8 +275,13 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
+
     public void updateDestination() {
         destination = gcMain.getPlayerLocationInStory();
         }
 
+//	@Override
+//	protected int getAnimatorId(boolean enter) {
+//		//TODO: implement this
+//	}
 }

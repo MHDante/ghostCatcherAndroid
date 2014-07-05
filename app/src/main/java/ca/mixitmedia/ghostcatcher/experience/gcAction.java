@@ -6,11 +6,11 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class gcAction {
 
-
+	//TODO: consumed is never set.
     private boolean consumed;
 
     public Type getType() {
@@ -41,8 +41,7 @@ public class gcAction {
     String data;
     boolean lock;
 
-    private gcAction() {
-    }
+	private gcAction() {}
 
     public static gcAction parse(XmlPullParser parser)
             throws IOException, XmlPullParserException {

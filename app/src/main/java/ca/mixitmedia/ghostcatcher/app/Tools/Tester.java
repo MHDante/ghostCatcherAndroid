@@ -129,5 +129,4 @@ public class Tester extends ToolFragment {
     public Uri getGlyphUri() {
         return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_ghost_catcher.png").build());
     }
-
 }

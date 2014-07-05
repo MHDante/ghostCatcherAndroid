@@ -1,8 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.net.Uri;
-import android.app.ActionBar;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,14 +110,14 @@ public class Journal extends ToolFragment {
 
     @Override
     protected int getAnimatorId(boolean enter) {
-        if(enter){
+        if (enter) {
             gcMain.playSound(gcMain.sounds.metalClick);
             gcMain.hideFrame(true,true,true);
+			return R.animator.rotate_in_from_right;
         }
-        else
-            gcMain.showFrame(false,false,false);
 
-        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
+        gcMain.showFrame(false,false,false);
+		return R.animator.rotate_out_to_right;
     }
 
     public void createImageURIs(){

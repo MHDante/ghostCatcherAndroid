@@ -10,16 +10,12 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,10 +25,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class StartScreen extends Activity {
@@ -40,46 +33,40 @@ public class StartScreen extends Activity {
     private ProgressDialog mProgressDialog;
 
     private String url;
-    private File fileDir;
-    private String cacheDir;
     private String unzipLocation;
     private String zipFile;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
+		File fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
         Log.d("Filepaths 1 :", fileDir.getPath());
-        cacheDir = getExternalCacheDir().getPath();
+		String cacheDir = getExternalCacheDir().getPath();
         Log.d("Filepaths 2 :", cacheDir);
         unzipLocation = getExternalFilesDir("mixitmedia").getPath();
         Log.d("Filepaths 3 :", unzipLocation);
         zipFile = cacheDir+"/exp.zip";
         Log.d("Filepaths 4 :", zipFile);
 
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_screen);
-
 
         final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         final android.net.NetworkInfo wifi =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         final android.net.NetworkInfo mobile =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-        url = this.getString(R.string.url);
-        File file = new File(zipFile);
+        url = getString(R.string.url);
 
-        Button bCont = (Button) findViewById(R.id.button1);
-        Button bNew   =   (Button) findViewById(R.id.button2);
-        Button bSettings = (Button) findViewById(R.id.button3);
-        Button bCredits = (Button) findViewById(R.id.button4);
+        Button continueButton = (Button) findViewById(R.id.continueButton);
+        Button creditsButton = (Button) findViewById(R.id.creditsButton);
 
-        bCont.setEnabled(false);
-        bCredits.setEnabled(false);
+        continueButton.setEnabled(false);
+        creditsButton.setEnabled(false);
 
 
         if (!fileDir.exists()) {
-            if (file.exists()) {
+            if ((new File(zipFile)).exists()) {
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
                 if ( fileToMD5(zipFile).equals("e30fa973ee4d9573b907b00d376e67aa") ) {
                     try {
@@ -200,8 +187,8 @@ public class StartScreen extends Activity {
     //From internet
     private static String convertHashToString(byte[] md5Bytes) {
         String returnVal = "";
-        for (int i = 0; i < md5Bytes.length; i++) {
-            returnVal += Integer.toString(( md5Bytes[i] & 0xff ) + 0x100, 16).substring(1);
+		for (byte md5Byte : md5Bytes) {
+            returnVal += Integer.toString((md5Byte) + 0x100, 16).substring(1);
         }
         return returnVal;
     }
@@ -307,18 +294,16 @@ public class StartScreen extends Activity {
 
     //Extract zip calls Asynctask
     public void unzip() throws IOException {
-        mProgressDialog = new ProgressDialog(StartScreen.this);
-        mProgressDialog.setMessage("Extracting the downloaded file...");
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
-
+		mProgressDialog = (ProgressDialog) new ProgressDialog.Builder(StartScreen.this)
+				.setMessage("Extracting the downloaded file...")
+				.setCancelable(false)
+				.create();
+		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         new UnZipTask().execute(zipFile);
     }
 
 
     private class UnZipTask extends AsyncTask<String, Void, Boolean> {
-        private int isExtracted = 0;
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -328,7 +313,7 @@ public class StartScreen extends Activity {
 
             Log.d("UNZIP LOCATION IS", unzipLocation);
 
-            File archive = new File(filePath);
+            //File archive = new File(filePath);
             try {
                 //ZipFile zipfile = new ZipFile(archive);
                 //int fileCount = zipfile.size();
@@ -354,34 +339,14 @@ public class StartScreen extends Activity {
             mProgressDialog.dismiss();
         }
 
-        private void unzipEntry(ZipFile zipfile, ZipEntry entry, String outputDir) throws IOException {
-
-            if (entry.isDirectory()) {
-                String name = entry.getName();
-                createDir(new File(outputDir +'/'+ name));
-                return;
-            }
-
-            File outputFile = new File(outputDir  +'/'+ entry.getName());
-
-
-            BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
-
-            outputStream.flush();
-            outputStream.close();
-            inputStream.close();
-
-        }
-
-        private void createDir(File dir) {
-            if (dir.exists()) {
-                return;
-            }
-            if (!dir.mkdirs()) {
-                throw new RuntimeException("Can not create dir " + dir);
-            }
-        }
+//        private void createDir(File dir) {
+//            if (dir.exists()) {
+//                return;
+//            }
+//            if (!dir.mkdirs()) {
+//                throw new RuntimeException("Can not create dir " + dir);
+//            }
+//        }
     }
     public class UnzipUtil {
         private String zipFile;
@@ -398,7 +363,7 @@ public class StartScreen extends Activity {
             try {
                 FileInputStream fin = new FileInputStream(zipFile);
                 ZipInputStream zin = new ZipInputStream(fin);
-                ZipEntry ze = null;
+                ZipEntry ze;
                 while ((ze = zin.getNextEntry()) != null) {
                     Log.d("Decompress", "Unzipping " + ze.getName());
 
@@ -424,12 +389,13 @@ public class StartScreen extends Activity {
             }
         }
 
-        private void dirChecker(String dir) {
+        private boolean dirChecker(String dir) {
             File f = new File(location + "/" + dir);
             if (!f.isDirectory()) {
                 Log.e("DirChecker", dir);
-                f.mkdirs();
+                return f.mkdirs();
             }
+			return false;
         }
     }
 
@@ -437,8 +403,4 @@ public class StartScreen extends Activity {
         Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
         startActivity(myIntent);
     }
-
-
-
-
 }

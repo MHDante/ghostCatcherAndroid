@@ -1,11 +1,7 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.animation.Animator;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,14 +24,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,18 +36,16 @@ import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcAudio;
 import ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.experience.gcTrigger;
-import ca.mixitmedia.ghostcatcher.utils.Tuple;
 import ca.mixitmedia.ghostcatcher.utils.Utils;
-import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 /**
- * Created by Dante on 2014-04-14.
+ * Created by Dante on 2014-04-14
  */
 public class Communicator extends ToolFragment {
 
     private gcDialog currentDialog;
     private boolean dialogPending;
+	//TODO: isStarted is assigned to a bunch of times, but never checked; to be removed?
     private boolean isStarted;
     private boolean pause = false;
     private boolean userIsScrolling = false;
@@ -199,21 +190,19 @@ public class Communicator extends ToolFragment {
         @Override
         protected String doInBackground(String... params) {
             try {
-                BufferedReader in = null;
+                BufferedReader in;
                 HttpClient httpclient = new DefaultHttpClient();
-
                 HttpGet request = new HttpGet();
-                URI website = new URI("http://mixitmedia.ca/proximity/writetest.php?action=write&location=zacklocation&status=activated");
-                request.setURI(website);
+                URI website = new URI(getString(R.string.proximity_activation_url));
+
+				request.setURI(website);
                 HttpResponse response = httpclient.execute(request);
-                in = new BufferedReader(new InputStreamReader(
-                        response.getEntity().getContent()));
+                in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
                 return in.readLine();
             } catch (Exception e) {
-                Log.e("log_tag", "Error in http connection " + e.toString());
-                return null;
-            }
-
+				Log.e("log_tag", "Error in http connection " + e.toString());
+				return null;
+			}
         }
 
         @Override
@@ -225,7 +214,6 @@ public class Communicator extends ToolFragment {
     int counter;
     boolean isTimerRunning;
     Timer timer = new Timer();
-    String currentString = "";
 
     //Hello barry, This function starts the dialog.
     protected void startDialog() {
@@ -239,7 +227,6 @@ public class Communicator extends ToolFragment {
                 if (!pause)
                     counter += 1;  //increase every sec
                 mHandler.obtainMessage(1).sendToTarget();
-
             }
         }, 0, 50);
     }
@@ -301,8 +288,19 @@ public class Communicator extends ToolFragment {
     }
 
     protected int getAnimatorId(boolean enter) {
-        if (enter) gcMain.playSound(gcMain.sounds.metalClick);
+        if (enter) {
+			gcMain.playSound(gcMain.sounds.metalClick);
+			return R.animator.rotate_in_from_left;
+		}
+
+        return R.animator.rotate_out_to_left;
+
+		//TODO: Check this dante:
+		//This method always returns R.animator.rotate_out_to_left; intentional?
+		/* Original body of this method:
+		if (enter) gcMain.playSound(gcMain.sounds.metalClick);
         return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_left;
+		 */
     }
 
 }

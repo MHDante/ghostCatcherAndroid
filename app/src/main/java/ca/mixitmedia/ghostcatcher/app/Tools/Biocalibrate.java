@@ -1,8 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 
-import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,24 +8,19 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.media.SoundPool;
-import android.media.AudioManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 
 /**
- * Created by IAN on 15/04/2014.
+ * Created by IAN on 15/04/2014
  */
 public class Biocalibrate extends ToolFragment {
 
@@ -54,6 +47,7 @@ public class Biocalibrate extends ToolFragment {
         LoadingBar = (ProgressBar) view.findViewById(R.id.calibrate_bar);
         LoadingBar.setMax(100);
 
+		//TODO: this warning ↓
         ImageView overlay_pressed = (ImageView) view.findViewById(R.id.biocalibrate_btn);
         ImageView overlay_unpressed = (ImageView) view.findViewById(R.id.fingerprint_mask);
 
@@ -71,8 +65,6 @@ public class Biocalibrate extends ToolFragment {
                         gcMain.hideGears(true, true);
                         gcMain.hideTool(Biocalibrate.class);
                         gcMain.soundPool.stop(soundEffectStream);
-                        AudioManager audioMan = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-                        float streamVolume = audioMan.getStreamVolume(AudioManager.STREAM_MUSIC);
                         soundEffectStream = gcMain.playSound(gcMain.sounds.calibrateSoundClip);
                         started = true;
                         final Handler handler = new Handler();
@@ -130,16 +122,16 @@ public class Biocalibrate extends ToolFragment {
             case R.id.biocalibrate_btn:
                 return true;
             default:
-                if (!started)
-                    return false;
-                else
-                    return true;
+                return !started;
         }
     }
 
     protected int getAnimatorId(boolean enter) {
-        if(enter) gcMain.playSound(gcMain.sounds.strangeMetalNoise);
-        return (enter) ? R.animator.transition_in_from_top : R.animator.transition_out_from_bottom;
+        if (enter) {
+			gcMain.playSound(gcMain.sounds.strangeMetalNoise);
+			return R.animator.transition_in_from_top;
+		}
+        return R.animator.transition_out_from_bottom;
     }
 
     public void createImageURIs(){
@@ -148,7 +140,6 @@ public class Biocalibrate extends ToolFragment {
             put("unpressed", rootUri.buildUpon().appendPath("skins").appendPath("bio_calibrate").appendPath("bio_calibrate_unpressed.png").build());
             put("pressed", rootUri.buildUpon().appendPath("skins").appendPath("bio_calibrate").appendPath("bio_calibrate_pressed.png").build());
             put("bio_calibrate_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_biocalibrate.png").build());
-
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
