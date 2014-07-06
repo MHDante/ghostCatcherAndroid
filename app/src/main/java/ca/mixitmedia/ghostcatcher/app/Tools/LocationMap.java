@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     Map<String, Uri> imageFileLocationMap;
 
+    public LocationMap(){createImageURIs();    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -50,7 +52,6 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         map.setInfoWindowAdapter(this);
         map.setOnInfoWindowClickListener(this);
 
-        createImageURIs();
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         ImageButton right_button = (ImageButton) view.findViewById(R.id.right);
@@ -89,18 +90,18 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
         for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
             gcLocation loc = locations.get(selectedLocation);
-            if (gcMain.getPlayerLocationInStory() == null || !loc.id.equals(gcMain.getPlayerLocationInStory().id)) {
+            if (gcMain.getPlayerLocationInStory() == null || !loc.getId().equals(gcMain.getPlayerLocationInStory().getId())) {
                 markers.add(map.addMarker(new MarkerOptions()
                         .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
-                        .title(loc.name)));
+                        .title(loc.getName())));
                 // Google Marker IDs are held as Strings with an m prefix : m1, m2, m3, m4
 
             } else {
                 markers.add(map.addMarker(new MarkerOptions()
                         .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
-                        .title(loc.name)));
+                        .title(loc.getName())));
             }
         }
         setBanner(locations.get(selectedLocation - 1));
@@ -111,9 +112,9 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     public void setBanner(gcLocation loc) {
         TextView tv = (TextView) getView().findViewById(R.id.title);
-        tv.setText(loc.name);
+        tv.setText(loc.getName());
         TextView tv2 = (TextView) getView().findViewById(R.id.to_do);
-        tv2.setText(loc.description);
+        tv2.setText(loc.getDescription());
         ImageView iv = (ImageView) getView().findViewById(R.id.imageThumbnail);
         try {
             Bitmap image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), loc.getImageUri());
@@ -159,7 +160,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     @Override
     public boolean onMarkerClick(Marker marker) {
         for (gcLocation l : locations) {
-            if (l.name.equals(marker.getTitle())) {
+            if (l.getName().equals(marker.getTitle())) {
                 setBanner(l);
                 selectedLocation = locations.indexOf(l);
                 return false;
@@ -189,7 +190,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         //=  new WindowManager.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT);
 
         if (gcMain.getPlayerLocationInStory() != null
-                && marker.getTitle().equals(gcMain.getPlayerLocationInStory().name) //todo:hacks
+                && marker.getTitle().equals(gcMain.getPlayerLocationInStory().getName()) //todo:hacks
                 && gcMain.isToolEnabled(Biocalibrate.class)) {
 
             ImageView iv = new ImageView(getActivity());
@@ -213,7 +214,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (gcMain.getPlayerLocationInStory() != null && marker.getTitle().equals(gcMain.getPlayerLocationInStory().name)) { //todo:hacks
+        if (gcMain.getPlayerLocationInStory() != null && marker.getTitle().equals(gcMain.getPlayerLocationInStory().getName())) { //todo:hacks
             gcMain.swapTo(Biocalibrate.class);
         }
     }
@@ -224,8 +225,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     public void createImageURIs(){
-        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-
+        final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
             put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("map").appendPath("map_overlay.png").build());
             put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());

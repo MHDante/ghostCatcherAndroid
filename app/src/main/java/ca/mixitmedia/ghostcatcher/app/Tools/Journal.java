@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,8 @@ public class Journal extends ToolFragment {
     ImageButton bio;
     ImageButton todo;
 
+    public Journal(){createImageURIs();};
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -36,7 +39,7 @@ public class Journal extends ToolFragment {
         bio = (ImageButton) view.findViewById(R.id.arrow_bio);
         todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
 
-        createImageURIs();
+
 
         bio.setOnClickListener(new View.OnClickListener() {
 
@@ -121,8 +124,7 @@ public class Journal extends ToolFragment {
     }
 
     public void createImageURIs(){
-        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-
+        final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
             put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("journal").appendPath("journal.png").build());
             put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());

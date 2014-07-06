@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,17 +39,12 @@ public class gcCharacter {
     Map<String, String> poses = new HashMap<>();
 
     public Uri getPose(String poseName) {
-        Uri root = Uri.fromFile(gcEngine.Access().root);
         if (!poses.containsKey(poseName)) {
             new AlertDialog.Builder(gcEngine.Access().context)
                     .setMessage("Character " + name + "does not have a pose with id: " + poseName)
                     .create().show();
         }
-        return root.buildUpon()
-                .appendPath("characters")
-                .appendPath(getId())
-                .appendPath(poses.get(poseName))
-                .build();
+        return Uri.fromFile(new File(gcEngine.Access().root +"/characters/" + getId() +"/"+ poses.get(poseName)));
     }
 
 

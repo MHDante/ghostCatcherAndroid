@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -18,13 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
-import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.app.gcMediaService;
-import ca.mixitmedia.ghostcatcher.utils.ChapterLoader;
 
 /**
  * Created by Dante on 07/03/14.
@@ -36,10 +30,8 @@ public class gcEngine {
     public List<gcSeqPt> seqPts;
     public List<gcLocation> locations;
 
-    public File root = new File(Environment.getExternalStorageDirectory(), "mixitmedia");
-
     public Context context;
-
+    public Uri root;// = new File(Environment.getExternalStorageDirectory()+"/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher");
 
     XmlPullParserFactory pullParserFactory;
 
@@ -51,7 +43,7 @@ public class gcEngine {
 
     public gcLocation getLocation(String id) {
         for (gcLocation location : locations) {
-            if (location.id.equals(id))
+            if (location.getId().equals(id))
                 return location;
         }
         return null;
@@ -63,11 +55,11 @@ public class gcEngine {
 
     private gcEngine(Context context) {
         this.context = context;
-
+        root = Uri.parse(new File(context.getExternalFilesDir("mixitmedia"), "ghostcatcher").getAbsolutePath() );
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();
-            String textPath = root.getPath() + "/Exp1Chapter1.xml";
+            String textPath = root + "/Exp1Chapter1.xml";
             InputStream in_s = new BufferedInputStream(new FileInputStream(textPath));
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in_s, null);

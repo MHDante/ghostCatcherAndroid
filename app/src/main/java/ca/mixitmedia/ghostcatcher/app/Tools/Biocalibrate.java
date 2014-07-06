@@ -40,6 +40,8 @@ public class Biocalibrate extends ToolFragment {
 
     Map<String, Uri> imageFileLocationMap;
 
+    public Biocalibrate(){
+        createImageURIs();}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -111,7 +113,6 @@ public class Biocalibrate extends ToolFragment {
             }
         });
 
-        createImageURIs();
 
 
 
@@ -142,8 +143,7 @@ public class Biocalibrate extends ToolFragment {
     }
 
     public void createImageURIs(){
-        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-
+        final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
             put("unpressed", rootUri.buildUpon().appendPath("skins").appendPath("bio_calibrate").appendPath("bio_calibrate_unpressed.png").build());
             put("pressed", rootUri.buildUpon().appendPath("skins").appendPath("bio_calibrate").appendPath("bio_calibrate_pressed.png").build());

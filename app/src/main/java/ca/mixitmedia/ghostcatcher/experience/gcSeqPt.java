@@ -1,7 +1,5 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import android.graphics.BitmapFactory;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -10,8 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import ca.mixitmedia.ghostcatcher.app.R;
 
 /**
  * Created by Dante on 07/03/14.
@@ -30,7 +26,7 @@ public class gcSeqPt {
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
                 for (gcLocation l : gcEngine.Access().locations) {
-                    if (t.data.equals(l.id))
+                    if (t.data.equals(l.getId()))
                         locations.add(l);
                 }
             }
@@ -41,7 +37,7 @@ public class gcSeqPt {
     public gcTrigger getTrigger(gcLocation loc) {
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
-                if (t.data.equalsIgnoreCase(loc.id))
+                if (t.data.equalsIgnoreCase(loc.getId()))
                     if (t.isEnabled())
                         return t;
             }

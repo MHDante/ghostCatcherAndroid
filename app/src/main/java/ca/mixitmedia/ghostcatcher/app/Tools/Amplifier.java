@@ -10,14 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.File;
+
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Amplifier extends ToolFragment {
 
     private int dialogueStream = 0;
-    Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-
+    final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
