@@ -127,7 +127,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		//updateDestination();
 
 		//set initial data right away, if available
-		gcMain.setGPSUpdates(3000, 0); //TODO: set to be distance dependant
+		gcMain.setGPSUpdates(3000, 0);
 		Location currentLocation = gcMain.getCurrentGPSLocation();
 		if (currentLocation != null) {
 			System.out.println("Cached location loaded");
