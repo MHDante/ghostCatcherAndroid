@@ -50,6 +50,7 @@
         android:layout_height="wrap_content"
         android:text="@string/start_activity_b4"
         android:id="@+id/button4"
+        android:onClick="credits"
         android:layout_gravity="center_horizontal" />
 
 
