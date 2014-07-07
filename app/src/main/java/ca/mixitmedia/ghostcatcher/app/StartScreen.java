@@ -172,7 +172,7 @@ public class StartScreen extends Activity {
         dialog.setContentView(R.layout.dialog_view);
         dialog.setTitle("Settings");
 
-        Button dialogButton = (Button) dialog.findViewById(R.id.button10);
+        Button dialogButton = (Button) dialog.findViewById(R.id.buttonClose);
         // if button is clicked, close the custom dialog
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override

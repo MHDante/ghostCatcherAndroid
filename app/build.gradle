@@ -39,8 +39,8 @@ task copyApk(type: Copy) {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:4.2.42'
-    compile 'com.android.support:support-v4:19.+'
+    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.android.support:support-v13:20.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
