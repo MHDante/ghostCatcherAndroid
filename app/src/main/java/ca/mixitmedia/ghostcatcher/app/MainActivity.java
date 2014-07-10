@@ -543,16 +543,16 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onLocationChanged(Location location) {
-		ToolFragment tf = (ToolFragment) getCurrentFragment();
+		if (location == null) { //this check should always be the first of this method.
+			playerLocationInStory = null;
+			return;
+		}
 
+		ToolFragment tf = (ToolFragment) getCurrentFragment();
 		if (tf instanceof RFDetector) {
 			((RFDetector) tf).onLocationChanged(location);
 		}
 
-		if (location == null) {
-			playerLocationInStory = null;
-			return;
-		}
 
 		List<gcLocation> storyLocations = gcEngine.Access().getCurrentSeqPt().getLocations();
 		boolean hit = false;
@@ -591,12 +591,29 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		//todo:implement
+		setLocationAvailability();
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		//todo:implement
+		setLocationAvailability();
+	}
+
+
+	public void setLocationAvailability() {
+		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)  ||
+				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+			ToolFragment tf = (ToolFragment) getCurrentFragment();
+			if (tf instanceof RFDetector) {
+				((RFDetector) tf).setLidState(true); //opens the lid
+			}
+		}
+		else { //if neither GPS nor Network location is available
+			ToolFragment tf = (ToolFragment) getCurrentFragment();
+			if (tf instanceof RFDetector) {
+				((RFDetector) tf).setLidState(false); //closes the lid
+			}
+		}
 	}
 
 //	/**
@@ -644,7 +661,6 @@ public class MainActivity extends Activity implements
 
 	/**
 	 * returns the most recent known location of the user.
-	 *
 	 * @return the most recent known location of the user.
 	 */
 	public Location getCurrentGPSLocation() {

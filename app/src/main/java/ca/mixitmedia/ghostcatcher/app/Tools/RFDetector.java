@@ -34,6 +34,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	TextView destinationProximityTextView;
 
 	ImageView arrowImageView;
+	ImageView lidImageView;
 
 	ProgressBar proximityBar;
 	/**
@@ -98,6 +99,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
 		arrowImageView = (ImageView) view.findViewById(R.id.arrowImage);
+		lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
 
 		proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
 		proximityBar.setMax(1000);
@@ -200,7 +202,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 * @param location of the user's device
 	 */
 	public void onLocationChanged(Location location) {
-		// called when the listener is notified with a location update from the GPS
+		if (location == null) {
+			Log.d("RF", "Locations shouldn't be null, you dun fucked up.");
+		};
+
 		bearing = (location.bearingTo(destination) + 360) % 360;
 		proximity = destination.distanceTo(location);
 		proximityBar.setProgress(1000 - (int) proximity);
@@ -245,6 +250,14 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		destinationProximityTextView.setText("Proximity: " + proximity + " m");
 		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
 		longitudeTextView.setText("Long: " + location.getLongitude()+"°");
+	}
+
+	/**
+	 * opens/closes the lid.
+	 * @param state true for open, false for closed.
+	 */
+	public void setLidState(boolean state) {
+
 	}
 
 	/**
