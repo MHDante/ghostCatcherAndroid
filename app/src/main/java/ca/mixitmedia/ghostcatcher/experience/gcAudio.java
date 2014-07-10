@@ -12,15 +12,16 @@ import ca.mixitmedia.ghostcatcher.app.gcMediaService;
  * Created by Dante on 15/03/14.
  */
 public class gcAudio {
-    private static Context ctxt() {
-        Context ctxt = gcEngine.Access().context;
-        if (ctxt == null)
+
+    private static Context getContext() {
+        Context context = gcEngine.Access().context;
+        if (context == null)
             throw new RuntimeException("gcAudio accessed before gcEngine Initialized;");
-        return ctxt;
+        return context;
     }
 
     public static boolean isPlaying() {
-        return (!gcMediaService.isPaused && gcMediaService.isStarted);
+        return (gcMediaService.isStarted && !gcMediaService.isPaused);
     }
 
     public static void play() {
@@ -28,25 +29,25 @@ public class gcAudio {
             Log.e("audio", "Tried to play without a playlist set.");
         if (!isPlaying()) {
             Intent i = new Intent(gcMediaService.ACTION_TOGGLE_PLAY);
-            ctxt().sendBroadcast(i);
+            getContext().sendBroadcast(i);
         }
     }
 
     public static void pause() {
         if (isPlaying()) {
             Intent i = new Intent(gcMediaService.ACTION_TOGGLE_PLAY);
-            ctxt().sendBroadcast(i);
+            getContext().sendBroadcast(i);
         }
     }
 
     public static void stop() {
         Intent i = new Intent(gcMediaService.ACTION_STOP);
-        ctxt().sendBroadcast(i);
+        getContext().sendBroadcast(i);
     }
 
     public static void playTrack(final Uri track, final boolean loop) {
         if (!gcMediaService.isStarted) {
-            ctxt().startService(new Intent(ctxt(), gcMediaService.class));
+            getContext().startService(new Intent(getContext(), gcMediaService.class));
         }
         new Runnable() {
             @Override
@@ -55,7 +56,7 @@ public class gcAudio {
                 Intent i = new Intent(gcMediaService.ACTION_PLAY_TRACK);
                 i.putExtra(gcMediaService.EXTRA_TRACK, track);
                 i.putExtra(gcMediaService.EXTRA_LOOP, loop);
-                ctxt().sendBroadcast(i);
+                getContext().sendBroadcast(i);
                 if (!gcMediaService.receiverRegistered) {
                     new Handler().postDelayed(this, 50);
                 }
@@ -65,7 +66,7 @@ public class gcAudio {
 
     public static void queueTrack(final Uri track, final boolean loop) {
         if (!gcMediaService.isStarted) {
-            ctxt().startService(new Intent(ctxt(), gcMediaService.class));
+            getContext().startService(new Intent(getContext(), gcMediaService.class));
         }
         new Runnable() {
             @Override
@@ -74,7 +75,7 @@ public class gcAudio {
                 Intent i = new Intent(gcMediaService.ACTION_QUEUE_TRACK);
                 i.putExtra(gcMediaService.EXTRA_TRACK, track);
                 i.putExtra(gcMediaService.EXTRA_LOOP, loop);
-                ctxt().sendBroadcast(i);
+                getContext().sendBroadcast(i);
                 if (!gcMediaService.receiverRegistered) {
                     new Handler().postDelayed(this, 50);
                 }
@@ -84,7 +85,7 @@ public class gcAudio {
 
     public static void stopLooping() {
         Intent i = new Intent(gcMediaService.ACTION_END_LOOP);
-        ctxt().sendBroadcast(i);
+        getContext().sendBroadcast(i);
     }
 
     public static int getDuration() {
@@ -95,6 +96,7 @@ public class gcAudio {
         return gcMediaService.duration / 1000;
     }
 
+	//TODO: unused
     public static int getPosition() {
         return gcMediaService.mPlayer.getCurrentPosition();
     }

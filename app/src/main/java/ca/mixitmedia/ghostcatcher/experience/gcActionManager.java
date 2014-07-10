@@ -1,13 +1,13 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-
-import com.google.android.gms.games.achievement.Achievement;
-
 /**
- * Created by Dante on 2014-06-03.
+ * Created by Dante on 2014-06-03
  */
 public abstract class gcActionManager {
+
+	//TODO: unused method
     public void execute(gcTrigger trigger) {
+		//TODO: unused variable
         boolean exit;
         for (gcAction action : trigger.getActions()) {
             if (action.isConsumed()) continue;
@@ -85,5 +85,4 @@ public abstract class gcActionManager {
     public void achievement(String data) {
 
     }
-
 }

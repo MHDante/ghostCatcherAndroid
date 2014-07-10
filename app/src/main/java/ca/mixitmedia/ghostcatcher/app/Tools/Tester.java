@@ -15,7 +15,7 @@ import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Tester extends ToolFragment {
 
-
+    final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -84,7 +84,7 @@ public class Tester extends ToolFragment {
 
     @Override
     public boolean checkClick(View view) {
-        Uri testSoundPath = Uri.fromFile(new File(gcEngine.Access().root.getPath() + "/testsound.mp3"));
+        Uri testSoundPath = Uri.fromFile(new File(gcEngine.Access().root + "/testsound.mp3"));
 
         switch (view.getId()) {
             case R.id.tester_button_1:
@@ -126,8 +126,7 @@ public class Tester extends ToolFragment {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_ghost_catcher);
+    public Uri getGlyphUri() {
+        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_ghost_catcher.png").build());
     }
-
 }

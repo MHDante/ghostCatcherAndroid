@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Alexander on 2014-06-17
@@ -26,9 +31,9 @@ import ca.mixitmedia.ghostcatcher.app.R;
 public class RFDetector extends ToolFragment implements SensorEventListener {
 
 	/**
-	 * references to the UI elements
-	 */
-	TextView latitudeTextView;
+    * references to the UI elements
+    */
+    TextView latitudeTextView;
 	TextView longitudeTextView;
 	TextView compassTextView;
 	TextView destinationProximityTextView;
@@ -80,7 +85,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 * Faster updates are neceassary for accuracy at close proximity, but use significantly more
 	 * battery energy, and heats up the phone.
 	 */
-	enum ApproxDistance{CLOSE, MEDIUM, FAR, FAR_FAR_AWAY};
+	enum ApproxDistance{CLOSE, MEDIUM, FAR, FAR_FAR_AWAY}
 	ApproxDistance approxDistance;
 
 	/**
@@ -88,10 +93,16 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 */
 	Location destination;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.tool_rf, container, false);
+    Map<String, Uri> imageFileLocationMap;
+
+    public RFDetector(){
+        createImageURIs();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.tool_rf, container, false);
 
 		latitudeTextView = (TextView) view.findViewById(R.id.latitude);
 		longitudeTextView = (TextView) view.findViewById(R.id.longitude);
@@ -99,7 +110,12 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
 		arrowImageView = (ImageView) view.findViewById(R.id.arrowImage);
-		lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
+		ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+		ImageView background = (ImageView) view.findViewById(R.id.rf_background);
+
+		overlay.setImageURI(imageFileLocationMap.get("overlay"));
+		arrowImageView.setImageURI(imageFileLocationMap.get("compass_arrow"));
+		background.setImageURI(imageFileLocationMap.get("background"));
 
 		proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
 		proximityBar.setMax(1000);
@@ -112,15 +128,15 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		//updateDestination();
 
 		//set initial data right away, if available
-		gcMain.setGPSUpdates(3000, 0); //TODO: set to be distance dependant
+		gcMain.setGPSUpdates(3000, 0);
 		Location currentLocation = gcMain.getCurrentGPSLocation();
 		if (currentLocation != null) {
 			System.out.println("Cached location loaded");
 			onLocationChanged(currentLocation);
 		}
 
-		return view;
-	}
+        return view;
+    }
 
 	/**
 	 * Registers this fragment to resume receiving sensor data
@@ -146,10 +162,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		super.onPause();
 	}
 
-	@Override
-	public int getGlyphID() {
-		return (R.drawable.icon_rf_detector);
-	}
+    @Override
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("rf_button_glyph"));
+    }
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -260,10 +276,24 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
 	}
 
-	/**
-	 * Sets the destination to the story's destination.
-	 */
-	public void updateDestination() {
-		destination = gcMain.getPlayerLocationInStory();
-	}
+    public void createImageURIs(){
+        final Uri rootUri = gcEngine.Access().root;
+        imageFileLocationMap = new HashMap<String,Uri>(){{
+            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_overlay.png").build());
+            put("compass_arrow", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_arrow.png").build());
+            put("background", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_background.png").build());
+            put("rf_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_rf_detector.png").build());
+
+            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
+        }};
+    }
+
+    public void updateDestination() {
+        destination = gcMain.getPlayerLocationInStory();
+        }
+
+//	@Override
+//	protected int getAnimatorId(boolean enter) {
+//		//TODO: implement this
+//	}
 }

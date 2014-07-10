@@ -1,13 +1,8 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
 import android.app.AlertDialog;
-import android.content.res.AssetManager;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.util.SparseArray;
-import android.widget.ImageView;
-
-import com.google.android.gms.maps.model.BitmapDescriptor;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -19,11 +14,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.utils.Tuple;
-
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class gcDialog {
 
@@ -39,12 +31,11 @@ public class gcDialog {
     public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
         if (!seqPt.dialogCache.containsKey(id))
             loadDialog(seqPt, id);
-        gcDialog ret = seqPt.dialogCache.get(id);
-        return ret;
+        return seqPt.dialogCache.get(id);
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
-        String seqPath = gcEngine.Access().root.getPath() + "/seq" + "/seq" + seqPt.id;
+        String seqPath = gcEngine.Access().root + "/seq" + "/seq" + seqPt.id;
         String textPath = seqPath + "/text/" + id + ".txt";
         String soundPath = seqPath + "/sounds/" + id + ".mp3";
 
@@ -100,6 +91,7 @@ public class gcDialog {
             new AlertDialog.Builder(gcEngine.Access().context)
                     .setMessage("File doesn't exist for pose " + pose + " for character " + chr.name)
                     .create().show();
+            throw new RuntimeException("File doesn't exist for pose " + pose + " for character " + chr.name);
         }
         dialog.parsed.put(time, total.toString());
         dialog.id = id;

@@ -6,12 +6,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Point;
+import android.net.Uri;
 import android.view.Display;
 import android.view.View;
 
 import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 public abstract class ToolFragment extends Fragment {
 
@@ -24,7 +24,7 @@ public abstract class ToolFragment extends Fragment {
 	 * Checks whether the click is to be handled by the parent MainActivity, or will be handled
 	 * solely by this ToolFragment
 	 *
-	 * @param view
+	 * @param view the clicked view
 	 * @return true if touch needs to be handles by the parent MainActivity, otherwise false
 	 */
 	public boolean checkClick(View view) {
@@ -36,7 +36,7 @@ public abstract class ToolFragment extends Fragment {
 	 *
 	 * @return the resource ID of the toolbar icon
 	 */
-	public abstract int getGlyphID();
+	public abstract Uri getGlyphUri();
 
 	@Override
 	public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
@@ -52,9 +52,9 @@ public abstract class ToolFragment extends Fragment {
 			@Override
 			public void onAnimationStart(Animator animation) {
 				MainActivity.transitionInProgress = true;
-				if (enter) {
-					//gcMain.gearsBackground.start();
-				}
+				//if (enter) {
+				//	gcMain.gearsBackground.start();
+				//}
 			}
 
 			@Override
@@ -62,9 +62,9 @@ public abstract class ToolFragment extends Fragment {
 				MainActivity.transitionInProgress = false;
 				if (getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
 
-				if (enter) {
-					//gcMain.gearsBackground.stop();
-				}
+				//if (enter) {
+				//	//gcMain.gearsBackground.stop();
+				//}
 
 				afterAnimation(enter);
 

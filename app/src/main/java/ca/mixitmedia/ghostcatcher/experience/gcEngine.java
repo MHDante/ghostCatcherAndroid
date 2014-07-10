@@ -5,7 +5,6 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class gcEngine {
     private static gcEngine ourInstance;
@@ -30,10 +29,8 @@ public class gcEngine {
     public List<gcSeqPt> seqPts;
     public List<gcLocation> locations;
 
-    public File root = new File(Environment.getExternalStorageDirectory(), "mixitmedia");
-
     public Context context;
-
+    public Uri root;// = new File(Environment.getExternalStorageDirectory()+"/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher");
 
     XmlPullParserFactory pullParserFactory;
 
@@ -57,11 +54,11 @@ public class gcEngine {
 
     private gcEngine(Context context) {
         this.context = context;
-
+        root = Uri.parse(new File(context.getExternalFilesDir("mixitmedia"), "ghostcatcher").getAbsolutePath() );
         try {
             pullParserFactory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = pullParserFactory.newPullParser();
-            String textPath = root.getPath() + "/Exp1Chapter1.xml";
+            String textPath = root + "/Exp1Chapter1.xml";
             InputStream in_s = new BufferedInputStream(new FileInputStream(textPath));
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in_s, null);

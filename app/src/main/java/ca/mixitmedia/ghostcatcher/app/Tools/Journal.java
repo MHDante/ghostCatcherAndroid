@@ -1,8 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.net.Uri;
-import android.app.ActionBar;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +24,8 @@ public class Journal extends ToolFragment {
     ImageButton bio;
     ImageButton todo;
 
+    public Journal(){createImageURIs();};
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -36,7 +36,7 @@ public class Journal extends ToolFragment {
         bio = (ImageButton) view.findViewById(R.id.arrow_bio);
         todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
 
-        createImageURIs();
+
 
         bio.setOnClickListener(new View.OnClickListener() {
 
@@ -95,8 +95,8 @@ public class Journal extends ToolFragment {
     }
 
     @Override
-    public int getGlyphID() {
-        return (R.drawable.icon_journal);
+    public Uri getGlyphUri() {
+        return (imageFileLocationMap.get("journal_button_glyph"));
     }
 
     public boolean checkClick(View view) {
@@ -110,23 +110,23 @@ public class Journal extends ToolFragment {
 
     @Override
     protected int getAnimatorId(boolean enter) {
-        if(enter){
+        if (enter) {
             gcMain.playSound(gcMain.sounds.metalClick);
             gcMain.hideFrame(true,true,true);
+			return R.animator.rotate_in_from_right;
         }
-        else
-            gcMain.showFrame(false,false,false);
 
-        return (enter) ? R.animator.rotate_in_from_right : R.animator.rotate_out_to_right;
+        gcMain.showFrame(false,false,false);
+		return R.animator.rotate_out_to_right;
     }
 
     public void createImageURIs(){
-        final Uri rootUri = Uri.fromFile(gcEngine.Access().root);
-
+        final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
             put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("journal").appendPath("journal.png").build());
             put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
             put("arrow_right", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("arrow_right.png").build());
+            put("journal_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_journal.png").build());
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
