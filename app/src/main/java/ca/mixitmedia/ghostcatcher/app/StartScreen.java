@@ -53,6 +53,7 @@ public class StartScreen extends Activity {
         Log.d("Filepaths 4 :", zipFile);
 
         setContentView(R.layout.activity_start_screen);
+        //
 
         final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         final android.net.NetworkInfo wifi =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
