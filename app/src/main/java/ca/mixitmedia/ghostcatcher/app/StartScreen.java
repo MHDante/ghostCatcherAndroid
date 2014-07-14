@@ -186,8 +186,7 @@ public class StartScreen extends Activity {
                 if(fileDir.exists()) {
                     //delete
                     Toast.makeText(StartScreen.this, "DELETED", Toast.LENGTH_LONG).show();
-                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                            Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+
                 }
             }
 
