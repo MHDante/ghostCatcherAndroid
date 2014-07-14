@@ -30,7 +30,7 @@ public class Tester extends ToolFragment {
     final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        getActivity();
         super.onCreateView(inflater, container, savedInstanceState);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {

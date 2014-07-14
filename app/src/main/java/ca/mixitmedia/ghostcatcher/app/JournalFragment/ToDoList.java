@@ -17,7 +17,7 @@ public class ToDoList extends Fragment{
 
     TextView textView;
 
-    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.journal_frag_todolist, null);
         textView = (TextView) v.findViewById(R.id.textItem1);
 

@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -36,13 +37,13 @@ public class StartScreen extends Activity {
     private String url;
     private String unzipLocation;
     private String zipFile;
-
+    private File fileDir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		File fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
+		fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
         Log.d("Filepaths 1 :", fileDir.getPath());
 		String cacheDir = getExternalCacheDir().getPath();
         Log.d("Filepaths 2 :", cacheDir);
