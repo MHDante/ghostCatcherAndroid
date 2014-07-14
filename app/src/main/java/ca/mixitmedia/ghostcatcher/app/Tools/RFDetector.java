@@ -38,7 +38,12 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	TextView compassTextView;
 	TextView destinationProximityTextView;
 
+	ImageView backgroundImageView;
 	ImageView arrowImageView;
+	ImageView lidImageView;
+
+	boolean backgroundFlashingState;
+	boolean lidState;
 
 	ProgressBar proximityBar;
 	/**
@@ -84,7 +89,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 * Faster updates are neceassary for accuracy at close proximity, but use significantly more
 	 * battery energy, and heats up the phone.
 	 */
-	enum ApproxDistance{CLOSE, MEDIUM, FAR, FAR_FAR_AWAY}
+	enum ApproxDistance{THERE, CLOSE, MEDIUM, FAR, FAR_FAR_AWAY}
 	ApproxDistance approxDistance;
 
 	/**
@@ -108,14 +113,18 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		compassTextView = (TextView) view.findViewById(R.id.compassText);
 		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
-		arrowImageView = (ImageView) view.findViewById(R.id.arrowImage);
-		ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
-		ImageView background = (ImageView) view.findViewById(R.id.rf_background);
+	    backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
+		arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
+		ImageView overlay = (ImageView) view.findViewById(R.id.rf_overlay);
+	    lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
+		lidImageView.setVisibility(View.VISIBLE);
 
-		overlay.setImageURI(imageFileLocationMap.get("overlay"));
-		arrowImageView.setImageURI(imageFileLocationMap.get("compass_arrow"));
-		background.setImageURI(imageFileLocationMap.get("background"));
+	    backgroundImageView.setImageURI(imageFileLocationMap.get("rf_background"));
+		arrowImageView.setImageURI(imageFileLocationMap.get("rf_arrow"));
+	    overlay.setImageURI(imageFileLocationMap.get("rf_overlay"));
+	    //lidImageView.setImageURI(imageFileLocationMap.get("rf_lid"));
 
+	    gcMain.setLocationAvailability(true); //checks whether the lid should be open/closed
 		proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
 		proximityBar.setMax(1000);
 
@@ -124,13 +133,14 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		destination = new Location("dummyProvider");
 		destination.setLatitude(43.652202);
 		destination.setLongitude(-79.5814);
-		//updateDestination();
+
+	    approxDistance = ApproxDistance.CLOSE;
 
 		//set initial data right away, if available
 		gcMain.setGPSUpdates(3000, 0);
 		Location currentLocation = gcMain.getCurrentGPSLocation();
 		if (currentLocation != null) {
-			System.out.println("Cached location loaded");
+			System.out.println("Stored location loaded");
 			onLocationChanged(currentLocation);
 		}
 
@@ -148,7 +158,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 				sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_GAME);
 		gcMain.setGPSUpdates(0, 0);
-		updateDestination();
+		//updateDestination();
 	}
 
 	/**
@@ -163,7 +173,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
     @Override
     public Uri getGlyphUri() {
-        return (imageFileLocationMap.get("rf_button_glyph"));
+        return (imageFileLocationMap.get("icon_rf_detector"));
     }
 
 	@Override
@@ -199,14 +209,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 				newRelativeBearing,
 				Animation.RELATIVE_TO_SELF, 0.5f,
 				Animation.RELATIVE_TO_SELF, 0.5f);
-
-		// how long the animation will take place
 		ra.setDuration(210);
-
-		// set the animation after the end of the reservation status
-		ra.setFillAfter(true);
-
-		// Start the animation
+		ra.setFillAfter(true);// set the animation after the end of the reservation status
 		arrowImageView.startAnimation(ra);
 		heading = -newHeading;
 		relativeBearing = newRelativeBearing;
@@ -217,9 +221,13 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 * @param location of the user's device
 	 */
 	public void onLocationChanged(Location location) {
-		// called when the listener is notified with a location update from the GPS
+		if (location == null) {
+			Log.d("RF", "Locations shouldn't be null, you dun fucked up.");
+			return;
+		}
+
 		bearing = (location.bearingTo(destination) + 360) % 360;
-		proximity = destination.distanceTo(location);
+		proximity = location.distanceTo(destination);
 		proximityBar.setProgress(1000 - (int) proximity);
 
 		ApproxDistance currentDistance;
@@ -229,48 +237,86 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		else if (proximity >= 250) {
 			currentDistance = ApproxDistance.FAR;
 		}
-		else if (proximity >= 100) {
+		else if (proximity >= 100){
 			currentDistance = ApproxDistance.MEDIUM;
 		}
+		else if (proximity >= 25) {
+		currentDistance = ApproxDistance.CLOSE;
+		}
 		else {
-			currentDistance = ApproxDistance.CLOSE;
+			currentDistance = ApproxDistance.THERE;
 		}
 
 		//if a change in distance interval has changed, GPS will be reconfigured.
 		if (approxDistance != currentDistance) {
-			switch (approxDistance) {
+			switch (currentDistance) {
 				case FAR_FAR_AWAY:
 					gcMain.setGPSUpdates(60000, 100); //60 seconds, 100 meters
-					Log.d("RFDectector", "setGPSUpdates(60000, 100)");
+					Log.d("RFDetector", "setGPSUpdates(60000, 100)");
 					break;
 				case FAR:
 					gcMain.setGPSUpdates(30000, 25); //30 seconds, 25 meters
-					Log.d("RFDectector", "setGPSUpdates(30000, 25)");
+					Log.d("RFDetector", "setGPSUpdates(30000, 25)");
 					break;
 				case MEDIUM:
 					gcMain.setGPSUpdates(10000, 10); //10 seconds, 10 meters
-					Log.d("RFDectector", "setGPSUpdates(10000, 10)");
+					Log.d("RFDetector", "setGPSUpdates(10000, 10)");
 					break;
 				case CLOSE:
 					gcMain.setGPSUpdates(0, 0); //0 seconds, 0 meters
-					Log.d("RFDectector", "setGPSUpdates(0,0)");
+					Log.d("RFDetector", "setGPSUpdates(0,0)");
+					break;
+				case THERE:
+					gcMain.setGPSUpdates(0, 0); //0 seconds, 0 meters
+					Log.d("RFDetector", "setGPSUpdates(0,0)");
 					break;
 			}
 			approxDistance = currentDistance;
 		}
 
+		if (currentDistance == ApproxDistance.THERE && !backgroundFlashingState) {
+			backgroundImageView.setColorFilter(0x33FF0000);
+			backgroundFlashingState = true;
+		}
+		else {
+			backgroundImageView.setColorFilter(0x00000000);
+			backgroundFlashingState = false;
+		}
+
 		destinationProximityTextView.setText("Proximity: " + proximity + " m");
 		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
-		longitudeTextView.setText("Long: " + location.getLongitude()+"°");
+		longitudeTextView.setText("Long: " + location.getLongitude() + "°");
+	}
+
+	/**
+	 * opens/closes the lid.
+	 * @param state true for open, false for closed.
+	 */
+	public void setLidState(boolean state, boolean instant) {
+		if (state != lidState) {
+			RotateAnimation ra;
+			if (state)  ra = new RotateAnimation(0, 180,
+						Animation.RELATIVE_TO_SELF, 0.180952381f,
+						Animation.RELATIVE_TO_SELF, 0.211382114f);
+			else ra = new RotateAnimation(180, 0,
+						Animation.RELATIVE_TO_SELF, 0.180952381f,
+						Animation.RELATIVE_TO_SELF, 0.211382114f);
+
+			ra.setDuration((instant)?0:1000); //sets duration to 1s or 0.
+			ra.setFillAfter(true);// set the animation after the end of the reservation status
+			lidImageView.startAnimation(ra);
+			lidState = state;
+		}
 	}
 
     public void createImageURIs(){
         final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
-            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_overlay.png").build());
-            put("compass_arrow", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_arrow.png").build());
-            put("background", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_background.png").build());
-            put("rf_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_rf_detector.png").build());
+	        put("rf_background", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_background.png").build());
+            put("rf_overlay", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_overlay.png").build());
+            put("rf_arrow", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_arrow.png").build());
+	        put("rf_lid", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_lid").build());
+            put("icon_rf_detector", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_rf_detector.png").build());
 
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};

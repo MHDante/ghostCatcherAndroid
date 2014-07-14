@@ -294,11 +294,11 @@ public class StartScreen extends Activity {
 
     //Extract zip calls Asynctask
     public void unzip() throws IOException {
-		mProgressDialog = (ProgressDialog) new ProgressDialog.Builder(StartScreen.this)
-				.setMessage("Extracting the downloaded file...")
-				.setCancelable(false)
-				.create();
+		mProgressDialog = new ProgressDialog(StartScreen.this);
+		mProgressDialog.setMessage("Extracting the downloaded file...");
+		mProgressDialog.setCancelable(false);
 		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialog.show();
         new UnZipTask().execute(zipFile);
     }
 
