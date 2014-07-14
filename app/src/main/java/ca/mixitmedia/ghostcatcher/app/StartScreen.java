@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -137,11 +138,6 @@ public class StartScreen extends Activity {
 
     public void settingsDialog(View v) throws Exception{
 
-
-        //Inflate listview
-        //Listview inside scrollview inside linear layout
-
-
        /* AlertDialog dialog;
 
         final String[] items = {" 1 "," 2 "," 3 "," 4 "};
@@ -172,13 +168,27 @@ public class StartScreen extends Activity {
         dialog.setContentView(R.layout.dialog_view);
         dialog.setTitle("Settings");
 
-        Button dialogButton = (Button) dialog.findViewById(R.id.buttonClose);
+        Button close = (Button) dialog.findViewById(R.id.buttonClose);
+        Button delete = (Button) dialog.findViewById(R.id.buttonDelete);
         // if button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
+        close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(fileDir.exists()) {
+                    //delete
+                    Toast.makeText(StartScreen.this, "DELETED", Toast.LENGTH_LONG).show();
+                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                            Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                }
+            }
+
         });
 
         dialog.show();
@@ -402,5 +412,11 @@ public class StartScreen extends Activity {
     public void start(View view){
         Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
         startActivity(myIntent);
+    }
+
+    public void credits(View view){
+        Intent intent = new Intent(StartScreen.this, Credits.class);
+        startActivity(intent);
+
     }
 }
