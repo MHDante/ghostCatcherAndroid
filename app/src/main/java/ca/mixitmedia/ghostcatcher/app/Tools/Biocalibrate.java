@@ -47,11 +47,10 @@ public class Biocalibrate extends ToolFragment {
         LoadingBar = (ProgressBar) view.findViewById(R.id.calibrate_bar);
         LoadingBar.setMax(100);
 
+        final ImageView overlay_pressed = (ImageView) view.findViewById(R.id.biocalibrate_btn);
 		//TODO: this warning ↓
-        ImageView overlay_pressed = (ImageView) view.findViewById(R.id.biocalibrate_btn);
         ImageView overlay_unpressed = (ImageView) view.findViewById(R.id.fingerprint_mask);
 
-        overlay_pressed.setImageURI(imageFileLocationMap.get("pressed"));
         overlay_unpressed.setImageURI(imageFileLocationMap.get("unpressed"));
 
         ImageButton fingerPrint = (ImageButton) view.findViewById(R.id.biocalibrate_btn);
@@ -59,6 +58,8 @@ public class Biocalibrate extends ToolFragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    overlay_pressed.setImageURI(imageFileLocationMap.get("pressed"));
+                    overlay_pressed.setScaleType(ImageView.ScaleType.FIT_START);
                     lastDown = System.currentTimeMillis();
                     pressed = true;
                     if (!started) {
@@ -90,16 +91,16 @@ public class Biocalibrate extends ToolFragment {
                         }, 100);
                     } else gcMain.soundPool.resume(soundEffectStream);
 
-                    //getView().findViewById(R.id.fingerprint_mask).setVisibility(1);
                     getView().findViewById(R.id.calibrating_text).setVisibility(View.VISIBLE);
-                    getView().findViewById(R.id.biocalibrate_btn).bringToFront();
+                    getView().findViewById(R.id.calibrate_pressed_layout).setAlpha(1.0f);
+
 
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     pressed = false;
                     gcMain.soundPool.pause(soundEffectStream);
                     totalDuration += System.currentTimeMillis() - lastDown;
                     getView().findViewById(R.id.calibrating_text).setVisibility(View.INVISIBLE);
-                    getView().findViewById(R.id.fingerprint_mask).bringToFront();
+                    getView().findViewById(R.id.calibrate_pressed_layout).setAlpha(0);
                 }
                 return false;
             }
