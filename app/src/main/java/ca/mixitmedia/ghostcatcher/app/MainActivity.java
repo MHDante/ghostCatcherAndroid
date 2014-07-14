@@ -305,8 +305,9 @@ public class MainActivity extends Activity implements
 							String id = tokens[0];
 							if (type.equals("location")) {
 								gcLocation loc = gcEngine.Access().getLocation(id);
-								Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
-								onLocationChanged(loc);
+                                if (loc == null)
+								    Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
+								else onLocationChanged(loc);
 							}
 						}
 					}
@@ -517,9 +518,10 @@ public class MainActivity extends Activity implements
 			if (distance[0] <= accuracy) {
 				playerLocationInStory = l;
 				gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getTrigger(l);
-				if (trigger.isEnabled())
+				if (trigger != null && trigger.isEnabled()){
 					ToolMap.get(Biocalibrate.class).setEnabled(true);
-				hit = true;
+				    hit = true;
+                }
 			}
 		}
 
