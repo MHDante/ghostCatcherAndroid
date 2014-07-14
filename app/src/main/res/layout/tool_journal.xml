@@ -24,13 +24,13 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="10" />
+                android:layout_weight="3" />
 
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/journal_container"
-                android:layout_weight="80" />
+                android:layout_weight="92" />
 
         </TableRow>
 
@@ -86,14 +86,11 @@
     </TableLayout>
 
     <ImageView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/overlay"
         android:src="@drawable/journal_overlay"
         android:adjustViewBounds="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp" />
+        android:scaleType="fitXY" />
 
 </RelativeLayout>
