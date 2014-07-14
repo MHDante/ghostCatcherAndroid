@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Ghost catcher</string>
-    <string name="start_logo">MIXITMEDIA</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_journal">Journal</string>
     <string name="title_activity_gc_map">Map</string>
@@ -14,6 +13,8 @@
     <string name="start_activity_b2">New Game</string>
     <string name="start_activity_b3">Settings</string>
     <string name="start_activity_b4">Credits</string>
+    <string name="start_activity_b5">Delete</string>
+    <string name="start_activity_b6">Close</string>
     <string name="url">http://mixitmedia.ca/exp.zip</string>
     <string name="proximity_activation_url">http://mixitmedia.ca/proximity/writetest.php?action=write&amp;amp;location=zacklocation&amp;amp;status=activated</string>
 

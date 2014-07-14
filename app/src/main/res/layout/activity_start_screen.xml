@@ -52,6 +52,7 @@
         android:id="@+id/creditsButton"
         android:layout_gravity="center_horizontal" />
 
+
     <LinearLayout
         android:id="@+id/LinearLayout02"
         android:layout_height="wrap_content"

@@ -121,7 +121,6 @@ public class MainActivity extends Activity implements
 							| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 							| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 							| View.SYSTEM_UI_FLAG_FULLSCREEN
-							| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 			);
 		}
 	};
@@ -317,14 +316,6 @@ public class MainActivity extends Activity implements
 					}
 				}
 			}
-		}
-	}
-
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-			decorViewHandler.post(decor_view_settings);
 		}
 	}
 
@@ -643,15 +634,6 @@ public class MainActivity extends Activity implements
 	}
 
 
-	///////////////////////////DECOR VIEW CODE
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-			decorViewHandler.postDelayed(decor_view_settings, 500);
-		}
-		return super.onKeyDown(keyCode, event);
-	}
 
 	public int playSound(int soundName) {
 		return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
