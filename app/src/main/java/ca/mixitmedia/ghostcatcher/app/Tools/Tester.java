@@ -25,14 +25,13 @@ public class Tester extends ToolFragment {
     private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
 
-    private BeaconManager beaconManager;
+    private BeaconManager beaconManager = new BeaconManager(gcEngine.Access().context);
 
     final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
-        beaconManager = new BeaconManager(getActivity());
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
                 Log.d("BEACON", "Ranged beacons: " + beacons);
@@ -75,6 +74,12 @@ public class Tester extends ToolFragment {
             Log.e("BEACON", "Cannot stop but it does not matter now", e);
         }
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        beaconManager.disconnect();
+        super.onDestroy();
     }
 
     public String tester_button_1 = "play";
