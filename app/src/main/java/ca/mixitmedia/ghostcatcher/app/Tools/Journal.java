@@ -26,7 +26,6 @@ public class Journal extends ToolFragment {
 
     Map<String, Uri> imageFileLocationMap;
 
-    ViewPager viewPager;
     ImageButton bio;
     ImageButton todo;
 
@@ -43,43 +42,14 @@ public class Journal extends ToolFragment {
         View view = inflater.inflate(R.layout.tool_journal, container, false);
         view.setPivotX(0);
         view.setPivotY(view.getMeasuredHeight());
-        viewPager = (ViewPager) view.findViewById(R.id.journal_pager);
         //bio = (ImageButton) view.findViewById(R.id.arrow_bio);
         todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
-
-        viewPager.setAdapter(new JournalPagerAdapter(getFragmentManager()));
-
 
         toDoList = new ToDoList();
         toDoList2 = new ToDoList();
         toDoList3 = new ToDoList();
         toDoList4 = new ToDoList();
 
-        /*bio.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                //Toast.makeText(getApplicationContext(), "Showing previous view..", Toast.LENGTH_SHORT).show();
-                //viewPager.showPrevious();
-            }
-        });
-        todo.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                //Toast.makeText(getApplicationContext(), "Showing previous view..", Toast.LENGTH_SHORT).show();
-                //viewPager.showNext();
-            }
-        });*/
-
-        RelativeLayout.LayoutParams fragmentContainerParams = (RelativeLayout.LayoutParams) container.getLayoutParams();
-        fragmentContainerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        fragmentContainerParams.addRule(RelativeLayout.ABOVE, 0);
-
-        container.setLayoutParams(fragmentContainerParams);
-        container.invalidate();
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         ImageView bullet1 = (ImageView) view.findViewById(R.id.bullet_check1);
@@ -87,7 +57,11 @@ public class Journal extends ToolFragment {
         ImageView bullet3 = (ImageView) view.findViewById(R.id.bullet_check3);
         ImageView bullet4 = (ImageView) view.findViewById(R.id.bullet_check4);
 
-
+        if (savedInstanceState == null) {  //Avoid overlapping fragments.
+            getFragmentManager().beginTransaction()
+                    .add(R.id.journal_container, toDoList)
+                    .commit();
+        }
         /*overlay.setImageURI(imageFileLocationMap.get("overlay"));
         bullet1.setImageURI(imageFileLocationMap.get("bullet_check"));
         bullet2.setImageURI(imageFileLocationMap.get("bullet_check"));
@@ -99,39 +73,6 @@ public class Journal extends ToolFragment {
         return view;
     }
 
-    public class JournalPagerAdapter extends FragmentPagerAdapter {
-
-        public JournalPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public int getCount() {
-            return 4;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position) {
-                case 0:
-                    return toDoList;
-                case 1:
-                    return toDoList2;
-                case 2:
-                    return toDoList3;
-                case 3:
-                    return toDoList4;
-                default:
-                    throw new ArrayIndexOutOfBoundsException(position);
-            }
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return false;
-        }
-    }
 
     @Override
     public void onResume() {
@@ -155,16 +96,24 @@ public class Journal extends ToolFragment {
         switch (view.getId()) {
 
             case R.id.tab1:
-                viewPager.setCurrentItem(0);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.journal_container, toDoList)
+                        .commit();
                 return true;
             case R.id.tab2:
-                viewPager.setCurrentItem(1);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.journal_container, toDoList2)
+                        .commit();
                 return true;
             case R.id.tab3:
-                viewPager.setCurrentItem(2);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.journal_container, toDoList3)
+                        .commit();
                 return true;
             case R.id.tab4:
-                viewPager.setCurrentItem(3);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.journal_container, toDoList4)
+                        .commit();
                 return true;
             default:
                 return false;
