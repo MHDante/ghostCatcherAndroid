@@ -178,7 +178,7 @@ public class Communicator extends ToolFragment {
                 return true;
 
             case R.id.help:
-                new ProximityTest().execute("sup");
+                new ProximityTest().execute();
                 return true;
             default:
                 return false;

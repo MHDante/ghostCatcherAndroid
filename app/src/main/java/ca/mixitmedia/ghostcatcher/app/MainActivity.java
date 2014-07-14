@@ -21,7 +21,6 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -681,13 +680,13 @@ public class MainActivity extends Activity implements
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
-
+	/*debug for RF detector
 	public void openButtonClicked(View view) {
 		((RFDetector) getCurrentFragment()).setLidState(true, false);
 	}
 
 	public void closeButtonClicked(View view) {
 		((RFDetector) getCurrentFragment()).setLidState(false, false);
-	}
+	}*/
 }
 

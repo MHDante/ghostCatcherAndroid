@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,8 +36,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     /*debug
     TextView latitudeTextView;
 	TextView longitudeTextView;
-	TextView compassTextView;
-	TextView destinationProximityTextView;*/
+	TextView compassTextView;*/
+	TextView destinationProximityTextView;
 
 	ImageView backgroundImageView;
 	ImageView arrowImageView;
@@ -112,8 +113,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		/*Debug
 		latitudeTextView = (TextView) view.findViewById(R.id.latitude);
 		longitudeTextView = (TextView) view.findViewById(R.id.longitude);
-		compassTextView = (TextView) view.findViewById(R.id.compassText);
-		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);*/
+		compassTextView = (TextView) view.findViewById(R.id.compassText);*/
+		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
 	    backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
 		arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
@@ -270,7 +271,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 					break;
 				case THERE:
 					gcMain.setGPSUpdates(0, 0); //0 seconds, 0 meters
-					Log.d("RFDetector", "setGPSUpdates(0,0)");
+					Log.d("RFDetector", "We're here bitches!");
+					gcMain.swapTo(Communicator.class);
 					break;
 			}
 			approxDistance = currentDistance;
@@ -286,9 +288,9 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		}
 
 		/*debug
-		destinationProximityTextView.setText("Proximity: " + proximity + " m");
 		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
 		longitudeTextView.setText("Long: " + location.getLongitude() + "°");*/
+		destinationProximityTextView.setText("Proximity: " + Math.round(proximity) + " m");
 	}
 
 	/**
@@ -312,7 +314,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		}
 	}
 
-    public void createImageURIs(){
+    private void createImageURIs(){
         final Uri rootUri = gcEngine.Access().root;
         imageFileLocationMap = new HashMap<String,Uri>(){{
 	        put("rf_background", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_background.png").build());
@@ -328,7 +330,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void updateDestination() {
         destination = gcMain.getPlayerLocationInStory();
         }
-
 //	@Override
 //	protected int getAnimatorId(boolean enter) {
 //		//TODO: implement this
