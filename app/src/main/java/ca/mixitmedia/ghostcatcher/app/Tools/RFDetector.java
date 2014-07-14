@@ -16,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +32,11 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	/**
     * references to the UI elements
     */
+    /*debug
     TextView latitudeTextView;
 	TextView longitudeTextView;
 	TextView compassTextView;
-	TextView destinationProximityTextView;
+	TextView destinationProximityTextView;*/
 
 	ImageView backgroundImageView;
 	ImageView arrowImageView;
@@ -108,10 +108,12 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_rf, container, false);
 
+
+		/*Debug
 		latitudeTextView = (TextView) view.findViewById(R.id.latitude);
 		longitudeTextView = (TextView) view.findViewById(R.id.longitude);
 		compassTextView = (TextView) view.findViewById(R.id.compassText);
-		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
+		destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);*/
 
 	    backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
 		arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
@@ -122,7 +124,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	    backgroundImageView.setImageURI(imageFileLocationMap.get("rf_background"));
 		arrowImageView.setImageURI(imageFileLocationMap.get("rf_arrow"));
 	    overlay.setImageURI(imageFileLocationMap.get("rf_overlay"));
-	    //lidImageView.setImageURI(imageFileLocationMap.get("rf_lid"));
+	    lidImageView.setImageURI(imageFileLocationMap.get("rf_lid"));
 
 	    gcMain.setLocationAvailability(true); //checks whether the lid should be open/closed
 		proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
@@ -199,7 +201,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	 */
 	private void updateHeading(float newHeading) {
 		newHeading = Math.round(newHeading);
-		compassTextView.setText("Heading: " + Float.toString(newHeading) + " degrees");
+		//compassTextView.setText("Heading: " + Float.toString(newHeading) + " degrees");
 
 		float newRelativeBearing = Math.round((newHeading - bearing + 360) % 360);
 
@@ -283,9 +285,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 			backgroundFlashingState = false;
 		}
 
+		/*debug
 		destinationProximityTextView.setText("Proximity: " + proximity + " m");
 		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
-		longitudeTextView.setText("Long: " + location.getLongitude() + "°");
+		longitudeTextView.setText("Long: " + location.getLongitude() + "°");*/
 	}
 
 	/**
@@ -315,7 +318,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	        put("rf_background", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_background.png").build());
             put("rf_overlay", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_overlay.png").build());
             put("rf_arrow", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_arrow.png").build());
-	        put("rf_lid", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_lid").build());
+	        put("rf_lid", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_lid.png").build());
             put("icon_rf_detector", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_rf_detector.png").build());
 
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
