@@ -2,12 +2,19 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+
 import java.io.File;
+import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcAudio;
@@ -15,10 +22,22 @@ import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Tester extends ToolFragment {
 
+    private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
+    private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
+
+    private BeaconManager beaconManager;
+
     final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         super.onCreateView(inflater, container, savedInstanceState);
+        beaconManager = new BeaconManager(getActivity());
+        beaconManager.setRangingListener(new BeaconManager.RangingListener() {
+            @Override public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
+                Log.d("BEACON", "Ranged beacons: " + beacons);
+            }
+        });
         View view = inflater.inflate(R.layout.tool_tester, container, false);
 
         ((Button) view.findViewById(R.id.tester_button_1)).setText(tester_button_1);
@@ -31,6 +50,31 @@ public class Tester extends ToolFragment {
         ((Button) view.findViewById(R.id.tester_button_8)).setText(tester_button_8);
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                try {
+                    beaconManager.startRanging(ALL_ESTIMOTE_BEACONS);
+                } catch (RemoteException e) {
+                    Log.e("BEACON", "Cannot start ranging", e);
+                }
+            }
+        });
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        try {
+            beaconManager.stopRanging(ALL_ESTIMOTE_BEACONS);
+        } catch (RemoteException e) {
+            Log.e("BEACON", "Cannot stop but it does not matter now", e);
+        }
+        super.onStop();
     }
 
     public String tester_button_1 = "play";
