@@ -5,24 +5,26 @@
     android:layout_width="fill_parent"
 	android:layout_height="wrap_content">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rf_background"
-        android:src="@drawable/rf_background" />
+	<ImageView
+		android:id="@+id/rf_background"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:adjustViewBounds="true"
+		android:src="@drawable/rf_background"/>
 
-    <TableLayout
+	<TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-		android:layout_alignBottom="@+id/overlay"
+		android:layout_alignBottom="@+id/rf_overlay"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
 		android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp"
-        android:weightSum="100"
-        android:baselineAligned="false">
+		android:weightSum="100">
 
-        <Space
+		<Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="11" />
@@ -39,7 +41,7 @@
                 android:layout_weight="14" />
 
             <ImageView
-				android:id="@+id/arrowImage"
+				android:id="@+id/rf_arrow"
 				android:layout_width="0px"
 				android:layout_height="match_parent"
 				android:layout_weight="73"
@@ -50,14 +52,55 @@
 
     </TableLayout>
 
-    <ImageView
-        android:id="@+id/overlay"
+	<ImageView
+		android:id="@+id/rf_overlay"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+		android:layout_alignParentLeft="true"
 		android:layout_alignParentTop="true"
 		android:adjustViewBounds="true"
 		android:src="@drawable/rf_overlay"/>
+
+	<ProgressBar
+		android:id="@+id/proximityBar"
+		style="?android:attr/progressBarStyleHorizontal"
+		android:layout_width="400dp"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="385dp"/>
+
+	<ImageView
+		android:id="@+id/rf_lid"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		android:adjustViewBounds="true"
+		android:src="@drawable/rf_lid"
+		android:visibility="invisible"/>
+
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="300dp"
+		android:layout_weight="1"
+		android:id="@+id/linearLayout">
+
+		<Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Open"
+			android:id="@+id/openButton"
+			android:onClick="openButtonClicked"
+			android:layout_weight="1"/>
+
+		<Button
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Close"
+			android:id="@+id/closeButton"
+			android:onClick="closeButtonClicked"
+			android:layout_weight="1"/>
+	</LinearLayout>
 
 	<LinearLayout
         android:layout_width="fill_parent"
@@ -96,7 +139,7 @@
             android:layout_height="match_parent"
 			android:layout_weight="1"
 			android:background="#b0b0b0"
-			android:text="Compass Azimut"
+			android:text="Relative Bearing"
 			android:textColor="#FF000000"/>
 
 		<TextView
@@ -108,12 +151,5 @@
 			android:text="Destination Proximity"
 			android:textColor="#FF000000"/>
 	</LinearLayout>
-
-	<ProgressBar
-		android:id="@+id/proximityBar"
-		style="?android:attr/progressBarStyleHorizontal"
-		android:layout_width="400dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="385dp"/>
 
 </RelativeLayout>

@@ -298,19 +298,15 @@ public class MainActivity extends Activity implements
 				for (NdefMessage message : msgs) {
 					for (NdefRecord record : message.getRecords()) {
 						Uri uri = record.toUri(); //Ignore the api warning, this is for demo, during which we will have api 16 at least
-
-						if (uri != null) {
-							if (uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
-
-								String path = uri.getLastPathSegment();
-								String[] tokens = path.split("\\.");
-								String type = tokens[1];
-								String id = tokens[0];
-								if (type.equals("location")) {
-									gcLocation loc = gcEngine.Access().getLocation(id);
-									Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
-									onLocationChanged(loc);
-								}
+						if (uri != null && uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
+							String path = uri.getLastPathSegment();
+							String[] tokens = path.split("\\.");
+							String type = tokens[1];
+							String id = tokens[0];
+							if (type.equals("location")) {
+								gcLocation loc = gcEngine.Access().getLocation(id);
+								Toast.makeText(this, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
+								onLocationChanged(loc);
 							}
 						}
 					}
@@ -358,7 +354,6 @@ public class MainActivity extends Activity implements
 	}
 
 	private void toggleToolMenu() {
-
 		View toolHolder = findViewById(R.id.tool_holder);
 		if (toolHolderShown) {
 			toolHolder.animate().translationY((toolHolder.getMeasuredHeight() / 7) * -6);
@@ -501,16 +496,16 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onLocationChanged(Location location) {
-		ToolFragment tf = (ToolFragment) getCurrentFragment();
+		if (location == null) { //this check should always be the first of this method.
+			playerLocationInStory = null;
+			return;
+		}
 
+		ToolFragment tf = (ToolFragment) getCurrentFragment();
 		if (tf instanceof RFDetector) {
 			((RFDetector) tf).onLocationChanged(location);
 		}
 
-		if (location == null) {
-			playerLocationInStory = null;
-			return;
-		}
 
 		List<gcLocation> storyLocations = gcEngine.Access().getCurrentSeqPt().getLocations();
 		boolean hit = false;
@@ -549,12 +544,29 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		//todo:implement
+		setLocationAvailability(false);
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		//todo:implement
+		setLocationAvailability(false);
+	}
+
+
+	public void setLocationAvailability(boolean lidAnimationShouldBeInstant) {
+		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)  ||
+				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+			ToolFragment tf = (ToolFragment) getCurrentFragment();
+			if (tf instanceof RFDetector) {
+				((RFDetector) tf).setLidState(true, lidAnimationShouldBeInstant); //opens the lid
+			}
+		}
+		else { //if neither GPS nor Network location is available
+			ToolFragment tf = (ToolFragment) getCurrentFragment();
+			if (tf instanceof RFDetector) {
+				((RFDetector) tf).setLidState(false, lidAnimationShouldBeInstant); //closes the lid
+			}
+		}
 	}
 
 //	/**
@@ -594,7 +606,7 @@ public class MainActivity extends Activity implements
 	}
 
 	/**
-	 * reconfigures GPS updates to occur at the minumum every 6s and 50 meters
+	 * reconfigures GPS updates to occur at the minimum every 6s and 50 meters
 	 */
 	public void requestSlowGPSUpdates() {
 		setGPSUpdates(GPS_SLOW_MIN_UPDATE_TIME_MS, GPS_SLOW_MIN_UPDATE_DISTANCE_M);
@@ -602,7 +614,6 @@ public class MainActivity extends Activity implements
 
 	/**
 	 * returns the most recent known location of the user.
-	 *
 	 * @return the most recent known location of the user.
 	 */
 	public Location getCurrentGPSLocation() {
@@ -671,5 +682,12 @@ public class MainActivity extends Activity implements
         }};
     }
 
+	public void openButtonClicked(View view) {
+		((RFDetector) getCurrentFragment()).setLidState(true, false);
+	}
+
+	public void closeButtonClicked(View view) {
+		((RFDetector) getCurrentFragment()).setLidState(false, false);
+	}
 }
 
