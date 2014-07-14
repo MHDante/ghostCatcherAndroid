@@ -34,16 +34,22 @@ public class Amplifier extends ToolFragment {
         beaconView.setWaveFunction(new SignalBeaconView.WaveFunction() {
             @Override
             public float getGraphYWaveOne(float graphX, float amplitude) {
+                float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/200);
                 float period = 100;
-                return amplitude + (float) ((amplitude/1.5) * Math.sin(graphX / period + (Calendar.getInstance().get(Calendar.SECOND))));
+                if(time == 0)    time = 200;
+                return amplitude + (float) ((amplitude*Math.pow(time,3)%300) * Math.sin(graphX  / period + time));
             }
             public float getGraphYWaveTwo(float graphX, float amplitude) {
+                float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/200);
                 float period = 50;
-                return amplitude + (float) ((amplitude/2) * Math.cos(graphX / period));
+                if(time == 0)   time = 200;
+                return amplitude + (float) ((amplitude*Math.pow(time,5)%300) * Math.pow(Math.cos(graphX / period + time),3));
             }
             public float getGraphYWaveThree(float graphX, float amplitude) {
-                float period = 80;
-                return amplitude + (float) ((amplitude/2) * Math.sin(graphX/period));
+                float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/220);
+                float period = 75;
+                if(time == 0)   time = 200;
+                return amplitude + (float) ((amplitude*Math.pow(time,3)%300) * Math.pow(Math.sin(graphX /period + time),5));
             }
         });
 

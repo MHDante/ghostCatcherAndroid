@@ -9,7 +9,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignBottom="@+id/fingerprint_mask"
-        android:weightSum="80">
+        android:weightSum="80"
+        android:id="@+id/tableLayout3">
 
         <Space
             android:layout_width="0dp"
@@ -64,19 +65,6 @@
             android:layout_weight="15" />
     </TableLayout>
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/biocalibrate_btn"
-        android:scaleType="fitCenter"
-        android:src="@drawable/bio_calibrate_pressed"
-        android:background="@android:color/transparent"
-        android:layout_gravity="center_horizontal|bottom"
-        android:onClick="onClick"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:adjustViewBounds="true" />
-
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -85,5 +73,26 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:adjustViewBounds="true" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/biocalibrate_btn"
+        android:alpha="0"
+        android:id="@+id/calibrate_pressed_layout">
+
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/biocalibrate_btn"
+            android:scaleType="fitCenter"
+            android:src="@drawable/bio_calibrate_pressed"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center_horizontal|bottom"
+            android:onClick="onClick"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true" />
+    </FrameLayout>
 
 </RelativeLayout>
