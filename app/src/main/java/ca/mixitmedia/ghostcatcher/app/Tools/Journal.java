@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.JournalFragment.BioList;
+import ca.mixitmedia.ghostcatcher.app.JournalFragment.Settings;
 import ca.mixitmedia.ghostcatcher.app.JournalFragment.ToDoList;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -32,7 +33,7 @@ public class Journal extends ToolFragment {
 
     ToDoList toDoList;
     BioList bioList;
-    ToDoList toDoList3;
+    Settings settings;
     ToDoList toDoList4;
 
     public Journal(){createImageURIs();};
@@ -48,7 +49,7 @@ public class Journal extends ToolFragment {
 
         toDoList = new ToDoList();
         bioList = new BioList();
-        toDoList3 = new ToDoList();
+        settings = new Settings();
         toDoList4 = new ToDoList();
 
 
@@ -108,7 +109,7 @@ public class Journal extends ToolFragment {
                 return true;
             case R.id.tab3:
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.journal_container, toDoList3)
+                        .replace(R.id.journal_container, settings)
                         .commit();
                 return true;
             case R.id.tab4:
