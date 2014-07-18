@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,16 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,7 +137,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	    overlay.setImageURI(imageFileLocationMap.get("rf_overlay"));
 	    lidImageView.setImageURI(imageFileLocationMap.get("rf_lid"));
 
-	    gcMain.setLocationAvailability(true); //checks whether the lid should be open/closed
 		proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
 		proximityBar.setMax(1000);
 
@@ -145,6 +154,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		if (currentLocation != null) {
 			System.out.println("Stored location loaded");
 			onLocationChanged(currentLocation);
+			setLidState(true, true);
 		}
 
         return view;
@@ -228,7 +238,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 			Log.d("RF", "Locations shouldn't be null, you dun fucked up.");
 			return;
 		}
-
+		setLidState(true, false);
 		bearing = (location.bearingTo(destination) + 360) % 360;
 		proximity = location.distanceTo(destination);
 		proximityBar.setProgress(1000 - (int) proximity);
@@ -272,6 +282,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 				case THERE:
 					gcMain.setGPSUpdates(0, 0); //0 seconds, 0 meters
 					Log.d("RFDetector", "We're here bitches!");
+					destinationProximityTextView.setText("#Location Reached#"); //TODO: use story terminology
+					new ProximityTest().execute();
 					gcMain.swapTo(Communicator.class);
 					break;
 			}
@@ -293,9 +305,16 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		destinationProximityTextView.setText("Proximity: " + Math.round(proximity) + " m");
 	}
 
+
+	public void setGPSStatus(boolean gpsAvailablity) {
+		setLidState(gpsAvailablity, false);
+		destinationProximityTextView.setText("Location Unavailable");
+	}
+
 	/**
 	 * opens/closes the lid.
 	 * @param state true for open, false for closed.
+	 * @param instant true for instance animation, false for animation with duration
 	 */
 	public void setLidState(boolean state, boolean instant) {
 		if (state != lidState) {
@@ -330,8 +349,35 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void updateDestination() {
         destination = gcMain.getPlayerLocationInStory();
         }
+
 //	@Override
 //	protected int getAnimatorId(boolean enter) {
 //		//TODO: implement this
 //	}
+
+	private class ProximityTest extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				BufferedReader in;
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpGet request = new HttpGet();
+				URI website = new URI(getString(R.string.proximity_activation_url));
+
+				request.setURI(website);
+				HttpResponse response = httpclient.execute(request);
+				in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+				return in.readLine();
+			} catch (Exception e) {
+				Log.e("log_tag", "Error in http connection " + e.toString());
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String s) {
+			Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+		}
+	}
 }

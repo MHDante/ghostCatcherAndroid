@@ -543,30 +543,42 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		setLocationAvailability(false);
+		setGPSStatus();
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		setLocationAvailability(false);
+		setGPSStatus();
 	}
 
 
-	public void setLocationAvailability(boolean lidAnimationShouldBeInstant) {
+	private void setGPSStatus() {
+		boolean gpsAvailablity = false;
 		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)  ||
 				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-			ToolFragment tf = (ToolFragment) getCurrentFragment();
-			if (tf instanceof RFDetector) {
-				((RFDetector) tf).setLidState(true, lidAnimationShouldBeInstant); //opens the lid
-			}
+			gpsAvailablity = true;
 		}
-		else { //if neither GPS nor Network location is available
-			ToolFragment tf = (ToolFragment) getCurrentFragment();
-			if (tf instanceof RFDetector) {
-				((RFDetector) tf).setLidState(false, lidAnimationShouldBeInstant); //closes the lid
-			}
+
+		ToolFragment tf = (ToolFragment) getCurrentFragment();
+		if (tf instanceof RFDetector) {
+			((RFDetector) tf).setGPSStatus(gpsAvailablity);
 		}
 	}
+//	public void setLocationAvailability(boolean lidAnimationShouldBeInstant) {
+//		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)  ||
+//				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+//			ToolFragment tf = (ToolFragment) getCurrentFragment();
+//			if (tf instanceof RFDetector) {
+//				((RFDetector) tf).setLidState(true, lidAnimationShouldBeInstant); //opens the lid
+//			}
+//		}
+//		else { //if neither GPS nor Network location is available
+//			ToolFragment tf = (ToolFragment) getCurrentFragment();
+//			if (tf instanceof RFDetector) {
+//				((RFDetector) tf).setLidState(false, lidAnimationShouldBeInstant); //closes the lid
+//			}
+//		}
+//	}
 
 //	/**
 //	 * reconfigures GPS updates to occur at the requested minimum time interval
