@@ -62,11 +62,11 @@ public class gcDialog {
                     continue;
                 case '>':
                     if (line.charAt(1) == '>') {
+                        chr = gcEngine.Access().getCharacter(line.substring(2).trim());
                         if (!total.toString().isEmpty()) {
                             dialog.portraits.put(time, chr.getPose(pose));
                             dialog.parsed.put(time, total.toString());
                         }
-                        chr = gcEngine.Access().getCharacter(line.substring(2).trim());
                     }
                     break;
                 case '<':
