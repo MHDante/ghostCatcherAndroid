@@ -36,13 +36,11 @@ public class Tester extends ToolFragment {
             @Override public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
                 //Log.d("BEACON", "Ranged beacons: " + beacons);
                 for(int i=0; i<beacons.size(); i++){
-                    if(beacons.get(i).getMacAddress().equals("CB:ED:AB:9A:95:E4")){
+                    //if(beacons.get(i).getMacAddress().equals("CB:ED:AB:9A:95:E4")){
                         Log.d("BEACON_GREEN_RSSI","Greenie Rssi: "+beacons.get(i).getRssi());
                         Log.d("BEACON_GREEN_ADDRESS","Greenie Address: "+beacons.get(i).getMacAddress());
-                        //Log.d("BEACON_GREEN_ADDRESS","Greenie Address: "+beacons.get(0).getMacAddress());
-                    }
-                    else
-                        Log.d("BEACON_GREENIE", "Something goofed.");
+
+                   // }
                 }
 
             }

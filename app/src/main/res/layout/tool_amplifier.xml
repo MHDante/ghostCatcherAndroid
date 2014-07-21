@@ -31,11 +31,12 @@
                 android:layout_height="0px"
                 android:layout_weight="22" />
 
-            <ca.mixitmedia.ghostcatcher.views.SignalBeaconView
+            <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:layout_weight="57"
-                android:id="@+id/signal_beacon_wave"/>
+                android:id="@+id/signal_beacon_holder"></FrameLayout>
+
         </TableRow>
 
         <Space
@@ -90,5 +91,17 @@
         android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="0dp" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="Debug"
+        android:autoText="false"
+        android:background="#d4f0edf0"
+        android:id="@+id/debug_text_field"
+        android:layout_weight="14"
+        android:textColor="#ff000000"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

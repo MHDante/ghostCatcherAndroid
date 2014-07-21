@@ -40,6 +40,7 @@ public class SignalBeaconView extends SurfaceView {
         getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                //TODO: Crashes when you switch out of the app on the amplifier as it says the thread already started.
                 surfaceThread.setEnable(true);
                 surfaceThread.start();
             }
