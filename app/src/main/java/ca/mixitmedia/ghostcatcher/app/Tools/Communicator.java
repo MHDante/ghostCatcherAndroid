@@ -254,13 +254,12 @@ public class Communicator extends ToolFragment {
                 }
                 try {
                     if (gcMain != null) {
-                        Bitmap image = MediaStore.Images.Media.getBitmap(
-                                gcMain.getContentResolver(),
-                                currentDialog.portraits.get(intervalCounter));
-                        imgV.setImageBitmap(image);
+                        //Bitmap image = MediaStore.Images.Media.getBitmap(
+                        //        gcMain.getContentResolver(), currentDialog.portraits.get(intervalCounter));
+                        //imgV.setImageBitmap(image);
                     }
                     portrait = currentDialog.portraits.get(intervalCounter);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);
                 }
@@ -271,14 +270,19 @@ public class Communicator extends ToolFragment {
             int timePerLetter = (difference / stringLength);
 
             int currentLength = (int) (currentPosition - num) / timePerLetter;
-
-            String displayString = currentDialog.parsed.get(num).substring(0, Math.min(currentLength, currentDialog.parsed.get(num).length() - 1));
-            if (getView() != null) {
-                populateText(displayString, false);
+            try {
+                String displayString = currentDialog.parsed.get(num).substring(0, Math.min(currentLength, currentDialog.parsed.get(num).length() - 1));
+                if (getView() != null) {
+                    populateText(displayString, false);
+                }
+            }
+            catch (IndexOutOfBoundsException e) {
+                //todo This try-Catch is disgusting.
             }
 
-        }
-    };
+            }
+
+        };
 
 
     @Override
@@ -295,12 +299,6 @@ public class Communicator extends ToolFragment {
 
         return R.animator.rotate_out_to_left;
 
-		//TODO: Check this dante:
-		//This method always returns R.animator.rotate_out_to_left; intentional?
-		/* Original body of this method:
-		if (enter) gcMain.playSound(gcMain.sounds.metalClick);
-        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_left;
-		 */
     }
 
 }
