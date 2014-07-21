@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import java.util.HashMap;
 import java.util.Map;
 
+import ca.mixitmedia.ghostcatcher.app.JournalFragment.BioList;
+import ca.mixitmedia.ghostcatcher.app.JournalFragment.Settings;
 import ca.mixitmedia.ghostcatcher.app.JournalFragment.ToDoList;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
@@ -27,8 +29,8 @@ public class Journal extends ToolFragment {
     ImageButton todo;
 
     ToDoList toDoList;
-    ToDoList toDoList2;
-    ToDoList toDoList3;
+    BioList bioList;
+    Settings settings;
     ToDoList toDoList4;
 
     public Journal(){createImageURIs();};
@@ -43,8 +45,8 @@ public class Journal extends ToolFragment {
         todo = (ImageButton) view.findViewById(R.id.arrow_to_do);
 
         toDoList = new ToDoList();
-        toDoList2 = new ToDoList();
-        toDoList3 = new ToDoList();
+        bioList = new BioList();
+        settings = new Settings();
         toDoList4 = new ToDoList();
 
 
@@ -99,12 +101,12 @@ public class Journal extends ToolFragment {
                 return true;
             case R.id.tab2:
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.journal_container, toDoList2)
+                        .replace(R.id.journal_container, bioList)
                         .commit();
                 return true;
             case R.id.tab3:
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.journal_container, toDoList3)
+                        .replace(R.id.journal_container, settings)
                         .commit();
                 return true;
             case R.id.tab4:
