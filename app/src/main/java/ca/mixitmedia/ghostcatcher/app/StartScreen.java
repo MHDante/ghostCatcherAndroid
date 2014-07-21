@@ -81,7 +81,6 @@ public class StartScreen extends Activity {
                 if ( fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf") ) {
                     try {
                         Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-
                         unzip();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -382,6 +381,12 @@ public class StartScreen extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             mProgressDialog.dismiss();
+
+            //Now delete the zipfile since it takes up 360000000 bits
+            File theZip = new File(zipFile);
+
+            theZip.delete();
+
         }
 
     }
