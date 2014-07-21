@@ -9,6 +9,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	ImageView lidImageView;
 
 	boolean backgroundFlashingState;
+	boolean startedFlashing;
+	int numberOfBlinksBeforeFinish;
 	boolean lidState;
 
 	ProgressBar proximityBar;
@@ -118,7 +121,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_rf, container, false);
-
 
 		/*Debug
 		latitudeTextView = (TextView) view.findViewById(R.id.latitude);
@@ -283,21 +285,39 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 					gcMain.setGPSUpdates(0, 0); //0 seconds, 0 meters
 					Log.d("RFDetector", "We're here bitches!");
 					destinationProximityTextView.setText("#Location Reached#"); //TODO: use story terminology
-					new ProximityTest().execute();
-					gcMain.swapTo(Communicator.class);
+
+					if (!startedFlashing) {
+						startedFlashing = true;
+
+						final Handler backgroundFlashHandler = new Handler();
+
+						final int flashIntervalMilliseconds = 300;
+						final Runnable backgroundFlashRunnable = new Runnable() {
+							@Override
+							public void run() {
+								if (!backgroundFlashingState) {
+									backgroundImageView.setColorFilter(0x33FF0000); //TODO: pick better colour
+									backgroundFlashingState = true;
+								}
+								else {
+									backgroundImageView.setColorFilter(0x00000000); //TODO: pick better colour;
+									backgroundFlashingState = false;
+								}
+								if (numberOfBlinksBeforeFinish++ <= 10)
+									backgroundFlashHandler.postDelayed(this, flashIntervalMilliseconds);
+								else {
+									new ProximityTest().execute();
+									gcMain.swapTo(Communicator.class);
+								}
+							}
+						};
+						backgroundFlashHandler.post(backgroundFlashRunnable);
+					}
 					break;
 			}
 			approxDistance = currentDistance;
 		}
 
-		if (currentDistance == ApproxDistance.THERE && !backgroundFlashingState) {
-			backgroundImageView.setColorFilter(0x33FF0000);
-			backgroundFlashingState = true;
-		}
-		else {
-			backgroundImageView.setColorFilter(0x00000000);
-			backgroundFlashingState = false;
-		}
 
 		/*debug
 		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
@@ -377,7 +397,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
 		@Override
 		protected void onPostExecute(String s) {
-			Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+			Toast.makeText(gcMain, s, Toast.LENGTH_LONG).show();
 		}
 	}
 }
