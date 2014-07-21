@@ -381,6 +381,12 @@ public class StartScreen extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             mProgressDialog.dismiss();
+
+            //Now delete the zipfile since it takes up 360000000 bits
+            File theZip = new File(zipFile);
+
+            theZip.delete();
+
         }
 
     }
