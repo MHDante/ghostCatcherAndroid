@@ -4,16 +4,13 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ViewSwitcher;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,11 +78,11 @@ public class Journal extends ToolFragment {
         container.setLayoutParams(fragmentContainerParams);
         container.invalidate();
 
-        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
-        ImageView bullet1 = (ImageView) view.findViewById(R.id.bullet_check1);
-        ImageView bullet2 = (ImageView) view.findViewById(R.id.bullet_check2);
-        ImageView bullet3 = (ImageView) view.findViewById(R.id.bullet_check3);
-        ImageView bullet4 = (ImageView) view.findViewById(R.id.bullet_check4);
+//        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+//        ImageView bullet1 = (ImageView) view.findViewById(R.id.bullet_check1);
+//        ImageView bullet2 = (ImageView) view.findViewById(R.id.bullet_check2);
+//        ImageView bullet3 = (ImageView) view.findViewById(R.id.bullet_check3);
+//        ImageView bullet4 = (ImageView) view.findViewById(R.id.bullet_check4);
 
 
         /*overlay.setImageURI(imageFileLocationMap.get("overlay"));
@@ -180,12 +177,12 @@ public class Journal extends ToolFragment {
     protected int getAnimatorId(boolean enter) {
         if (enter) {
             gcMain.playSound(gcMain.sounds.metalClick);
-            gcMain.hideFrame(true,true,true);
+            gcMain.showFrame(false,false,false);
 			return R.animator.rotate_in_from_right;
         }
 
-        gcMain.showFrame(false,false,false);
-		return R.animator.rotate_out_to_right;
+        gcMain.showFrame(true,true,true);
+		return R.animator.rotate_out_to_right; //TODO: fix directions
     }
 
     public void createImageURIs(){
