@@ -21,7 +21,6 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -443,18 +442,12 @@ public class MainActivity extends Activity implements
 		journalGear.animate().translationX(0);
 	}
 
-    public void hideFrame(boolean showLeftFrame, boolean showRightFrame, boolean showAdFrame){
-        View left_frame, right_frame, ad_holder;
-
-        left_frame = findViewById(R.id.frame_left);
-        right_frame = findViewById(R.id.frame_right);
-        ad_holder = findViewById(R.id.ad_holder);
-
-		if (showLeftFrame) left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
-		if (showRightFrame) right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
-		if (showAdFrame) ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
-	}
-
+	/**
+	 * Determines which frames to show
+	 * @param showLeftFrame true to show, false to hide
+	 * @param showRightFrame true to show, false to hide
+	 * @param showAdHolder true to show, false to hide
+	 */
     public void showFrame(boolean showLeftFrame, boolean showRightFrame, boolean showAdHolder){
         ImageView left_frame, right_frame, ad_holder;
 
@@ -462,12 +455,14 @@ public class MainActivity extends Activity implements
         right_frame = (ImageView) findViewById(R.id.frame_right);
         ad_holder = (ImageView) findViewById(R.id.ad_holder);
 
-        left_frame.setScaleType(ImageView.ScaleType.FIT_START);
-        right_frame.setScaleType(ImageView.ScaleType.FIT_END);
-
         if (showLeftFrame) left_frame.animate().translationX(0).setDuration(1000);
+		else left_frame.animate().translationX(-(left_frame.getWidth())).setDuration(1000);
+
         if (showRightFrame) right_frame.animate().translationX(0).setDuration(1000);
+		else right_frame.animate().translationX(right_frame.getWidth()).setDuration(1000);
+
         if (showAdHolder) ad_holder.animate().translationY(0).setDuration(1000);
+		else ad_holder.animate().translationY(ad_holder.getHeight()).setDuration(1000);
 	}
 
 	//GOOGLE SERVICES CODE
@@ -546,30 +541,42 @@ public class MainActivity extends Activity implements
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		setLocationAvailability(false);
+		setGPSStatus();
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		setLocationAvailability(false);
+		setGPSStatus();
 	}
 
 
-	public void setLocationAvailability(boolean lidAnimationShouldBeInstant) {
+	private void setGPSStatus() {
+		boolean gpsAvailablity = false;
 		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)  ||
 				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-			ToolFragment tf = (ToolFragment) getCurrentFragment();
-			if (tf instanceof RFDetector) {
-				((RFDetector) tf).setLidState(true, lidAnimationShouldBeInstant); //opens the lid
-			}
+			gpsAvailablity = true;
 		}
-		else { //if neither GPS nor Network location is available
-			ToolFragment tf = (ToolFragment) getCurrentFragment();
-			if (tf instanceof RFDetector) {
-				((RFDetector) tf).setLidState(false, lidAnimationShouldBeInstant); //closes the lid
-			}
+
+		ToolFragment tf = (ToolFragment) getCurrentFragment();
+		if (tf instanceof RFDetector) {
+			((RFDetector) tf).setGPSStatus(gpsAvailablity);
 		}
 	}
+//	public void setLocationAvailability(boolean lidAnimationShouldBeInstant) {
+//		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)  ||
+//				locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+//			ToolFragment tf = (ToolFragment) getCurrentFragment();
+//			if (tf instanceof RFDetector) {
+//				((RFDetector) tf).setLidState(true, lidAnimationShouldBeInstant); //opens the lid
+//			}
+//		}
+//		else { //if neither GPS nor Network location is available
+//			ToolFragment tf = (ToolFragment) getCurrentFragment();
+//			if (tf instanceof RFDetector) {
+//				((RFDetector) tf).setLidState(false, lidAnimationShouldBeInstant); //closes the lid
+//			}
+//		}
+//	}
 
 //	/**
 //	 * reconfigures GPS updates to occur at the requested minimum time interval
@@ -683,13 +690,13 @@ public class MainActivity extends Activity implements
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }
-
+	/*debug for RF detector
 	public void openButtonClicked(View view) {
 		((RFDetector) getCurrentFragment()).setLidState(true, false);
 	}
 
 	public void closeButtonClicked(View view) {
 		((RFDetector) getCurrentFragment()).setLidState(false, false);
-	}
+	}*/
 }
 
