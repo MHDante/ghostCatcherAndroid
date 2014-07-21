@@ -34,7 +34,15 @@ public class Tester extends ToolFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
             @Override public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
-                Log.d("BEACON", "Ranged beacons: " + beacons);
+                //Log.d("BEACON", "Ranged beacons: " + beacons);
+                for(int i=0; i<beacons.size(); i++){
+                    //if(beacons.get(i).getMacAddress().equals("CB:ED:AB:9A:95:E4")){
+                        Log.d("BEACON_GREEN_RSSI","Greenie Rssi: "+beacons.get(i).getRssi());
+                        Log.d("BEACON_GREEN_ADDRESS","Greenie Address: "+beacons.get(i).getMacAddress());
+
+                   // }
+                }
+
             }
         });
         View view = inflater.inflate(R.layout.tool_tester, container, false);

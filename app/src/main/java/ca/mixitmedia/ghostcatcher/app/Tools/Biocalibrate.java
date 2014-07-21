@@ -123,7 +123,7 @@ public class Biocalibrate extends ToolFragment {
             case R.id.biocalibrate_btn:
                 return true;
             default:
-                return !started;
+                return false;
         }
     }
 
