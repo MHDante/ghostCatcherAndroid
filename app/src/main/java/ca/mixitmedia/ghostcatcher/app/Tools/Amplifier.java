@@ -58,6 +58,7 @@ public class Amplifier extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
         final TextView debugTextField = (TextView) view.findViewById(R.id.debug_text_field);
 
@@ -157,6 +158,8 @@ public class Amplifier extends ToolFragment {
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("amplifier").appendPath("amplifier_overlay.png").build());
 
+        gcMain.soundPool.setVolume(gcMain.sounds.creepyChains, (averageStrengthBeaconOne/100),(averageStrengthBeaconOne/100));
+
         return view;
     }
 
@@ -191,11 +194,16 @@ public class Amplifier extends ToolFragment {
         iteratorBeaconOne = 0;
         iteratorBeaconTwo = 0;
         iteratorBeaconThree = 0;
+
     }
 
     @Override
     public void afterAnimation(boolean enter) {
         super.afterAnimation(enter);
+
+        gcMain.soundPool.play(gcMain.sounds.creepyChains,0.5f,0.5f,1,-1,1.0f);
+        //gcMain.soundPool.setLoop(gcMain.sounds.creepyChains, -1);
+
         if(enter){
             View view = this.getView();
 
