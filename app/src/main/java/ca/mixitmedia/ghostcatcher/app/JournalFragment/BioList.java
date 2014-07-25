@@ -24,6 +24,7 @@ public class BioList extends Fragment{
     TextView bio;
     ImageView image;
 
+    int count;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.journal_frag_biolist, null);
@@ -40,7 +41,6 @@ public class BioList extends Fragment{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return v;
 
 
