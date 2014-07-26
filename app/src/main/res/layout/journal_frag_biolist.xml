@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Professor Wolfe"
-        android:id="@+id/textProfName" />
+        android:id="@+id/textprofname" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Professor Wolfe introduced himself when I inadvertently downloaded the Ghost Catcher app. He gave me tools to hunt Ghosts in the Ryerson U area. He built some kind of machine that bridges the land of the deceased with the world of the living.  I am somehow suspicious of his motives. "
-            android:id="@+id/textView"
+            android:id="@+id/profbio"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="13dp"
             android:layout_marginTop="10dp" />
