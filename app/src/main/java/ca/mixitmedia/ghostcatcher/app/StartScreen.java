@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -97,11 +98,6 @@ public class StartScreen extends Activity {
         Log.d("Filepaths 4 :", zipFile);
 
         setContentView(R.layout.activity_start_screen);
-        //
-
-        final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
         url = getString(R.string.url);
 
@@ -111,65 +107,39 @@ public class StartScreen extends Activity {
         continueButton.setEnabled(false);
         creditsButton.setEnabled(false);
 
-        if (!fileDir.exists()) {
-            if ((new File(zipFile)).exists()) {
-                Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
-                    try {
-                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-                        unzip();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                }
-            } else {
-                if (wifi.isAvailable())
-                    // Trigger Async Task (onPreExecute method)
-                    new DownloadZipFile().execute(url);
-                else if (mobile.isAvailable()) {
-                    try {
-                        internetDialog();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else
-                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
-            }
-        } else if (fileDir.list().length == 0) {
 
-            Log.e("TAG", "TRUE ;  FILEDIR IS EMPTY");
-
-            if (!((new File(zipFile)).exists())) {
-                if (wifi.isAvailable())
-                    // Trigger Async Task (onPreExecute method)
-                    new DownloadZipFile().execute(url);
-                else if (mobile.isAvailable()) {
-                    try {
-                        internetDialog();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else
-                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
-            } else {
-                if ((new File(zipFile)).exists()) {
-                    Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                    if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
-                        try {
-                            Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-                            unzip();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                    }
-                }
-            }
+		if (!fileDir.exists() || fileDir.list().length == 0) {
+            if ((new File(zipFile)).exists()) unzipFile();
+			else attemptDownloadZipFile();
         }
     }
+
+	public void unzipFile() {
+		Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
+		if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
+			try {
+				Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+				unzip();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
+		}
+	}
+
+	public void attemptDownloadZipFile() {
+		final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		final NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		final NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+		if (wifi.isAvailable()) new DownloadZipFile().execute(url); // Trigger Async Task (onPreExecute method)
+		else if (mobile.isAvailable()) {
+			try { internetDialog(); }
+			catch (Exception e) { e.printStackTrace(); }
+		}
+		else Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
+	}
 
     public void settingsDialog(View v) throws Exception {
 
@@ -382,10 +352,7 @@ public class StartScreen extends Activity {
             mProgressDialog.dismiss();
 
             //Now delete the zipfile since it takes up 360000000 bits
-            File theZip = new File(zipFile);
-
-            theZip.delete();
-
+			(new File(zipFile)).delete();
         }
 
     }
@@ -432,11 +399,7 @@ public class StartScreen extends Activity {
 
         private boolean dirChecker(String dir) {
             File f = new File(location + "/" + dir);
-            if (!f.isDirectory()) {
-                //Log.e("DirChecker", dir);
-                return f.mkdirs();
-            }
-            return false;
-        }
+			return !f.isDirectory() && f.mkdirs();
+		}
     }
 }

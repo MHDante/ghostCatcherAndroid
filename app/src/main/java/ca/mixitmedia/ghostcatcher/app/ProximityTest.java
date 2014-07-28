@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 
 /**
- * Created by Dante on 2014-07-27.
+ * Created by Dante on 2014-07-27
  */
 public abstract class ProximityTest extends AsyncTask<String, Void, String> {
 
@@ -31,17 +31,17 @@ public abstract class ProximityTest extends AsyncTask<String, Void, String> {
     @Override
     protected final String doInBackground(String... params) {
         try {
-            BufferedReader in;
             HttpClient httpclient = new DefaultHttpClient();
             HttpGet request = new HttpGet();
             URI website = new URI(ProximityURL);
 
             request.setURI(website);
             HttpResponse response = httpclient.execute(request);
-            in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             return in.readLine();
         } catch (Exception e) {
-            Log.e("log_tag", "Error in http connection " + e.toString());
+            Log.e("log_tag", "Error in http connection");
+			e.printStackTrace();
             return null;
         }
     }

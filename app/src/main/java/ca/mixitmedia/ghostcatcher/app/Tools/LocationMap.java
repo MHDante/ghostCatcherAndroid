@@ -73,17 +73,16 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     @Override
     public void onResume() {
         super.onResume();
-        if (map != null) setUpMap();
+        if (map != null) setUpMapMarkers();
     }
 
-    private void setUpMap() {
+    private void setUpMapMarkers() {
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
 
         locations = gcEngine.Access().getCurrentSeqPt().getLocations();
         if (locations.size() <= 0) return;
 
-        for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
-            gcLocation loc = locations.get(selectedLocation);
+		for (gcLocation loc : locations) {
             if (gcMain.locationManager.getCurrentGCLocation() == null || !loc.getId().equals(gcMain.locationManager.getCurrentGCLocation().getId())) {
                 markers.add(map.addMarker(new MarkerOptions()
                         .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
@@ -104,14 +103,14 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     public void setBanner(gcLocation loc) {
-        TextView tv = (TextView) getView().findViewById(R.id.title);
-        tv.setText(loc.getName());
-        TextView tv2 = (TextView) getView().findViewById(R.id.to_do);
-        tv2.setText(loc.getDescription());
-        ImageView iv = (ImageView) getView().findViewById(R.id.imageThumbnail);
+        TextView titleTextView = (TextView) getView().findViewById(R.id.title);
+        titleTextView.setText(loc.getName());
+        TextView toDoTextView = (TextView) getView().findViewById(R.id.to_do);
+        toDoTextView.setText(loc.getDescription());
+        ImageView imageThumbnail = (ImageView) getView().findViewById(R.id.imageThumbnail);
         try {
             Bitmap image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), loc.getImageUri());
-            iv.setImageBitmap(image);
+            imageThumbnail.setImageBitmap(image);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -120,11 +119,8 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     @Override
     public void onDestroyView() {
-
-        MapFragment f = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        if (f != null)
-            getFragmentManager().beginTransaction().remove(f).commit();
+        MapFragment f = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        if (f != null) getFragmentManager().beginTransaction().remove(f).commit();
         super.onDestroyView();
     }
 

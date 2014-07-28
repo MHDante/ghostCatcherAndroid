@@ -3,7 +3,6 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -44,9 +43,6 @@ public class Imager extends ToolFragment {
     private boolean inPreview = false;
     private boolean cameraConfigured = false;
 
-    public Imager() {
-    }
-
     public static Camera.Size getBestPreviewSize(int width, int height,
                                                  Camera.Parameters parameters) {
         Camera.Size result = null;
@@ -59,9 +55,7 @@ public class Imager extends ToolFragment {
                     int resultArea = result.width * result.height;
                     int newArea = size.width * size.height;
 
-                    if (newArea > resultArea) {
-                        result = size;
-                    }
+                    if (newArea > resultArea) result = size;
                 }
             }
         }
@@ -75,7 +69,7 @@ public class Imager extends ToolFragment {
         preview = (SurfaceView) v.findViewById(R.id.camera_preview);
         previewHolder = preview.getHolder();
         previewHolder.addCallback(surfaceCallback);
-        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); //TODO: look at this?
         ImagerFrame = (ImageView) v.findViewById(R.id.overlay);
 
         ImageView overlay = (ImageView) v.findViewById(R.id.overlay);
@@ -96,7 +90,6 @@ public class Imager extends ToolFragment {
         camera = Camera.open();
         Log.d("Surface:", "Invalidate");
 
-
         startPreview();
     }
 
@@ -104,43 +97,12 @@ public class Imager extends ToolFragment {
     public void onPause() {
         if (inPreview) {
             camera.stopPreview();
-        }
+			inPreview = false;
+		}
 
         camera.release();
         camera = null;
-        inPreview = false;
-
         super.onPause();
-    }
-
-    @Override
-    public void afterAnimation(boolean enter) {
-        super.afterAnimation(enter);
-        if (false) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (preview != null) {
-                        if (inPreview) {
-                            camera.stopPreview();
-                        }
-
-                        camera.release();
-                        camera = null;
-                        inPreview = false;
-                        camera = Camera.open();
-                        startPreview();
-
-                        preview.setVisibility(View.GONE);
-                        preview.setVisibility(View.VISIBLE);
-                        ImagerFrame.getParent().requestTransparentRegion(ImagerFrame);
-
-                        Log.d("Imager", "Preview Swicharoo");
-                    } else Log.e("Imager", "Preview Screen was null.");
-                }
-            }, 1000);
-        }
-
     }
 
     private void initPreview(int width, int height) {
@@ -150,15 +112,12 @@ public class Imager extends ToolFragment {
             } catch (Throwable t) {
                 Log.e("PreviewDemo-surfaceCallback",
                         "Exception in setPreviewDisplay()", t);
-                Toast
-                        .makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
 
             if (!cameraConfigured) {
                 Camera.Parameters parameters = camera.getParameters();
-                Camera.Size size = getBestPreviewSize(width, height,
-                        parameters);
+                Camera.Size size = getBestPreviewSize(width, height, parameters);
 
                 if (size != null) {
                     parameters.setPreviewSize(size.width, size.height);

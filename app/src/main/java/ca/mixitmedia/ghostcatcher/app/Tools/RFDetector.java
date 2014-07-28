@@ -6,7 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.ProximityTest;
 import ca.mixitmedia.ghostcatcher.app.R;
@@ -100,7 +97,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
         backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
-        arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);;
+        arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
         lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
         lidImageView.setVisibility(View.VISIBLE);
 
@@ -298,7 +295,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         }
     }
 
-    public void updateDestination() {
+    public void updateDestination() { // currently unused, but needed.
         destination = gcEngine.Access().getDestination();
     }
 

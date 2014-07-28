@@ -26,7 +26,6 @@ public class gcLocationManager implements LocationListener {
     int GPSMinUpdateDistanceM;
 
     public gcLocationManager(Context ctxt) {
-
         locationManager = (LocationManager) ctxt.getSystemService(Context.LOCATION_SERVICE);
     }
 
@@ -77,7 +76,6 @@ public class gcLocationManager implements LocationListener {
         this.GPSMinUpdateTimeMS = GPSMinUpdateTimeMS;
         this.GPSMinUpdateDistanceM = GPSMinUpdateDistanceM;
 
-
         locationManager.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER, GPSMinUpdateTimeMS, GPSMinUpdateDistanceM, this);
     }
 
@@ -103,10 +101,6 @@ public class gcLocationManager implements LocationListener {
 
     public gcLocation getCurrentGCLocation() {
         return null;
-    }
-
-    /**
-     * Created by Dante on 2014-06-03
-     */
+    } //TODO: to be implemented
 
 }

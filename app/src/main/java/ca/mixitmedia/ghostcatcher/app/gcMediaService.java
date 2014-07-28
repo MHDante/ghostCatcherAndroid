@@ -42,7 +42,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static MediaPlayer mPlayer = null;
     public static boolean receiverRegistered;
     static Notification status;
-    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
+    static Queue<Uri> tracks = new ConcurrentLinkedQueue<>();
     gcEngine engine;
     boolean looping;
     BroadcastReceiver receiver = new AudioReceiver();
@@ -71,7 +71,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         updateNotification();
         startForeground(NOTIFICATION_MPLAYER, status);
         return (START_NOT_STICKY);
@@ -118,7 +117,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         receiverRegistered = false;
         isStarted = false;
         mPlayer.stop();
-        tracks = new ConcurrentLinkedQueue<Uri>();
+        tracks = new ConcurrentLinkedQueue<>();
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_MPLAYER);
         stopSelf();
 
@@ -203,7 +202,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
                 Uri track = intent.getParcelableExtra(EXTRA_TRACK);
                 looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks = new ConcurrentLinkedQueue<Uri>();
+                tracks = new ConcurrentLinkedQueue<>();
                 tracks.add(track);
                 startPlaying();
             } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
@@ -214,5 +213,4 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             }
         }
     }
-
 }

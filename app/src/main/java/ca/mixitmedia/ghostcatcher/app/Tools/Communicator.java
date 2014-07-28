@@ -39,9 +39,6 @@ public class Communicator extends ToolFragment {
     Handler mHandler = new Handler();
     Runnable phraseAdder = new PhraseAdder();
 
-    public Communicator() {
-    }//req'd
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -63,10 +60,8 @@ public class Communicator extends ToolFragment {
     }
 
     public void CheckForMessages() {
-        if (currentDialog == null) {
-            if (pendingMessages.size() > 0) {
-                biocalibrate.show();
-            }
+        if (currentDialog == null && pendingMessages.size() > 0) {
+            	biocalibrate.show();
         }
     }
 
@@ -99,8 +94,7 @@ public class Communicator extends ToolFragment {
 
         @Override
         public void run() {
-            if (currentDialog == null || gcMain == null || currentDialog.intervals.size() < 1)
-                return;
+            if (currentDialog == null || gcMain == null || currentDialog.intervals.size() < 1) return;
             long currentInterval = 0;
             for (int interval : currentDialog.intervals) {
                 if (interval > Utils.TimeSince(startTime) / 1000) break;
@@ -111,6 +105,7 @@ public class Communicator extends ToolFragment {
                 imageView.setImageURI(currentDialog.portraits.get((int) currentInterval));
                 pastInterval = currentInterval;
             }
+
             if (Utils.TimeSince(startTime) < gcDialog.getDuration()) {
                 mHandler.postDelayed(this, 1000);
             } else {

@@ -41,7 +41,7 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
     public int getGlyphId(){
         String name = ((Object) this).getClass().getSimpleName().toLowerCase();
         return Utils.findDrawableIDByName("icon_" + name);
-    };
+    }
 
 
     @Override
@@ -68,7 +68,6 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
 
             }
         });
-
 
         return anim;
     }
@@ -98,7 +97,6 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
     public void onDetach() {
         super.onDetach();
         gcMain = null;
-
     }
 
     public pivotOrientation getPivotOrientation(boolean enter) {
@@ -165,7 +163,7 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
         LEFT,   //Pivot from the left
         RIGHT,  //Pivot from the right
         TOP,    //Pivot from the top
-        BOTTOM //Pivot from the bottom
+        BOTTOM  //Pivot from the bottom
     }
 
     public static class ToolMessage {

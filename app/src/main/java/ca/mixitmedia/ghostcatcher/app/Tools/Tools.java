@@ -8,7 +8,7 @@ import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.views.LightButton;
 
 /**
- * Created by Dante on 2014-07-27.
+ * Created by Dante on 2014-07-27
  */
 public class Tools{
     public static Communicator communicator ;
@@ -52,6 +52,7 @@ public class Tools{
     public static ToolFragment Current() {
         return (ToolFragment)gcMain.getFragmentManager().findFragmentById(R.id.fragment_container);
     }
+
     public static ToolFragment byName(String ToolName){
 
         if(ToolName.equalsIgnoreCase("communicator"   )) return communicator;
@@ -60,7 +61,7 @@ public class Tools{
         if(ToolName.equalsIgnoreCase("tester"         )) return tester      ;
         if(ToolName.equalsIgnoreCase("imager"         )) return imager      ;
         if(ToolName.equalsIgnoreCase("rfDetector"     )) return rfDetector  ;
-        Utils.messageDialog(gcMain, "Error", "Tried to get non-Existant Tool" + ToolName);
+        Utils.messageDialog(gcMain, "Error", "Tried to get non-Existant Tool: " + ToolName);
         return null;
     }
 }
