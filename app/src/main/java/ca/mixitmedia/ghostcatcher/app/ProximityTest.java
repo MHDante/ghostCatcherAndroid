@@ -2,7 +2,6 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -16,16 +15,18 @@ import java.net.URI;
 /**
  * Created by Dante on 2014-07-27.
  */
-public  abstract class ProximityTest extends AsyncTask<String, Void, String> {
+public abstract class ProximityTest extends AsyncTask<String, Void, String> {
 
     final String BaseURL = "http://mixitmedia.ca/proximity/writetest.php?";
     String ProximityURL;
 
-    public ProximityTest(String action, String location, String status){
-        ProximityURL = BaseURL + "action=" + action + "&location=" + location +"&status=" + status;
+    public ProximityTest(String action, String location, String status) {
+        ProximityURL = BaseURL + "action=" + action + "&location=" + location + "&status=" + status;
     }
 
-    public ProximityTest(){this("write","zacklocation","activated");}
+    public ProximityTest() {
+        this("write", "zacklocation", "activated");
+    }
 
     @Override
     protected final String doInBackground(String... params) {
@@ -49,5 +50,6 @@ public  abstract class ProximityTest extends AsyncTask<String, Void, String> {
     protected final void onPostExecute(String s) {
         HandleServerMessage(s);
     }
+
     public abstract void HandleServerMessage(String s);
 }

@@ -37,11 +37,47 @@ public class StartScreen extends Activity {
     private String zipFile;
     private File fileDir, appDir;
 
+    public static String fileToMD5(String filePath) {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(filePath);
+            byte[] buffer = new byte[1024];
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            int numRead = 0;
+            while (numRead != -1) {
+                numRead = inputStream.read(buffer);
+                if (numRead > 0)
+                    digest.update(buffer, 0, numRead);
+            }
+            byte[] md5Bytes = digest.digest();
+            return convertHashToString(md5Bytes);
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    //From internet
+    private static String convertHashToString(byte[] md5Bytes) {
+        String returnVal = "";
+        for (byte md5Byte : md5Bytes) {
+            returnVal += Integer.toString((md5Byte) + 0x100, 16).substring(1);
+        }
+        return returnVal;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
-		fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
+        fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
 
         appDir = fileDir.getParentFile().getParentFile().getParentFile();
 
@@ -51,21 +87,21 @@ public class StartScreen extends Activity {
         Log.d("Filepaths 1 :", fileDir.getPath());
         //Filepaths 1 :﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher
 
-		String cacheDir = getExternalCacheDir().getPath();
+        String cacheDir = getExternalCacheDir().getPath();
         Log.d("Filepaths 2 :", cacheDir);
         //Filepaths 2 :﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app/cache
 
         unzipLocation = getExternalFilesDir("mixitmedia").getPath();
         Log.d("Filepaths 3 :", unzipLocation);
-        zipFile = cacheDir+"/exp.zip";
+        zipFile = cacheDir + "/exp.zip";
         Log.d("Filepaths 4 :", zipFile);
 
         setContentView(R.layout.activity_start_screen);
         //
 
         final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final android.net.NetworkInfo wifi =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
         url = getString(R.string.url);
 
@@ -78,19 +114,17 @@ public class StartScreen extends Activity {
         if (!fileDir.exists()) {
             if ((new File(zipFile)).exists()) {
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                if ( fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf") ) {
+                if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
                     try {
                         Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
                         unzip();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-                else {
+                } else {
                     Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
                 }
-            }
-            else {
+            } else {
                 if (wifi.isAvailable())
                     // Trigger Async Task (onPreExecute method)
                     new DownloadZipFile().execute(url);
@@ -100,12 +134,10 @@ public class StartScreen extends Activity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-                else
-                    Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();
+                } else
+                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
             }
-        }
-        else if(fileDir.list().length == 0) {
+        } else if (fileDir.list().length == 0) {
 
             Log.e("TAG", "TRUE ;  FILEDIR IS EMPTY");
 
@@ -119,22 +151,19 @@ public class StartScreen extends Activity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
-                else
-                    Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();
-            }
-            else {
+                } else
+                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
+            } else {
                 if ((new File(zipFile)).exists()) {
                     Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                    if ( fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf") ) {
+                    if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
                         try {
                             Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
                             unzip();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
-                    else {
+                    } else {
                         Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
                     }
                 }
@@ -142,35 +171,7 @@ public class StartScreen extends Activity {
         }
     }
 
-    public static String fileToMD5(String filePath) {
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(filePath);
-            byte[] buffer = new byte[1024];
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            int numRead = 0;
-            while (numRead != -1) {
-                numRead = inputStream.read(buffer);
-                if (numRead > 0)
-                    digest.update(buffer, 0, numRead);
-            }
-            byte [] md5Bytes = digest.digest();
-            return convertHashToString(md5Bytes);
-        } catch (Exception e) {
-            return null;
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public void settingsDialog(View v) throws Exception{
+    public void settingsDialog(View v) throws Exception {
 
         final Dialog dialog = new Dialog(StartScreen.this);
         dialog.setContentView(R.layout.dialog_view);
@@ -189,7 +190,7 @@ public class StartScreen extends Activity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(fileDir.exists()) {
+                if (fileDir.exists()) {
                     clearApplicationData();
 
                     Button newGame = (Button) findViewById(R.id.startButton);
@@ -209,10 +210,10 @@ public class StartScreen extends Activity {
         Log.d("FILEDIR IS ", fileDir.getAbsolutePath());
         Log.d("APPDIR IS", appDir.getAbsolutePath());
 
-        if(fileDir.exists()){
+        if (fileDir.exists()) {
             String[] children = fileDir.list();
-            for(String s : children){
-                if(!s.equals("lib")){
+            for (String s : children) {
+                if (!s.equals("lib")) {
                     deleteDir(new File(fileDir, s));
                     Log.d("", "deleted");
                 }
@@ -234,17 +235,7 @@ public class StartScreen extends Activity {
         return dir.delete();
     }
 
-    //From internet
-    private static String convertHashToString(byte[] md5Bytes) {
-        String returnVal = "";
-		for (byte md5Byte : md5Bytes) {
-            returnVal += Integer.toString((md5Byte) + 0x100, 16).substring(1);
-        }
-        return returnVal;
-    }
-
-    public void internetDialog() throws Exception
-    {
+    public void internetDialog() throws Exception {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
 
         builder.setMessage("Ghost Catcher needs to download a file. Data charges may apply. \n\nDo you want to continue?");
@@ -257,11 +248,9 @@ public class StartScreen extends Activity {
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener()
-        {
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
                 //Button startButton = (Button) findViewById(R.id.startButton);
                 //startButton.setEnabled(false);
                 dialog.dismiss();
@@ -271,6 +260,27 @@ public class StartScreen extends Activity {
         });
 
         builder.show();
+    }
+
+    //Extract zip calls Asynctask
+    public void unzip() throws IOException {
+        mProgressDialog = new ProgressDialog(StartScreen.this);
+        mProgressDialog.setMessage("Extracting the downloaded file...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.show();
+        new UnZipTask().execute(zipFile);
+    }
+
+    public void start(View view) {
+        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
+        startActivity(myIntent);
+    }
+
+    public void credits(View view) {
+        Intent intent = new Intent(StartScreen.this, Credits.class);
+        startActivity(intent);
+
     }
 
     //-This is method is used for Download Zip file from server and store in Desire location.
@@ -346,17 +356,6 @@ public class StartScreen extends Activity {
         }
     }
 
-    //Extract zip calls Asynctask
-    public void unzip() throws IOException {
-		mProgressDialog = new ProgressDialog(StartScreen.this);
-		mProgressDialog.setMessage("Extracting the downloaded file...");
-		mProgressDialog.setCancelable(false);
-		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		mProgressDialog.show();
-        new UnZipTask().execute(zipFile);
-    }
-
-
     private class UnZipTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
@@ -390,6 +389,7 @@ public class StartScreen extends Activity {
         }
 
     }
+
     public class UnzipUtil {
         private String zipFile;
         private String location;
@@ -411,7 +411,7 @@ public class StartScreen extends Activity {
                     if (ze.isDirectory()) {
                         dirChecker(ze.getName());
                     } else {
-                        FileOutputStream fout = new FileOutputStream(new File(location+ "/"+ ze.getName()));
+                        FileOutputStream fout = new FileOutputStream(new File(location + "/" + ze.getName()));
                         //Log.e("uz", location+ "/"+ ze.getName());
                         byte[] buffer = new byte[8192];
                         int len;
@@ -436,18 +436,7 @@ public class StartScreen extends Activity {
                 //Log.e("DirChecker", dir);
                 return f.mkdirs();
             }
-			return false;
+            return false;
         }
-    }
-
-    public void start(View view){
-        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
-        startActivity(myIntent);
-    }
-
-    public void credits(View view){
-        Intent intent = new Intent(StartScreen.this, Credits.class);
-        startActivity(intent);
-
     }
 }

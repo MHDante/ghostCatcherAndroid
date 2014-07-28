@@ -5,8 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -15,12 +13,12 @@ import android.view.SurfaceView;
  */
 public class SignalBeaconView extends SurfaceView {
 
-    Paint waveOne, waveTwo,waveThree;
+    Paint waveOne, waveTwo, waveThree;
     WaveFunction waveFunction;
     SurfaceThread surfaceThread;
     int width, height;
 
-    public SignalBeaconView(Context context, AttributeSet attr){
+    public SignalBeaconView(Context context, AttributeSet attr) {
         super(context, attr);
 
         waveOne = new Paint();
@@ -76,31 +74,30 @@ public class SignalBeaconView extends SurfaceView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas){
+    protected void onDraw(Canvas canvas) {
         drawWavePoints(canvas);
 
     }
 
-    public void drawWavePoints(Canvas canvas){
+    public void drawWavePoints(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
-        float[] waveOnePointsArray = new float[width*2];
-        float[] waveTwoPointsArray = new float[width*2];
-        float[] waveThreePointsArray = new float[width*2];
+        float[] waveOnePointsArray = new float[width * 2];
+        float[] waveTwoPointsArray = new float[width * 2];
+        float[] waveThreePointsArray = new float[width * 2];
 
-        for(int i=0; i < this.getWidth(); i++){
-            waveOnePointsArray[i*2]=i;
-            waveTwoPointsArray[i*2]=i;
-            waveThreePointsArray[i*2]=i;
+        for (int i = 0; i < this.getWidth(); i++) {
+            waveOnePointsArray[i * 2] = i;
+            waveTwoPointsArray[i * 2] = i;
+            waveThreePointsArray[i * 2] = i;
 
-            if(waveFunction == null){
-                waveOnePointsArray[(i*2)+1] = 1;
-                waveTwoPointsArray[(i*2)+1] = 1;
-                waveThreePointsArray[(i*2)+1] = 1;
-            }
-            else{
-                waveOnePointsArray[(i*2)+1] = waveFunction.getGraphYWaveOne(i,((float) height/2));
-                waveTwoPointsArray[(i*2)+1] = waveFunction.getGraphYWaveTwo(i,((float) height/2));
-                waveThreePointsArray[(i*2)+1] = waveFunction.getGraphYWaveThree(i,((float) height/2));
+            if (waveFunction == null) {
+                waveOnePointsArray[(i * 2) + 1] = 1;
+                waveTwoPointsArray[(i * 2) + 1] = 1;
+                waveThreePointsArray[(i * 2) + 1] = 1;
+            } else {
+                waveOnePointsArray[(i * 2) + 1] = waveFunction.getGraphYWaveOne(i, ((float) height / 2));
+                waveTwoPointsArray[(i * 2) + 1] = waveFunction.getGraphYWaveTwo(i, ((float) height / 2));
+                waveThreePointsArray[(i * 2) + 1] = waveFunction.getGraphYWaveThree(i, ((float) height / 2));
             }
         }
 
@@ -109,25 +106,27 @@ public class SignalBeaconView extends SurfaceView {
         canvas.drawPoints(waveThreePointsArray, waveThree);
     }
 
-    public interface WaveFunction{
-        public float getGraphYWaveOne(float graphX, float amplitude);
-        public float getGraphYWaveTwo(float graphX, float amplitude);
-        public float getGraphYWaveThree(float graphX, float amplitude);
+    public void setWaveFunction(WaveFunction waveFunction) {
+        this.waveFunction = waveFunction;
     }
 
-    public void setWaveFunction(WaveFunction waveFunction){
-        this.waveFunction = waveFunction;
+    public interface WaveFunction {
+        public float getGraphYWaveOne(float graphX, float amplitude);
+
+        public float getGraphYWaveTwo(float graphX, float amplitude);
+
+        public float getGraphYWaveThree(float graphX, float amplitude);
     }
 
 }
 
-class SurfaceThread extends Thread{
+class SurfaceThread extends Thread {
     SurfaceHolder surfaceHolder;
     SignalBeaconView beaconView;
     Boolean enable = false;
 
 
-    public SurfaceThread(SurfaceHolder holder, SignalBeaconView bView){
+    public SurfaceThread(SurfaceHolder holder, SignalBeaconView bView) {
         surfaceHolder = holder;
         beaconView = bView;
 
@@ -141,18 +140,17 @@ class SurfaceThread extends Thread{
     public void run() {
         Canvas canvas = null;
 
-        while(enable == true) {
+        while (enable == true) {
             try {
                 canvas = surfaceHolder.lockCanvas();
-                if(canvas != null){
-                    synchronized (surfaceHolder){
+                if (canvas != null) {
+                    synchronized (surfaceHolder) {
                         beaconView.drawWavePoints(canvas);
                     }
                 }
 
-            }
-            finally {
-                if(canvas != null)
+            } finally {
+                if (canvas != null)
                     surfaceHolder.unlockCanvasAndPost(canvas);
             }
 

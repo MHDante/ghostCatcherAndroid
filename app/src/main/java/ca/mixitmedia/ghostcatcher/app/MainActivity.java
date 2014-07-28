@@ -8,68 +8,76 @@ import android.os.Bundle;
 import android.view.View;
 
 import ca.mixitmedia.ghostcatcher.Utils;
-import ca.mixitmedia.ghostcatcher.app.Tools.*;
-import ca.mixitmedia.ghostcatcher.experience.*;
-import ca.mixitmedia.ghostcatcher.views.*;
+import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
+import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
+import ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.experience.gcLocation;
+import ca.mixitmedia.ghostcatcher.views.LightButton;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     public ExperienceManager experienceManager;
     public gcLocationManager locationManager;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-	    super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-	    gcEngine.init(this);
+        gcEngine.init(this);
         Tools.init(this);
-        locationManager = new gcLocationManager();
+        SoundManager.init(this);
+        locationManager = new gcLocationManager(this);
         experienceManager = new ExperienceManager(this);
-		if (savedInstanceState == null)  //Avoid overlapping fragments.
-			getFragmentManager().beginTransaction().add(R.id.fragment_container, Tools.communicator).commit();
+        if (savedInstanceState == null)  //Avoid overlapping fragments.
+            getFragmentManager().beginTransaction().add(R.id.fragment_container, Tools.communicator).commit();
     }
 
 
-	@Override
-	protected void onNewIntent(Intent intent) {
-		if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-            for(Uri uri : Utils.getNdefIntentURIs(intent)) {
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (intent.getAction() != null && intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+            for (Uri uri : Utils.getNdefIntentURIs(intent)) {
                 gcEngine.Access().UpdateLocation(gcLocation.fromURI(uri));
             }
-		}
-	}
+        }
+    }
 
-	public void onClick(View view) {
-		if (Tools.Current().checkClick(view)) return;
-		if (view instanceof ToolLightButton)swapTo(((ToolLightButton)view).toolFragment);
-	}
+    public void onClick(View view) {
+        if (Tools.Current().checkClick(view)) return;
 
-	@Override
-	protected void onPause() {
-		if (SoundManager.isPlaying()) SoundManager.pause();
+        if (view instanceof LightButton) {
+            for (ToolFragment tf : Tools.All())
+                if (tf.toolLight == view)
+                    swapTo(tf);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (SoundManager.isPlaying()) SoundManager.pause();
         locationManager.removeUpdates(); //stop location updates
-		super.onPause();
-	}
+        super.onPause();
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		SoundManager.play();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SoundManager.play();
         locationManager.requestSlowGPSUpdates();
-	}
+    }
 
-	@Override
-	protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
+        SoundManager.stop();
         gcEngine.detatch();
-		SoundManager.stop();
-		super.onDestroy();
-	}
+        super.onDestroy();
+    }
 
-	public void swapTo(ToolFragment tool) {
-			getFragmentManager().beginTransaction()
-					.replace(R.id.fragment_container, tool)
-					.commit();
-	}
+    public void swapTo(ToolFragment tool) {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, tool)
+                .commit();
+    }
 
 
 }

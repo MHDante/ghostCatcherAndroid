@@ -14,10 +14,29 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Imager extends ToolFragment {
 
+    final Uri rootUri = gcEngine.Access().root;
+    SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
+        public void surfaceCreated(SurfaceHolder holder) {
+            // no-op -- wait until surfaceChanged()
+        }
+
+        public void surfaceChanged(SurfaceHolder holder,
+                                   int format, int width,
+                                   int height) {
+
+            initPreview(width, height);
+            startPreview();
+        }
+
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            // no-op
+        }
+    };
     private SurfaceView preview = null;
     private SurfaceHolder previewHolder = null;
     private ImageView ImagerFrame = null;
@@ -25,8 +44,29 @@ public class Imager extends ToolFragment {
     private boolean inPreview = false;
     private boolean cameraConfigured = false;
 
-    final Uri rootUri = gcEngine.Access().root;
     public Imager() {
+    }
+
+    public static Camera.Size getBestPreviewSize(int width, int height,
+                                                 Camera.Parameters parameters) {
+        Camera.Size result = null;
+
+        for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
+            if (size.width <= width && size.height <= height) {
+                if (result == null) {
+                    result = size;
+                } else {
+                    int resultArea = result.width * result.height;
+                    int newArea = size.width * size.height;
+
+                    if (newArea > resultArea) {
+                        result = size;
+                    }
+                }
+            }
+        }
+
+        return (result);
     }
 
     @Override
@@ -47,11 +87,6 @@ public class Imager extends ToolFragment {
     @Override
     public boolean checkClick(View view) {
         return false;
-    }
-
-    @Override
-    public Uri getGlyphUri() {
-        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_imager.png").build());
     }
 
     @Override
@@ -108,7 +143,6 @@ public class Imager extends ToolFragment {
 
     }
 
-
     private void initPreview(int width, int height) {
         if (camera != null && previewHolder.getSurface() != null) {
             try {
@@ -135,28 +169,6 @@ public class Imager extends ToolFragment {
         }
     }
 
-    public static Camera.Size getBestPreviewSize(int width, int height,
-                                                 Camera.Parameters parameters) {
-        Camera.Size result = null;
-
-        for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
-            if (size.width <= width && size.height <= height) {
-                if (result == null) {
-                    result = size;
-                } else {
-                    int resultArea = result.width * result.height;
-                    int newArea = size.width * size.height;
-
-                    if (newArea > resultArea) {
-                        result = size;
-                    }
-                }
-            }
-        }
-
-        return (result);
-    }
-
     private void startPreview() {
         if (cameraConfigured && camera != null) {
             camera.setDisplayOrientation(90);
@@ -166,24 +178,6 @@ public class Imager extends ToolFragment {
         }
     }
 
-    SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
-        public void surfaceCreated(SurfaceHolder holder) {
-            // no-op -- wait until surfaceChanged()
-        }
-
-        public void surfaceChanged(SurfaceHolder holder,
-                                   int format, int width,
-                                   int height) {
-
-            initPreview(width, height);
-            startPreview();
-        }
-
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            // no-op
-        }
-    };
-
     @Override
     public pivotOrientation getPivotOrientation(boolean enter) {
         return pivotOrientation.RIGHT;
@@ -191,9 +185,9 @@ public class Imager extends ToolFragment {
 
     protected int getAnimatorId(boolean enter) {
         if (enter) {
-			gcMain.playSound(gcMain.sounds.leverRoll);
-			return R.animator.rotate_in_from_right;
-		}
+            SoundManager.playSound(SoundManager.Sounds.leverRoll);
+            return R.animator.rotate_in_from_right;
+        }
         return R.animator.rotate_out_to_left;
     }
 }

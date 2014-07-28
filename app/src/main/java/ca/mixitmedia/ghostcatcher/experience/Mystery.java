@@ -10,16 +10,7 @@ import java.io.IOException;
  */
 public class Mystery {
     String UnSolved;
-
-    public String getUnsolved() {
-        return UnSolved;
-    }
-
     String Solved;
-
-    public String getSolved() {
-        return Solved;
-    }
 
     private Mystery() {
     }
@@ -58,5 +49,13 @@ public class Mystery {
             pEvent = parser.next();
         }
         throw new RuntimeException("mystery Parsing error : " + result.UnSolved);
+    }
+
+    public String getUnsolved() {
+        return UnSolved;
+    }
+
+    public String getSolved() {
+        return Solved;
     }
 }

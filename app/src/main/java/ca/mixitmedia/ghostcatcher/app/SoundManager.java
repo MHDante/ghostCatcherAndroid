@@ -8,13 +8,15 @@ import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
-import ca.mixitmedia.ghostcatcher.app.gcMediaService;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Dante on 15/03/14.
  */
 public class SoundManager {
+
+    public static final int SOUND_POOL_MAX_STREAMS = 4;
+    public static SoundPool soundPool;
 
     private static Context getContext() {
         Context context = gcEngine.Access().context;
@@ -103,13 +105,11 @@ public class SoundManager {
         return gcMediaService.mPlayer.getCurrentPosition();
     }
 
-    public static final int SOUND_POOL_MAX_STREAMS = 4;
-
-    public static SoundPool soundPool;
     public static int playSound(int soundName) {
         return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
     }
-    public static void init(Context ctxt){
+
+    public static void init(Context ctxt) {
         soundPool = new SoundPool(SOUND_POOL_MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
         Sounds.loadSounds(ctxt);
     }

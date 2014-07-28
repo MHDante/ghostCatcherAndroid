@@ -19,41 +19,34 @@ import java.util.Calendar;
 import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.views.SignalBeaconView;
 
 public class Amplifier extends ToolFragment {
 
-    private int dialogueStream = 0;
-
     private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
-
-    private BeaconManager beaconManager = new BeaconManager(gcEngine.Access().context);
-
-    int averageStrengthBeaconOne=0;
-    int averageStrengthBeaconTwo=0;
-    int averageStrengthBeaconThree=0;
-
+    final Uri rootUri = gcEngine.Access().root;
+    int averageStrengthBeaconOne = 0;
+    int averageStrengthBeaconTwo = 0;
+    int averageStrengthBeaconThree = 0;
     int iteratorBeaconOne = 0;
     int iteratorBeaconTwo = 0;
     int iteratorBeaconThree = 0;
-
     int[] beaconOneStrengthQueue = new int[5];
     int[] beaconTwoStrengthQueue = new int[5];
     int[] beaconThreeStrengthQueue = new int[5];
-
     int currentStrengthBeaconOne;
     int currentStrengthBeaconTwo;
     int currentStrengthBeaconThree;
-
     String beaconOneDebugString;
     String beaconTwoDebugString;
     String beaconThreeDebugString;
-
     float fakeTime;
+    private int dialogueStream = 0;
+    private BeaconManager beaconManager = new BeaconManager(gcEngine.Access().context);
 
-    final Uri rootUri = gcEngine.Access().root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -63,20 +56,20 @@ public class Amplifier extends ToolFragment {
         final TextView debugTextField = (TextView) view.findViewById(R.id.debug_text_field);
 
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-            @Override public void onBeaconsDiscovered(Region region, List<Beacon> beacons){
+            @Override
+            public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
 
-                for(int i=0; i<beacons.size(); i++){
+                for (int i = 0; i < beacons.size(); i++) {
                     currentStrengthBeaconOne = Math.abs(beacons.get(i).getRssi());
 
-                    if(beacons.get(i).getMacAddress().equals("CB:ED:AB:9A:95:E4")){
+                    if (beacons.get(i).getMacAddress().equals("CB:ED:AB:9A:95:E4")) {
                         currentStrengthBeaconOne = Math.abs(beacons.get(i).getRssi());
 
-                        if(iteratorBeaconOne <=4){
+                        if (iteratorBeaconOne <= 4) {
                             beaconOneStrengthQueue[iteratorBeaconOne] = currentStrengthBeaconOne;
                             averageStrengthBeaconOne = currentStrengthBeaconOne;
                             iteratorBeaconOne++;
-                        }
-                        else {
+                        } else {
                             int beaconOneSum = 0;
                             if (!(currentStrengthBeaconOne > (averageStrengthBeaconOne * 1.75)) && !(currentStrengthBeaconOne < (averageStrengthBeaconOne * 0.75))) {
                                 for (int j = 4; j >= 0; j--) {
@@ -93,10 +86,10 @@ public class Amplifier extends ToolFragment {
 
                             averageStrengthBeaconOne = beaconOneSum / 5;
                         }
-                        beaconOneDebugString = "ONE->RSSI: "+currentStrengthBeaconOne+"   Sum: "+(averageStrengthBeaconOne*5)+"  Average: "+averageStrengthBeaconOne;
+                        beaconOneDebugString = "ONE->RSSI: " + currentStrengthBeaconOne + "   Sum: " + (averageStrengthBeaconOne * 5) + "  Average: " + averageStrengthBeaconOne;
                     }
 
-                    if(beacons.get(i).getMacAddress().equals("FB:6B:2C:F1:C6:B7")){
+                    if (beacons.get(i).getMacAddress().equals("FB:6B:2C:F1:C6:B7")) {
                         currentStrengthBeaconTwo = Math.abs(beacons.get(i).getRssi());
 
                         if (iteratorBeaconTwo <= 4) {
@@ -122,15 +115,14 @@ public class Amplifier extends ToolFragment {
                         }
                         beaconTwoDebugString = "\nTWO->RSSI: " + currentStrengthBeaconTwo + "   Sum: " + (averageStrengthBeaconTwo * 5) + "  Average: " + averageStrengthBeaconTwo;
                     }
-                    if(beacons.get(i).getMacAddress().equals("DB:A6:5D:34:24:3B")){
+                    if (beacons.get(i).getMacAddress().equals("DB:A6:5D:34:24:3B")) {
                         currentStrengthBeaconThree = Math.abs(beacons.get(i).getRssi());
 
-                        if(iteratorBeaconThree <=4){
+                        if (iteratorBeaconThree <= 4) {
                             beaconThreeStrengthQueue[iteratorBeaconThree] = currentStrengthBeaconThree;
                             averageStrengthBeaconThree = currentStrengthBeaconThree;
                             iteratorBeaconThree++;
-                        }
-                        else {
+                        } else {
                             int beaconThreeSum = 0;
                             if (!(currentStrengthBeaconThree > (averageStrengthBeaconThree * 1.75)) && !(currentStrengthBeaconThree < (averageStrengthBeaconThree * 0.75))) {
                                 for (int j = 4; j >= 0; j--) {
@@ -148,9 +140,9 @@ public class Amplifier extends ToolFragment {
 
                             averageStrengthBeaconThree = beaconThreeSum / 5;
                         }
-                        beaconThreeDebugString = "\nTHREE->RSSI: "+currentStrengthBeaconThree+"   Sum: "+(averageStrengthBeaconThree*5)+"  Average: "+averageStrengthBeaconThree;
+                        beaconThreeDebugString = "\nTHREE->RSSI: " + currentStrengthBeaconThree + "   Sum: " + (averageStrengthBeaconThree * 5) + "  Average: " + averageStrengthBeaconThree;
                     }
-                    debugTextField.setText(beaconOneDebugString+beaconTwoDebugString+beaconThreeDebugString);
+                    debugTextField.setText(beaconOneDebugString + beaconTwoDebugString + beaconThreeDebugString);
                 }
             }
         });
@@ -158,7 +150,7 @@ public class Amplifier extends ToolFragment {
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("amplifier").appendPath("amplifier_overlay.png").build());
 
-        gcMain.soundPool.setVolume(gcMain.sounds.creepyChains, (averageStrengthBeaconOne/100),(averageStrengthBeaconOne/100));
+        SoundManager.soundPool.setVolume(SoundManager.Sounds.creepyChains, (averageStrengthBeaconOne / 100), (averageStrengthBeaconOne / 100));
 
         return view;
     }
@@ -194,17 +186,16 @@ public class Amplifier extends ToolFragment {
         iteratorBeaconOne = 0;
         iteratorBeaconTwo = 0;
         iteratorBeaconThree = 0;
-
     }
 
     @Override
     public void afterAnimation(boolean enter) {
         super.afterAnimation(enter);
 
-        gcMain.soundPool.play(gcMain.sounds.creepyChains,0.5f,0.5f,1,-1,1.0f);
-        //gcMain.soundPool.setLoop(gcMain.sounds.creepyChains, -1);
+        SoundManager.soundPool.play(SoundManager.Sounds.creepyChains, 0.5f, 0.5f, 1, -1, 1.0f);
+        //gcMain.soundPool.setLoop(SoundManager.Sounds.creepyChains, -1);
 
-        if(enter){
+        if (enter) {
             View view = this.getView();
 
             final SignalBeaconView beaconView = new SignalBeaconView(getActivity(), null);
@@ -215,22 +206,24 @@ public class Amplifier extends ToolFragment {
             beaconView.setWaveFunction(new SignalBeaconView.WaveFunction() {
                 @Override
                 public float getGraphYWaveOne(float graphX, float amplitude) {
-                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/250);
+                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND) / 250);
                     float period = 80;
 
-                    return amplitude + (float) (((amplitude/2) - (averageStrengthBeaconOne*(Math.log10(averageStrengthBeaconOne)))) * Math.sin(graphX  / period + time));
+                    return amplitude + (float) (((amplitude / 2) - (averageStrengthBeaconOne * (Math.log10(averageStrengthBeaconOne)))) * Math.sin(graphX / period + time));
                 }
+
                 public float getGraphYWaveTwo(float graphX, float amplitude) {
-                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/230);
+                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND) / 230);
                     float period = 50;
 
-                    return amplitude + (float) (((amplitude/2) - (averageStrengthBeaconTwo*(Math.log10(averageStrengthBeaconTwo)))) * Math.pow(Math.cos(graphX / period + time),3));
+                    return amplitude + (float) (((amplitude / 2) - (averageStrengthBeaconTwo * (Math.log10(averageStrengthBeaconTwo)))) * Math.pow(Math.cos(graphX / period + time), 3));
                 }
+
                 public float getGraphYWaveThree(float graphX, float amplitude) {
-                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/250);
+                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND) / 250);
                     float period = 75;
 
-                    return amplitude + (float) (((amplitude/2) - (averageStrengthBeaconThree*(Math.log10(averageStrengthBeaconThree)))) * Math.pow(Math.sin(graphX /period + time),5));
+                    return amplitude + (float) (((amplitude / 2) - (averageStrengthBeaconThree * (Math.log10(averageStrengthBeaconThree)))) * Math.pow(Math.sin(graphX / period + time), 5));
                 }
             });
         }
@@ -238,16 +231,11 @@ public class Amplifier extends ToolFragment {
     }
 
     @Override
-    public Uri getGlyphUri() {
-        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_amplifier.png").build());
-    }
-
-    @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
             case R.id.amplifier_button:
-                gcMain.soundPool.stop(dialogueStream);
-                dialogueStream = gcMain.playSound(gcMain.sounds.testSoundClip);
+                SoundManager.soundPool.stop(dialogueStream);
+                dialogueStream = SoundManager.playSound(SoundManager.Sounds.testSoundClip);
                 return true;
             default:
                 return false;
@@ -261,9 +249,9 @@ public class Amplifier extends ToolFragment {
 
     protected int getAnimatorId(boolean enter) {
         if (enter) {
-			gcMain.playSound(gcMain.sounds.leverRoll);
-			return R.animator.rotate_in_from_left;
-		}
+            SoundManager.playSound(SoundManager.Sounds.leverRoll);
+            return R.animator.rotate_in_from_left;
+        }
         return R.animator.rotate_out_to_right;
     }
 

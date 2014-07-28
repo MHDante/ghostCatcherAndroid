@@ -22,13 +22,15 @@ public class Typewriter extends ScrollView {
     int mIndex;
     long mDelay = 200; //Default 200ms delay
     boolean userIsScrolling = false;
+    private Handler mHandler = new Handler();
 
     public Typewriter(Context context, AttributeSet attrs) {
         super(context, attrs);
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         textView = new TextView(context);
-        linearLayout.addView(linearLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView.setText("");
+        linearLayout.addView(textView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         super.addView(linearLayout);
         super.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -42,18 +44,6 @@ public class Typewriter extends ScrollView {
         });
     }
 
-    private Handler mHandler = new Handler();
-    private Runnable characterAdder = new Runnable() {
-        @Override
-        public void run() {
-            textView.setText(mText.subSequence(0, mIndex++));
-            if (!userIsScrolling) Typewriter.super.fullScroll(View.FOCUS_DOWN);
-            if(mIndex <= mText.length()) {
-                mHandler.postDelayed(characterAdder, mDelay);
-            }
-        }
-    };
-
     public void animateText(CharSequence text) {
         mText = text;
         mIndex = 0;
@@ -61,8 +51,18 @@ public class Typewriter extends ScrollView {
         textView.setText("");
         mHandler.removeCallbacks(characterAdder);
         mHandler.postDelayed(characterAdder, mDelay);
-    }
-    public void concatenateText(CharSequence text){
+    }    private Runnable characterAdder = new Runnable() {
+        @Override
+        public void run() {
+            textView.setText(mText.subSequence(0, mIndex++));
+            if (!userIsScrolling) Typewriter.super.fullScroll(View.FOCUS_DOWN);
+            if (mIndex <= mText.length()) {
+                mHandler.postDelayed(characterAdder, mDelay);
+            }
+        }
+    };
+
+    public void concatenateText(CharSequence text) {
         mText = TextUtils.concat(textView.getText(), text);
         mIndex = textView.getText().length();
         mHandler.removeCallbacks(characterAdder);
@@ -72,4 +72,6 @@ public class Typewriter extends ScrollView {
     public void setCharacterDelay(long millis) {
         mDelay = millis;
     }
+
+
 }

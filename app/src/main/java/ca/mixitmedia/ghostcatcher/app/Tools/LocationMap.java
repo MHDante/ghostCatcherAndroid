@@ -26,21 +26,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
-import ca.mixitmedia.ghostcatcher.Utils;
 
 
 public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {
 
-    GoogleMap map;
     public List<gcLocation> locations;
+    public List<Marker> markers = new ArrayList<>();
+    GoogleMap map;
     int selectedLocation;
-
     Map<String, Uri> imageFileLocationMap;
 
-    public LocationMap(){createImageURIs();    }
+    public LocationMap() {
+        createImageURIs();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -72,27 +76,19 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         if (map != null) setUpMap();
     }
 
-    public List<Marker> markers = new ArrayList<>();
-
     private void setUpMap() {
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
-        //LatLngBounds b = new LatLngBounds(new LatLng(43.65486328474458, -79.38564497647212), new LatLng(43.66340903426289, -79.37292076230159));
-        //GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-        //        .image(BitmapDescriptorFactory.fromResource(R.drawable.campus))
-        //        .positionFromBounds(b);
-        //map.addGroundOverlay(newarkMap);
 
         locations = gcEngine.Access().getCurrentSeqPt().getLocations();
         if (locations.size() <= 0) return;
 
         for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
             gcLocation loc = locations.get(selectedLocation);
-            if (gcMain.getPlayerLocationInStory() == null || !loc.getId().equals(gcMain.getPlayerLocationInStory().getId())) {
+            if (gcMain.locationManager.getCurrentGCLocation() == null || !loc.getId().equals(gcMain.locationManager.getCurrentGCLocation().getId())) {
                 markers.add(map.addMarker(new MarkerOptions()
                         .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
                         .title(loc.getName())));
-                // Google Marker IDs are held as Strings with an m prefix : m1, m2, m3, m4
 
             } else {
                 markers.add(map.addMarker(new MarkerOptions()
@@ -172,23 +168,14 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     @Override
-    public Uri getGlyphUri() {
-        return (imageFileLocationMap.get("map_button_glyph"));
-    }
-
-    @Override
     public View getInfoContents(Marker marker) {
 
         LinearLayout lv = new LinearLayout(getActivity());
         lv.setBackgroundColor(Color.WHITE);
         lv.setOrientation(LinearLayout.VERTICAL);
 
-        //FrameLayout.LayoutParams LLParams
-        //=  new WindowManager.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT);
-
-        if (gcMain.getPlayerLocationInStory() != null
-                && marker.getTitle().equals(gcMain.getPlayerLocationInStory().getName()) //todo:hacks
-                && gcMain.isToolEnabled(Biocalibrate.class)) {
+        if (gcMain.locationManager.getCurrentGCLocation() != null
+                && marker.getTitle().equals(gcMain.locationManager.getCurrentGCLocation().getName())) {
 
             ImageView iv = new ImageView(getActivity());
             iv.setImageResource(R.drawable.fingerprint);
@@ -210,26 +197,26 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (gcMain.getPlayerLocationInStory() != null && marker.getTitle().equals(gcMain.getPlayerLocationInStory().getName())) { //todo:hacks
-            gcMain.swapTo(Biocalibrate.class);
+        if (gcMain.locationManager.getCurrentGCLocation() != null && marker.getTitle().equals(gcMain.locationManager.getCurrentGCLocation().getName())) { //todo:hacks
+            //Todo:alex, handle window clicks here.
         }
     }
 
     protected int getAnimatorId(boolean enter) {
         if (enter) {
-			gcMain.playSound(gcMain.sounds.strangeMetalNoise);
-			return R.animator.transition_in_from_top;
-		}
+            SoundManager.playSound(SoundManager.Sounds.strangeMetalNoise);
+            return R.animator.transition_in_from_top;
+        }
         return R.animator.transition_out_from_bottom;
     }
 
-    public void createImageURIs(){
+    public void createImageURIs() {
         final Uri rootUri = gcEngine.Access().root;
-        imageFileLocationMap = new HashMap<String,Uri>(){{
+        imageFileLocationMap = new HashMap<String, Uri>() {{
             put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("map").appendPath("map_overlay.png").build());
             put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
             put("arrow", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("btn_playback_play.png").build());
-            put("map_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_location_map.png").build());
+            put("map_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_locationmappng").build());
             put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
         }};
     }

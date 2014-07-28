@@ -23,15 +23,5 @@ public class Tester extends ToolFragment {
         return v;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public Uri getGlyphUri() {
-        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_ghost_catcher.png").build());
-    }
 
 }

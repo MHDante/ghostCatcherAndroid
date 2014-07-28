@@ -1,6 +1,5 @@
 package ca.mixitmedia.ghostcatcher;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -21,11 +20,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 /**
  * Created by Dante on 07/03/14.
@@ -62,8 +58,8 @@ public class Utils {
         return bitmap;
     }
 
-    public static void messageDialog(Activity a, String title, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(a);
+    public static void messageDialog(Context context, String title, String message) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(title);
         dialog.setMessage(message);
         dialog.setNeutralButton("OK", null);
@@ -132,25 +128,24 @@ public class Utils {
             Class res = R.id.class;
             Field field = res.getField(name);
             return field.getInt(null);
-        }
-        catch (Exception e) {
-            Log.e("MyTag", "Failure to get drawable id.", e);
-            return 0;
-        }
-    }
-    public static int findDrawableIDByName(String name) {
-        try {
-            Class res = R.drawable.class;
-            Field field = res.getField(name);
-            return field.getInt(null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e("MyTag", "Failure to get drawable id.", e);
             return 0;
         }
     }
 
-    public static List<Uri> getNdefIntentURIs(Intent intent){
+    public static int findDrawableIDByName(String name) {
+        try {
+            Class res = R.drawable.class;
+            Field field = res.getField(name);
+            return field.getInt(null);
+        } catch (Exception e) {
+            Log.e("MyTag", "Failure to get drawable id.", e);
+            return 0;
+        }
+    }
+
+    public static List<Uri> getNdefIntentURIs(Intent intent) {
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         ArrayList<Uri> ret = new ArrayList<>();
         if (rawMsgs != null) {
@@ -165,6 +160,10 @@ public class Utils {
                 }
             }
         }
-        return  ret;
+        return ret;
+    }
+
+    public static long TimeSince(long startTimeMillis) {
+        return startTimeMillis - System.currentTimeMillis();
     }
 }
