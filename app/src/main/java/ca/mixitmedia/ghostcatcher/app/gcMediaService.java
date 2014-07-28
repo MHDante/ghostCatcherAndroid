@@ -39,15 +39,13 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static int duration = -1;
     public static boolean isStarted;
     public static boolean isPaused;
-    static Notification status;
-    gcEngine engine;
     public static MediaPlayer mPlayer = null;
-    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
-
-    boolean looping;
-
-    BroadcastReceiver receiver = new AudioReceiver();
     public static boolean receiverRegistered;
+    static Notification status;
+    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
+    gcEngine engine;
+    boolean looping;
+    BroadcastReceiver receiver = new AudioReceiver();
 
     ///////////////////////////////////Service methods
     @Override
@@ -112,42 +110,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             }
         } else {
             stop();
-        }
-    }
-
-
-    ///////////////////////////////////Broadcast Receiver
-    private class AudioReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (intent.getAction().equals(ACTION_TOGGLE_PLAY)) {
-                if (isStarted) {
-                    if (mPlayer.isPlaying()) {
-                        mPlayer.pause();
-                        isPaused = true;
-                        updateNotification();
-                    } else {
-                        mPlayer.start();
-                        duration = mPlayer.getDuration();
-                        isPaused = false;
-                        updateNotification();
-                    }
-                } else startPlaying();
-            } else if (intent.getAction().equals(ACTION_STOP)) {
-                stop();
-            } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
-                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
-                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks = new ConcurrentLinkedQueue<Uri>();
-                tracks.add(track);
-                startPlaying();
-            } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
-                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
-                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks.add(track);
-                if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
-            }
         }
     }
 
@@ -216,6 +178,41 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
 
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_MPLAYER, status);
 
+    }
+
+    ///////////////////////////////////Broadcast Receiver
+    private class AudioReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(ACTION_TOGGLE_PLAY)) {
+                if (isStarted) {
+                    if (mPlayer.isPlaying()) {
+                        mPlayer.pause();
+                        isPaused = true;
+                        updateNotification();
+                    } else {
+                        mPlayer.start();
+                        duration = mPlayer.getDuration();
+                        isPaused = false;
+                        updateNotification();
+                    }
+                } else startPlaying();
+            } else if (intent.getAction().equals(ACTION_STOP)) {
+                stop();
+            } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
+                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
+                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+                tracks = new ConcurrentLinkedQueue<Uri>();
+                tracks.add(track);
+                startPlaying();
+            } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
+                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
+                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+                tracks.add(track);
+                if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
+            }
+        }
     }
 
 }

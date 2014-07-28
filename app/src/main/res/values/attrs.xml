@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ToolLightButton">
-        <attr name="enabled" format="boolean" />
-        <attr name="selected" format="boolean" />
+    <declare-styleable name="LightButton">
         <attr name="glyph" format="integer" />
     </declare-styleable>
 </resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ff7e27ff"
+    android:gravity="center_horizontal"
+    android:id="@+id/linearLayoutBio">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="BIOGRAPHY"
+            android:id="@+id/textViewTitleBio"
+            android:textColor="#ff000000"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/character_bio1"
+        android:src="@drawable/gc_seq1"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Professor Wolfe"
+        android:id="@+id/textprofname" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Professor Wolfe introduced himself when I inadvertently downloaded the Ghost Catcher app. He gave me tools to hunt Ghosts in the Ryerson U area. He built some kind of machine that bridges the land of the deceased with the world of the living.  I am somehow suspicious of his motives. "
+            android:id="@+id/profbio"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="13dp"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/arrow_bio"
+        android:src="@drawable/arrow_right"
+        android:background="@android:color/transparent"
+        android:layout_marginBottom="15dp"
+        android:scaleType="fitCenter"
+        android:rotation="180"
+        android:layout_gravity="left"
+        android:layout_marginLeft="15dp"
+        android:onClick="onClick" />
+
+    </LinearLayout>
+
+    </ScrollView>

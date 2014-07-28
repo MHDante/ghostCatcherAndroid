@@ -28,12 +28,6 @@
         android:layout_alignParentEnd="true" />
 
 
-    <SurfaceView
-        android:layout_width="0px"
-        android:layout_height="40dp"
-        android:id="@+id/surfaceView"
-        android:layout_gravity="right|top" />
-
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -68,7 +62,7 @@
         android:layout_alignParentLeft="true"
         android:visibility="visible"
         android:layout_above="@+id/ad_holder"
-        android:layout_below="@+id/surfaceView">
+        android:layout_below="@+id/tool_holder">
 
     </FrameLayout>
 
@@ -82,124 +76,98 @@
         android:visibility="visible"
         android:id="@+id/tool_holder">
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_alignBottom="@+id/overlay"
-            android:visibility="visible"
-            android:gravity="top"
-            android:weightSum="28">
+            android:weightSum="768"
+            android:orientation="horizontal"
+            android:layout_alignBottom="@+id/overlay">
 
             <Space
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="144"
+                android:layout_height="wrap_content" />
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:weightSum="768"
-                android:layout_weight="11">
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_locationMap"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_weight="144"
-                    android:layout_height="wrap_content" />
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_rfDetector"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tool_light_1"
-                    android:layout_weight="120"/>
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_imager"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tool_light_2"
-                    android:layout_weight="120" />
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_amplifier"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tool_light_3"
-                    android:layout_weight="120" />
+            <Space
+                android:layout_weight="144"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tool_light_4"
-                    android:layout_weight="120" />
+        <LinearLayout
+            android:translationX="300dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:weightSum="768"
+            android:orientation="horizontal"
+            android:layout_alignBottom="@+id/overlay">
 
-                <Space
-                    android:layout_weight="144"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
-            </TableRow>
+            <Space
+                android:layout_width="0dp"
+                android:layout_weight="144"
+                android:layout_height="wrap_content" />
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:weightSum="768"
-                android:layout_weight="11">
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_tester"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:id="@+id/space2"
-                    android:layout_weight="204" />
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_checklist"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/tool_light_5"
-                    android:layout_weight="120" />
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_ghostVault"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="120"
-                    android:id="@+id/tool_light_6" />
+            <ca.mixitmedia.ghostcatcher.views.LightButton
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tool_light_badges"
+                android:layout_weight="120"
+                android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="120"
-                    android:id="@+id/tool_light_7"/>
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:id="@+id/space3"
-                    android:layout_weight="204" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="5"
-                android:weightSum="100">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:id="@+id/space4"
-                    android:layout_weight="35" />
-
-                <ImageButton
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/tool_holder_tab"
-                    android:layout_weight="30"
-                    android:background="@android:color/transparent"
-                    android:onClick="onClick" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="35" />
-            </TableRow>
-
-        </TableLayout>
+            <Space
+                android:layout_weight="144"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <ImageView
             android:layout_width="match_parent"
@@ -246,11 +214,12 @@
                     android:layout_height="0dp"
                     android:layout_weight="22" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
+                <ca.mixitmedia.ghostcatcher.views.LightButton
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
-                    android:id="@+id/tool_light_back"
-                    android:layout_weight="56" />
+                    android:id="@+id/tool_light_communicator"
+                    android:layout_weight="56"
+                    android:onClick="onClick" />
 
                 <Space
                     android:layout_width="0dp"
@@ -307,11 +276,12 @@
                     android:layout_height="0dp"
                     android:layout_weight="22" />
 
-                <ca.mixitmedia.ghostcatcher.views.ToolLightButton
+                <ca.mixitmedia.ghostcatcher.views.LightButton
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
                     android:id="@+id/tool_light_journal"
-                    android:layout_weight="56" />
+                    android:layout_weight="56"
+                    android:onClick="onClick" />
 
                 <Space
                     android:layout_width="0dp"

@@ -1,8 +1,12 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:foregroundGravity="center">
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -121,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
+                    <ca.mixitmedia.ghostcatcher.views.Typewriter
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="..."
@@ -162,3 +166,103 @@
         android:adjustViewBounds="true" />
 
 </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/biocalibrate"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:translationY="-1000dp">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignBottom="@+id/fingerprint_mask"
+            android:weightSum="80"
+            android:id="@+id/tableLayout3">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="56" />
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="9"
+                android:weightSum="10">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2.5" />
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="5">
+
+                    <ProgressBar
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/calibrate_bar"
+                        android:indeterminate="false"
+                        style="?android:attr/progressBarStyleHorizontal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Calibrating"
+                        android:id="@+id/calibrating_text"
+                        android:layout_gravity="center"
+                        android:visibility="invisible"
+                        android:textColor="#ff000000"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true" />
+                </FrameLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2.5" />
+            </TableRow>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="15" />
+        </TableLayout>
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fingerprint_mask"
+            android:src="@drawable/bio_calibrate_unpressed"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:adjustViewBounds="true" />
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/biocalibrate_btn"
+            android:alpha="0"
+            android:id="@+id/calibrate_pressed_layout">
+
+            <ImageButton
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/biocalibrate_btn"
+                android:scaleType="fitCenter"
+                android:src="@drawable/bio_calibrate_pressed"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center_horizontal|bottom"
+                android:onClick="onClick"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:adjustViewBounds="true" />
+        </FrameLayout>
+
+    </RelativeLayout>
+</FrameLayout>

@@ -13,57 +13,15 @@ import java.util.List;
 public class gcTrigger {
 
 
-    public enum Type {
-        AUTO,
-        TOOL_SUCCESS,
-        TOOL_FAILURE,
-        LOCATION_ENTER,
-        LOCATION_EXIT,
-        SCRIPTED
-    }
-
     boolean enabled;
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean value) {
-        enabled = value;
-    }
-
     int id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int value) {
-        id = value;
-    }
-
     Type type;
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type value) {
-        type = value;
-    }
-
     String data;
-
     List<gcAction> actions;
-
-    public List<gcAction> getActions() {
-        return actions;
-    }
 
     private gcTrigger() {
         actions = new ArrayList<>();
     }
-
 
     public static gcTrigger parse(XmlPullParser parser)
             throws IOException, XmlPullParserException {
@@ -96,44 +54,43 @@ public class gcTrigger {
         throw new RuntimeException("trigger Parsing error : " + result.id);
     }
 
-    public void activate(gcActionManager actionManager) {
-        int hitLock = 0;
-        Iterate:
-        for (gcAction a : actions) {
-            hitLock++;
-            switch (a.getType()) {
-                case DIALOG:
-                    actionManager.startDialog(a.getData());
-                    if (a.lock) break Iterate;
-                    continue;
-                case ENABLE_TOOL:
-                    actionManager.enableTool(a.getData());
-                    continue;
-                case DISABLE_TOOL:
-                    actionManager.disableTool(a.getData());
-                    continue;
-                case END_SQPT:
-                    actionManager.endSqPt(a.getData());
-                    continue;
-                case ENABLE_TRIGGER:
-                    actionManager.enableTrigger(a.getData());
-                    continue;
-                case COMPLETE_TASK:
-                    actionManager.completeTask(a.getData());
-                    continue;
-                case CHECK_TASK:
-                    actionManager.checkTask(a.getData());
-                    continue;
-                case ACHIEVEMENT:
-                    actionManager.achievement(a.getData());
-                    continue;
-                case CONSUME_TRIGGER:
-                    actionManager.consumeTrigger(a.getData());
-                    continue;
-            }
-        }
-        if (hitLock < actions.size()) this.setType(Type.AUTO);
-        gcEngine.Access().getCurrentSeqPt().triggers.remove(this);
+    public boolean isEnabled() {
+        return enabled;
     }
+
+    public void setEnabled(boolean value) {
+        enabled = value;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int value) {
+        id = value;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type value) {
+        type = value;
+    }
+
+    public List<gcAction> getActions() {
+        return actions;
+    }
+
+
+    public enum Type {
+        AUTO,
+        TOOL_SUCCESS,
+        TOOL_FAILURE,
+        LOCATION_ENTER,
+        LOCATION_EXIT,
+        SCRIPTED
+    }
+
 
 }

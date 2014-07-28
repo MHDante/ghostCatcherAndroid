@@ -1,16 +1,26 @@
-package ca.mixitmedia.ghostcatcher.utils;
+package ca.mixitmedia.ghostcatcher;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.os.Parcelable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
@@ -48,8 +58,8 @@ public class Utils {
         return bitmap;
     }
 
-    public static void messageDialog(Activity a, String title, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(a);
+    public static void messageDialog(Context context, String title, String message) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(title);
         dialog.setMessage(message);
         dialog.setNeutralButton("OK", null);
@@ -86,5 +96,74 @@ public class Utils {
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = px / (metrics.densityDpi / 160f);
         return dp;
+    }
+
+
+    //todo:One day I will use reflection for something cool.
+    //public static <T> void AutoInitialize(Class<T> cls) {
+//
+    //    for (Field f : cls.getFields()) {
+    //        try {
+    //            f.set(null, f.getType().newInstance());
+    //        } catch (InstantiationException | IllegalAccessException e) {
+    //            throw new RuntimeException(e);
+    //        }
+    //    }
+    //}
+//
+    //public static <T, Q> Iterable<Q> MemberIterator(Class<T> container, Class<Q> MemberClass) {
+    //    ArrayList<Q> ret = new ArrayList<>();
+    //    for (Field f : container.getFields()) {
+    //        try {
+    //            ret.add(MemberClass.cast(f.get(null)));
+    //        } catch (IllegalAccessException e) {
+    //            throw new RuntimeException(e);
+    //        }
+    //    }
+    //    return ret;
+    //}
+
+    public static int findIdByName(String name) {
+        try {
+            Class res = R.id.class;
+            Field field = res.getField(name);
+            return field.getInt(null);
+        } catch (Exception e) {
+            Log.e("MyTag", "Failure to get drawable id.", e);
+            return 0;
+        }
+    }
+
+    public static int findDrawableIDByName(String name) {
+        try {
+            Class res = R.drawable.class;
+            Field field = res.getField(name);
+            return field.getInt(null);
+        } catch (Exception e) {
+            Log.e("MyTag", "Failure to get drawable id.", e);
+            return 0;
+        }
+    }
+
+    public static List<Uri> getNdefIntentURIs(Intent intent) {
+        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        ArrayList<Uri> ret = new ArrayList<>();
+        if (rawMsgs != null) {
+            NdefMessage[] msgs = new NdefMessage[rawMsgs.length];
+            for (int i = 0; i < rawMsgs.length; i++) {
+                msgs[i] = (NdefMessage) rawMsgs[i];
+            }
+            for (NdefMessage message : msgs) {
+                for (NdefRecord record : message.getRecords()) {
+                    //Ignore the api warning, this is for demo, during which we will have api 16 at least
+                    ret.add(record.toUri());
+                }
+            }
+        }
+        return ret;
+    }
+
+    public static long TimeSince(long startTimeMillis) {
+        return startTimeMillis - System.currentTimeMillis();
     }
 }

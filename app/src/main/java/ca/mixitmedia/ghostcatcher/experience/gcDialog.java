@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.experience;
 import android.app.AlertDialog;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.util.SparseArray;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -11,8 +12,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import ca.mixitmedia.ghostcatcher.Utils;
 
 /**
  * Created by Dante on 07/03/14
@@ -20,17 +23,23 @@ import java.util.Map;
 public class gcDialog {
 
     public String id;
-    public Map<Integer, Uri> portraits = new HashMap<>();
-    public Map<Integer, String> parsed = new HashMap<>();
+    public List<Integer> intervals = new ArrayList<>();
+    public SparseArray<Uri> portraits = new SparseArray<>();
+    public SparseArray<String> parsed = new SparseArray<>();
     public Uri audio;
     public int duration;
 
     private gcDialog() {
     }
 
-    public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
+    public static gcDialog get(gcSeqPt seqPt, String id) {
         if (!seqPt.dialogCache.containsKey(id))
-            loadDialog(seqPt, id);
+            try {
+                loadDialog(seqPt, id);
+            } catch (IOException e) {
+                Utils.messageDialog(gcEngine.Access().context, "Error", e.getMessage());
+                e.printStackTrace();
+            }
         return seqPt.dialogCache.get(id);
     }
 
@@ -64,6 +73,7 @@ public class gcDialog {
                     if (line.charAt(1) == '>') {
                         chr = gcEngine.Access().getCharacter(line.substring(2).trim());
                         if (!total.toString().isEmpty()) {
+                            dialog.intervals.add(time);
                             dialog.portraits.put(time, chr.getPose(pose));
                             dialog.parsed.put(time, total.toString());
                         }
@@ -98,4 +108,7 @@ public class gcDialog {
         seqPt.dialogCache.put(id, dialog);
     }
 
+    public static int getDuration() {
+        throw new RuntimeException("NotImplemented");
+    }
 }

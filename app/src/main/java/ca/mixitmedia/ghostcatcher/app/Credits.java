@@ -2,9 +2,7 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-import ca.mixitmedia.ghostcatcher.app.R;
 
 public class Credits extends Activity {
 

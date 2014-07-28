@@ -8,10 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,77 +35,7 @@ public class StartScreen extends Activity {
     private String url;
     private String unzipLocation;
     private String zipFile;
-    private File fileDir;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
-        Log.d("Filepaths 1 :", fileDir.getPath());
-		String cacheDir = getExternalCacheDir().getPath();
-        Log.d("Filepaths 2 :", cacheDir);
-        unzipLocation = getExternalFilesDir("mixitmedia").getPath();
-        Log.d("Filepaths 3 :", unzipLocation);
-        zipFile = cacheDir+"/exp.zip";
-        Log.d("Filepaths 4 :", zipFile);
-
-        setContentView(R.layout.activity_start_screen);
-
-        final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        final android.net.NetworkInfo wifi =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile =  connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-
-        url = getString(R.string.url);
-
-        Button continueButton = (Button) findViewById(R.id.continueButton);
-        Button creditsButton = (Button) findViewById(R.id.creditsButton);
-
-        continueButton.setEnabled(false);
-        creditsButton.setEnabled(false);
-
-
-        if (!fileDir.exists()) {
-            if ((new File(zipFile)).exists()) {
-                Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                if ( fileToMD5(zipFile).equals("e30fa973ee4d9573b907b00d376e67aa") ) {
-                    try {
-                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-
-                        unzip();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                }
-            }
-            else {
-                if (wifi.isAvailable())
-                    // Trigger Async Task (onPreExecute method)
-                    new DownloadZipFile().execute(url);
-                else if (mobile.isAvailable()) {
-                    //DownloadAre you sure? If yes, ...
-                    //Toast.makeText(this,"ARE YOU SURE?",Toast.LENGTH_LONG).show();
-                    try {
-                        internetDialog();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else
-                    Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();
-            }
-        }
-        else if(fileDir.list().length == 0) {
-            try {
-                unzip();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    private File fileDir, appDir;
 
     public static String fileToMD5(String filePath) {
         InputStream inputStream = null;
@@ -121,7 +49,7 @@ public class StartScreen extends Activity {
                 if (numRead > 0)
                     digest.update(buffer, 0, numRead);
             }
-            byte [] md5Bytes = digest.digest();
+            byte[] md5Bytes = digest.digest();
             return convertHashToString(md5Bytes);
         } catch (Exception e) {
             return null;
@@ -129,41 +57,121 @@ public class StartScreen extends Activity {
             if (inputStream != null) {
                 try {
                     inputStream.close();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
     }
 
-    public void settingsDialog(View v) throws Exception{
+    //From internet
+    private static String convertHashToString(byte[] md5Bytes) {
+        String returnVal = "";
+        for (byte md5Byte : md5Bytes) {
+            returnVal += Integer.toString((md5Byte) + 0x100, 16).substring(1);
+        }
+        return returnVal;
+    }
 
-       /* AlertDialog dialog;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        final String[] items = {" 1 "," 2 "," 3 "," 4 "};
+        fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
 
-        final ArrayList selectedItems = new ArrayList();
+        appDir = fileDir.getParentFile().getParentFile().getParentFile();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMultiChoiceItems(items, null,
-                new DialogInterface.OnMultiChoiceClickListener() {
-                    // indexSelected contains the index of item (of which checkbox checked)
-                    @Override
-                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                        if (isChecked) {
-                            // If the user checked the item, add it to the selected items
-                            selectedItems.add(indexSelected);
-                        } else if (selectedItems.contains(indexSelected)) {
-                            // Else, if the item is already in the array, remove it
-                            selectedItems.remove(Integer.valueOf(indexSelected));
-                        }
+        Log.d("APPDIR IS", appDir.getAbsolutePath());
+        //APPDIR IS﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app
+
+        Log.d("Filepaths 1 :", fileDir.getPath());
+        //Filepaths 1 :﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher
+
+        String cacheDir = getExternalCacheDir().getPath();
+        Log.d("Filepaths 2 :", cacheDir);
+        //Filepaths 2 :﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app/cache
+
+        unzipLocation = getExternalFilesDir("mixitmedia").getPath();
+        Log.d("Filepaths 3 :", unzipLocation);
+        zipFile = cacheDir + "/exp.zip";
+        Log.d("Filepaths 4 :", zipFile);
+
+        setContentView(R.layout.activity_start_screen);
+        //
+
+        final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        url = getString(R.string.url);
+
+        Button continueButton = (Button) findViewById(R.id.continueButton);
+        Button creditsButton = (Button) findViewById(R.id.creditsButton);
+
+        continueButton.setEnabled(false);
+        creditsButton.setEnabled(false);
+
+        if (!fileDir.exists()) {
+            if ((new File(zipFile)).exists()) {
+                Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
+                if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
+                    try {
+                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+                        unzip();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                });
-        builder.setTitle("IS THIS WHAT YOU WANTED DANTE?");
+                } else {
+                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
+                }
+            } else {
+                if (wifi.isAvailable())
+                    // Trigger Async Task (onPreExecute method)
+                    new DownloadZipFile().execute(url);
+                else if (mobile.isAvailable()) {
+                    try {
+                        internetDialog();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else
+                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
+            }
+        } else if (fileDir.list().length == 0) {
 
-        dialog = builder.create();
-        dialog.show();*/
+            Log.e("TAG", "TRUE ;  FILEDIR IS EMPTY");
+
+            if (!((new File(zipFile)).exists())) {
+                if (wifi.isAvailable())
+                    // Trigger Async Task (onPreExecute method)
+                    new DownloadZipFile().execute(url);
+                else if (mobile.isAvailable()) {
+                    try {
+                        internetDialog();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else
+                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
+            } else {
+                if ((new File(zipFile)).exists()) {
+                    Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
+                    if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
+                        try {
+                            Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+                            unzip();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
+                    }
+                }
+            }
+        }
+    }
+
+    public void settingsDialog(View v) throws Exception {
 
         final Dialog dialog = new Dialog(StartScreen.this);
         dialog.setContentView(R.layout.dialog_view);
@@ -182,30 +190,52 @@ public class StartScreen extends Activity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(fileDir.exists()) {
-                    //delete
+                if (fileDir.exists()) {
+                    clearApplicationData();
+
+                    Button newGame = (Button) findViewById(R.id.startButton);
+                    newGame.setEnabled(false);
+
                     Toast.makeText(StartScreen.this, "DELETED", Toast.LENGTH_LONG).show();
-                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                            Uri.parse("file://" + Environment.getExternalStorageDirectory())));
                 }
             }
-
         });
 
         dialog.show();
     }
 
-    //From internet
-    private static String convertHashToString(byte[] md5Bytes) {
-        String returnVal = "";
-		for (byte md5Byte : md5Bytes) {
-            returnVal += Integer.toString((md5Byte) + 0x100, 16).substring(1);
+    public void clearApplicationData() {
+
+
+        Log.d("FILEDIR IS ", fileDir.getAbsolutePath());
+        Log.d("APPDIR IS", appDir.getAbsolutePath());
+
+        if (fileDir.exists()) {
+            String[] children = fileDir.list();
+            for (String s : children) {
+                if (!s.equals("lib")) {
+                    deleteDir(new File(fileDir, s));
+                    Log.d("", "deleted");
+                }
+            }
         }
-        return returnVal;
     }
 
-    public void internetDialog() throws Exception
-    {
+    public boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (String aChildren : children) {
+                boolean success = deleteDir(new File(dir, aChildren));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+
+        return dir.delete();
+    }
+
+    public void internetDialog() throws Exception {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
 
         builder.setMessage("Ghost Catcher needs to download a file. Data charges may apply. \n\nDo you want to continue?");
@@ -218,16 +248,39 @@ public class StartScreen extends Activity {
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener()
-        {
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
+                //Button startButton = (Button) findViewById(R.id.startButton);
+                //startButton.setEnabled(false);
                 dialog.dismiss();
+
+                finish();
             }
         });
 
         builder.show();
+    }
+
+    //Extract zip calls Asynctask
+    public void unzip() throws IOException {
+        mProgressDialog = new ProgressDialog(StartScreen.this);
+        mProgressDialog.setMessage("Extracting the downloaded file...");
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        mProgressDialog.show();
+        new UnZipTask().execute(zipFile);
+    }
+
+    public void start(View view) {
+        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
+        startActivity(myIntent);
+    }
+
+    public void credits(View view) {
+        Intent intent = new Intent(StartScreen.this, Credits.class);
+        startActivity(intent);
+
     }
 
     //-This is method is used for Download Zip file from server and store in Desire location.
@@ -303,17 +356,6 @@ public class StartScreen extends Activity {
         }
     }
 
-    //Extract zip calls Asynctask
-    public void unzip() throws IOException {
-		mProgressDialog = new ProgressDialog(StartScreen.this);
-		mProgressDialog.setMessage("Extracting the downloaded file...");
-		mProgressDialog.setCancelable(false);
-		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		mProgressDialog.show();
-        new UnZipTask().execute(zipFile);
-    }
-
-
     private class UnZipTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
@@ -326,16 +368,6 @@ public class StartScreen extends Activity {
 
             //File archive = new File(filePath);
             try {
-                //ZipFile zipfile = new ZipFile(archive);
-                //int fileCount = zipfile.size();
-                //mProgressDialog.setMax(zipfile.size());
-                //for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                //    ZipEntry entry = (ZipEntry) e.nextElement();
-                //    isExtracted++;
-                //    unzipEntry(zipfile, entry, unzipLocation);
-                //    mProgressDialog.setProgress((isExtracted * 100) / fileCount);
-                //}
-//
                 UnzipUtil d = new UnzipUtil(zipFile, unzipLocation);
                 d.unzip();
 
@@ -348,17 +380,16 @@ public class StartScreen extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
             mProgressDialog.dismiss();
+
+            //Now delete the zipfile since it takes up 360000000 bits
+            File theZip = new File(zipFile);
+
+            theZip.delete();
+
         }
 
-//        private void createDir(File dir) {
-//            if (dir.exists()) {
-//                return;
-//            }
-//            if (!dir.mkdirs()) {
-//                throw new RuntimeException("Can not create dir " + dir);
-//            }
-//        }
     }
+
     public class UnzipUtil {
         private String zipFile;
         private String location;
@@ -376,13 +407,12 @@ public class StartScreen extends Activity {
                 ZipInputStream zin = new ZipInputStream(fin);
                 ZipEntry ze;
                 while ((ze = zin.getNextEntry()) != null) {
-                    Log.d("Decompress", "Unzipping " + ze.getName());
 
                     if (ze.isDirectory()) {
                         dirChecker(ze.getName());
                     } else {
-                        FileOutputStream fout = new FileOutputStream(new File(location+ "/"+ ze.getName()));
-                        Log.e("uz", location+ "/"+ ze.getName());
+                        FileOutputStream fout = new FileOutputStream(new File(location + "/" + ze.getName()));
+                        //Log.e("uz", location+ "/"+ ze.getName());
                         byte[] buffer = new byte[8192];
                         int len;
                         while ((len = zin.read(buffer)) != -1) {
@@ -403,21 +433,10 @@ public class StartScreen extends Activity {
         private boolean dirChecker(String dir) {
             File f = new File(location + "/" + dir);
             if (!f.isDirectory()) {
-                Log.e("DirChecker", dir);
+                //Log.e("DirChecker", dir);
                 return f.mkdirs();
             }
-			return false;
+            return false;
         }
-    }
-
-    public void start(View view){
-        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
-        startActivity(myIntent);
-    }
-
-    public void credits(View view){
-        Intent intent = new Intent(StartScreen.this, Credits.class);
-        startActivity(intent);
-
     }
 }
