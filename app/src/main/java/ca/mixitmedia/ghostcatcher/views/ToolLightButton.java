@@ -12,7 +12,7 @@ import android.view.View;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
-import ca.mixitmedia.ghostcatcher.utils.Utils;
+import ca.mixitmedia.ghostcatcher.Utils;
 
 /**
  * Created by Dante on 2014-06-13.
@@ -20,80 +20,32 @@ import ca.mixitmedia.ghostcatcher.utils.Utils;
 
 public class ToolLightButton extends View {
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-
-        invalidate();
-        requestLayout();
-    }
-
-    boolean selected;
-
-    public boolean isEnabled() {
-        return enabled;
-
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-
-        invalidate();
-        requestLayout();
-    }
-
-    public Bitmap getSrc() {
-        return src;
-    }
-
-    public void setSrc(Bitmap src) {
-        this.src = src;
-
-        invalidate();
-        requestLayout();
-    }
-
-    public ToolFragment getToolFragment() {
-        return toolFragment;
-    }
-
-    public void setToolFragment(ToolFragment toolFragment) {
-        this.toolFragment = toolFragment;
-    }
-
-    ToolFragment toolFragment;
-    boolean enabled;
-    Bitmap src, lit, unlit, disabled;
+    public ToolFragment toolFragment;
+    Bitmap glyph, lit, unlit, disabled;
     int height, width;
     Paint paint;
 
+    public void setGlyph(Bitmap glyph) {
+        this.glyph = glyph;
+        invalidate();
+        requestLayout();
+    }
 
     public ToolLightButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
-        TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.ToolLightButton,
-                0, 0);
-
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs,R.styleable.ToolLightButton,0, 0);
         try {
-            selected = a.getBoolean(R.styleable.ToolLightButton_selected, false);
-            enabled = a.getBoolean(R.styleable.ToolLightButton_enabled, false);
-            Drawable glyph = a.getDrawable(R.styleable.ToolLightButton_glyph);
-            if (glyph != null) src = Utils.drawableToBitmap(glyph);
+            Drawable _glyph = a.getDrawable(R.styleable.ToolLightButton_glyph);
+            if (_glyph != null) glyph = Utils.drawableToBitmap(_glyph);
             lit = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_lit));
             unlit = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_unlit));
             disabled = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_disabled));
-
         } finally {
             a.recycle();
         }
     }
-
-
+    
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -104,19 +56,21 @@ public class ToolLightButton extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (enabled) {
-            if (selected) {
+        if (toolFragment.isEnabled()) {
+            if (toolFragment.isResumed()) {
+                if(toolFragment.hasNotification() && ((System.currentTimeMillis() / 500) % 2 !=0))
+                    drawCenteredBitmap(canvas, unlit);
                 drawCenteredBitmap(canvas, lit);
             } else {
+                if(toolFragment.hasNotification() && ((System.currentTimeMillis() / 500) % 2 !=0))
+                    drawCenteredBitmap(canvas, lit);
                 drawCenteredBitmap(canvas, unlit);
             }
-            if (src != null)
-                drawCenteredBitmap(canvas, src);
+            if (glyph != null)
+                drawCenteredBitmap(canvas, glyph);
         } else {
             drawCenteredBitmap(canvas, disabled);
         }
-
-
     }
 
     private void drawCenteredBitmap(Canvas canvas, Bitmap bitmap) {

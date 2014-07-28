@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
+
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -18,6 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.app.Tools.Biocalibrate;
+import ca.mixitmedia.ghostcatcher.app.Tools.LocationMap;
+import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
 
 /**
  * Created by Dante on 07/03/14
@@ -51,6 +59,7 @@ public class gcEngine {
     public static void init(Context context) {
         ourInstance = new gcEngine(context);
     }
+    public static void detatch(){ourInstance.context = null;}
 
     private gcEngine(Context context) {
         this.context = context;
@@ -117,6 +126,33 @@ public class gcEngine {
 
     }
 
+    public gcLocation playerLocationInStory;
+    public void UpdateLocation(Location location){
+        boolean hit = false;
+        float accuracy = location.getAccuracy();
+        for (gcLocation l : locations) {
+            float distance[] = new float[3]; // ugh, ref parameters.
+            Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
+            if (distance[0] <= accuracy) {
+                playerLocationInStory = l;
+                gcTrigger trigger = gcEngine.Access().getCurrentSeqPt().getTrigger(l);
+                //todo:decide what to do
+            }
+        }
+
+        if (hit) {
+            if (Tools.Current() == Tools.locationMap) {
+                for (gcLocation l : Tools.locationMap.locations) {
+                    if (l == playerLocationInStory) {
+                        Tools.locationMap.markers.get(Tools.locationMap.locations.indexOf(l)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2));
+                    } else {
+                        Tools.locationMap.markers.get(Tools.locationMap.locations.indexOf(l)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
+                    }
+                }
+            }
+        }
+    }
+
     public gcSeqPt getCurrentSeqPt() {
         return seqPts.get(0);
     }
@@ -139,5 +175,9 @@ public class gcEngine {
             }
         }
         return bm;
+    }
+
+    public gcLocation getDestination() {
+        return null;
     }
 }

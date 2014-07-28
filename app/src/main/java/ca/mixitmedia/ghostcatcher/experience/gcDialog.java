@@ -25,8 +25,7 @@ public class gcDialog {
     public Uri audio;
     public int duration;
 
-    private gcDialog() {
-    }
+    private gcDialog() {}
 
     public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
         if (!seqPt.dialogCache.containsKey(id))
@@ -98,4 +97,7 @@ public class gcDialog {
         seqPt.dialogCache.put(id, dialog);
     }
 
+    public static int getDuration() {
+        throw new RuntimeException("NotImplemented");
+    }
 }

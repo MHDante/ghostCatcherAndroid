@@ -29,7 +29,7 @@ import java.util.Map;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
-import ca.mixitmedia.ghostcatcher.utils.Utils;
+import ca.mixitmedia.ghostcatcher.Utils;
 
 
 public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener {

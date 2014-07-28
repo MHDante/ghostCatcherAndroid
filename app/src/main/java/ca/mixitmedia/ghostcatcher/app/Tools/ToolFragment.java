@@ -10,8 +10,15 @@ import android.net.Uri;
 import android.view.Display;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.app.SoundManager;
+import ca.mixitmedia.ghostcatcher.views.ToolLightButton;
 
 public abstract class ToolFragment extends Fragment {
 
@@ -19,11 +26,12 @@ public abstract class ToolFragment extends Fragment {
 	 * the parent MainActivity which is to hold this ToolFragment
 	 */
 	protected MainActivity gcMain;
+    public ToolLightButton toolLight;
+    private boolean enabled;
 
-	/**
+    /**
 	 * Checks whether the click is to be handled by the parent MainActivity, or will be handled
 	 * solely by this ToolFragment
-	 *
 	 * @param view the clicked view
 	 * @return true if touch needs to be handles by the parent MainActivity, otherwise false
 	 */
@@ -33,10 +41,11 @@ public abstract class ToolFragment extends Fragment {
 
 	/**
 	 * Sets the toolbar icon of the ToolFragment
-	 *
 	 * @return the resource ID of the toolbar icon
 	 */
-	public abstract Uri getGlyphUri();
+	public int getGlyphId(){
+        return Utils.findDrawableIDByName("icon_"+ this.getClass().getName());
+    };
 
 	@Override
 	public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
@@ -51,21 +60,13 @@ public abstract class ToolFragment extends Fragment {
 
 			@Override
 			public void onAnimationStart(Animator animation) {
-				MainActivity.transitionInProgress = true;
-				//if (enter) {
-				//	gcMain.gearsBackground.start();
-				//}
+				//MainActivity.transitionInProgress = true;
 			}
 
 			@Override
 			public void onAnimationEnd(Animator animation) {
-				MainActivity.transitionInProgress = false;
+				//MainActivity.transitionInProgress = false;
 				if (getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
-
-				//if (enter) {
-				//	//gcMain.gearsBackground.stop();
-				//}
-
 				afterAnimation(enter);
 
 			}
@@ -76,9 +77,8 @@ public abstract class ToolFragment extends Fragment {
 	}
 
 	protected int getAnimatorId(boolean enter) {
-		if (enter) gcMain.playSound(gcMain.sounds.metalClick);
-
-		return ((enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_right);
+		if (enter) SoundManager.playSound(SoundManager.Sounds.metalClick);
+		return ((enter) ? R.animator.transition_in_from_bottom : R.animator.transition_out_from_bottom);
 	}
 
 	@Override
@@ -91,18 +91,6 @@ public abstract class ToolFragment extends Fragment {
 			throw new ClassCastException(activity.toString()
 					+ " is not a GhostCatcher Activity");
 		}
-	}
-
-	@Override
-	public void onPause() {
-		gcMain.ToolMap.get(this.getClass()).setSelected(false);
-		super.onPause();
-	}
-
-	@Override
-	public void onResume() {
-		gcMain.ToolMap.get(this.getClass()).setSelected(true);
-		super.onResume();
 	}
 
 	@Override
@@ -156,12 +144,28 @@ public abstract class ToolFragment extends Fragment {
 
 	}
 
-	protected enum pivotOrientation {
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    protected Queue<ToolMessage> pendingMessages = new LinkedList<>();
+    public boolean hasNotification() {
+        return pendingMessages.size()!=0;
+    }
+
+    protected enum pivotOrientation {
 		LEFT,   //Pivot from the left
 		RIGHT,  //Pivot from the right
 		TOP,    //Pivot from the top
 		BOTTOM //Pivot from the bottom
 	}
 
-
+    public static class ToolMessage{
+        public Object data;
+        public boolean lock;
+    }
 }

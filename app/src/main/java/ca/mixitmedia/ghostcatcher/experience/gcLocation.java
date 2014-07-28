@@ -2,6 +2,7 @@ package ca.mixitmedia.ghostcatcher.experience;
 
 import android.location.Location;
 import android.net.Uri;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -67,5 +68,23 @@ public class gcLocation extends Location {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+    public static gcLocation fromURI(Uri uri){
+
+        if (uri != null && uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
+            String path = uri.getLastPathSegment();
+            String[] tokens = path.split("\\.");
+            String type = tokens[1];
+            String id = tokens[0];
+            if (type.equals("location")) {
+                return gcEngine.Access().getLocation(id);
+
+            }
+            Toast.makeText(gcEngine.Access().context, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
+            return null;
+        }
+        Toast.makeText(gcEngine.Access().context, "Invalid Location URL", Toast.LENGTH_LONG).show();
+        return  null;
+    }
 }
 

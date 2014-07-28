@@ -110,9 +110,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
     Map<String, Uri> imageFileLocationMap;
 
-    public RFDetector(){
-        createImageURIs();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -149,8 +146,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	    approxDistance = ApproxDistance.CLOSE;
 
 		//set initial data right away, if available
-		gcMain.setGPSUpdates(3000, 0);
-		Location currentLocation = gcMain.getCurrentGPSLocation();
+		gcMain.locationManager.setGPSUpdates(3000, 0);
+		Location currentLocation = gcMain.locationManager.getCurrentGPSLocation();
 		if (currentLocation != null) {
 			System.out.println("Stored location loaded");
 			onLocationChanged(currentLocation);
@@ -170,7 +167,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
 				SensorManager.SENSOR_DELAY_GAME);
-		gcMain.setGPSUpdates(0, 0);
+        gcMain.locationManager.setGPSUpdates(0, 0);
 		//updateDestination();
 	}
 
@@ -180,7 +177,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	@Override
 	public void onPause() {
 		sensorManager.unregisterListener(this);    //unregister listener for sensors
-		gcMain.requestSlowGPSUpdates(); //slow down gps updates
+        gcMain.locationManager.requestSlowGPSUpdates(); //slow down gps updates
 		super.onPause();
 	}
 
@@ -264,27 +261,27 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		if (approxDistance != currentDistance) {
 			switch (currentDistance) {
 				case FAR_FAR_AWAY:
-					gcMain.setGPSUpdates(60000, 100); //60 seconds, 100 meters
+					gcMain.locationManager.setGPSUpdates(60000, 100); //60 seconds, 100 meters
 					Log.d("RFDetector", "setGPSUpdates(60000, 100)");
 					break;
 				case FAR:
-					gcMain.setGPSUpdates(30000, 25); //30 seconds, 25 meters
+					gcMain.locationManager.setGPSUpdates(30000, 25); //30 seconds, 25 meters
 					Log.d("RFDetector", "setGPSUpdates(30000, 25)");
 					break;
 				case MEDIUM:
-					gcMain.setGPSUpdates(10000, 10); //10 seconds, 10 meters
+					gcMain.locationManager.setGPSUpdates(10000, 10); //10 seconds, 10 meters
 					Log.d("RFDetector", "setGPSUpdates(10000, 10)");
 					break;
 				case CLOSE:
-					gcMain.setGPSUpdates(0, 0); //0 seconds, 0 meters
+					gcMain.locationManager.setGPSUpdates(0, 0); //0 seconds, 0 meters
 					Log.d("RFDetector", "setGPSUpdates(0,0)");
 					break;
 				case THERE:
-					gcMain.setGPSUpdates(0, 0); //0 seconds, 0 meters
+					gcMain.locationManager.setGPSUpdates(0, 0); //0 seconds, 0 meters
 					Log.d("RFDetector", "We're here bitches!");
 					destinationProximityTextView.setText("#Location Reached#"); //TODO: use story terminology
 					new ProximityTest().execute();
-					gcMain.swapTo(Communicator.class);
+					gcMain.swapTo(Tools.communicator);
 					break;
 			}
 			approxDistance = currentDistance;
@@ -333,21 +330,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		}
 	}
 
-    private void createImageURIs(){
-        final Uri rootUri = gcEngine.Access().root;
-        imageFileLocationMap = new HashMap<String,Uri>(){{
-	        put("rf_background", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_background.png").build());
-            put("rf_overlay", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_overlay.png").build());
-            put("rf_arrow", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_arrow.png").build());
-	        put("rf_lid", rootUri.buildUpon().appendPath("skins").appendPath("rf_detector").appendPath("rf_lid.png").build());
-            put("icon_rf_detector", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_rf_detector.png").build());
-
-            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
-        }};
-    }
-
     public void updateDestination() {
-        destination = gcMain.getPlayerLocationInStory();
+        destination = gcEngine.Access().getDestination();
         }
 
 //	@Override
