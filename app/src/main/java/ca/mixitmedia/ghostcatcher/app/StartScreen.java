@@ -45,6 +45,8 @@ public class StartScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+
+
 		fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
 
         appDir = fileDir.getParentFile().getParentFile().getParentFile();
@@ -96,43 +98,7 @@ public class StartScreen extends Activity {
                 Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
             }
         }
-        //if empty
-        /*else if(fileDir.list().length == 0) {
-
-            Log.e("FILEDIR IS", fileDir.getAbsolutePath());
-            //Log.e("TAG", "TRUE ;  FILEDIR IS EMPTY");
-
-            if (wifi.isAvailable())
-                // Trigger Async Task (onPreExecute method)
-                new DownloadZipFile().execute(url);
-            else if (mobile.isAvailable()) {
-                try {
-                    internetDialog();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            else
-                Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();*/
     }
-
-    /*public static boolean checkMD5(String md5, File updateFile) {
-        if (TextUtils.isEmpty(md5) || updateFile == null) {
-            Log.e("TAG", "MD5 string empty or updateFile null");
-            return false;
-        }
-
-        String calculatedDigest = calculateMD5(updateFile);
-        if (calculatedDigest == null) {
-            Log.e("TAG", "calculatedDigest null");
-            return false;
-        }
-
-        Log.v("TAG", "Calculated digest: " + calculatedDigest);
-        Log.v("TAG", "Provided digest: " + md5);
-
-        return calculatedDigest.equalsIgnoreCase(md5);
-    }*/
 
     public static String calculateMD5(File updateFile) {
         MessageDigest digest;
