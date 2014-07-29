@@ -653,7 +653,7 @@ public class MainActivity extends Activity implements
 	}
 
 	public class Sounds {
-		public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip;
+		public int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip, test_beep_one, test_beep_two;
 
 		public Sounds(SoundPool soundPool) {
 			testSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
@@ -662,6 +662,8 @@ public class MainActivity extends Activity implements
 			strangeMetalNoise = soundPool.load(MainActivity.this, R.raw.strange_mechanical_noise, 1);
 			creepyChains = soundPool.load(MainActivity.this, R.raw.creepy_chains, 1);
 			calibrateSoundClip = soundPool.load(MainActivity.this, R.raw.gc_audio_amplifier, 1);
+            test_beep_one = soundPool.load(MainActivity.this, R.raw.test_beep_1, 1);
+            test_beep_two = soundPool.load(MainActivity.this, R.raw.test_beep_2, 1);
 		}
 	}
 
