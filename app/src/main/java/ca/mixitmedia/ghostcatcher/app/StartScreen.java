@@ -76,6 +76,55 @@ public class StartScreen extends Activity {
         creditsButton.setEnabled(false);
 
         if (!fileDir.exists()) {
+
+            Log.e("FILEDIR IS", fileDir.getAbsolutePath());
+            /*if ((new File(zipFile)).exists()) {
+                Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
+                if ( fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf") ) {
+                    try {
+                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+                        unzip();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
+                }*/
+            if (wifi.isAvailable())
+                // Trigger Async Task (onPreExecute method)
+                new DownloadZipFile().execute(url);
+            else if (mobile.isAvailable()) {
+                try {
+                    internetDialog();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        //if empty
+        else if(fileDir.list().length == 0) {
+
+            Log.e("FILEDIR IS", fileDir.getAbsolutePath());
+            //Log.e("TAG", "TRUE ;  FILEDIR IS EMPTY");
+
+            if (wifi.isAvailable())
+                // Trigger Async Task (onPreExecute method)
+                new DownloadZipFile().execute(url);
+            else if (mobile.isAvailable()) {
+                try {
+                    internetDialog();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+                Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();
+
             if ((new File(zipFile)).exists()) {
                 Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
                 if ( fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf") ) {
@@ -88,55 +137,6 @@ public class StartScreen extends Activity {
                 }
                 else {
                     Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                }
-            }
-            else {
-                if (wifi.isAvailable())
-                    // Trigger Async Task (onPreExecute method)
-                    new DownloadZipFile().execute(url);
-                else if (mobile.isAvailable()) {
-                    try {
-                        internetDialog();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else
-                    Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();
-            }
-        }
-        else if(fileDir.list().length == 0) {
-
-            Log.e("TAG", "TRUE ;  FILEDIR IS EMPTY");
-
-            if (!((new File(zipFile)).exists())) {
-                if (wifi.isAvailable())
-                    // Trigger Async Task (onPreExecute method)
-                    new DownloadZipFile().execute(url);
-                else if (mobile.isAvailable()) {
-                    try {
-                        internetDialog();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else
-                    Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();
-            }
-            else {
-                if ((new File(zipFile)).exists()) {
-                    Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                    if ( fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf") ) {
-                        try {
-                            Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-                            unzip();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    else {
-                        Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                    }
                 }
             }
         }
