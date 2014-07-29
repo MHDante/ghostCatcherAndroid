@@ -32,7 +32,7 @@ public class BioList extends Fragment{
         bio = (TextView) v.findViewById(R.id.profbio);
         image = (ImageView) v.findViewById(R.id.character_bio1);
 
-        gcCharacter firstCharacter = gcEngine.Access().characters.get(1);
+        gcCharacter firstCharacter = gcEngine.Access().characters.get(0);
 
         name.setText(firstCharacter.getName());
         bio.setText(firstCharacter.getBio());
