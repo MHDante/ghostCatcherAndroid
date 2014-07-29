@@ -116,7 +116,7 @@ public class StartScreen extends Activity {
                 Toast.makeText(this,"NO INTERNET",Toast.LENGTH_LONG).show();*/
     }
 
-    public static boolean checkMD5(String md5, File updateFile) {
+    /*public static boolean checkMD5(String md5, File updateFile) {
         if (TextUtils.isEmpty(md5) || updateFile == null) {
             Log.e("TAG", "MD5 string empty or updateFile null");
             return false;
@@ -132,7 +132,7 @@ public class StartScreen extends Activity {
         Log.v("TAG", "Provided digest: " + md5);
 
         return calculatedDigest.equalsIgnoreCase(md5);
-    }
+    }*/
 
     public static String calculateMD5(File updateFile) {
         MessageDigest digest;
