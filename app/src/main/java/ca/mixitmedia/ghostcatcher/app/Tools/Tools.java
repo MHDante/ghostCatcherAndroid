@@ -32,7 +32,7 @@ public class Tools{
         (communicator    .toolLight = (LightButton)gcMain.findViewById(R.id.tool_light_communicator  )).setOwner(communicator);
         (locationMap     .toolLight = (LightButton)gcMain.findViewById(R.id.tool_light_locationMap   )).setOwner(locationMap );
         (amplifier       .toolLight = (LightButton)gcMain.findViewById(R.id.tool_light_amplifier     )).setOwner(amplifier   );
-        (tester          .toolLight = (LightButton)gcMain.findViewById(R.id.tool_light_tester        )).setOwner(tester      );
+        (tester          .toolLight = (LightButton)gcMain.findViewById(R.id.tool_light_journal       )).setOwner(tester      );
         (imager          .toolLight = (LightButton)gcMain.findViewById(R.id.tool_light_imager        )).setOwner(imager      );
         (rfDetector      .toolLight = (LightButton)gcMain.findViewById(R.id.tool_light_rfDetector    )).setOwner(rfDetector  );
 

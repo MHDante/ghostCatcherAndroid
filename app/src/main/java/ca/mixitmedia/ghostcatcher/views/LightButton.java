@@ -11,6 +11,9 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
@@ -22,14 +25,15 @@ import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 public class LightButton extends View {
 
 
-
-     Lightable Owner;
+    static List<LightButton> lights = new ArrayList<>();
+    Lightable Owner;
     Bitmap glyph, lit, unlit, disabled;
     int height, width;
     Paint paint;
 
     public LightButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        lights.add(this);
         paint = new Paint();
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LightButton, 0, 0);
         try {
@@ -40,6 +44,13 @@ public class LightButton extends View {
             disabled = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_disabled));
         } finally {
             a.recycle();
+        }
+    }
+
+    public static void RefreshAll(){
+        for(LightButton l : lights){
+            l.invalidate();
+            l.refreshDrawableState();
         }
     }
 

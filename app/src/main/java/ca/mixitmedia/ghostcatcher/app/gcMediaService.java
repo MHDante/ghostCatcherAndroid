@@ -43,7 +43,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static boolean receiverRegistered;
     static Notification status;
     static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
-    gcEngine engine;
     boolean looping;
     BroadcastReceiver receiver = new AudioReceiver();
 
@@ -60,7 +59,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         i.addAction(ACTION_QUEUE_TRACK);
         i.addAction(ACTION_END_LOOP);
 
-        engine = gcEngine.Access();
         registerReceiver(receiver, i);
         receiverRegistered = true;
         mPlayer = new MediaPlayer();
@@ -150,15 +148,15 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification() {
         int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
-        List<gcLocation> locations = engine.getCurrentSeqPt().getLocations();
+        //List<gcLocation> locations = engine.getCurrentSeqPt().getLocations();
 
 
-        Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
+        //Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
                 Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/drawable/ghost");
-        Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
-        statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
+        //Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
+        //statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
         statusBarView.setTextViewText(R.id.title, "Ghost Catcher");
-        statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
+        //statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
 
         statusBarView.setImageViewResource(R.id.status_bar_play,
                 (isPaused || !isStarted) ? R.drawable.btn_playback_play : R.drawable.btn_playback_pause);

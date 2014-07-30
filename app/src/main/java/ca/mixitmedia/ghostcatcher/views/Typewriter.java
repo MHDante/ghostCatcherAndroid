@@ -20,7 +20,7 @@ public class Typewriter extends ScrollView {
 
     CharSequence mText;
     int mIndex;
-    long mDelay = 200; //Default 200ms delay
+    long mDelay = 50; //Default 200ms delay
     boolean userIsScrolling = false;
     private Handler mHandler = new Handler();
 
@@ -32,16 +32,16 @@ public class Typewriter extends ScrollView {
         textView.setText("");
         linearLayout.addView(textView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         super.addView(linearLayout);
-        super.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    userIsScrolling = true;
-                } else if (event.getAction() == MotionEvent.ACTION_UP)
-                    userIsScrolling = false;
-                return false;
-            }
-        });
+        //super.setOnTouchListener(new View.OnTouchListener() {
+        //    @Override
+        //    public boolean onTouch(View v, MotionEvent event) {
+        //        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+        //            userIsScrolling = true;
+        //        } else if (event.getAction() == MotionEvent.ACTION_UP)
+        //            userIsScrolling = false;
+        //        return false;
+        //    }
+        //});
     }
 
     public void animateText(CharSequence text) {
@@ -55,7 +55,8 @@ public class Typewriter extends ScrollView {
         @Override
         public void run() {
             textView.setText(mText.subSequence(0, mIndex++));
-            if (!userIsScrolling) Typewriter.super.fullScroll(View.FOCUS_DOWN);
+            //if (!userIsScrolling)
+                fullScroll(View.FOCUS_DOWN);
             if (mIndex <= mText.length()) {
                 mHandler.postDelayed(characterAdder, mDelay);
             }

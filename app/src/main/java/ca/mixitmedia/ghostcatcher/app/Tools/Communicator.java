@@ -1,9 +1,12 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,11 +47,12 @@ public class Communicator extends ToolFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setEnabled(true);
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_communicator, container, false);
         subtitleView = (Typewriter) (view.findViewById(R.id.subtitle_text_view));
         imageView = (ImageView) view.findViewById(R.id.character_portrait);
-        biocalibrate = new Biocalibrate(view);
+        biocalibrate = new Biocalibrate(view.findViewById(R.id.biocalibrate));
 
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ocean_sans.ttf");
         subtitleView.textView.setTypeface(font);
@@ -65,8 +69,11 @@ public class Communicator extends ToolFragment {
     public void CheckForMessages() {
         if (currentDialog == null) {
             if (pendingMessages.size() > 0) {
+                biocalibrate = new Biocalibrate(getView().findViewById(R.id.biocalibrate));
                 biocalibrate.show();
             }
+        }else {
+            phraseAdder.run();
         }
     }
 
@@ -88,9 +95,13 @@ public class Communicator extends ToolFragment {
     protected void startDialog() {
         ToolMessage message = pendingMessages.remove();
         if (message.data instanceof gcDialog) {
+            biocalibrate.hide();
             currentDialog = (gcDialog) message.data;
+            startTime = System.currentTimeMillis();
             SoundManager.playTrack(currentDialog.audio, false);
-            gcDialog.getDuration();
+            phraseAdder = new PhraseAdder();
+            phraseAdder.run();
+
         }
     }
 
@@ -102,20 +113,37 @@ public class Communicator extends ToolFragment {
             if (currentDialog == null || gcMain == null || currentDialog.intervals.size() < 1)
                 return;
             long currentInterval = 0;
+            long currentTime = Utils.TimeSince(startTime) / 1000;
+            //Log.d("PhraseAdder","currentTime: " + currentTime);
             for (int interval : currentDialog.intervals) {
-                if (interval > Utils.TimeSince(startTime) / 1000) break;
+                //Log.d("PhraseAdder","checking Interval: " + interval);
+                if (interval > currentTime)
+                    break;
                 currentInterval = interval;
+                //Log.d("PhraseAdder","currentInterval: " + currentInterval);
+
             }
+            //Log.d("PhraseAdder","checking difference between current:" + currentInterval + " and past : " + pastInterval);
+
             if (currentInterval > pastInterval) {
                 subtitleView.concatenateText(currentDialog.parsed.get((int) currentInterval));
-                imageView.setImageURI(currentDialog.portraits.get((int) currentInterval));
+                Uri image =currentDialog.portraits.get((int) currentInterval);
+                Log.d("PA", image.getPath());
+                imageView.setImageURI(image);
                 pastInterval = currentInterval;
             }
-            if (Utils.TimeSince(startTime) < gcDialog.getDuration()) {
+            int duration =  currentDialog.getDuration();
+            //Log.d("PhraseAdder","checking current time: " + currentTime + " vs duration:" + duration);
+
+            if (currentTime < duration) {
+            //    Log.d("PhraseAdder","restart: ");
+
                 mHandler.postDelayed(this, 1000);
             } else {
+            //    Log.d("PhraseAdder","end ");
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.shine));
                 currentDialog = null;
+                CheckForMessages();
 
             }
         }
@@ -130,12 +158,15 @@ public class Communicator extends ToolFragment {
         boolean pressed;
         ProgressBar LoadingBar;
         ImageButton fingerPrint;
+        View holder;
 
         public Biocalibrate(View view) {
-            LoadingBar = (ProgressBar) view.findViewById(R.id.calibrate_bar);
+            holder = view;
+            view.setTranslationY(Utils.GetScreenHeight(getActivity()));
+            LoadingBar = (ProgressBar) holder.findViewById(R.id.calibrate_bar);
             LoadingBar.setMax(100);
 
-            fingerPrint = (ImageButton) view.findViewById(R.id.biocalibrate_btn);
+            fingerPrint = (ImageButton) holder.findViewById(R.id.biocalibrate_btn);
             fingerPrint.setOnTouchListener(this);
         }
 
@@ -182,7 +213,10 @@ public class Communicator extends ToolFragment {
         }
 
         public void show() {
-
+            holder.animate().translationY(0);
+        }
+        public void hide(){
+            holder.animate().translationY(Utils.GetScreenHeight(getActivity()));
         }
     }
 }

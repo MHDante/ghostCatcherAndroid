@@ -21,9 +21,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/detail_container"
-        android:translationX="300dp"
-        >
+        android:id="@+id/detail_container">
 
         <ScrollView
             android:layout_width="fill_parent"

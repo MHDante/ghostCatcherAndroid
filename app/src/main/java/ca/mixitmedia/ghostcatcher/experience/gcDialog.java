@@ -32,19 +32,14 @@ public class gcDialog {
     private gcDialog() {
     }
 
-    public static gcDialog get(gcSeqPt seqPt, String id) {
+    public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
         if (!seqPt.dialogCache.containsKey(id))
-            try {
                 loadDialog(seqPt, id);
-            } catch (IOException e) {
-                Utils.messageDialog(gcEngine.Access().context, "Error", e.getMessage());
-                e.printStackTrace();
-            }
         return seqPt.dialogCache.get(id);
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
-        String seqPath = gcEngine.Access().root + "/seq" + "/seq" + seqPt.id;
+        String seqPath = seqPt.engine.root + "/seq" + "/seq" + seqPt.id;
         String textPath = seqPath + "/text/" + id + ".txt";
         String soundPath = seqPath + "/sounds/" + id + ".mp3";
 
@@ -54,7 +49,7 @@ public class gcDialog {
         StringBuilder total = new StringBuilder();
         String line;
         int time = 0;
-        gcCharacter chr = gcEngine.Access().getCharacter("static");
+        gcCharacter chr = seqPt.engine.characters.get("static");
         String pose = null;
 
         gcDialog dialog = new gcDialog();
@@ -71,11 +66,12 @@ public class gcDialog {
                     continue;
                 case '>':
                     if (line.charAt(1) == '>') {
-                        chr = gcEngine.Access().getCharacter(line.substring(2).trim());
+                        chr = seqPt.engine.characters.get(line.substring(2).trim());
                         if (!total.toString().isEmpty()) {
                             dialog.intervals.add(time);
                             dialog.portraits.put(time, chr.getPose(pose));
-                            dialog.parsed.put(time, total.toString());
+                            dialog.parsed.put(time, total.toString()+"\n");
+                            total = new StringBuilder();
                         }
                     }
                     break;
@@ -98,7 +94,7 @@ public class gcDialog {
 
         dialog.portraits.put(time, chr.getPose(pose));
         if (!new File(chr.getPose(pose).getPath()).exists()) {
-            new AlertDialog.Builder(gcEngine.Access().context)
+            new AlertDialog.Builder(seqPt.engine.context)
                     .setMessage("File doesn't exist for pose " + pose + " for character " + chr.name)
                     .create().show();
             throw new RuntimeException("File doesn't exist for pose " + pose + " for character " + chr.name);
@@ -108,7 +104,8 @@ public class gcDialog {
         seqPt.dialogCache.put(id, dialog);
     }
 
-    public static int getDuration() {
-        throw new RuntimeException("NotImplemented");
+    public int getDuration() {
+        return (int)Utils.getMediaDuration(audio)/1000;
+
     }
 }

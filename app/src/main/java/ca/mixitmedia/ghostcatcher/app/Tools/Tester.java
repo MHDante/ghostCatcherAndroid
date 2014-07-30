@@ -12,8 +12,6 @@ import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Tester extends ToolFragment {
 
-    Uri rootUri = gcEngine.Access().root;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

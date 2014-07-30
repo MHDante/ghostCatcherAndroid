@@ -1,13 +1,16 @@
 package ca.mixitmedia.ghostcatcher;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -15,6 +18,7 @@ import android.nfc.NfcAdapter;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -40,8 +44,8 @@ public class Utils {
         }
     }
 
-    public static Uri resIdToUri(int resId) {
-        return Uri.parse("android.resource://" + gcEngine.Access().context.getPackageName()
+    public static Uri resIdToUri(Context context, int resId) {
+        return Uri.parse("android.resource://" + context.getPackageName()
                 + "/" + resId);
     }
 
@@ -56,6 +60,16 @@ public class Utils {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+    public static long getMediaDuration(Uri uri){
+
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        metaRetriever.setDataSource(uri.getPath());
+                // convert duration to minute:seconds
+        String duration =
+                metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        Log.d("utilS",duration);
+        return Long.parseLong(duration);
     }
 
     public static void messageDialog(Context context, String title, String message) {
@@ -140,7 +154,7 @@ public class Utils {
             Field field = res.getField(name);
             return field.getInt(null);
         } catch (Exception e) {
-            Log.e("MyTag", "Failure to get drawable id.", e);
+            Log.e("MyTag", "Failure to get drawable id: " + name, e);
             return 0;
         }
     }
@@ -164,6 +178,18 @@ public class Utils {
     }
 
     public static long TimeSince(long startTimeMillis) {
-        return startTimeMillis - System.currentTimeMillis();
+        return System.currentTimeMillis() - startTimeMillis;
+    }
+    public static int GetScreenWidth(Activity ctxt){
+        return GetScreenSize(ctxt).x;
+    }
+    public static int GetScreenHeight(Activity ctxt){
+        return GetScreenSize(ctxt).y;
+    }
+    public static Point GetScreenSize(Activity ctxt){
+        Display display = ctxt.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size;
     }
 }

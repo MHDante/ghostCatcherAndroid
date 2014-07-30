@@ -109,10 +109,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
         sensorManager = (SensorManager) gcMain.getSystemService(Context.SENSOR_SERVICE);
 
-        destination = new Location("dummyProvider");
-        destination.setLatitude(43.652202);
-        destination.setLongitude(-79.5814);
-
+        //destination = new Location("dummyProvider");
+        //destination.setLatitude(43.652202);
+        //destination.setLongitude(-79.5814);
+        destination = gcMain.gcEngine.locations.get("lake_devo");
         approxDistance = ApproxDistance.CLOSE;
 
         //set initial data right away, if available
@@ -199,7 +199,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * @param location of the user's device
      */
     public void onLocationChanged(Location location) {
-        if (location == null) {
+        if (location == null || getView() == null) {
             Log.d("RF", "Locations shouldn't be null, you dun fucked up.");
             return;
         }
@@ -244,13 +244,14 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                     gcMain.locationManager.setGPSUpdates(0, 0); //0 seconds, 0 meters
                     Log.d("RFDetector", "We're here bitches!");
                     destinationProximityTextView.setText("#Location Reached#"); //TODO: use story terminology
-                    new ProximityTest() {
-                        @Override
-                        public void HandleServerMessage(String s) {
-                            Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
-                        }
-                    }.execute();
-                    gcMain.swapTo(Tools.communicator);
+                    //new ProximityTest() {
+                    //    @Override
+                    //    public void HandleServerMessage(String s) {
+                    //        Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+                    //    }
+                    //}.execute();
+                    gcMain.experienceManager.ToolSuccess(this);
+                    //gcMain.swapTo(Tools.communicator);
                     break;
             }
             approxDistance = currentDistance;
@@ -299,7 +300,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     }
 
     public void updateDestination() {
-        destination = gcEngine.Access().getDestination();
+        destination = gcMain.experienceManager.getDestination();
     }
 
     /**

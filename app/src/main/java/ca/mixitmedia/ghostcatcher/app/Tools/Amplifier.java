@@ -27,7 +27,7 @@ public class Amplifier extends ToolFragment {
 
     private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
-    final Uri rootUri = gcEngine.Access().root;
+    final Uri rootUri = gcEngine.root;
     int averageStrengthBeaconOne = 0;
     int averageStrengthBeaconTwo = 0;
     int averageStrengthBeaconThree = 0;
@@ -45,13 +45,13 @@ public class Amplifier extends ToolFragment {
     String beaconThreeDebugString;
     float fakeTime;
     private int dialogueStream = 0;
-    private BeaconManager beaconManager = new BeaconManager(gcEngine.Access().context);
 
+    private BeaconManager beaconManager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
-
+        beaconManager = new BeaconManager(getActivity());
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
         final TextView debugTextField = (TextView) view.findViewById(R.id.debug_text_field);
 

@@ -17,46 +17,14 @@ public class gcLocation extends Location {
     String id;
     String name;
     String description;
-
-    private gcLocation() {
+    gcEngine engine;
+    gcLocation(gcEngine engine) {
         super("gcLocation Provider");
-    }
-
-    public static gcLocation parse(XmlPullParser parser)
-            throws IOException, XmlPullParserException {
-
-        if (!parser.getName().equals("location"))
-            throw new RuntimeException("Tried to parse something that wasn't a location");
-
-        gcLocation result = new gcLocation();
-        result.setId(parser.getAttributeValue(null, "id"));
-        result.setName(parser.getAttributeValue(null, "name"));
-        result.setLatitude(Double.parseDouble(parser.getAttributeValue(null, "lat")));
-        result.setLongitude(Double.parseDouble(parser.getAttributeValue(null, "long")));
-        result.setDescription(parser.getAttributeValue(null, "description"));
-        return result;
-    }
-
-    public static gcLocation fromURI(Uri uri) {
-
-        if (uri != null && uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
-            String path = uri.getLastPathSegment();
-            String[] tokens = path.split("\\.");
-            String type = tokens[1];
-            String id = tokens[0];
-            if (type.equals("location")) {
-                return gcEngine.Access().getLocation(id);
-
-            }
-            Toast.makeText(gcEngine.Access().context, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        Toast.makeText(gcEngine.Access().context, "Invalid Location URL", Toast.LENGTH_LONG).show();
-        return null;
+        this.engine = engine;
     }
 
     public Uri getImageUri() {
-        File f = new File(gcEngine.Access().root.getPath() + "/locations/" + getId() + ".png");
+        File f = new File(gcEngine.root.getPath() + "/locations/" + getId() + ".png");
         if (!f.exists())
             //TODO: this should be a FileNotFoundException.
             throw new RuntimeException("error opening loc image: " + f.getAbsolutePath());

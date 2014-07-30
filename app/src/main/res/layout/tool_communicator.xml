@@ -23,7 +23,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:weightSum="100"
-            android:layout_weight="15">
+            android:layout_weight="10">
 
             <Space
                 android:layout_width="0dp"
@@ -64,7 +64,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:weightSum="100"
-            android:layout_weight="68.5">
+            android:layout_weight="72.5">
 
             <Space
                 android:layout_width="0dp"
@@ -172,7 +172,8 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:translationY="-1000dp">
+        android:translationY="-1000dp"
+        android:visibility="visible">
 
         <TableLayout
             android:layout_width="fill_parent"

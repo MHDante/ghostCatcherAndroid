@@ -26,7 +26,7 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
      */
     protected MainActivity gcMain;
     protected Queue<ToolMessage> pendingMessages = new LinkedList<>();
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     /**
      * Checks whether the click is to be handled by the parent MainActivity, or will be handled
@@ -106,11 +106,9 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
     }
 
     public void setupAnimator(boolean enter) {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
+
+        int width = Utils.GetScreenWidth(getActivity());
+        int height = Utils.GetScreenHeight(getActivity());
 
         pivotOrientation orientation = getPivotOrientation(enter);
 

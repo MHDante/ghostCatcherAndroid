@@ -39,10 +39,9 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     public List<Marker> markers = new ArrayList<>();
     GoogleMap map;
     int selectedLocation;
-    Map<String, Uri> imageFileLocationMap;
 
     public LocationMap() {
-        createImageURIs();
+
     }
 
     @Override
@@ -60,10 +59,6 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         ImageButton right_button = (ImageButton) view.findViewById(R.id.right);
         ImageButton left_button = (ImageButton) view.findViewById(R.id.left);
 
-        overlay.setImageURI(imageFileLocationMap.get("overlay"));
-        left_button.setImageURI(imageFileLocationMap.get("arrow"));
-        right_button.setImageURI(imageFileLocationMap.get("arrow"));
-
         left_button.setScaleType(ImageView.ScaleType.FIT_CENTER);
         right_button.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
@@ -79,7 +74,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     private void setUpMap() {
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
 
-        locations = gcEngine.Access().getCurrentSeqPt().getLocations();
+        locations = gcMain.gcEngine.getCurrentSeqPt().getLocations();
         if (locations.size() <= 0) return;
 
         for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
@@ -123,6 +118,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
         MapFragment f = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
+        //Todo:Illegal state Exception: Activity has been destroyed.
         if (f != null)
             getFragmentManager().beginTransaction().remove(f).commit();
         super.onDestroyView();
@@ -210,15 +206,5 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         return R.animator.transition_out_from_bottom;
     }
 
-    public void createImageURIs() {
-        final Uri rootUri = gcEngine.Access().root;
-        imageFileLocationMap = new HashMap<String, Uri>() {{
-            put("overlay", rootUri.buildUpon().appendPath("skins").appendPath("map").appendPath("map_overlay.png").build());
-            put("bullet_check", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("bullet_check.png").build());
-            put("arrow", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("btn_playback_play.png").build());
-            put("map_button_glyph", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_locationmappng").build());
-            put("test", rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("error_default.png").build());
-        }};
-    }
 
 }

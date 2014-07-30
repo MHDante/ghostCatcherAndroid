@@ -4,6 +4,16 @@
     android:layout_height="fill_parent"
     android:foregroundGravity="center">
 
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:name="com.google.android.gms.maps.MapFragment"
+        map:cameraTargetLat="43.6576004"
+        map:cameraTargetLng="-79.37839"
+        map:cameraZoom="13"
+        android:layout_gravity="center_horizontal" />
+
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -31,16 +41,6 @@
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="75">
-
-                <fragment
-                    android:id="@+id/map"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:name="com.google.android.gms.maps.MapFragment"
-                    map:cameraTargetLat="43.6576004"
-                    map:cameraTargetLng="-79.37839"
-                    map:cameraZoom="13"
-                    android:layout_gravity="center_horizontal" />
 
                 <ViewFlipper
                     android:layout_width="fill_parent"
@@ -147,11 +147,11 @@
 
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:id="@+id/overlay"
         android:src="@drawable/map_overlay"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY" />
 
 </RelativeLayout>

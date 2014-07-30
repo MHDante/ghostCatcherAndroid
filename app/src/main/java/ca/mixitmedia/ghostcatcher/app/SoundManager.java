@@ -17,12 +17,16 @@ public class SoundManager {
 
     public static final int SOUND_POOL_MAX_STREAMS = 4;
     public static SoundPool soundPool;
+    public static MainActivity gcMain;
+
+    public static void init(MainActivity gcMain) {
+        soundPool = new SoundPool(SOUND_POOL_MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
+        Sounds.loadSounds(gcMain);
+        SoundManager.gcMain = gcMain;
+    }
 
     private static Context getContext() {
-        Context context = gcEngine.Access().context;
-        if (context == null)
-            throw new RuntimeException("gcAudio accessed before gcEngine Initialized;");
-        return context;
+        return gcMain;
     }
 
     public static boolean isPlaying() {
@@ -109,17 +113,15 @@ public class SoundManager {
         return soundPool.play(soundName, 0.3f, 0.3f, 1, 0, 1);
     }
 
-    public static void init(Context ctxt) {
-        soundPool = new SoundPool(SOUND_POOL_MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
-        Sounds.loadSounds(ctxt);
-    }
+
 
     public static void resumeFX() {
-        throw new RuntimeException("NotImplemented");
+
+        //throw new RuntimeException("NotImplemented");
     }
 
     public static void pauseFX() {
-        throw new RuntimeException("NotImplemented");
+        //throw new RuntimeException("NotImplemented");
     }
 
     public static class Sounds {

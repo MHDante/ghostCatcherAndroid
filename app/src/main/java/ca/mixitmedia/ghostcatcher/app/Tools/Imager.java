@@ -19,7 +19,7 @@ import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 public class Imager extends ToolFragment {
 
-    final Uri rootUri = gcEngine.Access().root;
+    final Uri rootUri = gcEngine.root;
     SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
         public void surfaceCreated(SurfaceHolder holder) {
             // no-op -- wait until surfaceChanged()
@@ -109,6 +109,7 @@ public class Imager extends ToolFragment {
         camera.release();
         camera = null;
         inPreview = false;
+        gcMain.experienceManager.ToolSuccess(this);
 
         super.onPause();
     }

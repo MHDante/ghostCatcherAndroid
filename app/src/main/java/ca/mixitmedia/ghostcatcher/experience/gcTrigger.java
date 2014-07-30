@@ -19,40 +19,10 @@ public class gcTrigger {
     String data;
     List<gcAction> actions;
 
-    private gcTrigger() {
+    gcTrigger() {
         actions = new ArrayList<>();
     }
 
-    public static gcTrigger parse(XmlPullParser parser)
-            throws IOException, XmlPullParserException {
-        if (!parser.getName().equalsIgnoreCase("trigger"))
-            throw new RuntimeException("Tried to parse something that wasn't a trigger");
-
-        gcTrigger result = new gcTrigger();
-        result.id = Integer.parseInt(parser.getAttributeValue(null, "id"));
-        result.type = Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
-        result.data = parser.getAttributeValue(null, "data");
-
-        int pEvent = parser.next();
-
-        while (pEvent != XmlPullParser.END_DOCUMENT) {
-            switch (pEvent) {
-                case XmlPullParser.START_TAG:
-                    switch (parser.getName().toLowerCase()) {
-                        case "action":
-                            result.actions.add(gcAction.parse(parser));
-                            break;
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    if (parser.getName().equals("trigger"))
-                        return result;
-                    break;
-            }
-            pEvent = parser.next();
-        }
-        throw new RuntimeException("trigger Parsing error : " + result.id);
-    }
 
     public boolean isEnabled() {
         return enabled;
@@ -91,6 +61,7 @@ public class gcTrigger {
         LOCATION_EXIT,
         SCRIPTED
     }
+
 
 
 }

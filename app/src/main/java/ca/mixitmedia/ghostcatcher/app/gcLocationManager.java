@@ -19,15 +19,16 @@ public class gcLocationManager implements LocationListener {
     static final int GPS_SLOW_MIN_UPDATE_DISTANCE_M = 50; //50 meters
 
     LocationManager locationManager;
+    MainActivity gcMain;
     Location currentGPSLocation;
     //the minimal GPS update interval, in milliseconds
     int GPSMinUpdateTimeMS;
     // the minimal GPS update interval, in meters.
     int GPSMinUpdateDistanceM;
 
-    public gcLocationManager(Context ctxt) {
-
-        locationManager = (LocationManager) ctxt.getSystemService(Context.LOCATION_SERVICE);
+    public gcLocationManager(MainActivity gcMain) {
+        this.gcMain = gcMain;
+        locationManager = (LocationManager) gcMain.getSystemService(Context.LOCATION_SERVICE);
     }
 
 
@@ -48,7 +49,7 @@ public class gcLocationManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        gcEngine.Access().UpdateLocation(location);
+        gcMain.experienceManager.UpdateLocation(location);
         if (Tools.Current() == Tools.rfDetector) Tools.rfDetector.onLocationChanged(location);
     }
 
@@ -104,9 +105,5 @@ public class gcLocationManager implements LocationListener {
     public gcLocation getCurrentGCLocation() {
         return null;
     }
-
-    /**
-     * Created by Dante on 2014-06-03
-     */
 
 }
