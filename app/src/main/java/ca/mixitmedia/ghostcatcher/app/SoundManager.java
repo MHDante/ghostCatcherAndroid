@@ -125,17 +125,20 @@ public class SoundManager {
     }
 
     public static class Sounds {
-        public static int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip, test_beep_one, test_beep_two;
+        public static int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip,amplifierMain,amplifierSoundOne, amplifierSoundTwo,amplifierSoundThree;
 
         public static void loadSounds(Context ctxt) {
+            calibrateSoundClip = soundPool.load(ctxt, R.raw.gc_audio_amplifier, 1);
+            amplifierMain = soundPool.load(ctxt, R.raw.amplifier_main, 1);
+            amplifierSoundOne = soundPool.load(ctxt, R.raw.amplifier_sound_1, 1);
+            amplifierSoundTwo = soundPool.load(ctxt, R.raw.amplifier_sound_2, 1);
+            amplifierSoundThree = soundPool.load(ctxt, R.raw.amplifier_sound_3, 1);
             testSoundClip = soundPool.load(ctxt, R.raw.gc_audio_amplifier, 1);
             metalClick = soundPool.load(ctxt, R.raw.metal_click, 1);
             leverRoll = soundPool.load(ctxt, R.raw.lever_roll, 1);
             strangeMetalNoise = soundPool.load(ctxt, R.raw.strange_mechanical_noise, 1);
             creepyChains = soundPool.load(ctxt, R.raw.creepy_chains, 1);
-            calibrateSoundClip = soundPool.load(ctxt, R.raw.gc_audio_amplifier, 1);
-            test_beep_one = soundPool.load(ctxt, R.raw.test_beep_1,1);
-            test_beep_two = soundPool.load(ctxt,R.raw.test_beep_2,1);
+
         }
     }
 }

@@ -33,12 +33,12 @@ public class SignalBeaconView extends SurfaceView {
         waveThree.setColor(Color.YELLOW);
         waveThree.setStrokeWidth(7);
 
-        surfaceThread = new SurfaceThread(getHolder(), this);
+
 
         getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                //TODO: Crashes when you switch out of the app on the amplifier as it says the thread already started.
+                surfaceThread = new SurfaceThread(getHolder(), SignalBeaconView.this);
                 surfaceThread.setEnable(true);
                 surfaceThread.start();
             }
