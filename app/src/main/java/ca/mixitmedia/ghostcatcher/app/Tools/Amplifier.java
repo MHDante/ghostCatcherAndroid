@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.views.SignalBeaconView;
 
@@ -58,6 +59,9 @@ public class Amplifier extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         super.onCreateView(inflater, container, savedInstanceState);
+
+        setEnabled(true);
+
         beaconManager = new BeaconManager(getActivity());
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
         final TextView debugTextField = (TextView) view.findViewById(R.id.debug_text_field);
@@ -136,9 +140,9 @@ public class Amplifier extends ToolFragment {
         beaconTwo.iterator = 0;
         beaconThree.iterator = 0;
 
-        gcMain.soundPool.stop(beaconOneSoundStream);
-        gcMain.soundPool.stop(beaconTwoSoundStream);
-        gcMain.soundPool.stop(beaconThreeSoundStream);
+        SoundManager.soundPool.stop(beaconOneSoundStream);
+        SoundManager.soundPool.stop(beaconTwoSoundStream);
+        SoundManager.soundPool.stop(beaconThreeSoundStream);
 
     }
 
@@ -149,9 +153,9 @@ public class Amplifier extends ToolFragment {
         if(enter){
             View view = this.getView();
 
-            beaconOneSoundStream = gcMain.soundPool.play(gcMain.sounds.creepyChains, 0, 0, 1, -1, 1);
-            beaconTwoSoundStream = gcMain.soundPool.play(gcMain.sounds.test_beep_one, 0, 0, 1, -1, 1);
-            beaconThreeSoundStream = gcMain.soundPool.play(gcMain.sounds.test_beep_two, 0, 0, 1, -1, 1);
+            beaconOneSoundStream = SoundManager.soundPool.play(SoundManager.Sounds.creepyChains, 0, 0, 1, -1, 1);
+            beaconTwoSoundStream = SoundManager.soundPool.play(SoundManager.Sounds.test_beep_one, 0, 0, 1, -1, 1);
+            beaconThreeSoundStream = SoundManager.soundPool.play(SoundManager.Sounds.test_beep_two, 0, 0, 1, -1, 1);
 
             final SignalBeaconView beaconView = new SignalBeaconView(getActivity(), null);
             FrameLayout beaconViewHolder = (FrameLayout) view.findViewById(R.id.signal_beacon_holder);
@@ -165,7 +169,7 @@ public class Amplifier extends ToolFragment {
                     float period = 90;
                     beaconOneVolumeControl = (0.8f - ((averageStrengthBeaconOne*1.5f)/100));
 
-                    gcMain.soundPool.setVolume(beaconOneSoundStream,beaconOneVolumeControl,beaconOneVolumeControl);
+                    SoundManager.soundPool.setVolume(beaconOneSoundStream,beaconOneVolumeControl,beaconOneVolumeControl);
 
                     return amplitude + (float) (((amplitude/1.5) - (averageStrengthBeaconOne*(Math.log10(averageStrengthBeaconOne*2)))) * Math.sin(graphX  / period + time));
                 }
@@ -174,7 +178,7 @@ public class Amplifier extends ToolFragment {
                     float period = 50;
                     beaconTwoVolumeControl = (0.8f - ((averageStrengthBeaconTwo*1.5f)/100));
 
-                    gcMain.soundPool.setVolume(beaconTwoSoundStream,beaconTwoVolumeControl,beaconTwoVolumeControl);
+                    SoundManager.soundPool.setVolume(beaconTwoSoundStream,beaconTwoVolumeControl,beaconTwoVolumeControl);
 
                     return amplitude + (float) (((amplitude/1.5) - (averageStrengthBeaconTwo*(Math.log10(averageStrengthBeaconTwo*2)))) * Math.sin(graphX / period + time));
                 }
@@ -183,7 +187,7 @@ public class Amplifier extends ToolFragment {
                     float period = 70;
                     beaconThreeVolumeControl = (0.8f - ((averageStrengthBeaconThree*1.5f)/100));
 
-                    gcMain.soundPool.setVolume(beaconThreeSoundStream,beaconThreeVolumeControl,beaconThreeVolumeControl);
+                    SoundManager.soundPool.setVolume(beaconThreeSoundStream,beaconThreeVolumeControl,beaconThreeVolumeControl);
 
                     return amplitude + (float) (((amplitude/1.5) - (averageStrengthBeaconThree*(Math.log10(averageStrengthBeaconThree*2)))) * Math.sin(graphX /period + time));
                 }
@@ -195,16 +199,11 @@ public class Amplifier extends ToolFragment {
     }
 
     @Override
-    public Uri getGlyphUri() {
-        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_amplifier.png").build());
-    }
-
-    @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
             case R.id.amplifier_button:
-                gcMain.soundPool.stop(dialogueStream);
-                dialogueStream = gcMain.playSound(gcMain.sounds.testSoundClip);
+                SoundManager.soundPool.stop(dialogueStream);
+                dialogueStream = SoundManager.playSound(SoundManager.Sounds.testSoundClip);
                 return true;
             default:
                 return false;
@@ -218,7 +217,7 @@ public class Amplifier extends ToolFragment {
 
     protected int getAnimatorId(boolean enter) {
         if (enter) {
-			gcMain.playSound(gcMain.sounds.leverRoll);
+			SoundManager.playSound(SoundManager.Sounds.leverRoll);
 			return R.animator.rotate_in_from_left;
 		}
         return R.animator.rotate_out_to_right;
