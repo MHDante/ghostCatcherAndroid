@@ -53,7 +53,7 @@ public class Amplifier extends ToolFragment {
     float beaconTwoVolumeControl;
     float beaconThreeVolumeControl;
 
-    final Uri rootUri = gcEngine.Access().root;
+    final Uri rootUri = gcEngine.root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 

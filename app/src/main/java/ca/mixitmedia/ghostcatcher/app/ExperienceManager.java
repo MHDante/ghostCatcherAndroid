@@ -87,7 +87,7 @@ public class ExperienceManager {
                     ProximityTest p = new ProximityTest() {
                         @Override
                         public void HandleServerMessage(String s) {
-                            Toast.makeText(gcMain,s, Toast.LENGTH_LONG);
+                            Toast.makeText(gcMain,s, Toast.LENGTH_LONG).show();
                         }
                     };
                     p.execute();

@@ -71,7 +71,7 @@ public class gcParser {
 
         gcAction result = new gcAction();
         result.type = gcAction.Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
-        result.lock = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
+        //result.lock = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
         if (parser.next() == XmlPullParser.TEXT) {
             result.data = parser.getText();
         }
