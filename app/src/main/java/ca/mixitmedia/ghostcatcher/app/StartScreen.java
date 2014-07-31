@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,13 +19,16 @@ import android.widget.Toast;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -111,67 +115,68 @@ public class StartScreen extends Activity {
         continueButton.setEnabled(false);
         creditsButton.setEnabled(false);
 
-        if (!fileDir.exists()) {
-            if ((new File(zipFile)).exists()) {
-                Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
-                    try {
-                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-                        unzip();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
+        if (!fileDir.exists() || fileDir.list().length == 0) {
+
+            Log.e("FILEDIR IS", fileDir.getAbsolutePath());
+            if (wifi.isAvailable())
+                // Trigger Async Task (onPreExecute method)
+                new DownloadZipFile().execute(url);
+            else if (mobile.isAvailable()) {
+                try {
+                    internetDialog();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } else {
-                if (wifi.isAvailable())
-                    // Trigger Async Task (onPreExecute method)
-                    new DownloadZipFile().execute(url);
-                else if (mobile.isAvailable()) {
-                    try {
-                        internetDialog();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else
-                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
             }
-        } else if (fileDir.list().length == 0) {
-
-            Log.e("TAG", "TRUE ;  FILEDIR IS EMPTY");
-
-            if (!((new File(zipFile)).exists())) {
-                if (wifi.isAvailable())
-                    // Trigger Async Task (onPreExecute method)
-                    new DownloadZipFile().execute(url);
-                else if (mobile.isAvailable()) {
-                    try {
-                        internetDialog();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else
-                    Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
-            } else {
-                if ((new File(zipFile)).exists()) {
-                    Log.d("UNZIP", "zipfile md5 is: " + fileToMD5(zipFile));
-                    if (fileToMD5(zipFile).equals("c95917caae58436218600f063c3ef9cf")) {
-                        try {
-                            Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-                            unzip();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                    }
-                }
+            else {
+                Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    public void settingsDialog(View v) throws Exception {
+    public static String calculateMD5(File updateFile) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("TAG", "Exception while getting digest", e);
+            return null;
+        }
+
+        InputStream is;
+        try {
+            is = new FileInputStream(updateFile);
+        } catch (FileNotFoundException e) {
+            Log.e("TAG", "Exception while getting FileInputStream", e);
+            return null;
+        }
+
+        byte[] buffer = new byte[8192];
+        int read;
+        try {
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            BigInteger bigInt = new BigInteger(1, md5sum);
+            String output = bigInt.toString(16);
+            // Fill to 32 chars
+            output = String.format("%32s", output).replace(' ', '0');
+            return output;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to process file for MD5", e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                Log.e("TAG", "Exception on closing MD5 input stream", e);
+            }
+        }
+    }
+
+
+
+    public void settingsDialog(View v) throws Exception{
 
         final Dialog dialog = new Dialog(StartScreen.this);
         dialog.setContentView(R.layout.dialog_view);
@@ -205,7 +210,6 @@ public class StartScreen extends Activity {
     }
 
     public void clearApplicationData() {
-
 
         Log.d("FILEDIR IS ", fileDir.getAbsolutePath());
         Log.d("APPDIR IS", appDir.getAbsolutePath());
@@ -347,10 +351,18 @@ public class StartScreen extends Activity {
         protected void onPostExecute(String unused) {
             mProgressDialog.dismiss();
             if (result) {
-                try {
-                    unzip();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                Log.d("UNZIP", "zipfile md5 is: " + calculateMD5(new File(zipFile)));
+                if ( calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf") ) {
+                    try {
+                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+                        unzip();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
                 }
             }
         }
