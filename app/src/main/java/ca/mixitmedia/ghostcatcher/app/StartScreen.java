@@ -97,7 +97,7 @@ public class StartScreen extends Activity {
 
         unzipLocation = getExternalFilesDir("mixitmedia").getPath();
         Log.d("Filepaths 3 :", unzipLocation);
-        zipFile = cacheDir + "/exp.zip";
+        zipFile = cacheDir + "/demo.zip";
         Log.d("Filepaths 4 :", zipFile);
 
         setContentView(R.layout.activity_start_screen);
