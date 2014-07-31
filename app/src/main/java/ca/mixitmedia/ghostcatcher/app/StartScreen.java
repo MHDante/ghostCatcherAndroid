@@ -32,6 +32,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import ca.mixitmedia.ghostcatcher.Utils;
+
 public class StartScreen extends Activity {
 
     private ProgressDialog mProgressDialog;
@@ -353,18 +355,43 @@ public class StartScreen extends Activity {
             if (result) {
 
                 Log.d("UNZIP", "zipfile md5 is: " + calculateMD5(new File(zipFile)));
-                if ( calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf") ) {
-                    try {
-                        Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
-                        unzip();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                StartUnzip();
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                finish();
+                                break;
+                        }
                     }
-                }
-                else {
+                };
+
+                if ( !calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf") ) {
                     Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
+                    builder.setMessage("File did not match the Authentication Signature, Continue anyway?").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
                 }
+                else{
+                    StartUnzip();
+                }
+
             }
+        }
+    }
+
+    public void StartUnzip(){
+
+        try {
+            Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
+            unzip();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

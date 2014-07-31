@@ -12,19 +12,18 @@ public class gcAction {
 
     Type type;
     String data;
-    boolean lock;
-    //TODO: consumed is never set.
-    private boolean consumed;
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    boolean locked;
 
     gcAction() {
     }
 
     public Type getType() {
         return type;
-    }
-
-    public boolean isConsumed() {
-        return consumed;
     }
 
     public String getData() {

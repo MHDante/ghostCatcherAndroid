@@ -5,7 +5,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Dante on 07/03/14.
@@ -14,13 +16,14 @@ public class gcTrigger {
 
 
     boolean enabled;
+    boolean consumed;
     int id;
     Type type;
     String data;
-    List<gcAction> actions;
+    Queue<gcAction> actions;
 
     gcTrigger() {
-        actions = new ArrayList<>();
+        actions = new LinkedList<>();
     }
 
 
@@ -48,7 +51,7 @@ public class gcTrigger {
         type = value;
     }
 
-    public List<gcAction> getActions() {
+    public Queue<gcAction> getActions() {
         return actions;
     }
 

@@ -60,7 +60,7 @@ public class Tools{
         if(ToolName.equalsIgnoreCase("tester"         )) return tester      ;
         if(ToolName.equalsIgnoreCase("imager"         )) return imager      ;
         if(ToolName.equalsIgnoreCase("rfDetector"     )) return rfDetector  ;
-        Utils.messageDialog(gcMain, "Error", "Tried to get non-Existant Tool" + ToolName);
+        Utils.messageDialog(gcMain, "Error", "Tried to get non-Existent Tool" + ToolName);
         return null;
     }
 }

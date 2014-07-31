@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.app;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Debug;
+import android.os.UserManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class ExperienceManager {
     MainActivity gcMain;
     public gcLocation location;
     public gcEngine engine;
+    public boolean pendingLock;
 
     public ExperienceManager(MainActivity gcMain) {
         this.gcMain = gcMain;
@@ -33,12 +35,13 @@ public class ExperienceManager {
 
     public void execute(gcTrigger trigger) {
         boolean exit;
-        if (trigger == null){
-            Log.d("","Nothing to Do.");
-            return;
-        }
-        for (gcAction action : trigger.getActions()) {
-            if (action.isConsumed()) continue;
+        if (trigger == null){return;}
+            while(true){
+            if (trigger.getActions().size() < 1 || pendingLock) return;
+
+            gcAction action = trigger.getActions().remove();
+            pendingLock = action.isLocked();
+
             String data = action.getData().toLowerCase();
             switch (action.getType()) {
                 case ACHIEVEMENT:
@@ -51,13 +54,21 @@ public class ExperienceManager {
                     break;
                 case ENABLE_TRIGGER:
                     engine.getCurrentSeqPt().getTrigger(Integer.parseInt(data)).setEnabled(true);
+                    pendingLock = false;
                     break;
                 case DISABLE_TOOL:
-                    Tools.byName(data).setEnabled(false);
+                    ToolFragment t = Tools.byName(data);
+                    t.setEnabled(false);
+                    if(Tools.Current() == t) {
+                        gcMain.swapTo(Tools.communicator);
+                    }
+                    LightButton.RefreshAll();
+                    pendingLock = false;
                     break;
                 case ENABLE_TOOL:
-                    ToolFragment t = Tools.byName(data);
-                    t.setEnabled(true);
+                    ToolFragment t2 = Tools.byName(data);
+                    t2.setEnabled(true);
+                    t2.sendMessage(new ToolFragment.ToolMessage(gcAction.Type.ENABLE_TOOL, pendingLock));
                     LightButton.RefreshAll();
                     break;
                 case END_SQPT:
@@ -76,10 +87,11 @@ public class ExperienceManager {
                     ProximityTest p = new ProximityTest() {
                         @Override
                         public void HandleServerMessage(String s) {
-                            Utils.messageDialog(gcMain, "OUT OF APP", "It happened");
+                            Toast.makeText(gcMain,s, Toast.LENGTH_LONG);
                         }
                     };
-                            break;
+                    p.execute();
+                    break;
             }
         }
     }
