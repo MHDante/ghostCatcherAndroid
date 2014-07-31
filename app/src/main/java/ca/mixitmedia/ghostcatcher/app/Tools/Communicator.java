@@ -1,5 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -57,6 +58,7 @@ public class Communicator extends ToolFragment {
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ocean_sans.ttf");
         subtitleView.textView.setTypeface(font);
         subtitleView.textView.setTextSize(20);
+        subtitleView.textView.setTextColor(Color.GREEN);
         return view;
     }
 

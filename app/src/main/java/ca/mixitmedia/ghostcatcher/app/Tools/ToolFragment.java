@@ -148,7 +148,7 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
     }
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        this.enabled = enabled; LightButton.RefreshAll();
     }
 
     public boolean hasNotification() {

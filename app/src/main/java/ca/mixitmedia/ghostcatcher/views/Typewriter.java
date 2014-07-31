@@ -51,12 +51,17 @@ public class Typewriter extends ScrollView {
         textView.setText("");
         mHandler.removeCallbacks(characterAdder);
         mHandler.postDelayed(characterAdder, mDelay);
-    }    private Runnable characterAdder = new Runnable() {
+    }
+    private Runnable characterAdder = new Runnable() {
         @Override
         public void run() {
             textView.setText(mText.subSequence(0, mIndex++));
-            //if (!userIsScrolling)
-                fullScroll(View.FOCUS_DOWN);
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollTo(0, getBottom());
+                }
+            });
             if (mIndex <= mText.length()) {
                 mHandler.postDelayed(characterAdder, mDelay);
             }
