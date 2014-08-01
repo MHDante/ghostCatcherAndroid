@@ -57,7 +57,7 @@ public class BioList extends Fragment{
             //inflate the xml view brah
 
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.biolist_list, viewGroup);
+            view = inflater.inflate(R.layout.biolist_list, null);
             return view;
         }
     }
@@ -72,7 +72,8 @@ public class BioList extends Fragment{
         gcCharacter firstCharacter = gcEngine.Access().characters.get(0);
 
         BioListAdapter bla = new BioListAdapter(gcEngine.Access().characters);
-        lv.setAdapter(bla);
+        lv.setAdapter(bla); //this is null
+
 
 
         name.setText(firstCharacter.getName());
