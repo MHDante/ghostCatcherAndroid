@@ -62,14 +62,12 @@ public class ExperienceManager {
                     if(Tools.Current() == t) {
                         gcMain.swapTo(Tools.communicator);
                     }
-                    LightButton.RefreshAll();
                     pendingLock = false;
                     break;
                 case ENABLE_TOOL:
                     ToolFragment t2 = Tools.byName(data);
                     t2.setEnabled(true);
                     t2.sendMessage(new ToolFragment.ToolMessage(gcAction.Type.ENABLE_TOOL, pendingLock));
-                    LightButton.RefreshAll();
                     break;
                 case END_SQPT:
                     engine.EndSeqPt();

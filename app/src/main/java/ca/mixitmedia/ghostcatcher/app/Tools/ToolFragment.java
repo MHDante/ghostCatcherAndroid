@@ -6,8 +6,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Point;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -18,15 +22,30 @@ import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.views.LightButton;
 
-public abstract class ToolFragment extends Fragment implements LightButton.Lightable {
+public abstract class ToolFragment extends Fragment {
 
-    public LightButton toolLight;
+    public LightButton getToolLight() {
+        return toolLight;
+    }
+
+    public void setToolLight(LightButton toolLight) {
+        this.toolLight = toolLight;
+
+        String name = ((Object) this).getClass().getSimpleName().toLowerCase();
+        int id = Utils.findDrawableIDByName("icon_" + name);
+        if (id!=0) {
+            toolLight.setGlyphID(id);
+        }
+    }
+
+    private LightButton toolLight;
     /**
      * the parent MainActivity which is to hold this ToolFragment
      */
     protected MainActivity gcMain;
     protected Queue<ToolMessage> pendingMessages = new LinkedList<>();
     private boolean enabled = false;
+
 
     /**
      * Checks whether the click is to be handled by the parent MainActivity, or will be handled
@@ -38,11 +57,14 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
     public boolean checkClick(View view) {
         return false;
     }
-    public int getGlyphId(){
-        String name = ((Object) this).getClass().getSimpleName().toLowerCase();
-        return Utils.findDrawableIDByName("icon_" + name);
-    };
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
     @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
@@ -71,6 +93,19 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
 
 
         return anim;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        toolLight.setState(LightButton.State.lit);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        toolLight.setState(LightButton.State.unlit);
+
     }
 
     protected int getAnimatorId(boolean enter) {
@@ -148,7 +183,10 @@ public abstract class ToolFragment extends Fragment implements LightButton.Light
     }
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled; LightButton.RefreshAll();
+        this.enabled = enabled;
+        if(enabled)toolLight.setState(LightButton.State.flashing);
+        else toolLight.setState(LightButton.State.disabled);
+
     }
 
     public boolean hasNotification() {

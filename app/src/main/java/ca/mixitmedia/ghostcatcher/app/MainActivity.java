@@ -44,7 +44,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         experienceManager = new ExperienceManager(this);
         if (savedInstanceState == null)  //Avoid overlapping fragments.
             getFragmentManager().beginTransaction().add(R.id.fragment_container, Tools.communicator).commit();
-        LightButton.RefreshAll();
 
     }
 
@@ -63,7 +62,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         if (view instanceof LightButton) {
             for (ToolFragment tf : Tools.All())
-                if (tf.toolLight == view && tf.isEnabled())
+                if (tf.getToolLight() == view && tf.isEnabled())
                     swapTo(tf);
         }
     }
@@ -92,12 +91,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, tool)
                 .commit();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                LightButton.RefreshAll();
-            }
-        }, 200);
     }
 
 

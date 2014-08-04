@@ -1,15 +1,19 @@
 package ca.mixitmedia.ghostcatcher.views;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,10 @@ import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 
 public class LightButton extends View {
 
+    public void setGlyphID(int glyphID) {
+       setGlyph(Utils.drawableToBitmap(context.getResources().getDrawable(glyphID)));
+    }
+
     public enum State { lit, unlit, disabled, flashing }
 
     public State getState() {
@@ -32,16 +40,19 @@ public class LightButton extends View {
 
     public void setState(State state) {
         this.state = state;
+        this.invalidate();
+        this.refreshDrawableState();
     }
 
-    State state;
+    State state = State.disabled;
     static List<LightButton> lights = new ArrayList<>();
     Bitmap glyph, lit, unlit, disabled, flash;
     int height, width;
     Paint paint;
-
+    Context context;
     public LightButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         lights.add(this);
         paint = new Paint();
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LightButton, 0, 0);
@@ -55,13 +66,8 @@ public class LightButton extends View {
         } finally {
             a.recycle();
         }
-    }
 
-    public static void RefreshAll(){
-        for(LightButton l : lights){
-            l.invalidate();
-            l.refreshDrawableState();
-        }
+
     }
 
     public void setGlyph(Bitmap glyph) {
@@ -83,16 +89,30 @@ public class LightButton extends View {
         super.onDraw(canvas);
         switch (state) {
             case disabled:
-                drawCenteredBitmap(canvas, lit);
+                drawCenteredBitmap(canvas, disabled);
                 break;
             case lit:
                 drawCenteredBitmap(canvas, lit);
+                drawCenteredBitmap(canvas, glyph);
                 break;
             case unlit:
-                drawCenteredBitmap(canvas, lit);
+                drawCenteredBitmap(canvas, unlit);
+                drawCenteredBitmap(canvas, glyph);
                 break;
             case flashing:
-                drawCenteredBitmap(canvas, lit);
+
+                long now_ms = System.currentTimeMillis();
+                if((now_ms/500)%2 ==0) {
+                    drawCenteredBitmap(canvas, unlit);
+                    drawCenteredBitmap(canvas, glyph);
+                }
+                else {
+                    drawCenteredBitmap(canvas, lit);
+                    drawCenteredBitmap(canvas, glyph);
+                }
+
+
+                postInvalidateOnAnimation();
                 break;
         }
 
@@ -114,6 +134,8 @@ public class LightButton extends View {
     }
 
     private void drawCenteredBitmap(Canvas canvas, Bitmap bitmap) {
+        if (bitmap!=null)
         canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), canvas.getClipBounds(), paint);
  }
+
 }
