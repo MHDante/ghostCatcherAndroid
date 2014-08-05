@@ -64,11 +64,10 @@ public class BioList extends Fragment{
             view = inflater.inflate(R.layout.biolist_list, null);
 
             charName = (TextView) view.findViewById(R.id.charName);
-            charName.setText(gcEngine.Access().characters.get(0).getName());
+            charName.setText(gcEngine.Access().characters.get(i).getName());
 
             image = (ImageView) view.findViewById(R.id.character_bio1);
-            image.setImageURI(Uri.fromFile(new File(gcEngine.Access().root +"/characters/" + "/"+"prof_wolfe"+"/"+"smug.png")));
-
+            //image.setImageURI(Uri.fromFile(new File(gcEngine.Access().root +"/characters/" + "/"+"prof_wolfe"+"/"+"smug.png")));
 
 
             return view;
@@ -97,11 +96,11 @@ public class BioList extends Fragment{
         //charName.setText(firstCharacter.getName());
 
         bio.setText(firstCharacter.getBio());
-        try {
+        /*try {
             image.setImageBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), firstCharacter.getPose("pose1")));
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         return v;
 
 
