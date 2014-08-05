@@ -45,7 +45,6 @@ public class Amplifier extends ToolFragment {
     final Uri rootUri = gcEngine.root;
 
     public Amplifier(){
-        setEnabled(true);
     }
 
     @Override
