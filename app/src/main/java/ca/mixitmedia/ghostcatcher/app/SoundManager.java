@@ -125,14 +125,10 @@ public class SoundManager {
     }
 
     public static class Sounds {
-        public static int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip,amplifierMain,amplifierSoundOne, amplifierSoundTwo,amplifierSoundThree;
+        public static int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip;
 
         public static void loadSounds(Context ctxt) {
             calibrateSoundClip = soundPool.load(ctxt, R.raw.gc_audio_amplifier, 1);
-            amplifierMain = soundPool.load(ctxt, R.raw.amplifier_main, 1);
-            amplifierSoundOne = soundPool.load(ctxt, R.raw.amplifier_sound_1, 1);
-            amplifierSoundTwo = soundPool.load(ctxt, R.raw.amplifier_sound_2, 1);
-            amplifierSoundThree = soundPool.load(ctxt, R.raw.amplifier_sound_3, 1);
             testSoundClip = soundPool.load(ctxt, R.raw.gc_audio_amplifier, 1);
             metalClick = soundPool.load(ctxt, R.raw.metal_click, 1);
             leverRoll = soundPool.load(ctxt, R.raw.lever_roll, 1);

@@ -30,7 +30,6 @@ import ca.mixitmedia.ghostcatcher.views.SignalBeaconView;
 public class Amplifier extends ToolFragment {
 
     private int dialogueStream = 0;
-    private int mainBackgroundSoundStream;
 
     private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
@@ -40,6 +39,8 @@ public class Amplifier extends ToolFragment {
     List<SignalBeacon> beaconList;
 
     int currentStrength;
+
+    int  amplifierSoundOne, amplifierSoundTwo, amplifierSoundThree;
 
     final Uri rootUri = gcEngine.root;
 
@@ -51,7 +52,11 @@ public class Amplifier extends ToolFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        beaconList = new ArrayList<SignalBeacon>(Arrays.asList(new SignalBeacon("CB:ED:AB:9A:95:E4", SoundManager.Sounds.amplifierSoundOne), new SignalBeacon("FB:6B:2C:F1:C6:B7", SoundManager.Sounds.amplifierSoundTwo), new SignalBeacon("DB:A6:5D:34:24:3B", SoundManager.Sounds.amplifierSoundThree)));
+        beaconList = new ArrayList<SignalBeacon>(Arrays.asList(
+                new SignalBeacon("CB:ED:AB:9A:95:E4", amplifierSoundOne),
+                new SignalBeacon("FB:6B:2C:F1:C6:B7", amplifierSoundTwo),
+                new SignalBeacon("DB:A6:5D:34:24:3B", amplifierSoundThree)));
+
         beaconManager = new BeaconManager(getActivity());
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
         final TextView debugTextField = (TextView) view.findViewById(R.id.debug_text_field);
@@ -89,6 +94,24 @@ public class Amplifier extends ToolFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        amplifierSoundOne = SoundManager.soundPool.load(gcMain, R.raw.amplifier_sound_1, 1);
+        amplifierSoundTwo = SoundManager.soundPool.load(gcMain, R.raw.amplifier_sound_2, 1);
+        amplifierSoundThree = SoundManager.soundPool.load(gcMain, R.raw.amplifier_sound_3, 1);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        SoundManager.soundPool.unload(amplifierSoundOne);
+        SoundManager.soundPool.unload(amplifierSoundTwo);
+        SoundManager.soundPool.unload(amplifierSoundThree);
+    }
+
+    @Override
     public void onStart() {
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
@@ -120,12 +143,26 @@ public class Amplifier extends ToolFragment {
 
         for(SignalBeacon beacon : beaconList){
             beacon.iterator = 0;
-            SoundManager.soundPool.stop(beacon.soundStream);
+            beacon.stopSound();
         }
 
-        SoundManager.soundPool.stop(mainBackgroundSoundStream);
+        SoundManager.stop();
 
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        for(SignalBeacon beacon : beaconList){
+//            if(beacon.soundStream == 0)
+//                beacon.initializeBeaconSound();
+//            else
+//                SoundManager.soundPool.resume(beacon.soundStream);
+//        }
+//
+//        SoundManager.play();
+//
+//    }
 
     @Override
     public void afterAnimation(boolean enter) {
@@ -134,7 +171,7 @@ public class Amplifier extends ToolFragment {
         if(enter){
             View view = this.getView();
 
-            mainBackgroundSoundStream = SoundManager.soundPool.play(SoundManager.Sounds.amplifierMain,0.6f,0.6f,1,-1,1);
+            SoundManager.playTrack(Uri.parse("android.resource://"+getActivity().getPackageName()+"/raw/amplifier_main"),true);
             for(SignalBeacon beacon : beaconList)
                 beacon.initializeBeaconSound();
 
@@ -243,6 +280,10 @@ public class Amplifier extends ToolFragment {
 
         public void initializeBeaconSound(){
             soundStream = SoundManager.soundPool.play(sound, 0, 0, 1, -1, 1);
+        }
+
+        public void stopSound(){
+            SoundManager.soundPool.stop(soundStream);
         }
 
         public void alterVolume(){
