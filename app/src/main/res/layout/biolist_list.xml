@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:textColor="#343434"
         android:textSize="20dp"
-        android:text="THIS IS MY NAME"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/imageView"
         android:layout_toEndOf="@+id/imageView"

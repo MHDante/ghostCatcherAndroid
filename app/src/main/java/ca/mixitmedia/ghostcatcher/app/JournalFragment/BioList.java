@@ -2,8 +2,10 @@ package ca.mixitmedia.ghostcatcher.app.JournalFragment;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -27,8 +30,9 @@ public class BioList extends Fragment{
     TextView bio;
     ImageView image;
     ListView lv;
+    TextView charName;
 
-    int count;
+    int count = 0;
 
     public class BioListAdapter extends android.widget.BaseAdapter{
         List charList;
@@ -58,6 +62,15 @@ public class BioList extends Fragment{
 
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.biolist_list, null);
+
+            charName = (TextView) view.findViewById(R.id.charName);
+            charName.setText(gcEngine.Access().characters.get(0).getName());
+
+            image = (ImageView) view.findViewById(R.id.character_bio1);
+            image.setImageURI(Uri.fromFile(new File(gcEngine.Access().root +"/characters/" + "/"+"prof_wolfe"+"/"+"smug.png")));
+
+
+
             return view;
         }
     }
@@ -66,17 +79,23 @@ public class BioList extends Fragment{
         View v = inflater.inflate(R.layout.journal_frag_biolist, null);
         name = (TextView) v.findViewById(R.id.textprofname);
         bio = (TextView) v.findViewById(R.id.profbio);
-        image = (ImageView) v.findViewById(R.id.character_bio1);
+        //image = (ImageView) v.findViewById(R.id.character_bio1);
         lv = (ListView) v.findViewById(R.id.masterBio);
+
 
         gcCharacter firstCharacter = gcEngine.Access().characters.get(0);
 
         BioListAdapter bla = new BioListAdapter(gcEngine.Access().characters);
-        lv.setAdapter(bla); //this is null
+        lv.setAdapter(bla);
 
 
+
+ //       charName = (TextView) v.findViewById(R.id.charName);
+//        charName.setText(firstCharacter.getName());
 
         name.setText(firstCharacter.getName());
+        //charName.setText(firstCharacter.getName());
+
         bio.setText(firstCharacter.getBio());
         try {
             image.setImageBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), firstCharacter.getPose("pose1")));

@@ -205,15 +205,6 @@ public class StartScreen extends Activity {
         return dir.delete();
     }
 
-    //From internet
-    private static String convertHashToString(byte[] md5Bytes) {
-        String returnVal = "";
-		for (byte md5Byte : md5Bytes) {
-            returnVal += Integer.toString((md5Byte) + 0x100, 16).substring(1);
-        }
-        return returnVal;
-    }
-
     public void internetDialog() throws Exception
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
