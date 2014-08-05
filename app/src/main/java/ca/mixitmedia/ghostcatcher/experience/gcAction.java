@@ -10,15 +10,20 @@ import java.io.IOException;
  */
 public class gcAction {
 
-	//TODO: consumed is never set.
-    private boolean consumed;
+    Type type;
+    String data;
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    boolean locked;
+
+    gcAction() {
+    }
 
     public Type getType() {
         return type;
-    }
-
-    public boolean isConsumed() {
-        return consumed;
     }
 
     public String getData() {
@@ -34,28 +39,7 @@ public class gcAction {
         COMPLETE_TASK,
         CHECK_TASK,
         ACHIEVEMENT,
-        CONSUME_TRIGGER
-    }
-
-    Type type;
-    String data;
-    boolean lock;
-
-	private gcAction() {}
-
-    public static gcAction parse(XmlPullParser parser)
-            throws IOException, XmlPullParserException {
-
-        if (!parser.getName().equalsIgnoreCase("action"))
-            throw new RuntimeException("Tried to parse something that wasn't an action");
-
-        gcAction result = new gcAction();
-        result.type = Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
-        result.lock = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
-        if (parser.next() == XmlPullParser.TEXT) {
-            result.data = parser.getText();
-        }
-
-        return result;
+        CONSUME_TRIGGER,
+        OUTOFSCREEN
     }
 }

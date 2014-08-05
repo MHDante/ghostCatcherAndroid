@@ -1,306 +1,224 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
-import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import ca.mixitmedia.ghostcatcher.Utils;
+import ca.mixitmedia.ghostcatcher.app.ProximityTest;
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.experience.gcAudio;
+import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcDialog;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.utils.Utils;
+import ca.mixitmedia.ghostcatcher.views.Typewriter;
 
 /**
  * Created by Dante on 2014-04-14
  */
 public class Communicator extends ToolFragment {
 
-    private gcDialog currentDialog;
-    private boolean dialogPending;
-	//TODO: isStarted is assigned to a bunch of times, but never checked; to be removed?
-    private boolean isStarted;
-    private boolean pause = false;
-    private boolean userIsScrolling = false;
-    TextView subtitleView;
-    List<Integer> intervals = new ArrayList<>();
+    gcDialog currentDialog;
+    Typewriter subtitleView;
+    Biocalibrate biocalibrate;
+    ImageView imageView;
+    long startTime;
+    ProximityTest proximityTest = new ProximityTest() {
+        @Override
+        public void HandleServerMessage(String s) {
+            Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
+        }
+    };
+    Handler mHandler = new Handler();
+    Runnable phraseAdder = new PhraseAdder();
 
-    final Uri rootUri = gcEngine.Access().root;
     public Communicator() {
     }//req'd
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setEnabled(true);
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_communicator, container, false);
-        imgV = (ImageView) view.findViewById(R.id.character_portrait);
+        subtitleView = (Typewriter) (view.findViewById(R.id.subtitle_text_view));
+        imageView = (ImageView) view.findViewById(R.id.character_portrait);
+        biocalibrate = new Biocalibrate(view.findViewById(R.id.biocalibrate));
 
-        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
-        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("communicator").appendPath("main_screen2.png").build());
-
-        return view;
-    }
-
-    private void setUpSubtitleView() {
-        subtitleView = (TextView) (getView().findViewById(R.id.subtitle_text_view));
-        ScrollView sv = (ScrollView) (getView().findViewById(R.id.subtitle_scroll_view));
-        sv.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    userIsScrolling = true;
-                } else if (event.getAction() == MotionEvent.ACTION_UP)
-                    userIsScrolling = false;
-                return false;
-            }
-        });
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ocean_sans.ttf");
-        subtitleView.setTypeface(font);
-        subtitleView.setTextSize(20);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        populateText("", false);
-        setUpSubtitleView();
-
-    }
-
-    private void populateText(String st, Boolean append) {
-        TextView tv = (TextView) getView().findViewById(R.id.subtitle_text_view);
-        if (append) st = tv.getText() + st;
-        tv.setText(st);
-
-        ScrollView sv = (ScrollView) getView().findViewById(R.id.subtitle_scroll_view);
-        if (!userIsScrolling) sv.fullScroll(View.FOCUS_DOWN);
-    }
-
-    public void loadfile(String dialogId) {
-        try {
-            currentDialog = gcDialog.get(gcEngine.Access().getCurrentSeqPt(), dialogId);
-            if (getView() == null) {
-                dialogPending = true;
-                return;
-            }
-            setupDialog();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error Reading Dialog files");
-        }
+        subtitleView.textView.setTypeface(font);
+        subtitleView.textView.setTextSize(20);
+        subtitleView.textView.setTextColor(Color.GREEN);
+        return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        gcMain.hideGears(true, false);
-        try {
-            if (dialogPending) {
-                dialogPending = !dialogPending;
-                setupDialog();
-                isStarted = true;
+        CheckForMessages();
+    }
+
+    public void CheckForMessages() {
+        if (currentDialog == null) {
+            if (pendingMessages.size() > 0) {
+                biocalibrate = new Biocalibrate(getView().findViewById(R.id.biocalibrate));
+                biocalibrate.show();
             }
-            if (portrait != null) imgV.setImageBitmap(MediaStore.Images.Media.getBitmap(
-                    getActivity().getContentResolver(), portrait));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error Reading Dialog files");
+        }else {
+            phraseAdder.run();
         }
-    }
-
-    @Override
-    public void onPause() {
-        gcMain.showGears();
-        super.onPause();
-    }
-
-    ImageView imgV;
-
-    public void setupDialog() throws IOException {
-        gcAudio.playTrack(currentDialog.audio, false);
-        for (int interval : currentDialog.parsed.keySet()) intervals.add(interval);
-        intervals.add(currentDialog.duration);
-        //int secondsElapsed = gcAudio.getPosition();
-        startDialog();
-
-        if (gcMain != null) {
-            Bitmap image = MediaStore.Images.Media.getBitmap(
-                    getActivity().getContentResolver(),
-                    currentDialog.portraits.get(intervalCounter));
-
-            imgV.setImageBitmap(image);
-        }
-        portrait = currentDialog.portraits.get(intervalCounter);
-    }
-
-    @Override
-    public Uri getGlyphUri() {
-        return (rootUri.buildUpon().appendPath("skins").appendPath("components").appendPath("icon_communicator.png").build());
     }
 
     @Override
     public boolean checkClick(View view) {
-
         switch (view.getId()) {
             case R.id.sound:
-                if (gcAudio.isPlaying()) gcAudio.pause();
-                else gcAudio.play();
-                //populateText("Hello world. ", true);
-                pause = !pause;
+                if (SoundManager.isPlaying()) SoundManager.pause();
+                else SoundManager.play();
                 return true;
-
             case R.id.help:
-                new ProximityTest().execute("sup");
+                if (proximityTest.getStatus() == AsyncTask.Status.PENDING) proximityTest.execute();
                 return true;
             default:
                 return false;
         }
     }
 
-    private class ProximityTest extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                BufferedReader in;
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpGet request = new HttpGet();
-                URI website = new URI(getString(R.string.proximity_activation_url));
-
-				request.setURI(website);
-                HttpResponse response = httpclient.execute(request);
-                in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                return in.readLine();
-            } catch (Exception e) {
-				Log.e("log_tag", "Error in http connection " + e.toString());
-				return null;
-			}
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    int counter;
-    boolean isTimerRunning;
-    Timer timer = new Timer();
-
-    //Hello barry, This function starts the dialog.
     protected void startDialog() {
-        timer.cancel();
-        timer = new Timer();
-        populateText("", false);
-        counter = 0;
-        isTimerRunning = true;
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                if (!pause)
-                    counter += 1;  //increase every sec
-                mHandler.obtainMessage(1).sendToTarget();
-            }
-        }, 0, 50);
-    }
-
-    int intervalCounter = 0;
-    float currentPosition = 0f;
-    Uri portrait;
-    public Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            currentPosition += 50f;
-            if (currentPosition > intervals.get(intervalCounter + 1) * 1000) {
-                intervalCounter++;
-                if (intervalCounter >= intervals.size() - 1) {
-                    timer.cancel();
-                    if (gcMain != null) {
-                        imgV.setImageDrawable(gcMain.getResources().getDrawable(R.drawable.shine));
-                        if (gcEngine.Access().getCurrentSeqPt().getAutoTrigger() != null)
-                            gcMain.triggerLocation();
-                    }
-                    portrait = Utils.resIdToUri(R.drawable.shine);
-                    isStarted = false;
-
-
-                    return;
-                }
-                try {
-                    if (gcMain != null) {
-                        Bitmap image = MediaStore.Images.Media.getBitmap(
-                                gcMain.getContentResolver(),
-                                currentDialog.portraits.get(intervalCounter));
-                        imgV.setImageBitmap(image);
-                    }
-                    portrait = currentDialog.portraits.get(intervalCounter);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
-            }
-            int num = intervals.get(intervalCounter);
-            int stringLength = currentDialog.parsed.get(num).length();
-            int difference = (intervals.get(intervalCounter + 1) - num) * 1000;
-            int timePerLetter = (difference / stringLength);
-
-            int currentLength = (int) (currentPosition - num) / timePerLetter;
-
-            String displayString = currentDialog.parsed.get(num).substring(0, Math.min(currentLength, currentDialog.parsed.get(num).length() - 1));
-            if (getView() != null) {
-                populateText(displayString, false);
-            }
+        ToolMessage message = pendingMessages.remove();
+        if (message.data instanceof gcDialog) {
+            biocalibrate.hide();
+            currentDialog = (gcDialog) message.data;
+            startTime = System.currentTimeMillis();
+            SoundManager.playTrack(currentDialog.audio, false);
+            phraseAdder = new PhraseAdder();
+            phraseAdder.run();
 
         }
-    };
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-        super.onSaveInstanceState(outState);
     }
 
-    protected int getAnimatorId(boolean enter) {
-        if (enter) {
-			gcMain.playSound(gcMain.sounds.metalClick);
-			return R.animator.rotate_in_from_left;
-		}
+    class PhraseAdder implements Runnable {
+        long pastInterval = -1;
 
-        return R.animator.rotate_out_to_left;
+        @Override
+        public void run() {
+            if (currentDialog == null || gcMain == null || currentDialog.intervals.size() < 1)
+                return;
+            long currentInterval = 0;
+            long currentTime = Utils.TimeSince(startTime) / 1000;
+            //Log.d("PhraseAdder","currentTime: " + currentTime);
+            for (int interval : currentDialog.intervals) {
+                //Log.d("PhraseAdder","checking Interval: " + interval);
+                if (interval > currentTime)
+                    break;
+                currentInterval = interval;
+                //Log.d("PhraseAdder","currentInterval: " + currentInterval);
 
-		//TODO: Check this dante:
-		//This method always returns R.animator.rotate_out_to_left; intentional?
-		/* Original body of this method:
-		if (enter) gcMain.playSound(gcMain.sounds.metalClick);
-        return (enter) ? R.animator.rotate_in_from_left : R.animator.rotate_out_to_left;
-		 */
+            }
+            //Log.d("PhraseAdder","checking difference between current:" + currentInterval + " and past : " + pastInterval);
+
+            if (currentInterval > pastInterval) {
+                subtitleView.concatenateText(currentDialog.parsed.get((int) currentInterval));
+                Uri image =currentDialog.portraits.get((int) currentInterval);
+                Log.d("PA", image.getPath());
+                imageView.setImageURI(image);
+                pastInterval = currentInterval;
+            }
+            int duration =  currentDialog.getDuration();
+            //Log.d("PhraseAdder","checking current time: " + currentTime + " vs duration:" + duration);
+
+            if (currentTime < duration) {
+            //    Log.d("PhraseAdder","restart: ");
+
+                mHandler.postDelayed(this, 1000);
+            } else {
+            //    Log.d("PhraseAdder","end ");
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.shine));
+                currentDialog = null;
+                CheckForMessages();
+
+            }
+        }
     }
 
+    public class Biocalibrate implements View.OnTouchListener {
+
+        static final int BiocalibrateDelay = 1500;
+        boolean started;
+        long lastDown;
+        long totalDuration;
+        boolean pressed;
+        ProgressBar LoadingBar;
+        ImageButton fingerPrint;
+        View holder;
+
+        public Biocalibrate(View view) {
+            holder = view;
+            view.setTranslationY(Utils.GetScreenHeight(getActivity()));
+            LoadingBar = (ProgressBar) holder.findViewById(R.id.calibrate_bar);
+            LoadingBar.setMax(100);
+
+            fingerPrint = (ImageButton) holder.findViewById(R.id.biocalibrate_btn);
+            fingerPrint.setOnTouchListener(this);
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                lastDown = System.currentTimeMillis();
+                pressed = true;
+                if (!started) {
+                    SoundManager.playSound(SoundManager.Sounds.calibrateSoundClip);
+                    started = true;
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (LoadingBar != null) {
+                                if (pressed) {
+                                    totalDuration += System.currentTimeMillis() - lastDown;
+                                    lastDown = System.currentTimeMillis();
+                                }
+                                LoadingBar.setProgress((int) ((totalDuration / BiocalibrateDelay) * 100f));
+                                if (totalDuration > BiocalibrateDelay) {
+                                    startDialog();
+                                } else {
+                                    handler.postDelayed(this, 100);
+                                }
+                            }
+                        }
+                    }, 100);
+                } else SoundManager.resumeFX();
+
+                getView().findViewById(R.id.calibrating_text).setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.calibrate_pressed_layout).setAlpha(1.0f);
+
+
+            } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                pressed = false;
+                SoundManager.pauseFX();
+                totalDuration += System.currentTimeMillis() - lastDown;
+                getView().findViewById(R.id.calibrating_text).setVisibility(View.INVISIBLE);
+                getView().findViewById(R.id.calibrate_pressed_layout).setAlpha(0);
+            }
+            return false;
+        }
+
+        public void show() {
+            holder.animate().translationY(0);
+        }
+        public void hide(){
+            holder.animate().translationY(Utils.GetScreenHeight(getActivity()));
+        }
+    }
 }

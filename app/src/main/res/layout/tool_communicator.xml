@@ -1,8 +1,12 @@
-<RelativeLayout
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:foregroundGravity="center">
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -15,63 +19,27 @@
         android:layout_alignBottom="@+id/overlay">
 
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:weightSum="100"
-            android:layout_weight="15">
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="10" />
-
-            <ImageButton
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="12"
-                android:id="@+id/help"
-                android:onClick="onClick"
-                android:layout_gravity="right|bottom"
-                android:background="@android:color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:id="@+id/space"
-                android:layout_weight="58" />
-
-            <ImageButton
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="12"
-                android:id="@+id/sound"
-                android:onClick="onClick"
-                android:layout_gravity="right|bottom"
-                android:background="@android:color/transparent" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="8" />
-        </TableRow>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="16" />
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:weightSum="100"
-            android:layout_weight="68.5">
+            android:layout_weight="60">
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0px"
                 android:id="@+id/space2"
-                android:layout_weight="8.5" />
+                android:layout_weight="10" />
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="83"
+                android:layout_weight="61"
                 android:id="@+id/character_portrait"
                 android:src="@drawable/staticfuzz"
                 android:layout_row="0"
@@ -84,59 +52,66 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/space3"
-                android:layout_weight="8.5" />
+                android:layout_weight="4" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="16"
+                android:weightSum="100">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="30"
+                    android:onClick="onClick"
+                    android:id="@+id/sound" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:id="@+id/space"
+                    android:layout_weight="40" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:id="@+id/help"
+                    android:layout_weight="30"
+                    android:onClick="onClick" />
+            </LinearLayout>
         </TableRow>
 
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/space6"
-            android:layout_weight="7.5" />
+            android:layout_weight="16" />
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:weightSum="100"
-            android:layout_weight="17.5">
+            android:layout_weight="13">
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:id="@+id/space5"
-                android:layout_weight="8.5" />
+                android:layout_weight="12" />
 
-            <ScrollView
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="84"
-                android:gravity="center_horizontal"
-
-                android:id="@+id/subtitle_scroll_view"
-                android:layout_gravity="center_horizontal|top"
-                android:background="#ff000000"
-                android:layout_marginLeft="5dp">
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="..."
-                        android:id="@+id/subtitle_text_view"
-                        android:layout_gravity="bottom"
-                        android:textColor="#ff2ab73d"
-                        android:padding="5dp" />
-                </LinearLayout>
-            </ScrollView>
-
-            <Space
+            <ca.mixitmedia.ghostcatcher.views.Typewriter
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:id="@+id/space4"
-                android:layout_weight="7.5" />
+                android:layout_height="match_parent"
+                android:text="..."
+                android:id="@+id/subtitle_text_view"
+                android:layout_gravity="bottom"
+                android:textColor="#ff2ab73d"
+                android:padding="5dp"
+                android:layout_weight="76"
+                android:background="#000000" />
+
         </TableRow>
 
         <Space
@@ -151,8 +126,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/overlay"
-        android:layout_row="0"
-        android:layout_column="0"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
@@ -162,3 +135,102 @@
         android:adjustViewBounds="true" />
 
 </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/biocalibrate"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:translationY="-1000dp"
+        android:visibility="gone">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignBottom="@+id/fingerprint_mask"
+            android:weightSum="80"
+            android:id="@+id/tableLayout3">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="56" />
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="9"
+                android:weightSum="10">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2.5" />
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="5">
+
+                    <ProgressBar
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/calibrate_bar"
+                        android:indeterminate="false"
+                        style="?android:attr/progressBarStyleHorizontal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Calibrating"
+                        android:id="@+id/calibrating_text"
+                        android:layout_gravity="center"
+                        android:visibility="invisible"
+                        android:textColor="#ff000000"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true" />
+                </FrameLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2.5" />
+            </TableRow>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="15" />
+        </TableLayout>
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fingerprint_mask"
+            android:src="@drawable/bio_calibrate_unpressed"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:adjustViewBounds="true" />
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/biocalibrate_btn"
+            android:alpha="0"
+            android:id="@+id/calibrate_pressed_layout">
+
+            <ImageButton
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/biocalibrate_btn"
+                android:scaleType="fitCenter"
+                android:src="@drawable/bio_calibrate_pressed"
+                android:background="@android:color/transparent"
+                android:layout_gravity="center_horizontal|bottom"
+                android:onClick="onClick"
+                android:adjustViewBounds="true" />
+        </FrameLayout>
+
+    </RelativeLayout>
+</FrameLayout>

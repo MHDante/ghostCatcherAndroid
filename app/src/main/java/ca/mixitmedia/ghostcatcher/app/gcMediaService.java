@@ -39,15 +39,12 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static int duration = -1;
     public static boolean isStarted;
     public static boolean isPaused;
-    static Notification status;
-    gcEngine engine;
     public static MediaPlayer mPlayer = null;
-    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
-
-    boolean looping;
-
-    BroadcastReceiver receiver = new AudioReceiver();
     public static boolean receiverRegistered;
+    static Notification status;
+    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
+    boolean looping;
+    BroadcastReceiver receiver = new AudioReceiver();
 
     ///////////////////////////////////Service methods
     @Override
@@ -62,7 +59,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         i.addAction(ACTION_QUEUE_TRACK);
         i.addAction(ACTION_END_LOOP);
 
-        engine = gcEngine.Access();
         registerReceiver(receiver, i);
         receiverRegistered = true;
         mPlayer = new MediaPlayer();
@@ -115,42 +111,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         }
     }
 
-
-    ///////////////////////////////////Broadcast Receiver
-    private class AudioReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (intent.getAction().equals(ACTION_TOGGLE_PLAY)) {
-                if (isStarted) {
-                    if (mPlayer.isPlaying()) {
-                        mPlayer.pause();
-                        isPaused = true;
-                        updateNotification();
-                    } else {
-                        mPlayer.start();
-                        duration = mPlayer.getDuration();
-                        isPaused = false;
-                        updateNotification();
-                    }
-                } else startPlaying();
-            } else if (intent.getAction().equals(ACTION_STOP)) {
-                stop();
-            } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
-                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
-                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks = new ConcurrentLinkedQueue<Uri>();
-                tracks.add(track);
-                startPlaying();
-            } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
-                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
-                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks.add(track);
-                if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
-            }
-        }
-    }
-
     ///////////////////////////////////Utility methods
     void stop() {
         receiverRegistered = false;
@@ -188,15 +148,15 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification() {
         int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
-        List<gcLocation> locations = engine.getCurrentSeqPt().getLocations();
+        //List<gcLocation> locations = engine.getCurrentSeqPt().getLocations();
 
 
-        Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
+        //Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
                 Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/drawable/ghost");
-        Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
-        statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
+        //Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
+        //statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
         statusBarView.setTextViewText(R.id.title, "Ghost Catcher");
-        statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
+        //statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
 
         statusBarView.setImageViewResource(R.id.status_bar_play,
                 (isPaused || !isStarted) ? R.drawable.btn_playback_play : R.drawable.btn_playback_pause);
@@ -216,6 +176,41 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
 
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_MPLAYER, status);
 
+    }
+
+    ///////////////////////////////////Broadcast Receiver
+    private class AudioReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().equals(ACTION_TOGGLE_PLAY)) {
+                if (isStarted) {
+                    if (mPlayer.isPlaying()) {
+                        mPlayer.pause();
+                        isPaused = true;
+                        updateNotification();
+                    } else {
+                        mPlayer.start();
+                        duration = mPlayer.getDuration();
+                        isPaused = false;
+                        updateNotification();
+                    }
+                } else startPlaying();
+            } else if (intent.getAction().equals(ACTION_STOP)) {
+                stop();
+            } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
+                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
+                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+                tracks = new ConcurrentLinkedQueue<Uri>();
+                tracks.add(track);
+                startPlaying();
+            } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
+                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
+                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+                tracks.add(track);
+                if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
+            }
+        }
     }
 
 }

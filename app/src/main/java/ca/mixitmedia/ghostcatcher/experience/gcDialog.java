@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.experience;
 import android.app.AlertDialog;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.util.SparseArray;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -11,8 +12,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import ca.mixitmedia.ghostcatcher.Utils;
 
 /**
  * Created by Dante on 07/03/14
@@ -20,8 +23,9 @@ import java.util.Map;
 public class gcDialog {
 
     public String id;
-    public Map<Integer, Uri> portraits = new HashMap<>();
-    public Map<Integer, String> parsed = new HashMap<>();
+    public List<Integer> intervals = new ArrayList<>();
+    public SparseArray<Uri> portraits = new SparseArray<>();
+    public SparseArray<String> parsed = new SparseArray<>();
     public Uri audio;
     public int duration;
 
@@ -30,12 +34,12 @@ public class gcDialog {
 
     public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
         if (!seqPt.dialogCache.containsKey(id))
-            loadDialog(seqPt, id);
+                loadDialog(seqPt, id);
         return seqPt.dialogCache.get(id);
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
-        String seqPath = gcEngine.Access().root + "/seq" + "/seq" + seqPt.id;
+        String seqPath = seqPt.engine.root + "/seq" + "/seq" + seqPt.id;
         String textPath = seqPath + "/text/" + id + ".txt";
         String soundPath = seqPath + "/sounds/" + id + ".mp3";
 
@@ -45,7 +49,7 @@ public class gcDialog {
         StringBuilder total = new StringBuilder();
         String line;
         int time = 0;
-        gcCharacter chr = gcEngine.Access().getCharacter("static");
+        gcCharacter chr = seqPt.engine.characters.get("static");
         String pose = null;
 
         gcDialog dialog = new gcDialog();
@@ -62,11 +66,13 @@ public class gcDialog {
                     continue;
                 case '>':
                     if (line.charAt(1) == '>') {
+                        chr = seqPt.engine.characters.get(line.substring(2).trim());
                         if (!total.toString().isEmpty()) {
+                            dialog.intervals.add(time);
                             dialog.portraits.put(time, chr.getPose(pose));
-                            dialog.parsed.put(time, total.toString());
+                            dialog.parsed.put(time, total.toString()+"\n");
+                            total = new StringBuilder();
                         }
-                        chr = gcEngine.Access().getCharacter(line.substring(2).trim());
                     }
                     break;
                 case '<':
@@ -88,7 +94,7 @@ public class gcDialog {
 
         dialog.portraits.put(time, chr.getPose(pose));
         if (!new File(chr.getPose(pose).getPath()).exists()) {
-            new AlertDialog.Builder(gcEngine.Access().context)
+            new AlertDialog.Builder(seqPt.engine.context)
                     .setMessage("File doesn't exist for pose " + pose + " for character " + chr.name)
                     .create().show();
             throw new RuntimeException("File doesn't exist for pose " + pose + " for character " + chr.name);
@@ -98,4 +104,8 @@ public class gcDialog {
         seqPt.dialogCache.put(id, dialog);
     }
 
+    public int getDuration() {
+        return (int)Utils.getMediaDuration(audio)/1000;
+
+    }
 }
