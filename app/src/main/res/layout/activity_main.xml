@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/activity_bg"
@@ -11,16 +12,6 @@
         android:layout_height=" 0dp"
         android:id="@+id/surfaceView"
         android:layout_gravity="right|top" />
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/background"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/gear_animation_0000"
-        android:alpha=".4" />
 
     <ImageView
         android:layout_width="fill_parent"
@@ -39,14 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/fragment_container"
-        android:layout_alignParentLeft="true"
-        android:visibility="visible"
-        android:layout_below="@+id/tool_holder"
-        android:layout_gravity="center"
-        android:layout_weight="100"
         android:layout_above="@+id/ad_holder"
-        android:layout_marginTop="-20dp"
-        android:layout_marginBottom="-20dp">
+        android:layout_marginBottom="-20dp"
+        android:layout_below="@+id/fragment_lightholder"
+        android:layout_marginTop="-20dp">
 
     </FrameLayout>
 
@@ -75,7 +62,12 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <include layout="@layout/fragment_lightholder" />
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="81.5dp"
+        android:name="ca.mixitmedia.ghostcatcher.views.LightHolder"
+        android:id="@+id/fragment_lightholder"
+        tools:layout="@layout/fragment_lightholder" />
 
 
 </RelativeLayout>

@@ -30,7 +30,6 @@ public abstract class ToolFragment extends Fragment {
 
     public void setToolLight(LightButton toolLight) {
         this.toolLight = toolLight;
-
         String name = ((Object) this).getClass().getSimpleName().toLowerCase();
         int id = Utils.findDrawableIDByName("icon_" + name);
         if (id!=0) {

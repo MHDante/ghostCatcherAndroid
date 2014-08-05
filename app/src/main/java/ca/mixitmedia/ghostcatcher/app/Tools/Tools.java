@@ -29,10 +29,10 @@ public class Tools{
         imager          = new Imager();
         rfDetector      = new RFDetector();
 
-        communicator    .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_communicator  ));
+        communicator    .setToolLight((LightButton)gcMain.findViewById(R.id.left_toolLight  ));
         locationMap     .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_locationMap   ));
         amplifier       .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_amplifier     ));
-        tester          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_journal       ));
+        tester          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_bioList       ));
         imager          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_imager        ));
         rfDetector      .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_rfDetector    ));
 

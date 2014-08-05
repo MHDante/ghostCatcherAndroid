@@ -115,7 +115,7 @@ public class LightButton extends View {
                     drawCenteredBitmap(canvas, lit);
                     drawCenteredBitmap(canvas, glyph);
                 }
-                postInvalidateOnAnimation();
+                postInvalidateDelayed(500);
                 break;
         }
     }
