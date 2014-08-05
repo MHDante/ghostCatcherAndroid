@@ -44,9 +44,6 @@ public class Amplifier extends ToolFragment {
 
     final Uri rootUri = gcEngine.root;
 
-    public Amplifier(){
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
