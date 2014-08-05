@@ -32,6 +32,9 @@ public class LightButton extends View {
        setGlyph(Utils.drawableToBitmap(context.getResources().getDrawable(glyphID)));
     }
 
+    private int mAspectRatioWidth;
+    private int mAspectRatioHeight;
+
     public enum State { lit, unlit, disabled, flashing }
 
     public State getState() {
@@ -63,6 +66,8 @@ public class LightButton extends View {
             unlit = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_unlit));
             disabled = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_disabled));
             flash = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_alarm));
+            mAspectRatioWidth = a.getInt(R.styleable.LightButton_aspectRatioWidth, 1);
+            mAspectRatioHeight = a.getInt(R.styleable.LightButton_aspectRatioHeight, 1);
         } finally {
             a.recycle();
         }
@@ -110,28 +115,38 @@ public class LightButton extends View {
                     drawCenteredBitmap(canvas, lit);
                     drawCenteredBitmap(canvas, glyph);
                 }
-
-
                 postInvalidateOnAnimation();
                 break;
         }
-
-
-     //      if (Owner.isSelected()) {
-     //          if (Owner.hasNotification() && ((System.currentTimeMillis() / 500) % 2 != 0))
-     //              drawCenteredBitmap(canvas, unlit);
-     //
-     //      } else {
-     //          if (Owner.hasNotification() && ((System.currentTimeMillis() / 500) % 2 != 0))
-     //              drawCenteredBitmap(canvas, lit);
-     //          drawCenteredBitmap(canvas, unlit);
-     //      }
-     //      if (glyph != null)
-     //          drawCenteredBitmap(canvas, glyph);
-     //  } else {
-     //      drawCenteredBitmap(canvas, disabled);
-     //  }
     }
+
+    @Override protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec)
+    {
+        int originalWidth = MeasureSpec.getSize(widthMeasureSpec);
+
+        int originalHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        int calculatedHeight = originalWidth * mAspectRatioHeight / mAspectRatioWidth;
+
+        int finalWidth, finalHeight;
+
+        if (calculatedHeight > originalHeight)
+        {
+            finalWidth = originalHeight * mAspectRatioWidth / mAspectRatioHeight;
+            finalHeight = originalHeight;
+        }
+        else
+        {
+            finalWidth = originalWidth;
+            finalHeight = calculatedHeight;
+        }
+
+        super.onMeasure(
+                MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
+    }
+
+
 
     private void drawCenteredBitmap(Canvas canvas, Bitmap bitmap) {
         if (bitmap!=null)
