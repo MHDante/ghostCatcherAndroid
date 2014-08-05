@@ -1,15 +1,19 @@
 package ca.mixitmedia.ghostcatcher.views;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +28,34 @@ import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 
 public class LightButton extends View {
 
+    public void setGlyphID(int glyphID) {
+       setGlyph(Utils.drawableToBitmap(context.getResources().getDrawable(glyphID)));
+    }
 
+    private int mAspectRatioWidth;
+    private int mAspectRatioHeight;
+
+    public enum State { lit, unlit, disabled, flashing }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+        this.invalidate();
+        this.refreshDrawableState();
+    }
+
+    State state = State.disabled;
     static List<LightButton> lights = new ArrayList<>();
-    Lightable Owner;
-    Bitmap glyph, lit, unlit, disabled;
+    Bitmap glyph, lit, unlit, disabled, flash;
     int height, width;
     Paint paint;
-
+    Context context;
     public LightButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         lights.add(this);
         paint = new Paint();
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LightButton, 0, 0);
@@ -42,16 +65,14 @@ public class LightButton extends View {
             lit = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_lit));
             unlit = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_unlit));
             disabled = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_disabled));
+            flash = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_alarm));
+            mAspectRatioWidth = a.getInt(R.styleable.LightButton_aspectRatioWidth, 1);
+            mAspectRatioHeight = a.getInt(R.styleable.LightButton_aspectRatioHeight, 1);
         } finally {
             a.recycle();
         }
-    }
 
-    public static void RefreshAll(){
-        for(LightButton l : lights){
-            l.invalidate();
-            l.refreshDrawableState();
-        }
+
     }
 
     public void setGlyph(Bitmap glyph) {
@@ -71,43 +92,65 @@ public class LightButton extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (Owner != null && Owner.isEnabled()) {
-            if (Owner.isSelected()) {
-                if (Owner.hasNotification() && ((System.currentTimeMillis() / 500) % 2 != 0))
-                    drawCenteredBitmap(canvas, unlit);
+        switch (state) {
+            case disabled:
+                drawCenteredBitmap(canvas, disabled);
+                break;
+            case lit:
                 drawCenteredBitmap(canvas, lit);
-            } else {
-                if (Owner.hasNotification() && ((System.currentTimeMillis() / 500) % 2 != 0))
-                    drawCenteredBitmap(canvas, lit);
-                drawCenteredBitmap(canvas, unlit);
-            }
-            if (glyph != null)
                 drawCenteredBitmap(canvas, glyph);
-        } else {
-            drawCenteredBitmap(canvas, disabled);
+                break;
+            case unlit:
+                drawCenteredBitmap(canvas, unlit);
+                drawCenteredBitmap(canvas, glyph);
+                break;
+            case flashing:
+
+                long now_ms = System.currentTimeMillis();
+                if((now_ms/500)%2 ==0) {
+                    drawCenteredBitmap(canvas, unlit);
+                    drawCenteredBitmap(canvas, glyph);
+                }
+                else {
+                    drawCenteredBitmap(canvas, lit);
+                    drawCenteredBitmap(canvas, glyph);
+                }
+                postInvalidateDelayed(500);
+                break;
         }
     }
 
+    @Override protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec)
+    {
+        int originalWidth = MeasureSpec.getSize(widthMeasureSpec);
+
+        int originalHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        int calculatedHeight = originalWidth * mAspectRatioHeight / mAspectRatioWidth;
+
+        int finalWidth, finalHeight;
+
+        if (calculatedHeight > originalHeight)
+        {
+            finalWidth = originalHeight * mAspectRatioWidth / mAspectRatioHeight;
+            finalHeight = originalHeight;
+        }
+        else
+        {
+            finalWidth = originalWidth;
+            finalHeight = calculatedHeight;
+        }
+
+        super.onMeasure(
+                MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
+    }
+
+
+
     private void drawCenteredBitmap(Canvas canvas, Bitmap bitmap) {
+        if (bitmap!=null)
         canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), canvas.getClipBounds(), paint);
-        //canvas.drawBitmap(bitmap, canvas.getWidth() - bitmap.getWidth()/2, canvas.getHeight() - bitmap.getHeight()/2, paint);
-    }
-    public Lightable getOwner() {
-        return Owner;
-    }
+ }
 
-    public void setOwner(Lightable owner) {
-        Owner = owner;
-        setGlyph(BitmapFactory.decodeResource(getContext().getResources(),Owner.getGlyphId()));
-    }
-
-    public static interface Lightable {
-
-        boolean isEnabled();
-
-        boolean isSelected();
-
-        boolean hasNotification();
-        int getGlyphId();
-    }
 }

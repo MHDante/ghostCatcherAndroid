@@ -2,5 +2,7 @@
 <resources>
     <declare-styleable name="LightButton">
         <attr name="glyph" format="integer" />
+        <attr name="aspectRatioWidth" format="integer"/>
+        <attr name="aspectRatioHeight" format="integer"/>
     </declare-styleable>
 </resources>
