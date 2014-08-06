@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -104,22 +105,22 @@ public class LightButton extends View {
                 break;
             case lit:
                 canvas.drawBitmap(lit, drawRect, clipBounds, paint);
-                canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
+                if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 break;
             case unlit:
                 canvas.drawBitmap(unlit, drawRect, clipBounds, paint);
-                canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
+                if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 break;
             case flashing:
 
                 long now_ms = System.currentTimeMillis();
                 if((now_ms/500)%2 ==0) {
                     canvas.drawBitmap(unlit, drawRect, clipBounds, paint);
-                    canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
+                    if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 }
                 else {
                     canvas.drawBitmap(lit, drawRect, clipBounds, paint);
-                    canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
+                    if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 }
                 postInvalidateDelayed(500);
                 break;
