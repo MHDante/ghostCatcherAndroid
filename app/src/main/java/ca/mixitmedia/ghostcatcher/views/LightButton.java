@@ -28,12 +28,14 @@ import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 
 public class LightButton extends View {
 
+
     public void setGlyphID(int glyphID) {
        setGlyph(Utils.drawableToBitmap(context.getResources().getDrawable(glyphID)));
     }
 
     private int mAspectRatioWidth;
     private int mAspectRatioHeight;
+
 
     public enum State { lit, unlit, disabled, flashing }
 
@@ -48,16 +50,16 @@ public class LightButton extends View {
     }
 
     State state = State.disabled;
-    static List<LightButton> lights = new ArrayList<>();
     Bitmap glyph, lit, unlit, disabled, flash;
     int height, width;
-    Paint paint;
+    Paint paint, glyphPaint;
     Context context;
+    Rect drawRect,glyphRect = new Rect(0,0,0,0);
     public LightButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        lights.add(this);
         paint = new Paint();
+        glyphPaint = new Paint();
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LightButton, 0, 0);
         try {
             Drawable _glyph = a.getDrawable(R.styleable.LightButton_glyph);
@@ -66,6 +68,7 @@ public class LightButton extends View {
             unlit = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_unlit));
             disabled = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_disabled));
             flash = Utils.drawableToBitmap(context.getResources().getDrawable(R.drawable.button_alarm));
+            drawRect = new Rect(0, 0, disabled.getWidth(), disabled.getHeight());
             mAspectRatioWidth = a.getInt(R.styleable.LightButton_aspectRatioWidth, 1);
             mAspectRatioHeight = a.getInt(R.styleable.LightButton_aspectRatioHeight, 1);
         } finally {
@@ -77,6 +80,7 @@ public class LightButton extends View {
 
     public void setGlyph(Bitmap glyph) {
         this.glyph = glyph;
+        glyphRect = new Rect(0, 0, glyph.getWidth(), glyph.getHeight());
         invalidate();
         requestLayout();
     }
@@ -89,31 +93,33 @@ public class LightButton extends View {
         ToolFragment t;
     }
 
+    Rect clipBounds = new Rect();
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.getClipBounds(clipBounds);
         switch (state) {
             case disabled:
-                drawCenteredBitmap(canvas, disabled);
+                canvas.drawBitmap(disabled, drawRect, clipBounds, paint);
                 break;
             case lit:
-                drawCenteredBitmap(canvas, lit);
-                drawCenteredBitmap(canvas, glyph);
+                canvas.drawBitmap(lit, drawRect, clipBounds, paint);
+                canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 break;
             case unlit:
-                drawCenteredBitmap(canvas, unlit);
-                drawCenteredBitmap(canvas, glyph);
+                canvas.drawBitmap(unlit, drawRect, clipBounds, paint);
+                canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 break;
             case flashing:
 
                 long now_ms = System.currentTimeMillis();
                 if((now_ms/500)%2 ==0) {
-                    drawCenteredBitmap(canvas, unlit);
-                    drawCenteredBitmap(canvas, glyph);
+                    canvas.drawBitmap(unlit, drawRect, clipBounds, paint);
+                    canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 }
                 else {
-                    drawCenteredBitmap(canvas, lit);
-                    drawCenteredBitmap(canvas, glyph);
+                    canvas.drawBitmap(lit, drawRect, clipBounds, paint);
+                    canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 }
                 postInvalidateDelayed(500);
                 break;
@@ -145,12 +151,4 @@ public class LightButton extends View {
                 MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
     }
-
-
-
-    private void drawCenteredBitmap(Canvas canvas, Bitmap bitmap) {
-        if (bitmap!=null)
-        canvas.drawBitmap(bitmap, new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()), canvas.getClipBounds(), paint);
- }
-
 }
