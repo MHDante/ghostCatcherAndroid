@@ -1,18 +1,25 @@
 package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
@@ -55,6 +62,78 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 experienceManager.UpdateLocation(uri);
             }
         }
+    }
+
+    boolean debugging = true;
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        int currentpointerCount = ev.getPointerCount();
+
+        if (debugging&& currentpointerCount >=4){
+            debugging = false;
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog_debug);
+            dialog.setTitle("Settings");
+
+            Button close = (Button) dialog.findViewById(R.id.buttonClose);
+            Button enableTools = (Button) dialog.findViewById(R.id.enableTools);
+            Button Location1 = (Button) dialog.findViewById(R.id.location1);
+            Button Location2 = (Button) dialog.findViewById(R.id.location2);
+            Button Location3 = (Button) dialog.findViewById(R.id.location3);
+            Button Location4 = (Button) dialog.findViewById(R.id.location4);
+            // if button is clicked, close the custom dialog
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    debugging = true;
+                }
+            });
+
+            enableTools.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for(ToolFragment t: Tools.All()) t.setEnabled(true);
+                    }
+            });
+            Location1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(0);
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    experienceManager.UpdateLocation(target);
+                }
+            });
+            Location2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(1);
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    experienceManager.UpdateLocation(target);
+                }
+            });
+            Location3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(2);
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    experienceManager.UpdateLocation(target);
+                }
+            });
+            Location4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(3);
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    experienceManager.UpdateLocation(target);
+                }
+            });
+
+            dialog.show();
+            }
+
+
+        return super.dispatchTouchEvent(ev);
     }
 
     public void onClick(View view) {

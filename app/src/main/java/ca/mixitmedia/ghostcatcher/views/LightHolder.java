@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.views;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 
+import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.R;
 
 /**
@@ -21,9 +23,15 @@ import ca.mixitmedia.ghostcatcher.app.R;
  */
 public class LightHolder extends Fragment {
 
+    public enum State{Left, Right}
+
     BounceScrollView scrollView;
     ImageView leftGear, rightGear;
     LightButton leftLight, rightLight;
+
+    LightButton arrowLeft, arrowRight;
+    State state = State.Left;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_lightholder,container);
@@ -32,12 +40,66 @@ public class LightHolder extends Fragment {
         rightGear = (ImageView)v.findViewById(R.id.right_gear);
         leftLight = (LightButton)v.findViewById(R.id.left_toolLight);
         rightLight = (LightButton)v.findViewById(R.id.right_toolLight);
+        arrowLeft = (LightButton)v.findViewById(R.id.left_arrowLight);
+        arrowLeft.setGlyphID(R.drawable.arrow_left);
+        arrowLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.smoothScrollTo(0, 0);
+            }
+        });
+        arrowLeft.setState(LightButton.State.unlit);
+        arrowRight = (LightButton)v.findViewById(R.id.right_arrowLight);
+        arrowRight.setGlyphID(R.drawable.arrow_right);
+        arrowRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.smoothScrollTo(scrollView.getMaxScrollAmount() * 2, 0);
+            }
+        });
+        arrowRight.setState(LightButton.State.unlit);
         scrollView.setScrollViewListener(new ScrollViewListener() {
             @Override
             public void onScrollChanged(BounceScrollView scrollView, int x, int y, int oldx, int oldy) {
-                float xRotation = x/(float)scrollView.getMaxScrollAmount();
+                float maxScroll = scrollView.getMaxScrollAmount();
+                if(state == State.Left && x > maxScroll){
+                    state = State.Right;
+                    arrowRight.setState(LightButton.State.lit);
+                    arrowLeft.setState(LightButton.State.unlit);
+                    leftLight.setVisibility(View.GONE);
+                    rightLight.setVisibility(View.VISIBLE);
+
+                }else if (state == State.Right && x<maxScroll){
+                    arrowRight.setState(LightButton.State.unlit);
+                    arrowLeft.setState(LightButton.State.lit);
+                    state = State.Left;
+                    rightLight.setVisibility(View.GONE);
+                    leftLight.setVisibility(View.VISIBLE);
+                }
+                float alpha  = 1f - Utils.Triangle(x, maxScroll)/(maxScroll);
+                float xRotation = x/(maxScroll*2);
+                leftLight.setAlpha(x > maxScroll ? 0 : alpha);
+                rightLight.setAlpha(x < maxScroll ? 0 : alpha);
                 leftGear.setRotation((xRotation)*360);
                 rightGear.setRotation((xRotation)*360);
+
+                if(x == 0f || x == maxScroll*2){
+                    arrowLeft.setState(LightButton.State.unlit);
+                    arrowRight.setState(LightButton.State.unlit);
+                }
+            }
+
+            @Override
+            public void onFling(boolean rightToLeft) {
+                if (rightToLeft){
+                    arrowRight.setState(LightButton.State.unlit);
+                    arrowLeft.setState(LightButton.State.lit);
+                }
+                else{
+
+                    arrowRight.setState(LightButton.State.lit);
+                    arrowLeft.setState(LightButton.State.unlit);
+                }
             }
         });
         return v;
@@ -46,6 +108,7 @@ public class LightHolder extends Fragment {
     public interface ScrollViewListener {
 
         void onScrollChanged(BounceScrollView scrollView, int x, int y, int oldx, int oldy);
+        void onFling(boolean rightToLeft);
 
     }
     private static class BounceScrollView extends HorizontalScrollView {
@@ -130,24 +193,24 @@ public class LightHolder extends Fragment {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 try {
-	                if (Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-		                float distance = e1.getX() - e2.getX();
-		                //right to left
-			            if (distance > SWIPE_MIN_DISTANCE) {
-				            smoothScrollTo(getMaxScrollAmount() * 2, 0);
-				            return true;
-			            }
-			            //left to right
-			            else if (-distance > SWIPE_MIN_DISTANCE) {
-				            smoothScrollTo(0, 0);
-				            return true;
-			            }
-	                }
+                    //right to left
+                    if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        smoothScrollTo(getMaxScrollAmount() * 2, 0);
+                        scrollViewListener.onFling(true);
+                        return true;
+                    }
+                    //left to right
+                    else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                        smoothScrollTo(0, 0);
+                        scrollViewListener.onFling(false);
+                        return true;
+                    }
                 } catch (Exception e) {
                     Log.e("There was an error processing the Fling event:", e.getMessage());
                 }
                 return false;
             }
         }
+
     }
 }

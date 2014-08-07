@@ -157,6 +157,15 @@ public class Utils {
         }
     }
 
+    //ft. OrbIt
+    public static float Triangle(float num, float mod) {
+        float a = Math.abs(num) % (2 * mod);
+        float b = a - mod;
+        float c = Math.abs(b);
+        float d = mod - c;
+        return d;
+    }
+
     public static List<Uri> getNdefIntentURIs(Intent intent) {
         Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         ArrayList<Uri> ret = new ArrayList<>();

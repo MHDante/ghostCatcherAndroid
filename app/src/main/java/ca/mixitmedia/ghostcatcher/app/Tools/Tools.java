@@ -1,7 +1,5 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 import ca.mixitmedia.ghostcatcher.Utils;
@@ -55,6 +53,7 @@ public class Tools{
     public static ToolFragment Current() {
         return (ToolFragment) gcMain.getFragmentManager().findFragmentById(R.id.fragment_container);
     }
+    public static ToolFragment byName(String ToolName){
 
     public static ToolFragment byName(String ToolName) {
 		switch (ToolName.toLowerCase()) {
