@@ -3,7 +3,6 @@ package ca.mixitmedia.ghostcatcher.views;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -125,28 +124,30 @@ public class LightHolder extends Fragment {
         }
 
         private static final int SWIPE_MIN_DISTANCE = 5;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 300;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
         class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 try {
-                    //right to left
-                    if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        smoothScrollTo(getMaxScrollAmount() * 2, 0);
-                        return true;
-                    }
-                    //left to right
-                    else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                        smoothScrollTo(0, 0);
-                        return true;
-                    }
+	                if (Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+		                float distance = e1.getX() - e2.getX();
+		                //right to left
+			            if (distance > SWIPE_MIN_DISTANCE) {
+				            smoothScrollTo(getMaxScrollAmount() * 2, 0);
+				            return true;
+			            }
+			            //left to right
+			            else if (-distance > SWIPE_MIN_DISTANCE) {
+				            smoothScrollTo(0, 0);
+				            return true;
+			            }
+	                }
                 } catch (Exception e) {
-                    Log.e("Fling", "There was an error processing the Fling event:" + e.getMessage());
+                    Log.e("There was an error processing the Fling event:", e.getMessage());
                 }
                 return false;
             }
         }
-
     }
 }

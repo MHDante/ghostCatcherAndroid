@@ -9,11 +9,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 /**
- * Created by Nathalie on 2014-07-06.
+ * Created by Nathalie on 2014-07-06
  */
-public class SignalBeaconView extends SurfaceView {
-
+public class SignalBeaconView extends SurfaceView { //TODO: this needs a lot of polish.
     Paint waveOne, waveTwo, waveThree;
+
     WaveFunction waveFunction;
     SurfaceThread surfaceThread;
     int width, height;
@@ -53,13 +53,12 @@ public class SignalBeaconView extends SurfaceView {
                 Boolean hasJoined = false;
                 surfaceThread.setEnable(false);
 
-                while (hasJoined == false) {
+                while (!hasJoined) {
                     try {
                         surfaceThread.join();
                         hasJoined = true;
                     } catch (java.lang.InterruptedException e) {
                     }
-
                 }
             }
         });
@@ -140,7 +139,7 @@ class SurfaceThread extends Thread {
     public void run() {
         Canvas canvas = null;
 
-        while (enable == true) {
+        while (enable) {
             try {
                 canvas = surfaceHolder.lockCanvas();
                 if (canvas != null) {

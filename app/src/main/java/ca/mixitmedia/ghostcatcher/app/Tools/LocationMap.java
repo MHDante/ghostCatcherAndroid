@@ -2,7 +2,7 @@ package ca.mixitmedia.ghostcatcher.app.Tools;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -22,14 +23,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 
@@ -40,10 +38,6 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     GoogleMap map;
     int selectedLocation;
 
-    public LocationMap() {
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -53,9 +47,12 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
         map.setOnMarkerClickListener(this);
         map.setInfoWindowAdapter(this);
         map.setOnInfoWindowClickListener(this);
+	    map.getUiSettings().setZoomControlsEnabled(false);
+	    // map.getUiSettings().setRotateGesturesEnabled(false);
+	    //map.getUiSettings().setCompassEnabled(false);
 
 
-        ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
+        //ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         ImageButton right_button = (ImageButton) view.findViewById(R.id.right);
         ImageButton left_button = (ImageButton) view.findViewById(R.id.left);
 
@@ -72,30 +69,34 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
     }
 
     private void setUpMap() {
+	    map.setMyLocationEnabled(true);
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
+
+	    Location location = map.getMyLocation();
+	    if (location != null) {
+		    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
+	    }
+
 
         locations = gcMain.gcEngine.getCurrentSeqPt().getLocations();
         if (locations.size() <= 0) return;
-
-        for (selectedLocation = 0; selectedLocation < locations.size(); selectedLocation++) {
-            gcLocation loc = locations.get(selectedLocation);
-            if (gcMain.locationManager.getCurrentGCLocation() == null || !loc.getId().equals(gcMain.locationManager.getCurrentGCLocation().getId())) {
-                markers.add(map.addMarker(new MarkerOptions()
-                        .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker))
-                        .title(loc.getName())));
-
-            } else {
-                markers.add(map.addMarker(new MarkerOptions()
-                        .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker2))
-                        .title(loc.getName())));
+        for (gcLocation loc : locations) {
+	        gcLocation currentGCLocation = gcMain.locationManager.getCurrentGCLocation();
+	        int pinResource;
+            if (currentGCLocation == null || !loc.equalsID(currentGCLocation)){
+	            pinResource = R.drawable.map_marker;
             }
+	        else {
+	            setBanner(loc);
+	            pinResource = R.drawable.map_marker2;
+            }
+
+            markers.add(map.addMarker(new MarkerOptions()
+                    .position(loc.asLatLng())
+                    .icon(BitmapDescriptorFactory.fromResource(pinResource))
+                    .title(loc.getName())));
         }
-        setBanner(locations.get(selectedLocation - 1));
-
-
-        map.setMyLocationEnabled(true);
     }
 
     public void setBanner(gcLocation loc) {
@@ -115,8 +116,7 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
     @Override
     public void onDestroyView() {
-
-        MapFragment f = (MapFragment) getFragmentManager()
+		MapFragment f = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         //Todo:Illegal state Exception: Activity has been destroyed.
         if (f != null)
@@ -126,25 +126,23 @@ public class LocationMap extends ToolFragment implements GoogleMap.OnMarkerClick
 
 
     public boolean checkClick(View view) {
-        if (markers.size() > 0) {
-            switch (view.getId()) {
-                case R.id.left:
-                    int mod_result = (selectedLocation + markers.size() - 1) % markers.size();
-                    Marker m = markers.get(mod_result);
-                    m.showInfoWindow();
-                    onMarkerClick(m);
-                    return true;
-                case R.id.right:
-                    int mod_result2 = (selectedLocation + markers.size() + 1) % markers.size();
-                    Marker m2 = markers.get(mod_result2);
-                    m2.showInfoWindow();
-                    onMarkerClick(m2);
-                    return true;
-            }
+        if (markers.size() <= 0) return false;
+
+        switch (view.getId()) {
+            case R.id.left:
+	            return changeMarker(-1);
+            case R.id.right:
+                return changeMarker(+1);
+	        default: return false;
         }
-        return false;
     }
 
+	private boolean changeMarker (int delta) {
+		Marker m = markers.get((selectedLocation + delta) % markers.size());
+		m.showInfoWindow();
+		onMarkerClick(m);
+		return true;
+	}
 
     @Override
     public boolean onMarkerClick(Marker marker) {

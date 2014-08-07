@@ -6,7 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,13 +16,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Map;
-
-import ca.mixitmedia.ghostcatcher.app.ProximityTest;
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Alexander on 2014-06-17
@@ -100,7 +94,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
         backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
-        arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);;
+        arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
         lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
         lidImageView.setVisibility(View.VISIBLE);
 

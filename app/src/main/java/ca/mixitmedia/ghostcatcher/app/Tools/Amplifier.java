@@ -18,9 +18,7 @@ import com.estimote.sdk.Region;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
@@ -44,14 +42,11 @@ public class Amplifier extends ToolFragment {
 
     final Uri rootUri = gcEngine.root;
 
-    public Amplifier(){
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        beaconList = new ArrayList<SignalBeacon>(Arrays.asList(
+        beaconList = new ArrayList<>(Arrays.asList(
                 new SignalBeacon("CB:ED:AB:9A:95:E4", amplifierSoundOne),
                 new SignalBeacon("FB:6B:2C:F1:C6:B7", amplifierSoundTwo),
                 new SignalBeacon("DB:A6:5D:34:24:3B", amplifierSoundThree)));
@@ -146,7 +141,6 @@ public class Amplifier extends ToolFragment {
         }
 
         SoundManager.stop();
-
     }
 
 //    @Override
@@ -167,7 +161,7 @@ public class Amplifier extends ToolFragment {
     public void afterAnimation(boolean enter) {
         super.afterAnimation(enter);
 
-        if(enter){
+        if (enter){
             View view = this.getView();
 
             SoundManager.playTrack(Uri.parse("android.resource://"+getActivity().getPackageName()+"/raw/amplifier_main"),true);
@@ -205,10 +199,7 @@ public class Amplifier extends ToolFragment {
                     return amplitude + (float) (((amplitude/1.5) - ((beaconList.get(2).averageStrength)*(Math.log10((beaconList.get(2).averageStrength)*2)))) * Math.sin(graphX /period + time));
                 }
             });
-
         }
-
-
     }
 
     @Override
@@ -255,7 +246,7 @@ public class Amplifier extends ToolFragment {
         public void calculateAverage(int measuredStrength){
             currentStrength = measuredStrength;
 
-            if(iterator <= (signalQueueSize - 1)){
+            if (iterator <= (signalQueueSize - 1)){
                 strengthQueue[iterator] = currentStrength;
                 averageStrength = currentStrength;
                 iterator++;
@@ -293,9 +284,5 @@ public class Amplifier extends ToolFragment {
         public String toString(){
             return "RSSI: "+currentStrength+"  Sum: "+(averageStrength*signalQueueSize)+"  Average: "+averageStrength;
         }
-
     }
-
-
-
 }

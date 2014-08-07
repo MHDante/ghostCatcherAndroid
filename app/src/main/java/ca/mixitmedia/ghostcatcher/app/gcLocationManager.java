@@ -7,11 +7,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 /**
- * Created by Dante on 2014-07-27.
+ * Created by Dante on 2014-07-27
  */
 public class gcLocationManager implements LocationListener {
 
