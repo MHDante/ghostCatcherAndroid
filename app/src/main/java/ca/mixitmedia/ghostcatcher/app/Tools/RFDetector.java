@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     boolean toolState;
 
     ProgressBar proximityBar;
+
     /**
      * SensorManager is used to register/unregister this class as a SensorEventListener
      *
@@ -48,6 +50,9 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     SensorManager sensorManager;
 
 	Vibrator vibrator;
+	Handler vibrationHandler = new Handler();
+	Runnable vibrationRunnable;
+	int vibrationIntervalMS;
 
     /**
      * The angle between magnetic north and the front of the device
@@ -102,12 +107,19 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
         proximityBar.setMax(1000);
 
+	    vibrationRunnable = new Runnable()  {
+		    @Override
+		    public void run() {
+			    vibrator.vibrate(50);
+			    if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS);
+		    }
+	    };
 
         //destination = new Location("dummyProvider");
         //destination.setLatitude(43.652202);
         //destination.setLongitude(-79.5814);
         destination = gcMain.gcEngine.locations.get("lake_devo");
-        approxDistance = ApproxDistance.CLOSE;
+        approxDistance = ApproxDistance.CLOSE; //TODO: why is this here?
 
         //set initial data right away, if available
         gcMain.locationManager.setGPSUpdates(3000, 0);
@@ -137,7 +149,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
         gcMain.locationManager.requestSlowGPSUpdates(); //slow down gps updates
-	    vibrator.cancel();
+	    setGPSState(false, false);
         super.onPause();
     }
 
@@ -180,9 +192,9 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         ra.setFillAfter(true);// set the animation after the end of the reservation status
         arrowImageView.startAnimation(ra);
 
-//	    float deflection = Math.abs(newRelativeBearing - 180);
-//	    long dutyCycleOFFTimeMS =  1000 * (long)deflection / 180;
-//	    vibrator.vibrate(new long[] {0, 1000 - dutyCycleOFFTimeMS, dutyCycleOFFTimeMS}, 0);
+	    vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
+	    System.out.println(vibrationIntervalMS);
+		vibrationHandler.post(vibrationRunnable);
 
         heading = -newHeading;
         relativeBearing = newRelativeBearing;
@@ -271,12 +283,12 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	        ra = new RotateAnimation(0, 180,
 		            Animation.RELATIVE_TO_SELF, 0.1797323136f,
 		            Animation.RELATIVE_TO_SELF, 0.2093457944f);
+	        vibrationHandler.post(vibrationRunnable);
         }
         else {
 	        ra = new RotateAnimation(180, 0,
 		            Animation.RELATIVE_TO_SELF, 0.1797323136f,
 		            Animation.RELATIVE_TO_SELF, 0.2093457944f);
-	        vibrator.cancel();
 	        destinationProximityTextView.setText("Location Unavailable");
         }
 
@@ -291,8 +303,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     }
 
     /**
-     * An enumeration that stores the frequency with which location updates should be recieved.
-     * Faster updates are neceassary for accuracy at close proximity, but use significantly more
+     * An enumeration that stores the frequency with which location updates should be received.
+     * Faster updates are necessary for accuracy at close proximity, but use significantly more
      * battery energy, and heats up the phone.
      */
     enum ApproxDistance {

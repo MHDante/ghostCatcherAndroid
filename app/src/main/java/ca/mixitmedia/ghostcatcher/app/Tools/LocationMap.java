@@ -94,7 +94,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	    map.setMyLocationEnabled(true);
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
 
-	    Location location = map.getMyLocation();
+	    Location location = gcMain.locationManager.getCurrentGPSLocation();
 	    if (location != null) {
 		    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
