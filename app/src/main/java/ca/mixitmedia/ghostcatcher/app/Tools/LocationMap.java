@@ -129,7 +129,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
             case R.id.map_overlay_right_arrow:
                 return changeCurrentBannerLocation(+1);
 	        case R.id.map_overlay:
-		        toggleBanner();
+		        toogleBannerState();
 		        return true;
 	        default: return false;
         }
@@ -156,8 +156,19 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 		}
 	}
 
-	public void toggleBanner() {
-		ValueAnimator valueAnimator = ValueAnimator.ofInt(mlp.bottomMargin, (mlp.bottomMargin == -285)?0:-285);
+	/**
+	 * Toggles banner detail
+	 */
+	public void toogleBannerState() {
+		setBannerState(mlp.bottomMargin == -285);
+	}
+
+	/**
+	 * Shows/hides banner detail
+	 * @param state true to show detail, false to hide detail.
+	 */
+	public void setBannerState(boolean state) {
+		ValueAnimator valueAnimator = ValueAnimator.ofInt(mlp.bottomMargin, state?0:-285);
 		valueAnimator.addUpdateListener(locationBannerAnimatorUpdateListener);
 		valueAnimator.setDuration(500);
 		valueAnimator.start();
@@ -225,11 +236,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	//Implementation of OnInfoWindowClickListener
     @Override
     public void onInfoWindowClick(Marker marker) {
-        if (getCurrentGCLocation() != null &&
-		        getCurrentGCLocation().equalsMarkerTitle(marker)) { //todo:hacks
-            return;
-        }
-	    System.out.println("test");
-	    //Todo:alex, handle window clicks here.
+        onMarkerClick(marker);
+	    setBannerState(true);
     }
 }
