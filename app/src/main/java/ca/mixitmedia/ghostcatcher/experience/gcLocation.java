@@ -4,6 +4,7 @@ import android.location.Location;
 import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
 
@@ -15,9 +16,11 @@ public class gcLocation extends Location {
     String name;
     String description;
     gcEngine engine;
-    gcLocation(gcEngine engine) {
+    gcLocation(gcEngine engine, double latitude, double longitude) {
         super("gcLocation Provider");
         this.engine = engine;
+	    setLatitude(latitude);
+	    setLongitude(longitude);
     }
 
     public Uri getImageUri() {
@@ -32,6 +35,10 @@ public class gcLocation extends Location {
 		return this.getId().equals(gcLoc.getId());
 	}
 
+	public boolean equalsMarkerTitle (Marker marker) {
+		return this.getTitle().equals(marker.getTitle());
+	}
+
     public String getId() {
         return id;
     }
@@ -40,7 +47,7 @@ public class gcLocation extends Location {
         this.id = id;
     }
 
-    public String getName() {
+    public String getTitle() {
         return name;
     }
 

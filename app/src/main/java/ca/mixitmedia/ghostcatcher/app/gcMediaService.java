@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
@@ -17,12 +16,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 public class gcMediaService extends Service implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 
@@ -155,7 +150,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
                 Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/drawable/ghost");
         //Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
         //statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
-        statusBarView.setTextViewText(R.id.title, "Ghost Catcher");
+        statusBarView.setTextViewText(R.id.location_title, "Ghost Catcher");
         //statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
 
         statusBarView.setImageViewResource(R.id.status_bar_play,

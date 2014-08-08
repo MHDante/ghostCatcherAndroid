@@ -1,21 +1,17 @@
 package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -67,9 +63,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     boolean debugging = true;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        int currentpointerCount = ev.getPointerCount();
+        int currentPointerCount = ev.getPointerCount();
 
-        if (debugging&& currentpointerCount >=4){
+        if (debugging && currentPointerCount >= 4) {
             debugging = false;
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.dialog_debug);
@@ -96,43 +92,37 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     for(ToolFragment t: Tools.All()) t.setEnabled(true);
                     }
             });
-            Location1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(0);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
-            Location2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(1);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
-            Location3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(2);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
-            Location4.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(3);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
+
+	        View.OnClickListener clickListener = new View.OnClickListener() {
+		        @Override
+		        public void onClick(View v) {
+			        ArrayList<gcLocation> locations = new ArrayList<>(gcEngine.locations.values());
+			        gcLocation target = locations.get(0);
+			        switch (v.getId()) {
+				        case R.id.location1:
+					        target = locations.get(0);
+					        break;
+				        case R.id.location2:
+					        target = locations.get(1);
+					        break;
+				        case R.id.location3:
+					        target = locations.get(2);
+					        break;
+				        case R.id.location4:
+					        target = locations.get(3);
+					        break;
+			        }
+			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG);
+			        experienceManager.UpdateLocation(target);
+		        }
+	        };
+            Location1.setOnClickListener(clickListener);
+	        Location2.setOnClickListener(clickListener);
+	        Location3.setOnClickListener(clickListener);
+	        Location4.setOnClickListener(clickListener);
 
             dialog.show();
-            }
-
-
+        }
         return super.dispatchTouchEvent(ev);
     }
 

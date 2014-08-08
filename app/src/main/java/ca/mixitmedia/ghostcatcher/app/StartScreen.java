@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,8 +30,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import ca.mixitmedia.ghostcatcher.Utils;
 
 public class StartScreen extends Activity {
 
@@ -451,7 +448,7 @@ public class StartScreen extends Activity {
                         dirChecker(ze.getName());
                     } else {
                         FileOutputStream fout = new FileOutputStream(new File(location + "/" + ze.getName()));
-                        //Log.e("uz", location+ "/"+ ze.getName());
+                        //Log.e("uz", location+ "/"+ ze.getTitle());
                         byte[] buffer = new byte[8192];
                         int len;
                         while ((len = zin.read(buffer)) != -1) {
