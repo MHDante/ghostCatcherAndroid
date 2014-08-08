@@ -10,6 +10,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import ca.mixitmedia.ghostcatcher.Utils;
+import ca.mixitmedia.ghostcatcher.app.Tools.Communicator;
 import ca.mixitmedia.ghostcatcher.app.Tools.RFDetector;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
@@ -25,7 +26,7 @@ public class ExperienceManager {
     MainActivity gcMain;
     public gcLocation location;
     public gcEngine engine;
-    public boolean pendingLock;
+    public gcAction pendingLock;
 
     public ExperienceManager(MainActivity gcMain) {
         this.gcMain = gcMain;
@@ -33,14 +34,30 @@ public class ExperienceManager {
         execute(engine.getCurrentSeqPt().getAutoTrigger());
     }
 
+    public void unLock(gcAction key){
+        if (pendingLock==key) {
+            gcTrigger pendingTrigger = pendingLock.getTrigger();
+            pendingLock = null;
+            execute(pendingTrigger);
+        }
+    }
+
+    public boolean isLocked(){
+        return pendingLock != null;
+    }
+
+
     public void execute(gcTrigger trigger) {
         boolean exit;
-        if (trigger == null){return;}
+        if (trigger == null || trigger.isConsumed()){return;}
             while(true){
-            if (trigger.getActions().size() < 1 || pendingLock) return;
+            if (trigger.getActions().size() < 1){
+                trigger.consume();
+                return;
+            }
 
             gcAction action = trigger.getActions().remove();
-            pendingLock = action.isLocked();
+            boolean lock = action.isLocked();
 
             String data = action.getData().toLowerCase();
             switch (action.getType()) {
@@ -54,7 +71,7 @@ public class ExperienceManager {
                     break;
                 case ENABLE_TRIGGER:
                     engine.getCurrentSeqPt().getTrigger(Integer.parseInt(data)).setEnabled(true);
-                    pendingLock = false;
+                    lock = false;
                     break;
                 case DISABLE_TOOL:
                     ToolFragment t = Tools.byName(data);
@@ -62,21 +79,28 @@ public class ExperienceManager {
                     if(Tools.Current() == t) {
                         gcMain.swapTo(Tools.communicator);
                     }
-                    pendingLock = false;
+                    lock = false;
                     break;
                 case ENABLE_TOOL:
                     ToolFragment t2 = Tools.byName(data);
                     t2.setEnabled(true);
-                    t2.sendMessage(new ToolFragment.ToolMessage(gcAction.Type.ENABLE_TOOL, pendingLock));
+                    t2.sendMessage(new ToolFragment.ToolMessage(action, lock));
+                    if (lock) pendingLock = action;
                     break;
                 case END_SQPT:
                     engine.EndSeqPt();
+                    lock = false;
                     break;
                 case DIALOG:
                     try {
-                        gcDialog dialog = gcDialog.get(engine.getCurrentSeqPt(), data);
-
-                        Tools.communicator.sendMessage(new ToolFragment.ToolMessage(dialog, false));
+                        gcDialog.loadDialog(engine.getCurrentSeqPt(), data);//todo:threading
+                        Tools.communicator.sendMessage(new ToolFragment.ToolMessage(action, lock));
+                        if (Tools.Current() == Tools.communicator){
+                            Tools.communicator.CheckForMessages();
+                        }else {
+                            Tools.communicator.getToolLight().setState(LightButton.State.flashing);
+                        }
+                        if (lock) pendingLock = action;
                     } catch (IOException e) {
                         Utils.messageDialog(gcMain, "Error", e.getMessage());
                     }
@@ -89,8 +113,11 @@ public class ExperienceManager {
                         }
                     };
                     p.execute();
+                    lock = false;
                     break;
             }
+                if (lock)
+                    return;
         }
     }
     public void UpdateLocation(Uri uri) {

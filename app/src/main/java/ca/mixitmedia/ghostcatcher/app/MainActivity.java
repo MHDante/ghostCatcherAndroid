@@ -78,9 +78,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Button close = (Button) dialog.findViewById(R.id.buttonClose);
             Button enableTools = (Button) dialog.findViewById(R.id.enableTools);
             Button Location1 = (Button) dialog.findViewById(R.id.location1);
+            Location1.setText("RyeTheatre");
             Button Location2 = (Button) dialog.findViewById(R.id.location2);
+            Location2.setText("Lake Devo");
             Button Location3 = (Button) dialog.findViewById(R.id.location3);
+            Location3.setText("Arch");
             Button Location4 = (Button) dialog.findViewById(R.id.location4);
+            Location4.setText("TMZ");
             // if button is clicked, close the custom dialog
             close.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,32 +103,35 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Location1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(0);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    gcLocation target = gcEngine.locations.get("rye_theatre");
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG).show();
                     experienceManager.UpdateLocation(target);
                 }
             });
             Location2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(1);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    gcLocation target = gcEngine.locations.get("lake_devo");
+
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG).show();
                     experienceManager.UpdateLocation(target);
                 }
             });
             Location3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(2);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    gcLocation target = gcEngine.locations.get("arch");
+
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG).show();
                     experienceManager.UpdateLocation(target);
                 }
             });
             Location4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(3);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
+                    gcLocation target = gcEngine.locations.get("tmz");
+
+                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG).show();
                     experienceManager.UpdateLocation(target);
                 }
             });

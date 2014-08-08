@@ -32,9 +32,13 @@ public class gcDialog {
     private gcDialog() {
     }
 
-    public static gcDialog get(gcSeqPt seqPt, String id) throws IOException {
-        if (!seqPt.dialogCache.containsKey(id))
+    public static gcDialog get(gcSeqPt seqPt, String id){
+        try {
+            if (!seqPt.dialogCache.containsKey(id))
                 loadDialog(seqPt, id);
+        }catch (IOException e){
+            Utils.messageDialog(seqPt.engine.context, "Dialog IOError:", "Could not load Dialog: "+id+ " in seq: " +seqPt.id);
+        }
         return seqPt.dialogCache.get(id);
     }
 

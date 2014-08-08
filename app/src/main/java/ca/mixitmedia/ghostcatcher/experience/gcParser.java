@@ -63,15 +63,16 @@ public class gcParser {
         }
         return engine;
     }
-    public static gcAction parseAction()
+    public static gcAction parseAction(gcTrigger trigger)
             throws IOException, XmlPullParserException {
 
         if (!parser.getName().equalsIgnoreCase("action"))
             throw new RuntimeException("Tried to parse something that wasn't an action");
 
         gcAction result = new gcAction();
+        result.trigger = trigger;
         result.type = gcAction.Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
-        //result.lock = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
+        result.locked = Boolean.parseBoolean(parser.getAttributeValue(null, "lock"));
         if (parser.next() == XmlPullParser.TEXT) {
             result.data = parser.getText();
         }
@@ -185,7 +186,7 @@ public class gcParser {
                 case XmlPullParser.START_TAG:
                     switch (parser.getName().toLowerCase()) {
                         case "action":
-                            result.actions.add(parseAction());
+                            result.actions.add(parseAction(result));
                             break;
                     }
                     break;

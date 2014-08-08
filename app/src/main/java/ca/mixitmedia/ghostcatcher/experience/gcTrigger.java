@@ -55,6 +55,14 @@ public class gcTrigger {
         return actions;
     }
 
+    public void consume() {
+        consumed = true;
+    }
+
+    public boolean isConsumed() {
+        return consumed;
+    }
+
 
     public enum Type {
         AUTO,
