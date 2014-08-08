@@ -107,11 +107,11 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	        gcLocation currentGCLocation = getCurrentGCLocation();
 	        int pinResource;
             if (currentGCLocation == null || !loc.equalsID(currentGCLocation)){
-	            pinResource = R.drawable.map_marker_active;
+	            pinResource = R.drawable.map_marker_inactive;
             }
 	        else {
 	            setBanner(loc);
-	            pinResource = R.drawable.map_marker_inactive;
+	            pinResource = R.drawable.map_marker_active;
             }
 
             markers.add(map.addMarker(new MarkerOptions()
@@ -155,6 +155,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 			System.out.println(e.getMessage());
 		}
 	}
+
 	public void toggleBanner() {
 		ValueAnimator valueAnimator = ValueAnimator.ofInt(mlp.bottomMargin, (mlp.bottomMargin == -285)?0:-285);
 		valueAnimator.addUpdateListener(locationBannerAnimatorUpdateListener);
