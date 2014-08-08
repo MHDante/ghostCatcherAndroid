@@ -33,7 +33,7 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="#ff7e27ff"
+                android:background="#000000"
                 android:gravity="center_horizontal"
                 android:id="@+id/linearLayoutBio">
 
@@ -54,8 +54,8 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="210dp"
+                    android:layout_height="210dp"
                     android:id="@+id/character_bio1"
                     android:src="@drawable/gc_seq1"
                     android:layout_marginTop="40dp" />

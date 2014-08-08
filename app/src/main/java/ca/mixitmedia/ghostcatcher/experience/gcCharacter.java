@@ -8,8 +8,12 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import ca.mixitmedia.ghostcatcher.Utils;
+import ca.mixitmedia.ghostcatcher.app.R;
 
 /**
  * Created by Dante on 07/03/14
@@ -52,6 +56,13 @@ public class gcCharacter {
                     .create().show();
         }
         return Uri.fromFile(new File(engine.root + "/characters/" + getId() + "/" + poses.get(poseName)));
+    }
+
+    public Uri getDefaultPose() {
+        if (poses.size() <1){
+            return Utils.resIdToUri(engine.context, R.drawable.shine);
+        }
+        else return getPose(new ArrayList<>(poses.keySet()).get(0));
     }
 
 }

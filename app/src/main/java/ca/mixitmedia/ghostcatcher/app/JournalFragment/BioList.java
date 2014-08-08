@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,13 +37,15 @@ public class BioList extends ToolFragment {
     TextView charName;
     List<String> keys;
 
+
     public class BioListAdapter extends android.widget.BaseAdapter{
         HashMap<String, gcCharacter> charList;
 
 
         public BioListAdapter(HashMap<String, gcCharacter> character){
             charList = character;
-            keys = new ArrayList<String>(charList.keySet());
+            //eys = Arrays.asList("prof_wolfe");
+            keys = new ArrayList<>(charList.keySet());
         }
 
         @Override
@@ -71,10 +74,43 @@ public class BioList extends ToolFragment {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.biolist_list, null);
 
-            charName = (TextView) view.findViewById(R.id.charName);
-            charName.setText(gcMain.gcEngine.characters.get(keys.get(i)).getName());
+            String charId ="";
 
-            image = (ImageView) view.findViewById(R.id.character_bio1);
+            charId = keys.get(i);
+            gcCharacter ghostCatcherCharacters = gcMain.gcEngine.characters.get(charId);
+
+
+
+
+            //       charName = (TextView) v.findViewById(R.id.charName);
+            //       charName.setText(ghostCatcherCharacters.getName());
+
+            //name.setText(ghostCatcherCharacters.getName());
+
+           // bio.setText("hi");
+            bio.setText(ghostCatcherCharacters.getBio());
+
+            image = (ImageView) view.findViewById(R.id.imageView);
+
+            try {
+                image.setImageBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), ghostCatcherCharacters.getDefaultPose()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("BioList","image cant set bitmap, I/O error?", e);
+            }
+
+
+            charName = (TextView) view.findViewById(R.id.charName);
+
+            HashMap<String, gcCharacter> charMap = gcMain.gcEngine.characters;
+            String aa = keys.get(0);
+            gcCharacter gcC = charMap.get(aa);
+            String text = gcC.getName();
+            charName.setText(text);
+
+            charName.setText(ghostCatcherCharacters.getName());
+
+
             //image.setImageURI(Uri.fromFile(new File(gcEngine.Access().root +"/characters/" + "/"+"prof_wolfe"+"/"+"smug.png")));
 
 
@@ -89,27 +125,12 @@ public class BioList extends ToolFragment {
         image = (ImageView) v.findViewById(R.id.character_bio1);
         lv = (ListView) v.findViewById(R.id.masterBio);
 
-        String a = keys.get(0);
-
-        gcCharacter firstCharacter = gcMain.gcEngine.characters.get(a);
-
         BioListAdapter bla = new BioListAdapter(gcMain.gcEngine.characters);
         lv.setAdapter(bla);
 
 
 
- //       charName = (TextView) v.findViewById(R.id.charName);
-//        charName.setText(firstCharacter.getName());
 
-        //name.setText(firstCharacter.getName());
-        //charName.setText(firstCharacter.getName());
-
-        bio.setText(firstCharacter.getBio());
-        try {
-            image.setImageBitmap(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), firstCharacter.getPose("pose1")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return v;
 
 
