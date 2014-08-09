@@ -148,7 +148,8 @@ var World = {
 	
 	// reload places from content source
 	captureScreen: function captureScreenFn() {
-		document.location = "architectsdk://button?action=captureScreen";
+	    var ghostVisible = markerObject.isVisible();
+		document.location = "architectsdk://button?visible=" + ghostVisible;
 	},
 	
 	// screen was clicked but no geo-object was hit

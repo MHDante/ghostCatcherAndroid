@@ -38,8 +38,6 @@ public class Tools {
         imager          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_imager        ));
         rfDetector      .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_rfDetector    ));
 
-	    rfDetector.setEnabled(true);
-	    locationMap.setEnabled(true);
     }
 
     public static Iterable<ToolFragment> All() {

@@ -19,6 +19,7 @@ import ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 import ca.mixitmedia.ghostcatcher.experience.gcTrigger;
+import ca.mixitmedia.ghostcatcher.views.LightButton;
 
 public class ExperienceManager {
 
