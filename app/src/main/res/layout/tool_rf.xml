@@ -116,10 +116,10 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
-		android:layout_alignParentTop="true"
 		android:adjustViewBounds="true"
 		android:src="@drawable/rf_lid"
-		android:visibility="invisible"/>
+		android:visibility="visible"
+		android:layout_alignParentTop="true"/>
 
 	<!--DEBUG <LinearLayout
 		android:layout_width="fill_parent"

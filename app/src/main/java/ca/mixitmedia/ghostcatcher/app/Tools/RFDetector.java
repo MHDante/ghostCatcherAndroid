@@ -6,8 +6,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +18,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Map;
-
-import ca.mixitmedia.ghostcatcher.app.ProximityTest;
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
  * Created by Alexander on 2014-06-17
@@ -34,10 +30,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     /**
      * references to the UI elements
      */
-    /*debug
-    TextView latitudeTextView;
-	TextView longitudeTextView;
-	TextView compassTextView;*/
     TextView destinationProximityTextView;
 
     ImageView backgroundImageView;
@@ -45,9 +37,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     ImageView lidImageView;
 
     boolean backgroundFlashingState;
-    boolean lidState;
+    boolean toolState;
 
     ProgressBar proximityBar;
+
     /**
      * SensorManager is used to register/unregister this class as a SensorEventListener
      *
@@ -56,10 +49,14 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      */
     SensorManager sensorManager;
 
+	Vibrator vibrator;
+	Handler vibrationHandler = new Handler();
+	Runnable vibrationRunnable;
+	int vibrationIntervalMS;
+
     /**
      * The angle between magnetic north and the front of the device
      * Range: [0,360), increasing clockwise from North
-     *
      * @see <a href="http://imgur.com/Y3KXHyn">Helpful Diagram</a>
      */
     float heading;
@@ -68,7 +65,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     /**
      * The angle between magnetic north and the destination.
      * Range: [0,360), increasing clockwise from North
-     *
      * @see <a href="http://imgur.com/Y3KXHyn">Helpful Diagram</a>
      */
     float bearing;
@@ -76,7 +72,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     /**
      * //the angle between the heading and the bearing
      * Range: [0,360), increasing clockwise from North
-     *
      * @see <a href="http://imgur.com/Y3KXHyn">Helpful Diagram</a>
      */
     float relativeBearing;
@@ -95,34 +90,39 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+	    sensorManager = (SensorManager) gcMain.getSystemService(Context.SENSOR_SERVICE);
+	    vibrator = (Vibrator) gcMain.getSystemService(Context.VIBRATOR_SERVICE);
+
         View view = inflater.inflate(R.layout.tool_rf, container, false);
 
         destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
         backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
-        arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);;
+        arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
+
         lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
         lidImageView.setVisibility(View.VISIBLE);
 
         proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
         proximityBar.setMax(1000);
 
-        sensorManager = (SensorManager) gcMain.getSystemService(Context.SENSOR_SERVICE);
+	    vibrationRunnable = new Runnable()  {
+		    @Override
+		    public void run() {
+			    vibrator.vibrate(50);
+			    if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS);
+		    }
+	    };
 
         //destination = new Location("dummyProvider");
         //destination.setLatitude(43.652202);
         //destination.setLongitude(-79.5814);
         destination = gcMain.gcEngine.locations.get("lake_devo");
-        approxDistance = ApproxDistance.CLOSE;
+        approxDistance = ApproxDistance.CLOSE; //TODO: why is this here?
 
         //set initial data right away, if available
         gcMain.locationManager.setGPSUpdates(3000, 0);
-        Location currentLocation = gcMain.locationManager.getCurrentGPSLocation();
-        if (currentLocation != null) {
-            System.out.println("Stored location loaded");
-            onLocationChanged(currentLocation);
-            setLidState(true, true);
-        }
 
         return view;
     }
@@ -138,6 +138,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                 sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
         gcMain.locationManager.setGPSUpdates(0, 0);
+	    gcMain.locationManager.setGPSStatus();
         //updateDestination();
     }
 
@@ -148,6 +149,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
         gcMain.locationManager.requestSlowGPSUpdates(); //slow down gps updates
+	    setGPSState(false, false);
         super.onPause();
     }
 
@@ -175,8 +177,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * @param newHeading the new heading, range: [0, 360), increasing clockwise from North
      */
     private void updateHeading(float newHeading) {
+	    if (!toolState) return;
         newHeading = Math.round(newHeading);
-        //compassTextView.setText("Heading: " + Float.toString(newHeading) + " degrees");
 
         float newRelativeBearing = Math.round((newHeading - bearing + 360) % 360);
 
@@ -189,6 +191,11 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         ra.setDuration(210);
         ra.setFillAfter(true);// set the animation after the end of the reservation status
         arrowImageView.startAnimation(ra);
+
+	    vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
+	    System.out.println(vibrationIntervalMS);
+		vibrationHandler.post(vibrationRunnable);
+
         heading = -newHeading;
         relativeBearing = newRelativeBearing;
     }
@@ -203,7 +210,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
             Log.d("RF", "Locations shouldn't be null, you dun fucked up.");
             return;
         }
-        setLidState(true, false);
+        setGPSState(true, false);
         bearing = (location.bearingTo(destination) + 360) % 360;
         proximity = location.distanceTo(destination);
         proximityBar.setProgress(1000 - (int) proximity);
@@ -244,12 +251,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                     gcMain.locationManager.setGPSUpdates(0, 0); //0 seconds, 0 meters
                     Log.d("RFDetector", "We're here bitches!");
                     destinationProximityTextView.setText("#Location Reached#"); //TODO: use story terminology
-                    //new ProximityTest() {
-                    //    @Override
-                    //    public void HandleServerMessage(String s) {
-                    //        Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
-                    //    }
-                    //}.execute();
                     gcMain.experienceManager.ToolSuccess(this);
                     //gcMain.swapTo(Tools.communicator);
                     break;
@@ -265,15 +266,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
             backgroundFlashingState = false;
         }
 
-		/*debug
-		latitudeTextView.setText("Lat: " + location.getLatitude() + "°");
-		longitudeTextView.setText("Long: " + location.getLongitude() + "°");*/
         destinationProximityTextView.setText("Proximity: " + Math.round(proximity) + " m");
-    }
-
-    public void setGPSStatus(boolean gpsAvailablity) {
-        setLidState(gpsAvailablity, false);
-        destinationProximityTextView.setText("Location Unavailable");
     }
 
     /**
@@ -282,21 +275,27 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * @param state   true for open, false for closed.
      * @param instant true for instance animation, false for animation with duration
      */
-    public void setLidState(boolean state, boolean instant) {
-        if (state != lidState) {
-            RotateAnimation ra;
-            if (state) ra = new RotateAnimation(0, 180,
-                    Animation.RELATIVE_TO_SELF, 0.180952381f,
-                    Animation.RELATIVE_TO_SELF, 0.211382114f);
-            else ra = new RotateAnimation(180, 0,
-                    Animation.RELATIVE_TO_SELF, 0.180952381f,
-                    Animation.RELATIVE_TO_SELF, 0.211382114f);
+    public void setGPSState (boolean state, boolean instant) {
+        if (state == toolState) return;
 
-            ra.setDuration((instant) ? 0 : 1000); //sets duration to 1s or 0.
-            ra.setFillAfter(true);// set the animation after the end of the reservation status
-            lidImageView.startAnimation(ra);
-            lidState = state;
+        RotateAnimation ra;
+        if (state) {
+	        ra = new RotateAnimation(0, 180,
+		            Animation.RELATIVE_TO_SELF, 0.1797323136f,
+		            Animation.RELATIVE_TO_SELF, 0.2093457944f);
+	        vibrationHandler.post(vibrationRunnable);
         }
+        else {
+	        ra = new RotateAnimation(180, 0,
+		            Animation.RELATIVE_TO_SELF, 0.1797323136f,
+		            Animation.RELATIVE_TO_SELF, 0.2093457944f);
+	        destinationProximityTextView.setText("Location Unavailable");
+        }
+
+        ra.setDuration(instant ? 0 : 1000); //sets duration to 1s or 0.
+        ra.setFillAfter(true);// set the animation after the end of the reservation status
+        lidImageView.startAnimation(ra);
+        toolState = state;
     }
 
     public void updateDestination() {
@@ -304,8 +303,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     }
 
     /**
-     * An enumeration that stores the frequency with which location updates should be recieved.
-     * Faster updates are neceassary for accuracy at close proximity, but use significantly more
+     * An enumeration that stores the frequency with which location updates should be received.
+     * Faster updates are necessary for accuracy at close proximity, but use significantly more
      * battery energy, and heats up the phone.
      */
     enum ApproxDistance {

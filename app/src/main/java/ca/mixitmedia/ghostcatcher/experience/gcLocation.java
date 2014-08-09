@@ -2,25 +2,25 @@ package ca.mixitmedia.ghostcatcher.experience;
 
 import android.location.Location;
 import android.net.Uri;
-import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class gcLocation extends Location {
     String id;
     String name;
     String description;
     gcEngine engine;
-    gcLocation(gcEngine engine) {
+    gcLocation(gcEngine engine, double latitude, double longitude) {
         super("gcLocation Provider");
         this.engine = engine;
+	    setLatitude(latitude);
+	    setLongitude(longitude);
     }
 
     public Uri getImageUri() {
@@ -31,6 +31,14 @@ public class gcLocation extends Location {
         return Uri.fromFile(f);
     }
 
+	public boolean equalsID (gcLocation gcLoc) {
+		return this.getId().equals(gcLoc.getId());
+	}
+
+	public boolean equalsMarkerTitle (Marker marker) {
+		return this.getTitle().equals(marker.getTitle());
+	}
+
     public String getId() {
         return id;
     }
@@ -39,7 +47,7 @@ public class gcLocation extends Location {
         this.id = id;
     }
 
-    public String getName() {
+    public String getTitle() {
         return name;
     }
 
@@ -54,5 +62,9 @@ public class gcLocation extends Location {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public LatLng asLatLng() {
+		return new LatLng(this.getLatitude(), this.getLongitude());
+	}
 }
 

@@ -7,11 +7,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 /**
- * Created by Dante on 2014-07-27.
+ * Created by Dante on 2014-07-27
  */
 public class gcLocationManager implements LocationListener {
 
@@ -53,14 +52,15 @@ public class gcLocationManager implements LocationListener {
         if (Tools.Current() == Tools.rfDetector) Tools.rfDetector.onLocationChanged(location);
     }
 
-    private void setGPSStatus() {
-        boolean gpsAvailablity = false;
-        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER)) {
-            gpsAvailablity = true;
-        }
+    public void setGPSStatus() {
+        boolean gpsAvailability = (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER));
         if (Tools.Current() == Tools.rfDetector) {
-            Tools.rfDetector.setGPSStatus(gpsAvailablity);
+	        Tools.rfDetector.setGPSState(gpsAvailability, false);
+	        if (gpsAvailability && currentGPSLocation != null) {
+		        System.out.println("Stored location loaded");
+		        onLocationChanged(currentGPSLocation);
+	        }
         }
     }
 
@@ -78,8 +78,9 @@ public class gcLocationManager implements LocationListener {
         this.GPSMinUpdateTimeMS = GPSMinUpdateTimeMS;
         this.GPSMinUpdateDistanceM = GPSMinUpdateDistanceM;
 
-
-        locationManager.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER, GPSMinUpdateTimeMS, GPSMinUpdateDistanceM, this);
+        locationManager.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER,
+		        GPSMinUpdateTimeMS,
+		        GPSMinUpdateDistanceM, this);
     }
 
     /**
@@ -91,7 +92,6 @@ public class gcLocationManager implements LocationListener {
 
     /**
      * returns the most recent known location of the user.
-     *
      * @return the most recent known location of the user.
      */
     public Location getCurrentGPSLocation() {

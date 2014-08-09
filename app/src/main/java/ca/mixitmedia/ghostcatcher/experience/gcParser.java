@@ -71,8 +71,8 @@ public class gcParser {
 
         gcAction result = new gcAction();
         result.trigger = trigger;
-        result.type = gcAction.Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
-        result.locked = Boolean.parseBoolean(parser.getAttributeValue(null, "lock"));
+        result.type = gcAction.Type.valueOf(get("type").toUpperCase());
+        result.locked = Boolean.parseBoolean(get("lock"));
         if (parser.next() == XmlPullParser.TEXT) {
             result.data = parser.getText();
         }
@@ -86,8 +86,8 @@ public class gcParser {
             throw new RuntimeException("Tried to parse something that wasn't a character");
 
         gcCharacter result = new gcCharacter(engine);
-        result.setId(parser.getAttributeValue(null, "id"));
-        result.setName(parser.getAttributeValue(null, "name"));
+        result.setId(get("id"));
+        result.setName(get("name"));
 
         int pEvent = parser.next();
 
@@ -102,8 +102,8 @@ public class gcParser {
 
                             break;
                         case "pose":
-                            result.poses.put(parser.getAttributeValue(null, "id"),
-                                    parser.getAttributeValue(null, "image"));
+                            result.poses.put(get("id"),
+                                    get("image"));
                             break;
                     }
                     break;
@@ -123,8 +123,8 @@ public class gcParser {
 
 
         gcSeqPt result = new gcSeqPt(engine);
-        result.id = parser.getAttributeValue(null, "id");
-        result.name = parser.getAttributeValue(null, "name");
+        result.id = get("id");
+        result.name = get("name");
 
         int pEvent = parser.next();
 
@@ -160,12 +160,12 @@ public class gcParser {
         if (!parser.getName().equals("location"))
             throw new RuntimeException("Tried to parse something that wasn't a location");
 
-        gcLocation result = new gcLocation(engine);
-        result.setId(parser.getAttributeValue(null, "id"));
-        result.setName(parser.getAttributeValue(null, "name"));
-        result.setLatitude(Double.parseDouble(parser.getAttributeValue(null, "lat")));
-        result.setLongitude(Double.parseDouble(parser.getAttributeValue(null, "long")));
-        result.setDescription(parser.getAttributeValue(null, "description"));
+        gcLocation result = new gcLocation(engine,
+		        Double.parseDouble(get("lat")),
+		        Double.parseDouble(get("long")));
+        result.setId(get("id"));
+        result.setName(get("name"));
+        result.setDescription(get("description"));
         return result;
     }
 
@@ -175,9 +175,9 @@ public class gcParser {
             throw new RuntimeException("Tried to parse something that wasn't a trigger");
 
         gcTrigger result = new gcTrigger();
-        result.id = Integer.parseInt(parser.getAttributeValue(null, "id"));
-        result.type = gcTrigger.Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
-        result.data = parser.getAttributeValue(null, "data");
+        result.id = Integer.parseInt(get("id"));
+        result.type = gcTrigger.Type.valueOf(get("type").toUpperCase());
+        result.data = get("data");
 
         int pEvent = parser.next();
 
@@ -234,6 +234,7 @@ public class gcParser {
         }
         throw new RuntimeException("mystery Parsing error : " + result.UnSolved);
     }
+	
     public static Task parseTask()
             throws IOException, XmlPullParserException {
 
@@ -241,14 +242,18 @@ public class gcParser {
             throw new RuntimeException("Tried to parse something that wasn't a Task");
 
         Task result = new Task();
-        result.id = parser.getAttributeValue(null, "id");
-        result.enabled = Boolean.parseBoolean(parser.getAttributeValue(null, "enabled"));
-        result.visible = Boolean.parseBoolean(parser.getAttributeValue(null, "visible"));
-        result.completed = Boolean.parseBoolean(parser.getAttributeValue(null, "completed"));
+        result.id = get("id");
+        result.enabled = Boolean.parseBoolean(get("enabled"));
+        result.visible = Boolean.parseBoolean(get("visible"));
+        result.completed = Boolean.parseBoolean(get("completed"));
         if (parser.next() == XmlPullParser.TEXT) {
             result.description = parser.getText();
         }
 
         return result;
     }
+	
+	public static String get(String name) {
+		return parser.getAttributeValue(null, name);
+	}
 }

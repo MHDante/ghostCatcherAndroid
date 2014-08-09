@@ -25,10 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class Utils {
 
@@ -73,11 +72,12 @@ public class Utils {
     }
 
     public static void messageDialog(Context context, String title, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle(title);
-        dialog.setMessage(message);
-        dialog.setNeutralButton("OK", null);
-        dialog.create().show();
+	    (new AlertDialog.Builder(context))
+		        .setTitle(title)
+		        .setMessage(message)
+		        .setNeutralButton("OK", null)
+		        .create()
+			    .show();
     }
 
     /**
@@ -90,8 +90,7 @@ public class Utils {
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return px;
+        return dp * (metrics.densityDpi / 160f);
     }
 
     public static int convertDpToPixelInt(float dp, Context context) {
@@ -108,8 +107,7 @@ public class Utils {
     public static float convertPixelsToDp(float px, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / (metrics.densityDpi / 160f);
-        return dp;
+        return px / (metrics.densityDpi / 160f);
     }
 
 

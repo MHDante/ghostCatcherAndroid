@@ -5,10 +5,8 @@ import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +31,7 @@ public abstract class ToolFragment extends Fragment {
         this.toolLight = toolLight;
         String name = ((Object) this).getClass().getSimpleName().toLowerCase();
         int id = Utils.findDrawableIDByName("icon_" + name);
-        if (id!=0) {
+        if (id != 0) {
             toolLight.setGlyphID(id);
         }
     }
@@ -63,23 +61,19 @@ public abstract class ToolFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
-        return super.onCreateView(inflater, container, savedInstanceState);
+		return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
-
-
-        int animatorId = getAnimatorId(enter);
+int animatorId = getAnimatorId(enter);
         setupAnimator(enter);
         Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
 
         if (anim != null) getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        anim.addListener(new AnimatorListenerAdapter() {
 
-            @Override
+	    anim.addListener(new AnimatorListenerAdapter() {
+			 @Override
             public void onAnimationStart(Animator animation) {
                 //MainActivity.transitionInProgress = true;
             }
@@ -89,12 +83,10 @@ public abstract class ToolFragment extends Fragment {
                 //MainActivity.transitionInProgress = false;
                 if (getView() != null) getView().setLayerType(View.LAYER_TYPE_NONE, null);
                 afterAnimation(enter);
-
             }
         });
 
-
-        return anim;
+	    return anim;
     }
 
     @Override
@@ -120,12 +112,14 @@ public abstract class ToolFragment extends Fragment {
     public void onPause() {
         super.onPause();
         toolLight.setState(LightButton.State.unlit);
-
     }
 
     protected int getAnimatorId(boolean enter) {
-        if (enter) SoundManager.playSound(SoundManager.Sounds.metalClick);
-        return ((enter) ? R.animator.transition_in_from_bottom : R.animator.transition_out_from_bottom);
+        if (enter) {
+	        SoundManager.playSound(SoundManager.Sounds.metalClick);
+	        return R.animator.transition_in_from_bottom;
+        }
+        return R.animator.transition_out_from_bottom;
     }
 
     public boolean isSelected() {
@@ -219,7 +213,7 @@ public abstract class ToolFragment extends Fragment {
         LEFT,   //Pivot from the left
         RIGHT,  //Pivot from the right
         TOP,    //Pivot from the top
-        BOTTOM //Pivot from the bottom
+        BOTTOM  //Pivot from the bottom
     }
 
     public static class ToolMessage {

@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.views;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -186,7 +187,7 @@ public class LightHolder extends Fragment {
         }
 
         private static final int SWIPE_MIN_DISTANCE = 5;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 300;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 200;
 
         class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
             @Override
@@ -205,7 +206,7 @@ public class LightHolder extends Fragment {
                         return true;
                     }
                 } catch (Exception e) {
-                    Log.e("Fling", "There was an error processing the Fling event:" + e.getMessage());
+                    Log.e("There was an error processing the Fling event:", e.getMessage());
                 }
                 return false;
             }
