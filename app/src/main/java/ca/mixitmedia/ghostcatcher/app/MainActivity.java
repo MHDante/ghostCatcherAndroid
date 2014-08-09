@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.app;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
@@ -86,11 +87,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Button Location4 = (Button) dialog.findViewById(R.id.location4);
             Location4.setText("TMZ");
             // if button is clicked, close the custom dialog
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    debugging = true;
+                }
+            });
             close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
-                    debugging = true;
                 }
             });
 

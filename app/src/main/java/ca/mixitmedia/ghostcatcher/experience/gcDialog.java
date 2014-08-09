@@ -43,7 +43,7 @@ public class gcDialog {
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
-        String seqPath = seqPt.engine.root + "/seq" + "/seq" + seqPt.id;
+        String seqPath = gcEngine.root + "/seq" + "/seq" + seqPt.id;
         String textPath = seqPath + "/text/" + id + ".txt";
         String soundPath = seqPath + "/sounds/" + id + ".mp3";
 
@@ -104,6 +104,7 @@ public class gcDialog {
             throw new RuntimeException("File doesn't exist for pose " + pose + " for character " + chr.name);
         }
         dialog.parsed.put(time, total.toString());
+        dialog.intervals.add(time);
         dialog.id = id;
         seqPt.dialogCache.put(id, dialog);
     }

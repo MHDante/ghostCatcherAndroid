@@ -62,12 +62,16 @@ public class ExperienceManager {
             String data = action.getData().toLowerCase();
             switch (action.getType()) {
                 case ACHIEVEMENT:
+                    lock = false;
                     break;
                 case CHECK_TASK:
+                    lock = false;
                     break;
                 case COMPLETE_TASK:
+                    lock = false;
                     break;
                 case CONSUME_TRIGGER:
+                    lock = false;
                     break;
                 case ENABLE_TRIGGER:
                     engine.getCurrentSeqPt().getTrigger(Integer.parseInt(data)).setEnabled(true);
