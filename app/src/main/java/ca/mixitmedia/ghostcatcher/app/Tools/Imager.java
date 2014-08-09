@@ -84,10 +84,10 @@ public class Imager extends ToolFragment {
 
     @Override
     public boolean checkClick(View view) {
-        if(view.getId() == R.id.button){
-            gcMain.experienceManager.ToolSuccess(this);
-            gcMain.swapTo(Tools.communicator);
-        }
+        //if(view.getId() == R.id.button){
+        //    gcMain.experienceManager.ToolSuccess(this);
+        //    gcMain.swapTo(Tools.communicator);
+        //}
         return false;
     }
 
