@@ -2,16 +2,11 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.location.Location;
 import android.net.Uri;
-import android.os.Debug;
-import android.os.UserManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
 
 import ca.mixitmedia.ghostcatcher.Utils;
-import ca.mixitmedia.ghostcatcher.app.Tools.Communicator;
-import ca.mixitmedia.ghostcatcher.app.Tools.RFDetector;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
 import ca.mixitmedia.ghostcatcher.experience.gcAction;
@@ -35,7 +30,7 @@ public class ExperienceManager {
     }
 
     public void unLock(gcAction key){
-        if (pendingLock==key) {
+        if (pendingLock == key) {
             gcTrigger pendingTrigger = pendingLock.getTrigger();
             pendingLock = null;
             execute(pendingTrigger);

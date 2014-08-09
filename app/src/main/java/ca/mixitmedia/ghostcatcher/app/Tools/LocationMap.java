@@ -104,7 +104,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
         locations = gcMain.gcEngine.getCurrentSeqPt().getLocations();
         if (locations.size() <= 0) return;
         for (gcLocation loc : locations) {
-	        gcLocation currentGCLocation = getCurrentGCLocation();
+	        gcLocation currentGCLocation = getUserCurrentgcLocation();
 	        int pinResource;
             if (currentGCLocation == null || !loc.equalsID(currentGCLocation)){
 	            pinResource = R.drawable.map_marker_inactive;
@@ -182,8 +182,8 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 		return R.animator.transition_out_from_bottom;
 	}
 
-	private gcLocation getCurrentGCLocation() {
-		return gcMain.locationManager.getCurrentGCLocation();
+	private gcLocation getUserCurrentgcLocation() {
+		return gcMain.locationManager.getUserCurrentgcLocation();
 	}
 
 	//Implementation of OnMarkerClickListener interface
@@ -211,15 +211,6 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
         LinearLayout lv = new LinearLayout(getActivity());
         lv.setBackgroundColor(Color.WHITE);
         lv.setOrientation(LinearLayout.VERTICAL);
-
-        if (getCurrentGCLocation() != null
-                && getCurrentGCLocation().equalsMarkerTitle(marker)) {
-
-            ImageView iv = new ImageView(getActivity());
-            iv.setImageResource(R.drawable.fingerprint);
-
-            lv.addView(iv);
-        }
 
         TextView tv = new TextView(getActivity());
         tv.setText(marker.getTitle());

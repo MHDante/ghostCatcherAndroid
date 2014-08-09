@@ -1,21 +1,19 @@
 package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -77,15 +75,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Button close = (Button) dialog.findViewById(R.id.buttonClose);
             Button enableTools = (Button) dialog.findViewById(R.id.enableTools);
             Button Location1 = (Button) dialog.findViewById(R.id.location1);
-            Location1.setText("RyeTheatre");
+            Location1.setText("Ryerson Theatre");
             Button Location2 = (Button) dialog.findViewById(R.id.location2);
             Location2.setText("Lake Devo");
             Button Location3 = (Button) dialog.findViewById(R.id.location3);
             Location3.setText("Arch");
             Button Location4 = (Button) dialog.findViewById(R.id.location4);
-            Location4.setText("TMZ");
+            Location4.setText("TransMedia Zone");
             // if button is clicked, close the custom dialog
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            dialog.setOnDismissListener(new OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     debugging = true;
