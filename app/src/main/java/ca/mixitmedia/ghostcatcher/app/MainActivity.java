@@ -95,6 +95,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                    debugging = true;
                 }
             });
 
@@ -112,16 +113,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 			        gcLocation target = locations.get(0);
 			        switch (v.getId()) {
 				        case R.id.location1:
-					        target = locations.get(0);
+                            target = gcEngine.locations.get("rye_theatre");
 					        break;
 				        case R.id.location2:
-					        target = locations.get(1);
+                            target = gcEngine.locations.get("lake_devo");
 					        break;
 				        case R.id.location3:
-					        target = locations.get(2);
+                            target = gcEngine.locations.get("arch");
 					        break;
 				        case R.id.location4:
-					        target = locations.get(3);
+                            target = gcEngine.locations.get("tmz");
 					        break;
 			        }
 			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG);
