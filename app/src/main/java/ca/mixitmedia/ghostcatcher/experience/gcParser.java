@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Dante on 2014-07-29.
+ * Created by Dante on 2014-07-29
  */
 public class gcParser {
 
@@ -63,15 +63,17 @@ public class gcParser {
         }
         return engine;
     }
-    public static gcAction parseAction()
+	
+    public static gcAction parseAction(gcTrigger trigger)
             throws IOException, XmlPullParserException {
 
         if (!parser.getName().equalsIgnoreCase("action"))
             throw new RuntimeException("Tried to parse something that wasn't an action");
 
         gcAction result = new gcAction();
+        result.trigger = trigger;
         result.type = gcAction.Type.valueOf(get("type").toUpperCase());
-        //result.lock = Boolean.parseBoolean(get("visible"));
+        result.locked = Boolean.parseBoolean(get("lock"));
         if (parser.next() == XmlPullParser.TEXT) {
             result.data = parser.getText();
         }
@@ -185,7 +187,7 @@ public class gcParser {
                 case XmlPullParser.START_TAG:
                     switch (parser.getName().toLowerCase()) {
                         case "action":
-                            result.actions.add(parseAction());
+                            result.actions.add(parseAction(result));
                             break;
                     }
                     break;
@@ -198,6 +200,7 @@ public class gcParser {
         }
         throw new RuntimeException("trigger Parsing error : " + result.id);
     }
+	
     public static Mystery parseMystery()
             throws IOException, XmlPullParserException {
 

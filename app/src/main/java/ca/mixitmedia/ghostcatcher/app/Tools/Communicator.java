@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -21,6 +22,7 @@ import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.ProximityTest;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
+import ca.mixitmedia.ghostcatcher.experience.gcAction;
 import ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.views.Typewriter;
 
@@ -70,7 +72,7 @@ public class Communicator extends ToolFragment {
 
     public void CheckForMessages() {
         if (currentDialog == null) {
-            if (pendingMessages.size() > 0) {
+            if (pendingMessages.size() > 0 && pendingMessages.peek().action.getType() == gcAction.Type.DIALOG) {
                 biocalibrate = new Biocalibrate(getView().findViewById(R.id.biocalibrate));
                 biocalibrate.show();
             }
@@ -95,10 +97,10 @@ public class Communicator extends ToolFragment {
     }
 
     protected void startDialog() {
-        ToolMessage message = pendingMessages.remove();
-        if (message.data instanceof gcDialog) {
+        ToolMessage message = pendingMessages.peek();
+        if (message.action.getType() == gcAction.Type.DIALOG) {
             biocalibrate.hide();
-            currentDialog = (gcDialog) message.data;
+            currentDialog = gcDialog.get(gcMain.gcEngine.getCurrentSeqPt(),message.action.getData());
             startTime = System.currentTimeMillis();
             SoundManager.playTrack(currentDialog.audio, false);
             phraseAdder = new PhraseAdder();
@@ -145,8 +147,8 @@ public class Communicator extends ToolFragment {
             //    Log.d("PhraseAdder","end ");
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.shine));
                 currentDialog = null;
+                completeAction();
                 CheckForMessages();
-
             }
         }
     }
@@ -159,8 +161,9 @@ public class Communicator extends ToolFragment {
         long totalDuration;
         boolean pressed;
         ProgressBar LoadingBar;
-        ImageButton fingerPrint;
+        Button fingerPrint;
         View holder;
+        ImageView overlay;
 
         public Biocalibrate(View view) {
             holder = view;
@@ -168,8 +171,10 @@ public class Communicator extends ToolFragment {
             LoadingBar = (ProgressBar) holder.findViewById(R.id.calibrate_bar);
             LoadingBar.setMax(100);
 
-            fingerPrint = (ImageButton) holder.findViewById(R.id.biocalibrate_btn);
+            fingerPrint = (Button) holder.findViewById(R.id.biocalibrate_btn);
             fingerPrint.setOnTouchListener(this);
+
+            overlay = (ImageView) holder.findViewById(R.id.fingerprint_mask);
         }
 
         @Override
@@ -201,7 +206,7 @@ public class Communicator extends ToolFragment {
                 } else SoundManager.resumeFX();
 
                 getView().findViewById(R.id.calibrating_text).setVisibility(View.VISIBLE);
-                getView().findViewById(R.id.calibrate_pressed_layout).setAlpha(1.0f);
+                overlay.setImageResource(R.drawable.bio_calibrate_pressed);
 
 
             } else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -209,7 +214,7 @@ public class Communicator extends ToolFragment {
                 SoundManager.pauseFX();
                 totalDuration += System.currentTimeMillis() - lastDown;
                 getView().findViewById(R.id.calibrating_text).setVisibility(View.INVISIBLE);
-                getView().findViewById(R.id.calibrate_pressed_layout).setAlpha(0);
+                overlay.setImageResource(R.drawable.bio_calibrate_unpressed);
             }
             return false;
         }

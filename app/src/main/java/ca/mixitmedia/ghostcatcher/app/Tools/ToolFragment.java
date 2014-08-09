@@ -18,6 +18,7 @@ import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
+import ca.mixitmedia.ghostcatcher.experience.gcAction;
 import ca.mixitmedia.ghostcatcher.views.LightButton;
 
 public abstract class ToolFragment extends Fragment {
@@ -34,6 +35,8 @@ public abstract class ToolFragment extends Fragment {
             toolLight.setGlyphID(id);
         }
     }
+
+   public gcAction recievedAction;
 
     private LightButton toolLight;
     /**
@@ -89,7 +92,20 @@ int animatorId = getAnimatorId(enter);
     @Override
     public void onResume() {
         super.onResume();
+        if(pendingMessages.size()>0 && pendingMessages.peek().action.getType() == gcAction.Type.ENABLE_TOOL){
+            completeAction();
+        }
         toolLight.setState(LightButton.State.lit);
+    }
+
+    protected void completeAction(){
+        if (recievedAction != null) {
+            gcAction action = pendingMessages.remove().action;
+            if (action != recievedAction)
+                throw new RuntimeException("Toolfragment RecievedAction out of sync.");
+            recievedAction = null;
+            gcMain.experienceManager.unLock(action);
+        }
     }
 
     @Override
@@ -187,7 +203,10 @@ int animatorId = getAnimatorId(enter);
     }
 
     public void sendMessage(ToolMessage toolMessage) {
+        if (recievedAction != null) throw new RuntimeException("ToolFragment Already has a lock");
+        if (toolMessage.lock) recievedAction = toolMessage.action;
         pendingMessages.add(toolMessage);
+
     }
 
     protected enum pivotOrientation {
@@ -198,11 +217,11 @@ int animatorId = getAnimatorId(enter);
     }
 
     public static class ToolMessage {
-        public Object data;
-        public boolean lock;
+        public final gcAction action;
+        public final boolean lock;
 
-        public ToolMessage(Object data, boolean lock) {
-            this.data = data;
+        public ToolMessage(gcAction action, boolean lock) {
+            this.action = action;
             this.lock = lock;
         }
     }

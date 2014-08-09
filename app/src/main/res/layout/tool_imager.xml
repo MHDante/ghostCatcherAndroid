@@ -1,70 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    >
 
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignBottom="@+id/overlay"
-        android:weightSum="100">
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="9" />
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="62"
-            android:weightSum="100">
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="20" />
-
-            <android.view.SurfaceView
-                android:id="@+id/camera_preview"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="60"/>
-        </TableRow>
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="6"
-            android:id="@+id/space" />
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="15"
-            android:weightSum="100">
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="32" />
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/button"
-                android:layout_weight="37"
-                android:onClick="onClick" />
-        </TableRow>
-
-
-    </TableLayout>
+    <fragment
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="60"
+        android:name="ca.mixitmedia.ghostcatcher.views.SampleCamFragment" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/overlay"
         android:src="@drawable/imager"
-        android:adjustViewBounds="true" />
+        android:adjustViewBounds="true"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

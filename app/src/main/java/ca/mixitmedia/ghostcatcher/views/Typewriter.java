@@ -59,7 +59,7 @@ public class Typewriter extends ScrollView {
             post(new Runnable() {
                 @Override
                 public void run() {
-                    scrollTo(0, getBottom());
+                    fullScroll(ScrollView.FOCUS_DOWN);
                 }
             });
             if (mIndex <= mText.length()) {
