@@ -3,7 +3,6 @@ package ca.mixitmedia.ghostcatcher.views;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
