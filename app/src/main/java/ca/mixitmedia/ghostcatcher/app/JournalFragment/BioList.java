@@ -31,7 +31,7 @@ public class BioList extends ToolFragment {
         bio = (TextView) v.findViewById(R.id.profbio);
         image = (ImageView) v.findViewById(R.id.character_bio1);
 
-        gcCharacter firstCharacter = gcMain.gcEngine.characters.get("prof_wolfe");
+        gcCharacter firstCharacter = gcMain.gcEngine.getCharacters().get("prof_wolfe");
 
         name.setText(firstCharacter.getName());
         bio.setText(firstCharacter.getBio());

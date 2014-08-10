@@ -52,7 +52,7 @@ public class gcCharacter {
 
     public Uri getPose(String poseName) {
         if (!poses.containsKey(poseName)) {
-            Utils.messageDialog( engine.context, "Error","Character " + name + " does not have a pose with id: " + poseName);
+            Utils.messageDialog( engine.getContext(), "Error","Character " + name + " does not have a pose with id: " + poseName);
             return null;
         }
         return Uri.fromFile(new File(gcEngine.root + "/characters/" + getId() + "/" + poses.get(poseName)));

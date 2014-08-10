@@ -102,7 +102,7 @@ public class gcLocationManager implements LocationListener {
         locationManager.removeUpdates(this);
     }
 
-    public gcLocation getCurrentGCLocation() {
+    public gcLocation getUserCurrentgcLocation() {
         return null;
     }
 

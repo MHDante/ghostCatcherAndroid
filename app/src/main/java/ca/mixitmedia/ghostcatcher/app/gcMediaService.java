@@ -37,7 +37,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static MediaPlayer mPlayer = null;
     public static boolean receiverRegistered;
     static Notification status;
-    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
+    static Queue<Uri> tracks = new ConcurrentLinkedQueue<>();
     boolean looping;
     BroadcastReceiver receiver = new AudioReceiver();
 
@@ -111,7 +111,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         receiverRegistered = false;
         isStarted = false;
         mPlayer.stop();
-        tracks = new ConcurrentLinkedQueue<Uri>();
+        tracks = new ConcurrentLinkedQueue<>();
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_MPLAYER);
         stopSelf();
 
@@ -143,7 +143,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification() {
         int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
-        //List<gcLocation> locations = engine.getCurrentSeqPt().getLocations();
+        //List<gcLocation> locations = engine.getCurrentSeqPt().getAllLocations();
 
 
         //Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
@@ -196,7 +196,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
                 Uri track = intent.getParcelableExtra(EXTRA_TRACK);
                 looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks = new ConcurrentLinkedQueue<Uri>();
+                tracks = new ConcurrentLinkedQueue<>();
                 tracks.add(track);
                 startPlaying();
             } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {

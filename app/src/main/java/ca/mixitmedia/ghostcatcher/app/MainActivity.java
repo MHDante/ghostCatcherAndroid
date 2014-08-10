@@ -3,6 +3,7 @@ package ca.mixitmedia.ghostcatcher.app;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
@@ -66,9 +67,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     boolean debugging = true;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        int currentPointerCount = ev.getPointerCount();
 
-        if (debugging && currentPointerCount >= 4) {
+        if (debugging && ev.getPointerCount() >= 4) {
             debugging = false;
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.dialog_debug);
@@ -77,15 +77,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Button close = (Button) dialog.findViewById(R.id.buttonClose);
             Button enableTools = (Button) dialog.findViewById(R.id.enableTools);
             Button Location1 = (Button) dialog.findViewById(R.id.location1);
-            Location1.setText("RyeTheatre");
+            Location1.setText("Ryerson Theatre");
             Button Location2 = (Button) dialog.findViewById(R.id.location2);
             Location2.setText("Lake Devo");
             Button Location3 = (Button) dialog.findViewById(R.id.location3);
             Location3.setText("Arch");
             Button Location4 = (Button) dialog.findViewById(R.id.location4);
-            Location4.setText("TMZ");
+            Location4.setText("TransMedia Zone");
             // if button is clicked, close the custom dialog
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            dialog.setOnDismissListener(new OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     debugging = true;
@@ -109,20 +109,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	        View.OnClickListener clickListener = new View.OnClickListener() {
 		        @Override
 		        public void onClick(View v) {
-			        ArrayList<gcLocation> locations = new ArrayList<>(gcEngine.locations.values());
+			        ArrayList<gcLocation> locations = new ArrayList<>(gcEngine.getAllLocations().values());
 			        gcLocation target = locations.get(0);
 			        switch (v.getId()) {
 				        case R.id.location1:
-                            target = gcEngine.locations.get("rye_theatre");
+                            target = gcEngine.getAllLocations().get("rye_theatre");
 					        break;
 				        case R.id.location2:
-                            target = gcEngine.locations.get("lake_devo");
+                            target = gcEngine.getAllLocations().get("lake_devo");
 					        break;
 				        case R.id.location3:
-                            target = gcEngine.locations.get("arch");
+                            target = gcEngine.getAllLocations().get("arch");
 					        break;
 				        case R.id.location4:
-                            target = gcEngine.locations.get("tmz");
+                            target = gcEngine.getAllLocations().get("tmz");
 					        break;
 			        }
 			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG).show();

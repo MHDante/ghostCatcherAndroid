@@ -118,7 +118,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         //destination = new Location("dummyProvider");
         //destination.setLatitude(43.652202);
         //destination.setLongitude(-79.5814);
-        destination = gcMain.gcEngine.locations.get("lake_devo");
+        destination = gcMain.gcEngine.getAllLocations().get("lake_devo");
         approxDistance = ApproxDistance.CLOSE; //TODO: why is this here?
 
         //set initial data right away, if available

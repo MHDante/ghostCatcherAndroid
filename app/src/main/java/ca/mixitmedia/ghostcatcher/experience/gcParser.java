@@ -12,11 +12,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
- * Created by Dante on 2014-07-29.
+ * Created by Dante on 2014-07-29
  */
 public class gcParser {
 
@@ -26,8 +24,7 @@ public class gcParser {
     public static gcEngine parseXML(Context context) throws XmlPullParserException, IOException {
 
         gcEngine.root = Uri.parse(new File(context.getExternalFilesDir("mixitmedia"), "ghostcatcher").getAbsolutePath());
-        String textPath =  gcEngine.root + "/Exp1Chapter1.xml";
-        InputStream in_s = new BufferedInputStream(new FileInputStream(textPath));
+        InputStream in_s = new BufferedInputStream(new FileInputStream(gcEngine.root + "/Exp1Chapter1.xml"));
 
         parser = XmlPullParserFactory.newInstance().newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -37,32 +34,26 @@ public class gcParser {
         int eventType = parser.getEventType();
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            switch (eventType) {
-                case XmlPullParser.START_DOCUMENT:
-                    engine.characters = new HashMap<>();
-                    engine.locations = new HashMap<>();
-                    engine.seqPts = new ArrayList<>();
-                    break;
-                case XmlPullParser.START_TAG:
-                    switch (parser.getName()) {
-                        case "character":
-                            gcCharacter chr = parseCharacter();
-                            engine.characters.put(chr.getId(), chr);
-                            break;
-                        case "location":
-                            gcLocation loc = parseLocation();
-                            engine.locations.put(loc.getId(), loc);
-                            break;
-                        case "seq_pt":
-                            engine.seqPts.add(parseSeqPt());
-                            break;
-                    }
-                    break;
+            if (eventType == XmlPullParser.START_TAG) {
+                switch (parser.getName()) {
+                    case "character":
+                        gcCharacter chr = parseCharacter();
+                        engine.getCharacters().put(chr.getId(), chr);
+                        break;
+                    case "location":
+                        gcLocation loc = parseLocation();
+                        engine.getAllLocations().put(loc.getId(), loc);
+                        break;
+                    case "seq_pt":
+                        engine.getSeqPts().add(parseSeqPt());
+                        break;
+                }
             }
             eventType = parser.next();
         }
         return engine;
     }
+	
     public static gcAction parseAction(gcTrigger trigger)
             throws IOException, XmlPullParserException {
 
@@ -199,6 +190,7 @@ public class gcParser {
         }
         throw new RuntimeException("trigger Parsing error : " + result.id);
     }
+	
     public static Mystery parseMystery()
             throws IOException, XmlPullParserException {
 

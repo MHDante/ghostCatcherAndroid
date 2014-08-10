@@ -37,7 +37,7 @@ public class gcDialog {
             if (!seqPt.dialogCache.containsKey(id))
                 loadDialog(seqPt, id);
         }catch (IOException e){
-            Utils.messageDialog(seqPt.engine.context, "Dialog IOError:", "Could not load Dialog: "+id+ " in seq: " +seqPt.id);
+            Utils.messageDialog(seqPt.engine.getContext(), "Dialog IOError:", "Could not load Dialog: "+id+ " in seq: " +seqPt.id);
         }
         return seqPt.dialogCache.get(id);
     }
@@ -53,7 +53,7 @@ public class gcDialog {
         StringBuilder total = new StringBuilder();
         String line;
         int time = 0;
-        gcCharacter chr = seqPt.engine.characters.get("static");
+        gcCharacter chr = seqPt.engine.getCharacters().get("static");
         String pose = null;
 
         gcDialog dialog = new gcDialog();
@@ -61,7 +61,7 @@ public class gcDialog {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(soundPath);
         dialog.duration = (int) Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
-        line = r.readLine();
+        line = r.readLine();//ommit first line because of reasons.
 int lines = 1;
         while ((line = r.readLine()) != null) {
             lines++;
@@ -71,7 +71,7 @@ int lines = 1;
                     continue;
                 case '>':
                     if (line.charAt(1) == '>') {
-
+                        
                         if (!total.toString().isEmpty()) {
                             dialog.intervals.add(time);
                             Uri poseUri = chr.getPose(pose);
@@ -103,7 +103,7 @@ int lines = 1;
         }
 
         if (chr.getPose(pose) == null){
-            new AlertDialog.Builder(seqPt.engine.context)
+            new AlertDialog.Builder(seqPt.engine.getContext())
                     .setMessage("File doesn't exist for pose " + pose + " for character " + chr.name)
                     .create().show();
         }
