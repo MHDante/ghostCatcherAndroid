@@ -3,11 +3,7 @@ package ca.mixitmedia.ghostcatcher.experience;
 import android.app.AlertDialog;
 import android.net.Uri;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +17,9 @@ public class gcCharacter {
     String bio;
     Map<String, String> poses = new HashMap<>();
     gcEngine engine;
-    gcCharacter(gcEngine engine) {}
+    gcCharacter(gcEngine engine) {
+	    this.engine = engine;
+    }
 
 
 
@@ -47,11 +45,11 @@ public class gcCharacter {
 
     public Uri getPose(String poseName) {
         if (!poses.containsKey(poseName)) {
-            new AlertDialog.Builder(engine.context)
+            new AlertDialog.Builder(engine.getContext())
                     .setMessage("Character " + name + "does not have a pose with id: " + poseName)
                     .create().show();
         }
-        return Uri.fromFile(new File(engine.root + "/characters/" + getId() + "/" + poses.get(poseName)));
+        return Uri.fromFile(new File(gcEngine.root + "/characters/" + getId() + "/" + poses.get(poseName)));
     }
 
 }

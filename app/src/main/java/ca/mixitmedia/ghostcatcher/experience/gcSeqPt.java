@@ -1,9 +1,5 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +8,7 @@ import java.util.Map;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 
 public class gcSeqPt {
@@ -30,11 +26,12 @@ public class gcSeqPt {
         mysteries = new ArrayList<>();
         triggers = new ArrayList<>();
     }
-    public List<gcLocation> getLocations() {
+
+    public List<gcLocation> getActiveLocations() {
         List<gcLocation> locations = new ArrayList<>();
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
-                for (gcLocation l : engine.locations.values()) {
+                for (gcLocation l : engine.getAllLocations().values()) {
                     if (t.data.equals(l.getId()))
                         locations.add(l);
                 }

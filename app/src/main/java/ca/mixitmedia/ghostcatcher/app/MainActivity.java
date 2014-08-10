@@ -107,20 +107,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
 	        View.OnClickListener clickListener = new View.OnClickListener() {
 		        @Override
 		        public void onClick(View v) {
-			        ArrayList<gcLocation> locations = new ArrayList<>(gcEngine.locations.values());
+			        ArrayList<gcLocation> locations = new ArrayList<>(gcEngine.getAllLocations().values());
 			        gcLocation target = locations.get(0);
 			        switch (v.getId()) {
 				        case R.id.location1:
-                            target = gcEngine.locations.get("rye_theatre");
+                            target = gcEngine.getAllLocations().get("rye_theatre");
 					        break;
 				        case R.id.location2:
-                            target = gcEngine.locations.get("lake_devo");
+                            target = gcEngine.getAllLocations().get("lake_devo");
 					        break;
 				        case R.id.location3:
-                            target = gcEngine.locations.get("arch");
+                            target = gcEngine.getAllLocations().get("arch");
 					        break;
 				        case R.id.location4:
-                            target = gcEngine.locations.get("tmz");
+                            target = gcEngine.getAllLocations().get("tmz");
 					        break;
 			        }
 			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG);

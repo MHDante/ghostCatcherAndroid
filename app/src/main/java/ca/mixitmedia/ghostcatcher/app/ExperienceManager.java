@@ -43,7 +43,6 @@ public class ExperienceManager {
 
 
     public void execute(gcTrigger trigger) {
-        boolean exit;
         if (trigger == null || trigger.isConsumed()){return;}
             while(true){
             if (trigger.getActions().size() < 1){
@@ -119,27 +118,26 @@ public class ExperienceManager {
                     return;
         }
     }
-    public void UpdateLocation(Uri uri) {
 
+    public void UpdateLocation(Uri uri) {
         if (uri != null && uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
             String path = uri.getLastPathSegment();
             String[] tokens = path.split("\\.");
             String type = tokens[1];
             String id = tokens[0];
             if (type.equals("location")) {
-                UpdateLocation(gcMain.gcEngine.locations.get(id));
+                UpdateLocation(gcMain.gcEngine.getAllLocations().get(id));
                 return;
             }
             Toast.makeText(gcMain, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
             return;
         }
         Toast.makeText( gcMain, "Invalid Location URL", Toast.LENGTH_LONG).show();
-        return;
     }
 
     public void UpdateLocation(Location location) {
         float accuracy = location.getAccuracy();
-        for (gcLocation l : engine.locations.values()) {
+        for (gcLocation l : engine.getAllLocations().values()) {
             float distance[] = new float[3]; // ugh, ref parameters.
             Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
             if (distance[0] <= accuracy + 60) {
@@ -155,7 +153,7 @@ public class ExperienceManager {
     }
 
     public gcLocation getDestination(){
-        return engine.locations.get("lake_devo");
+        return engine.getAllLocations().get("lake_devo");
     }
 
     public void ToolSuccess(ToolFragment toolFragment) {

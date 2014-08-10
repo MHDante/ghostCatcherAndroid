@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * Created by Dante on 07/03/14
  */
-public class gcLocation extends Location {
+public class gcLocation extends Location implements Comparable {
     String id;
     String name;
     String description;
@@ -24,16 +24,8 @@ public class gcLocation extends Location {
     }
 
     public Uri getImageUri() {
-        File f = new File(gcEngine.root.getPath() + "/locations/" + getId() + ".png");
-        if (!f.exists())
-            //TODO: this should be a FileNotFoundException.
-            throw new RuntimeException("error opening loc image: " + f.getAbsolutePath());
-        return Uri.fromFile(f);
+        return Uri.fromFile(new File(gcEngine.root.getPath()+"/locations/"+id+".png"));
     }
-
-	public boolean equalsID (gcLocation gcLoc) {
-		return this.getId().equals(gcLoc.getId());
-	}
 
 	public boolean equalsMarkerTitle (Marker marker) {
 		return this.getTitle().equals(marker.getTitle());
@@ -65,6 +57,11 @@ public class gcLocation extends Location {
 
 	public LatLng asLatLng() {
 		return new LatLng(this.getLatitude(), this.getLongitude());
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return this.getId().compareTo(((gcLocation) o).getTitle());
 	}
 }
 

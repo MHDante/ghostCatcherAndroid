@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.R;
@@ -39,8 +39,8 @@ import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 public class LocationMap extends ToolFragment implements OnMarkerClickListener, InfoWindowAdapter, OnInfoWindowClickListener {
 
-    public List<gcLocation> locations;
-    public List<Marker> markers = new ArrayList<>();
+	ArrayList<gcLocation> sortedLocations;
+	ArrayList<Marker> markers = new ArrayList<>();
     GoogleMap map;
     int selectedLocation;
 
@@ -53,13 +53,16 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_map, container, false);
 
+	    sortedLocations = new ArrayList<>(gcMain.gcEngine.getAllLocations().values());
+	    Collections.sort(sortedLocations);
+
         map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         map.setOnMarkerClickListener(this);
         map.setInfoWindowAdapter(this);
         map.setOnInfoWindowClickListener(this);
 	    map.getUiSettings().setZoomControlsEnabled(false);
-	    // map.getUiSettings().setRotateGesturesEnabled(false);
-	    //map.getUiSettings().setCompassEnabled(false);
+	    map.getUiSettings().setRotateGesturesEnabled(false);
+	    map.getUiSettings().setCompassEnabled(false);
 
 	    final RelativeLayout locationBanner = (RelativeLayout) view.findViewById(R.id.location_banner);
 	    mlp = (MarginLayoutParams) locationBanner.getLayoutParams();
@@ -68,7 +71,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 		    public void onAnimationUpdate(ValueAnimator valueAnimator) {
 			    mlp.bottomMargin = (Integer) valueAnimator.getAnimatedValue();
 			    locationBanner.requestLayout();
-		    }
+			}
 	    };
 
         return view;
@@ -94,40 +97,33 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	    map.setMyLocationEnabled(true);
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
 
-	    Location location = gcMain.locationManager.getCurrentGPSLocation();
-	    if (location != null) {
-		    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+	    Location currentUserLocation = map.getMyLocation();
+	    if (currentUserLocation != null) {
+		    LatLng latLng = new LatLng(currentUserLocation.getLatitude(), currentUserLocation.getLongitude());
 		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
 	    }
 
-
-        locations = gcMain.gcEngine.getCurrentSeqPt().getLocations();
-        if (locations.size() <= 0) return;
-        for (gcLocation loc : locations) {
-	        gcLocation currentGCLocation = getUserCurrentgcLocation();
+	    setBanner(sortedLocations.get(0));
+        for (gcLocation l : sortedLocations) {
 	        int pinResource;
-            if (currentGCLocation == null || !loc.equalsID(currentGCLocation)){
-	            pinResource = R.drawable.map_marker_inactive;
-            }
-	        else {
-	            setBanner(loc);
-	            pinResource = R.drawable.map_marker_active;
-            }
+            if (gcMain.gcEngine.getCurrentSeqPt().getActiveLocations().contains(l)) pinResource = R.drawable.map_marker_active;
+	        else pinResource = R.drawable.map_marker_inactive;
 
-            markers.add(map.addMarker(new MarkerOptions()
-                    .position(loc.asLatLng())
-                    .icon(BitmapDescriptorFactory.fromResource(pinResource))
-                    .title(loc.getTitle())));
+	        markers.add(map.addMarker(new MarkerOptions()
+		            .position(l.asLatLng())
+		            .icon(BitmapDescriptorFactory.fromResource(pinResource))
+		            .title(l.getTitle())));
         }
     }
 
     public boolean checkClick(View view) {
-	    if (markers.size() <= 0) return false;
         switch (view.getId()) {
             case R.id.map_overlay_left_arrow:
-	            return changeCurrentBannerLocation(-1);
+	            System.out.println("left");
+	            return changeSelectedLocation(-1);
             case R.id.map_overlay_right_arrow:
-                return changeCurrentBannerLocation(+1);
+	            System.out.println("right");
+	            return changeSelectedLocation(+1);
 	        case R.id.map_overlay:
 		        toogleBannerState();
 		        return true;
@@ -135,18 +131,19 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
         }
     }
 
-	private boolean changeCurrentBannerLocation(int delta) {
-		Marker m = markers.get((selectedLocation + delta) % markers.size());
+	public boolean changeSelectedLocation(int delta) {
+		selectedLocation = (selectedLocation + delta) % markers.size();
+		System.out.println("Selected Location: "+selectedLocation+" Size: "+markers.size());
+		Marker m = markers.get(selectedLocation);
 		m.showInfoWindow();
 		onMarkerClick(m);
 		return true;
 	}
 
 	public void setBanner(gcLocation loc) {
-		TextView tv = (TextView) getView().findViewById(R.id.location_title);
-		tv.setText(loc.getTitle());
-		TextView tv2 = (TextView) getView().findViewById(R.id.location_text);
-		tv2.setText(loc.getDescription());
+		((TextView) getView().findViewById(R.id.location_title)).setText(loc.getTitle());
+		((TextView) getView().findViewById(R.id.location_text)).setText(loc.getDescription());
+
 		ImageView iv = (ImageView) getView().findViewById(R.id.location_thumbnail);
 		try {
 			Bitmap image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), loc.getImageUri());
@@ -182,17 +179,13 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 		return R.animator.transition_out_from_bottom;
 	}
 
-	private gcLocation getUserCurrentgcLocation() {
-		return gcMain.locationManager.getUserCurrentgcLocation();
-	}
-
 	//Implementation of OnMarkerClickListener interface
     @Override
     public boolean onMarkerClick(Marker marker) {
-        for (gcLocation l : locations) {
+        for (gcLocation l : sortedLocations) {
             if (l.equalsMarkerTitle(marker)) {
                 setBanner(l);
-                selectedLocation = locations.indexOf(l);
+                selectedLocation = sortedLocations.indexOf(l);
                 return false;
             }
         }
@@ -219,9 +212,6 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
         lv.addView(tv);
 
         return lv;
-
-        //original text gets reset here
-        //return null;
     }
 
 	//Implementation of OnInfoWindowClickListener
