@@ -18,7 +18,9 @@ import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
 import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 
+import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
+import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
 
 
 public class SampleCamFragment extends AbstractArchitectCamFragmentV4{
@@ -88,6 +90,12 @@ public class SampleCamFragment extends AbstractArchitectCamFragmentV4{
             public boolean urlWasInvoked(String uriString) {
                 Uri invokedUri = Uri.parse(uriString);
                 if ("button".equalsIgnoreCase(invokedUri.getHost())) {
+                    if(invokedUri.getBooleanQueryParameter("visible", false)){
+                        ((MainActivity)getActivity()).experienceManager.ToolSuccess(Tools.imager);
+                        ((MainActivity)getActivity()).swapTo(Tools.communicator);                   //Todo:Hack
+                    }
+                    else Toast.makeText(getActivity(),"~NO GHOST FOUND!~",Toast.LENGTH_LONG).show();
+                    if (System.currentTimeMillis() > 0) return true;
                     architectView.captureScreen(ArchitectView.CaptureScreenCallback.CAPTURE_MODE_CAM, new ArchitectView.CaptureScreenCallback() {
                         @Override
                         public void onScreenCaptured(final Bitmap screenCapture) {

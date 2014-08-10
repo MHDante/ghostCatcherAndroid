@@ -16,7 +16,14 @@ var World = {
 	ghostAnimGroup : null,
 	ghostAnimGroup2 : null,
 	isAnimStart : false,
+	isWithinFrame: false,
+
+	markerObject : null,
+	markerObject2 : null,
 	
+	markerLocation :null,
+	markerLocation2 : null,
+
 	init: function initFn(){
 	
 	},
@@ -26,38 +33,39 @@ var World = {
 		World.markerDrawable_idle = new AR.ImageResource(markerFilename);
 		
 		// create the marker
-		var markerLocation = new AR.GeoLocation(poiData.latitude, poiData.longitude, poiData.altitude);
+		World.markerLocation = new AR.GeoLocation(poiData.latitude, poiData.longitude, poiData.altitude);
 		
-		markerImageDrawable_idle = new AR.ImageDrawable(World.markerDrawable_idle, 2.5, {
+		World.markerImageDrawable_idle = new AR.ImageDrawable(World.markerDrawable_idle, 2.5, {
 			zOrder: 0,
 			opacity: 1,
 			scale: 0,
 		});
 		
-		var markerLocation2 = new AR.GeoLocation(poiData2.latitude, poiData2.longitude, poiData2.altitude);
+		World.markerLocation2 = new AR.GeoLocation(poiData2.latitude, poiData2.longitude, poiData2.altitude);
 		
-		markerImageDrawable_idle2 = new AR.ImageDrawable(World.markerDrawable_idle, 2.5, {
+		World.markerImageDrawable_idle2 = new AR.ImageDrawable(World.markerDrawable_idle, 2.5, {
 			zOrder: 0,
 			opacity: 0,
 			scale: 0,
 		});
 		
 
-		ghostAnimGroup = this.createGhostAnimation(markerImageDrawable_idle, 9, 0);
-		ghostAnimGroup2 = this.createGhostAnimation(markerImageDrawable_idle2, 7, 0.8);
+		ghostAnimGroup = this.createGhostAnimation(World.markerImageDrawable_idle, 9, 0);
+		ghostAnimGroup2 = this.createGhostAnimation(World.markerImageDrawable_idle2, 7, 0.8);
 		
 
 		// create GeoObject
-		var markerObject = new AR.GeoObject(markerLocation, {
+		World.markerObject = new AR.GeoObject(World.markerLocation, {
 			drawables: {
-				cam: [markerImageDrawable_idle]			
+				cam: [World.markerImageDrawable_idle]
 			},
-			onEnterFieldOfVision: this.appear
+			onEnterFieldOfVision: this.appear,
+			onExitFieldOfVision : this.disappear
 		});
 		
-		var markerObject2 = new AR.GeoObject(markerLocation2, {
+		World.markerObject2 = new AR.GeoObject(World.markerLocation2, {
 			drawables: {
-				cam: [markerImageDrawable_idle2]
+				cam: [World.markerImageDrawable_idle2]
 				
 			}
 		});
@@ -148,8 +156,7 @@ var World = {
 	
 	// reload places from content source
 	captureScreen: function captureScreenFn() {
-	    var ghostVisible = markerObject.isVisible();
-		document.location = "architectsdk://button?visible=" + ghostVisible;
+		document.location = "architectsdk://button?visible=" + World.isWithinFrame;
 	},
 	
 	// screen was clicked but no geo-object was hit
@@ -157,8 +164,12 @@ var World = {
 		// you may handle clicks on empty AR space too
 	},
 	
-	
+	disappear: function disappearFn() {
+	    World.isWithinFrame = false;
+    },
+
 	appear: function appearFn() {
+	    World.isWithinFrame = true;
 		if(World.isAnimStart == false){
 			ghostAnimGroup.start();
 			ghostAnimGroup2.start();
@@ -176,4 +187,4 @@ AR.context.onScreenClick = World.onScreenClick;
 
 /* forward locationChanges to custom function */
 AR.context.onLocationChanged = World.locationChanged;
-World.init();
+setTimeout(function(){World.init()}, 10000);

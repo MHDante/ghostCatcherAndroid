@@ -50,7 +50,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     SensorManager sensorManager;
 
 	Vibrator vibrator;
-	Handler vibrationHandler = new Handler();
+	//Handler vibrationHandler = new Handler();
 	Runnable vibrationRunnable;
 	int vibrationIntervalMS;
 
@@ -111,7 +111,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 		    @Override
 		    public void run() {
 			    vibrator.vibrate(50);
-			    if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS);
+			    //if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS);
 		    }
 	    };
 
@@ -194,7 +194,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
 	    vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
 	    System.out.println(vibrationIntervalMS);
-		vibrationHandler.post(vibrationRunnable);
+		//vibrationHandler.post(vibrationRunnable);
 
         heading = -newHeading;
         relativeBearing = newRelativeBearing;
@@ -283,7 +283,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 	        ra = new RotateAnimation(0, 180,
 		            Animation.RELATIVE_TO_SELF, 0.1797323136f,
 		            Animation.RELATIVE_TO_SELF, 0.2093457944f);
-	        vibrationHandler.post(vibrationRunnable);
+	        //vibrationHandler.post(vibrationRunnable);
         }
         else {
 	        ra = new RotateAnimation(180, 0,
@@ -308,7 +308,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * battery energy, and heats up the phone.
      */
     enum ApproxDistance {
-        THERE, CLOSE, MEDIUM, FAR, FAR_FAR_AWAY
+        THERE, CLOSE, MEDIUM, FAR, FAR_FAR_AWAY //lol, wut
     }
 
 }
