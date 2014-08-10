@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         experienceManager = new ExperienceManager(this);
         if (savedInstanceState == null)  //Avoid overlapping fragments.
             getFragmentManager().beginTransaction().add(R.id.fragment_container, Tools.communicator).commit();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     }
 
@@ -123,7 +125,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             target = gcEngine.locations.get("tmz");
 					        break;
 			        }
-			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG);
+			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG).show();
 			        experienceManager.UpdateLocation(target);
 		        }
 	        };

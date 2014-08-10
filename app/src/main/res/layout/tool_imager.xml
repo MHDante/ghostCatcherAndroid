@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="60"
-        android:name="ca.mixitmedia.ghostcatcher.views.SampleCamFragment" />
+        android:name="ca.mixitmedia.ghostcatcher.app.Tools.Imager$SampleCamFragment" />
 
     <ImageView
         android:layout_width="match_parent"

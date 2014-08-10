@@ -205,7 +205,7 @@ public class LightHolder extends Fragment {
                         return true;
                     }
                 } catch (Exception e) {
-                    Log.e("There was an error processing the Fling event:", e.getMessage());
+                    //Log.e("There was an error processing the Fling event:", e.getMessage());
                 }
                 return false;
             }

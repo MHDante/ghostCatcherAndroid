@@ -49,10 +49,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      */
     SensorManager sensorManager;
 
-	Vibrator vibrator;
-	//Handler vibrationHandler = new Handler();
-	Runnable vibrationRunnable;
-	int vibrationIntervalMS;
+    Vibrator vibrator;
+    Handler vibrationHandler = new Handler();
+    Runnable vibrationRunnable;
+    int vibrationIntervalMS;
 
     /**
      * The angle between magnetic north and the front of the device
@@ -91,8 +91,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-	    sensorManager = (SensorManager) gcMain.getSystemService(Context.SENSOR_SERVICE);
-	    vibrator = (Vibrator) gcMain.getSystemService(Context.VIBRATOR_SERVICE);
+        sensorManager = (SensorManager) gcMain.getSystemService(Context.SENSOR_SERVICE);
+        vibrator = (Vibrator) gcMain.getSystemService(Context.VIBRATOR_SERVICE);
 
         View view = inflater.inflate(R.layout.tool_rf, container, false);
 
@@ -107,13 +107,13 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
         proximityBar.setMax(1000);
 
-	    vibrationRunnable = new Runnable()  {
-		    @Override
-		    public void run() {
-			    vibrator.vibrate(50);
-			    //if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS);
-		    }
-	    };
+        vibrationRunnable = new Runnable()  {
+            @Override
+            public void run() {
+                vibrator.vibrate(50);
+                if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS +500);
+            }
+        };
 
         //destination = new Location("dummyProvider");
         //destination.setLatitude(43.652202);
@@ -138,7 +138,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                 sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
         gcMain.locationManager.setGPSUpdates(0, 0);
-	    gcMain.locationManager.setGPSStatus();
+        gcMain.locationManager.setGPSStatus();
         //updateDestination();
     }
 
@@ -149,7 +149,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
         gcMain.locationManager.requestSlowGPSUpdates(); //slow down gps updates
-	    setGPSState(false, false);
+        setGPSState(false, false);
         super.onPause();
     }
 
@@ -177,7 +177,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * @param newHeading the new heading, range: [0, 360), increasing clockwise from North
      */
     private void updateHeading(float newHeading) {
-	    if (!toolState) return;
+        if (!toolState) return;
         newHeading = Math.round(newHeading);
 
         float newRelativeBearing = Math.round((newHeading - bearing + 360) % 360);
@@ -192,9 +192,9 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         ra.setFillAfter(true);// set the animation after the end of the reservation status
         arrowImageView.startAnimation(ra);
 
-	    vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
-	    System.out.println(vibrationIntervalMS);
-		//vibrationHandler.post(vibrationRunnable);
+        vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
+        System.out.println(vibrationIntervalMS);
+        //vibrationHandler.post(vibrationRunnable);
 
         heading = -newHeading;
         relativeBearing = newRelativeBearing;
@@ -280,16 +280,17 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
         RotateAnimation ra;
         if (state) {
-	        ra = new RotateAnimation(0, 180,
-		            Animation.RELATIVE_TO_SELF, 0.1797323136f,
-		            Animation.RELATIVE_TO_SELF, 0.2093457944f);
-	        //vibrationHandler.post(vibrationRunnable);
+            ra = new RotateAnimation(0, 180,
+                    Animation.RELATIVE_TO_SELF, 0.1797323136f,
+                    Animation.RELATIVE_TO_SELF, 0.2093457944f);
+            vibrationHandler.post(vibrationRunnable);
         }
         else {
-	        ra = new RotateAnimation(180, 0,
-		            Animation.RELATIVE_TO_SELF, 0.1797323136f,
-		            Animation.RELATIVE_TO_SELF, 0.2093457944f);
-	        destinationProximityTextView.setText("Location Unavailable");
+            ra = new RotateAnimation(180, 0,
+                    Animation.RELATIVE_TO_SELF, 0.1797323136f,
+                    Animation.RELATIVE_TO_SELF, 0.2093457944f);
+            destinationProximityTextView.setText("Location Unavailable");
+            vibrationHandler.removeCallbacks(vibrationRunnable);
         }
 
         ra.setDuration(instant ? 0 : 1000); //sets duration to 1s or 0.
@@ -308,7 +309,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * battery energy, and heats up the phone.
      */
     enum ApproxDistance {
-        THERE, CLOSE, MEDIUM, FAR, FAR_FAR_AWAY //lol, wut
+        THERE, CLOSE, MEDIUM, FAR, FAR_FAR_AWAY
     }
 
 }

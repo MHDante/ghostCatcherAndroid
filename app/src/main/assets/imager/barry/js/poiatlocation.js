@@ -166,9 +166,11 @@ var World = {
 	
 	disappear: function disappearFn() {
 	    World.isWithinFrame = false;
+	    document.location = "architectsdk://exit";
     },
 
 	appear: function appearFn() {
+	    document.location = "architectsdk://enter";
 	    World.isWithinFrame = true;
 		if(World.isAnimStart == false){
 			ghostAnimGroup.start();

@@ -13,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -44,7 +43,7 @@ public class Communicator extends ToolFragment {
     };
     Handler mHandler = new Handler();
     Runnable phraseAdder = new PhraseAdder();
-
+    Boolean firstRun = true;
     public Communicator() {
     }//req'd
 
@@ -67,7 +66,8 @@ public class Communicator extends ToolFragment {
     @Override
     public void onResume() {
         super.onResume();
-        CheckForMessages();
+        if (firstRun) startDialog(); else CheckForMessages();
+        firstRun = false;
     }
 
     public void CheckForMessages() {
@@ -132,8 +132,10 @@ public class Communicator extends ToolFragment {
             if (currentInterval > pastInterval) {
                 subtitleView.concatenateText(currentDialog.parsed.get((int) currentInterval));
                 Uri image =currentDialog.portraits.get((int) currentInterval);
-                Log.d("PA", image.getPath());
-                imageView.setImageURI(image);
+                if (image !=null) {
+                    Log.d("PA", image.getPath());
+                    imageView.setImageURI(image);
+                }
                 pastInterval = currentInterval;
             }
             int duration =  currentDialog.getDuration();
@@ -194,7 +196,9 @@ public class Communicator extends ToolFragment {
                                     totalDuration += System.currentTimeMillis() - lastDown;
                                     lastDown = System.currentTimeMillis();
                                 }
-                                LoadingBar.setProgress((int) ((totalDuration / BiocalibrateDelay) * 100f));
+                                int progress = (int) ((((float)totalDuration / (float)BiocalibrateDelay) * 100f));
+                                Log.d("PROGRESS", ":"+progress);
+                                LoadingBar.setProgress(progress);
                                 if (totalDuration > BiocalibrateDelay) {
                                     startDialog();
                                 } else {
@@ -220,6 +224,7 @@ public class Communicator extends ToolFragment {
         }
 
         public void show() {
+            LoadingBar.setProgress(0);
             holder.animate().translationY(0);
         }
         public void hide(){

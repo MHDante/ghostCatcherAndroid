@@ -125,7 +125,7 @@ public class SoundManager {
     }
 
     public static class Sounds {
-        public static int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip;
+        public static int metalClick, leverRoll, strangeMetalNoise, creepyChains, testSoundClip, calibrateSoundClip, imagerSound;
 
         public static void loadSounds(Context ctxt) {
             calibrateSoundClip = soundPool.load(ctxt, R.raw.gc_audio_amplifier, 1);
@@ -134,6 +134,7 @@ public class SoundManager {
             leverRoll = soundPool.load(ctxt, R.raw.lever_roll, 1);
             strangeMetalNoise = soundPool.load(ctxt, R.raw.strange_mechanical_noise, 1);
             creepyChains = soundPool.load(ctxt, R.raw.creepy_chains, 1);
+            imagerSound = soundPool.load(ctxt, R.raw.gc_imager, 1);
 
         }
     }
