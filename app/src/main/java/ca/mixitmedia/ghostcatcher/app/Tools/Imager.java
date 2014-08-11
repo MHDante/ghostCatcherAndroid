@@ -38,11 +38,6 @@ public class Imager extends ToolFragment {
     }
 
     @Override
-    public boolean checkClick(View view) {
-        return false;
-    }
-
-    @Override
     public void onDestroyView() {
         FragmentManager fm = getFragmentManager();
         Fragment xmlFragment = fm.findFragmentById(R.id.camera_preview);
@@ -146,7 +141,7 @@ public class Imager extends ToolFragment {
                         }
                         else Toast.makeText(getActivity(),"~NO GHOST FOUND!~",Toast.LENGTH_LONG).show();
                     }else if("enter".equalsIgnoreCase(invokedUri.getHost())){
-                        v.vibrate(new long[]{200,200},0);
+                        v.vibrate(new long[]{200,200},1);
                     }
                     else if("enter".equalsIgnoreCase(invokedUri.getHost())){
                         v.cancel();

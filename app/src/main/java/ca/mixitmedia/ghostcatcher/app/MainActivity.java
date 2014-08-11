@@ -167,9 +167,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         SoundManager.stop();
         super.onDestroy();
+        
     }
 
     public void swapTo(ToolFragment tool) {
+        if (Tools.Current() == tool) return;
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, tool)
                 .commit();
