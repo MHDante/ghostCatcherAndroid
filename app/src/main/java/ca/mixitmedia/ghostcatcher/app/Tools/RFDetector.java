@@ -179,7 +179,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * @param newHeading the new heading, range: [0, 360), increasing clockwise from North
      */
     private void updateHeading(float newHeading) {
-        if (!toolState) return;
+	    if (!toolState) return;
         newHeading = Math.round(newHeading);
 
         float newRelativeBearing = Math.round((newHeading - bearing + 360) % 360);
@@ -194,9 +194,9 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         ra.setFillAfter(true);// set the animation after the end of the reservation status
         arrowImageView.startAnimation(ra);
 
-        vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
-        //vibrationHandler.post(vibrationRunnable);
 
+	    vibrationIntervalMS =  5000 - 5000 * (int)Math.abs(relativeBearing - 180) / 180;
+	    vibrationIntervalMS = Math.max(vibrationIntervalMS, 200);
         heading = -newHeading;
         relativeBearing = newRelativeBearing;
     }
@@ -273,13 +273,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                     break;
             }
             approxDistance = currentDistance;
-        }
-
-        if (currentDistance == ApproxDistance.THERE && !backgroundFlashingState) {
-
-            backgroundFlashingState = true;
-        } else {
-            backgroundFlashingState = false;
         }
 
         destinationProximityTextView.setText("Proximity: " + Math.round(proximity) + " m");
