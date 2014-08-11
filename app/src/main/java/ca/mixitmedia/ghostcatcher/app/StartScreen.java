@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -129,8 +128,7 @@ public class StartScreen extends Activity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
             }
         }
@@ -177,8 +175,7 @@ public class StartScreen extends Activity {
     }
 
 
-
-    public void settingsDialog(View v) throws Exception{
+    public void settingsDialog(View v) throws Exception {
 
         final Dialog dialog = new Dialog(StartScreen.this);
         dialog.setContentView(R.layout.dialog_view);
@@ -278,9 +275,38 @@ public class StartScreen extends Activity {
         new UnZipTask().execute(zipFile);
     }
 
+    boolean starting;
     public void start(View view) {
-        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
-        startActivity(myIntent);
+        if (!starting) {
+            starting = true;
+            Utils.checkNetworkAvailabilty(this, new Utils.Callback<Boolean>() {
+                @Override
+                public void Run(Boolean connected) {
+                    starting = false;
+                    if (!connected) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
+                        builder.setMessage("You are not connected to the internet. You will not participate in Out-of-app Experiences. Continue Anyway?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
+                                        startActivity(myIntent);
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                }).show();
+                    } else {
+                        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
+                        startActivity(myIntent);
+                    }
+                }
+            });
+        }
+
     }
 
     public void credits(View view) {
@@ -359,7 +385,7 @@ public class StartScreen extends Activity {
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 StartUnzip();
                                 break;
@@ -371,13 +397,12 @@ public class StartScreen extends Activity {
                     }
                 };
 
-                if ( !calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf") ) {
+                if (!calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf")) {
                     Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
                     AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
                     builder.setMessage("File did not match the Authentication Signature, Continue anyway?").setPositiveButton("Yes", dialogClickListener)
                             .setNegativeButton("No", dialogClickListener).show();
-                }
-                else{
+                } else {
                     StartUnzip();
                 }
 
@@ -385,7 +410,7 @@ public class StartScreen extends Activity {
         }
     }
 
-    public void StartUnzip(){
+    public void StartUnzip() {
 
         try {
             Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
@@ -451,7 +476,7 @@ public class StartScreen extends Activity {
                         dirChecker(ze.getName());
                     } else {
                         FileOutputStream fout = new FileOutputStream(new File(location + "/" + ze.getName()));
-                        //Log.e("uz", location+ "/"+ ze.getName());
+                        //Log.e("uz", location+ "/"+ ze.getTitle());
                         byte[] buffer = new byte[8192];
                         int len;
                         while ((len = zin.read(buffer)) != -1) {

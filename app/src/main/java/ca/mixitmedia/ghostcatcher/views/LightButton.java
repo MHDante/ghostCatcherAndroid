@@ -24,11 +24,10 @@ import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 
 /**
- * Created by Dante on 2014-06-13.
+ * Created by Dante on 2014-06-13
  */
 
 public class LightButton extends View {
-
 
     public void setGlyphID(int glyphID) {
        setGlyph(Utils.drawableToBitmap(context.getResources().getDrawable(glyphID)));
@@ -36,7 +35,6 @@ public class LightButton extends View {
 
     private int mAspectRatioWidth;
     private int mAspectRatioHeight;
-
 
     public enum State { lit, unlit, disabled, flashing }
 
@@ -51,6 +49,7 @@ public class LightButton extends View {
     }
 
     State state = State.disabled;
+    static List<LightButton> lights = new ArrayList<>();
     Bitmap glyph, lit, unlit, disabled, flash;
     int height, width;
     Paint paint, glyphPaint;
@@ -59,6 +58,7 @@ public class LightButton extends View {
     public LightButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        lights.add(this);
         paint = new Paint();
         glyphPaint = new Paint();
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LightButton, 0, 0);
@@ -127,23 +127,20 @@ public class LightButton extends View {
         }
     }
 
-    @Override protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec)
-    {
+    @Override
+    protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec)  {
         int originalWidth = MeasureSpec.getSize(widthMeasureSpec);
-
         int originalHeight = MeasureSpec.getSize(heightMeasureSpec);
 
         int calculatedHeight = originalWidth * mAspectRatioHeight / mAspectRatioWidth;
 
         int finalWidth, finalHeight;
 
-        if (calculatedHeight > originalHeight)
-        {
+        if (calculatedHeight > originalHeight)  {
             finalWidth = originalHeight * mAspectRatioWidth / mAspectRatioHeight;
             finalHeight = originalHeight;
         }
-        else
-        {
+        else {
             finalWidth = originalWidth;
             finalHeight = calculatedHeight;
         }
@@ -152,4 +149,13 @@ public class LightButton extends View {
                 MeasureSpec.makeMeasureSpec(finalWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(finalHeight, MeasureSpec.EXACTLY));
     }
+
+
+
+    private void drawCenteredBitmap(Canvas canvas, Bitmap bitmap) {
+        if (bitmap != null) {
+	        Rect r = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+	        canvas.drawBitmap(bitmap, r, canvas.getClipBounds(), paint);
+        }
+	}
 }

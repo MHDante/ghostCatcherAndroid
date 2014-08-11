@@ -2,15 +2,11 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.location.Location;
 import android.net.Uri;
-import android.os.Debug;
-import android.os.UserManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
 
 import ca.mixitmedia.ghostcatcher.Utils;
-import ca.mixitmedia.ghostcatcher.app.Tools.RFDetector;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
 import ca.mixitmedia.ghostcatcher.experience.gcAction;
@@ -25,7 +21,7 @@ public class ExperienceManager {
     MainActivity gcMain;
     public gcLocation location;
     public gcEngine engine;
-    public boolean pendingLock;
+    public gcAction pendingLock;
 
     public ExperienceManager(MainActivity gcMain) {
         this.gcMain = gcMain;
@@ -33,28 +29,47 @@ public class ExperienceManager {
         execute(engine.getCurrentSeqPt().getAutoTrigger());
     }
 
+    public void unLock(gcAction key){
+        if (pendingLock == key) {
+            gcTrigger pendingTrigger = pendingLock.getTrigger();
+            pendingLock = null;
+            execute(pendingTrigger);
+        }
+    }
+
+    public boolean isLocked(){
+        return pendingLock != null;
+    }
+
+
     public void execute(gcTrigger trigger) {
-        boolean exit;
-        if (trigger == null){return;}
+        if (trigger == null || trigger.isConsumed()){return;}
             while(true){
-            if (trigger.getActions().size() < 1 || pendingLock) return;
+            if (trigger.getActions().size() < 1){
+                trigger.consume();
+                return;
+            }
 
             gcAction action = trigger.getActions().remove();
-            pendingLock = action.isLocked();
+            boolean lock = action.isLocked();
 
             String data = action.getData().toLowerCase();
             switch (action.getType()) {
                 case ACHIEVEMENT:
+                    lock = false;
                     break;
                 case CHECK_TASK:
+                    lock = false;
                     break;
                 case COMPLETE_TASK:
+                    lock = false;
                     break;
                 case CONSUME_TRIGGER:
+                    lock = false;
                     break;
                 case ENABLE_TRIGGER:
                     engine.getCurrentSeqPt().getTrigger(Integer.parseInt(data)).setEnabled(true);
-                    pendingLock = false;
+                    lock = false;
                     break;
                 case DISABLE_TOOL:
                     ToolFragment t = Tools.byName(data);
@@ -62,21 +77,28 @@ public class ExperienceManager {
                     if(Tools.Current() == t) {
                         gcMain.swapTo(Tools.communicator);
                     }
-                    pendingLock = false;
+                    lock = false;
                     break;
                 case ENABLE_TOOL:
                     ToolFragment t2 = Tools.byName(data);
                     t2.setEnabled(true);
-                    t2.sendMessage(new ToolFragment.ToolMessage(gcAction.Type.ENABLE_TOOL, pendingLock));
+                    t2.sendMessage(new ToolFragment.ToolMessage(action, lock));
+                    if (lock) pendingLock = action;
                     break;
                 case END_SQPT:
                     engine.EndSeqPt();
+                    lock = false;
                     break;
                 case DIALOG:
                     try {
-                        gcDialog dialog = gcDialog.get(engine.getCurrentSeqPt(), data);
-
-                        Tools.communicator.sendMessage(new ToolFragment.ToolMessage(dialog, false));
+                        gcDialog.loadDialog(engine.getCurrentSeqPt(), data);//todo:threading
+                        Tools.communicator.sendMessage(new ToolFragment.ToolMessage(action, lock));
+                        if (Tools.Current() == Tools.communicator){
+                            Tools.communicator.CheckForMessages();
+                        }else {
+                            Tools.communicator.getToolLight().setState(LightButton.State.flashing);
+                        }
+                        if (lock) pendingLock = action;
                     } catch (IOException e) {
                         Utils.messageDialog(gcMain, "Error", e.getMessage());
                     }
@@ -89,47 +111,39 @@ public class ExperienceManager {
                         }
                     };
                     p.execute();
+                    lock = false;
                     break;
             }
+                if (lock)
+                    return;
         }
     }
-    public void UpdateLocation(Uri uri) {
 
+    public void UpdateLocation(Uri uri) {
         if (uri != null && uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
-            String path = uri.getLastPathSegment();
-            String[] tokens = path.split("\\.");
+            String[] tokens = uri.getLastPathSegment().split("\\.");
             String type = tokens[1];
             String id = tokens[0];
-            if (type.equals("location")) {
-                UpdateLocation(gcMain.gcEngine.locations.get(id));
-                return;
-            }
-            Toast.makeText(gcMain, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
-            return;
+            if (type.equals("location")) UpdateLocation(gcMain.gcEngine.getAllLocations().get(id));
+            else Toast.makeText(gcMain, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
         }
-        Toast.makeText( gcMain, "Invalid Location URL", Toast.LENGTH_LONG).show();
-        return;
+        else Toast.makeText( gcMain, "Invalid Location URL", Toast.LENGTH_LONG).show();
     }
 
     public void UpdateLocation(Location location) {
-        float accuracy = location.getAccuracy();
-        for (gcLocation l : engine.locations.values()) {
+        for (gcLocation l : engine.getAllLocations().values()) {
             float distance[] = new float[3]; // ugh, ref parameters.
             Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
-            if (distance[0] <= accuracy + 60) {
-                location = l;
+            if (distance[0] <= location.getAccuracy()) {
                 Tools.rfDetector.onLocationChanged(l);
-                gcTrigger trigger = engine.getCurrentSeqPt().getTrigger(l);
-
-                execute(trigger);
-                //Log.d("","Success");
+                execute(engine.getCurrentSeqPt().getTrigger(l));
                 //todo:decide what to do
             }
         }
     }
 
     public gcLocation getDestination(){
-        return engine.locations.get("lake_devo");
+        return engine.getAllLocations().get("lake_devo");
     }
 
     public void ToolSuccess(ToolFragment toolFragment) {

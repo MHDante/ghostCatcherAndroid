@@ -60,22 +60,22 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="9"
-            android:weightSum="630"
+            android:weightSum="100"
             android:id="@+id/tableRow">
 
             <Space
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="84"/>
+                android:layout_height="5dp"
+                android:layout_weight="13.5"/>
 
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="464">
+                android:layout_weight="74">
 
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/proximityBar"
                     android:indeterminate="false"/>
@@ -94,10 +94,6 @@
                     android:gravity="center"/>
             </FrameLayout>
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="82"/>
         </TableRow>
 
     </TableLayout>
@@ -116,10 +112,10 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true"
-		android:layout_alignParentTop="true"
 		android:adjustViewBounds="true"
 		android:src="@drawable/rf_lid"
-		android:visibility="invisible"/>
+		android:visibility="visible"
+		android:layout_alignParentTop="true"/>
 
 	<!--DEBUG <LinearLayout
 		android:layout_width="fill_parent"

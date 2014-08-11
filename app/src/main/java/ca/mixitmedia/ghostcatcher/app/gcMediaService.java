@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
@@ -17,12 +16,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
-import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 public class gcMediaService extends Service implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener {
 
@@ -42,7 +37,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     public static MediaPlayer mPlayer = null;
     public static boolean receiverRegistered;
     static Notification status;
-    static Queue<Uri> tracks = new ConcurrentLinkedQueue<Uri>();
+    static Queue<Uri> tracks = new ConcurrentLinkedQueue<>();
     boolean looping;
     BroadcastReceiver receiver = new AudioReceiver();
 
@@ -116,7 +111,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         receiverRegistered = false;
         isStarted = false;
         mPlayer.stop();
-        tracks = new ConcurrentLinkedQueue<Uri>();
+        tracks = new ConcurrentLinkedQueue<>();
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_MPLAYER);
         stopSelf();
 
@@ -148,14 +143,14 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification() {
         int requestID = (int) System.currentTimeMillis();
         RemoteViews statusBarView = new RemoteViews(getPackageName(), R.layout.status_bar);
-        //List<gcLocation> locations = engine.getCurrentSeqPt().getLocations();
+        //List<gcLocation> locations = engine.getCurrentSeqPt().getAllLocations();
 
 
         //Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
                 Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/drawable/ghost");
         //Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
         //statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
-        statusBarView.setTextViewText(R.id.title, "Ghost Catcher");
+        statusBarView.setTextViewText(R.id.location_title, "Ghost Catcher");
         //statusBarView.setTextViewText(R.id.to_do, engine.getNextToDo());
 
         statusBarView.setImageViewResource(R.id.status_bar_play,
@@ -201,7 +196,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
                 Uri track = intent.getParcelableExtra(EXTRA_TRACK);
                 looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks = new ConcurrentLinkedQueue<Uri>();
+                tracks = new ConcurrentLinkedQueue<>();
                 tracks.add(track);
                 startPlaying();
             } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {

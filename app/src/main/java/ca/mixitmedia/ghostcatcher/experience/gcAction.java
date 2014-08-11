@@ -12,15 +12,16 @@ public class gcAction {
 
     Type type;
     String data;
+    gcTrigger trigger;
+    boolean locked;
 
     public boolean isLocked() {
         return locked;
     }
 
-    boolean locked;
 
-    gcAction() {
-    }
+
+    gcAction() {}
 
     public Type getType() {
         return type;
@@ -28,6 +29,10 @@ public class gcAction {
 
     public String getData() {
         return data;
+    }
+
+    public gcTrigger getTrigger() {
+        return trigger;
     }
 
     public enum Type {

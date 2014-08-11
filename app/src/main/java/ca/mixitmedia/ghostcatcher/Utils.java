@@ -11,24 +11,29 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class Utils {
 
@@ -73,11 +78,12 @@ public class Utils {
     }
 
     public static void messageDialog(Context context, String title, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle(title);
-        dialog.setMessage(message);
-        dialog.setNeutralButton("OK", null);
-        dialog.create().show();
+	    (new AlertDialog.Builder(context))
+		        .setTitle(title)
+		        .setMessage(message)
+		        .setNeutralButton("OK", null)
+		        .create()
+			    .show();
     }
 
     /**
@@ -90,8 +96,7 @@ public class Utils {
     public static float convertDpToPixel(float dp, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return px;
+        return dp * (metrics.densityDpi / 160f);
     }
 
     public static int convertDpToPixelInt(float dp, Context context) {
@@ -108,8 +113,7 @@ public class Utils {
     public static float convertPixelsToDp(float px, Context context) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / (metrics.densityDpi / 160f);
-        return dp;
+        return px / (metrics.densityDpi / 160f);
     }
 
 
@@ -185,7 +189,42 @@ public class Utils {
         }
         return ret;
     }
+    public static  interface Callback<V>{
+        void Run(V parameter);
+    }
+    public static void checkNetworkAvailabilty(final Context context, final Callback<Boolean> action)
+    {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                ConnectivityManager cm = (ConnectivityManager)context
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
 
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork != null && activeNetwork.isConnected()) {
+                    try {
+                        URL url = new URL("http://www.google.com/");
+                        HttpURLConnection urlc = (HttpURLConnection)url.openConnection();
+                        urlc.setRequestProperty("User-Agent", "test");
+                        urlc.setRequestProperty("Connection", "close");
+                        urlc.setConnectTimeout(1000); // mTimeout is in seconds
+                        urlc.connect();
+                        return urlc.getResponseCode() == 200;
+                    } catch (IOException e) {
+                        Log.i("warning", "Error checking internet connection", e);
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean connected) {
+                action.Run(connected);
+            }
+        }.execute();
+
+        }
     public static long TimeSince(long startTimeMillis) {
         return System.currentTimeMillis() - startTimeMillis;
     }

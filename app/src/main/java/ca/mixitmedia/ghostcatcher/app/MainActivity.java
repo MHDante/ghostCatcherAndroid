@@ -1,21 +1,20 @@
 package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -51,6 +50,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         experienceManager = new ExperienceManager(this);
         if (savedInstanceState == null)  //Avoid overlapping fragments.
             getFragmentManager().beginTransaction().add(R.id.fragment_container, Tools.communicator).commit();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     }
 
@@ -67,9 +67,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     boolean debugging = true;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        int currentpointerCount = ev.getPointerCount();
 
-        if (debugging&& currentpointerCount >=4){
+        if (debugging && ev.getPointerCount() >= 4) {
             debugging = false;
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.dialog_debug);
@@ -78,10 +77,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Button close = (Button) dialog.findViewById(R.id.buttonClose);
             Button enableTools = (Button) dialog.findViewById(R.id.enableTools);
             Button Location1 = (Button) dialog.findViewById(R.id.location1);
+            Location1.setText("Ryerson Theatre");
             Button Location2 = (Button) dialog.findViewById(R.id.location2);
+            Location2.setText("Lake Devo");
             Button Location3 = (Button) dialog.findViewById(R.id.location3);
+            Location3.setText("Arch");
             Button Location4 = (Button) dialog.findViewById(R.id.location4);
+            Location4.setText("TransMedia Zone");
             // if button is clicked, close the custom dialog
+            dialog.setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    debugging = true;
+                }
+            });
             close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -96,43 +105,37 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     for(ToolFragment t: Tools.All()) t.setEnabled(true);
                     }
             });
-            Location1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(0);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
-            Location2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(1);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
-            Location3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(2);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
-            Location4.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    gcLocation target = new ArrayList<>(gcEngine.locations.values()).get(3);
-                    Toast.makeText(MainActivity.this, target.getName(), Toast.LENGTH_LONG);
-                    experienceManager.UpdateLocation(target);
-                }
-            });
+
+	        View.OnClickListener clickListener = new View.OnClickListener() {
+		        @Override
+		        public void onClick(View v) {
+			        ArrayList<gcLocation> locations = new ArrayList<>(gcEngine.getAllLocations().values());
+			        gcLocation target = locations.get(0);
+			        switch (v.getId()) {
+				        case R.id.location1:
+                            target = gcEngine.getAllLocations().get("rye_theatre");
+					        break;
+				        case R.id.location2:
+                            target = gcEngine.getAllLocations().get("lake_devo");
+					        break;
+				        case R.id.location3:
+                            target = gcEngine.getAllLocations().get("arch");
+					        break;
+				        case R.id.location4:
+                            target = gcEngine.getAllLocations().get("tmz");
+					        break;
+			        }
+			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG).show();
+			        experienceManager.UpdateLocation(target);
+		        }
+	        };
+            Location1.setOnClickListener(clickListener);
+	        Location2.setOnClickListener(clickListener);
+	        Location3.setOnClickListener(clickListener);
+	        Location4.setOnClickListener(clickListener);
 
             dialog.show();
-            }
-
-
+        }
         return super.dispatchTouchEvent(ev);
     }
 
@@ -164,9 +167,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         SoundManager.stop();
         super.onDestroy();
+        
     }
 
     public void swapTo(ToolFragment tool) {
+        if (Tools.Current() == tool) return;
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, tool)
                 .commit();

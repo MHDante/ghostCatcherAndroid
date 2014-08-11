@@ -4,46 +4,32 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.Utils;
-import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
 
 /**
  * Created by Dante on 07/03/14
  */
 public class gcEngine {
 
-    public HashMap<String, gcCharacter> characters;
-    public List<gcSeqPt> seqPts;
-    public HashMap<String, gcLocation> locations;
-    public Context context;
+    private HashMap<String, gcCharacter> characters;
+    private List<gcSeqPt> seqPts;
+    private LinkedHashMap<String, gcLocation> locations;
+    private Context context;
     public static  Uri root;
-    XmlPullParserFactory pullParserFactory;
 
     gcEngine(Context context) {
         characters = new HashMap<>();
         seqPts= new ArrayList<>();
-        locations = new HashMap<>();
+        locations = new LinkedHashMap<>();
         this.context = context;
 
     }
@@ -74,18 +60,27 @@ public class gcEngine {
         //throw new RuntimeException("Not Implemented");
     }
 
-
-
     public CharSequence getNextToDo() {
-        return "You must go defeat the dargon"; //todo: correct spelling of dragon
+        return "You must go defeat the dragon";
     }
-
 
     public gcSeqPt getCurrentSeqPt() {
         return seqPts.get(0);
     }
 
-    public gcLocation getDestination() {
-        return null;
-    }
+	public HashMap<String, gcCharacter> getCharacters() {
+		return characters;
+	}
+
+	public List<gcSeqPt> getSeqPts() {
+		return seqPts;
+	}
+
+	public LinkedHashMap<String, gcLocation> getAllLocations() {
+		return locations;
+	}
+
+	public Context getContext() {
+		return context;
+	}
 }

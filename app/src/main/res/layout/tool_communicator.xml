@@ -22,13 +22,13 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="16" />
+            android:layout_weight="15" />
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:weightSum="100"
-            android:layout_weight="60">
+            android:layout_weight="54">
 
             <Space
                 android:layout_width="0dp"
@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="61"
                 android:id="@+id/character_portrait"
-                android:src="@drawable/staticfuzz"
+                android:src="@drawable/shine"
                 android:layout_row="0"
                 android:layout_column="0"
                 android:adjustViewBounds="true"
@@ -64,7 +64,7 @@
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="30"
+                    android:layout_weight="26"
                     android:onClick="onClick"
                     android:id="@+id/sound" />
 
@@ -72,13 +72,13 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:id="@+id/space"
-                    android:layout_weight="40" />
+                    android:layout_weight="43" />
 
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:id="@+id/help"
-                    android:layout_weight="30"
+                    android:layout_weight="28"
                     android:onClick="onClick" />
             </LinearLayout>
         </TableRow>
@@ -87,13 +87,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:id="@+id/space6"
-            android:layout_weight="16" />
+            android:layout_weight="17" />
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:weightSum="100"
-            android:layout_weight="13">
+            android:layout_weight="16">
 
             <Space
                 android:layout_width="0dp"
@@ -142,7 +142,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:translationY="-1000dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TableLayout
             android:layout_width="fill_parent"
@@ -154,7 +154,7 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="56" />
+                android:layout_weight="10" />
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -165,12 +165,12 @@
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="2.5" />
+                    android:layout_weight="1.8" />
 
                 <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="5">
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6.6">
 
                     <ProgressBar
                         android:layout_width="fill_parent"
@@ -180,8 +180,8 @@
                         style="?android:attr/progressBarStyleHorizontal" />
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Calibrating"
                         android:id="@+id/calibrating_text"
@@ -189,19 +189,46 @@
                         android:visibility="invisible"
                         android:textColor="#ff000000"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true" />
+                        android:layout_alignParentTop="true"
+                        android:gravity="center"
+                        android:textAlignment="center" />
                 </FrameLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.8" />
+            </TableRow>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="19" />
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="28"
+                android:weightSum="10"
+                android:id="@+id/tableRow">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2.5" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="New Button"
+                    android:id="@+id/biocalibrate_btn"
+                    android:layout_weight="5" />
 
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="2.5" />
             </TableRow>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="15" />
         </TableLayout>
 
         <ImageView
@@ -212,25 +239,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:adjustViewBounds="true" />
-
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/biocalibrate_btn"
-            android:alpha="0"
-            android:id="@+id/calibrate_pressed_layout">
-
-            <ImageButton
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/biocalibrate_btn"
-                android:scaleType="fitCenter"
-                android:src="@drawable/bio_calibrate_pressed"
-                android:background="@android:color/transparent"
-                android:layout_gravity="center_horizontal|bottom"
-                android:onClick="onClick"
-                android:adjustViewBounds="true" />
-        </FrameLayout>
 
     </RelativeLayout>
 </FrameLayout>

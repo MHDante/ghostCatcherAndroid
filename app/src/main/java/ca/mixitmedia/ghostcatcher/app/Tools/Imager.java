@@ -1,185 +1,51 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.hardware.Camera;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.hardware.SensorManager;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.wikitude.architect.ArchitectView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+
+import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
+import ca.mixitmedia.ghostcatcher.views.AbstractArchitectCamFragmentV4;
+import ca.mixitmedia.ghostcatcher.views.WikitudeProvider;
 
 public class Imager extends ToolFragment {
 
-    final Uri rootUri = gcEngine.root;
-    SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
-        public void surfaceCreated(SurfaceHolder holder) {
-            // no-op -- wait until surfaceChanged()
-        }
-
-        public void surfaceChanged(SurfaceHolder holder,
-                                   int format, int width,
-                                   int height) {
-
-            initPreview(width, height);
-            startPreview();
-        }
-
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            // no-op
-        }
-    };
-    private SurfaceView preview = null;
-    private SurfaceHolder previewHolder = null;
-    private ImageView ImagerFrame = null;
-    private Camera camera = null;
-    private boolean inPreview = false;
-    private boolean cameraConfigured = false;
-
-    public Imager() {
-    }
-
-    public static Camera.Size getBestPreviewSize(int width, int height,
-                                                 Camera.Parameters parameters) {
-        Camera.Size result = null;
-
-        for (Camera.Size size : parameters.getSupportedPreviewSizes()) {
-            if (size.width <= width && size.height <= height) {
-                if (result == null) {
-                    result = size;
-                } else {
-                    int resultArea = result.width * result.height;
-                    int newArea = size.width * size.height;
-
-                    if (newArea > resultArea) {
-                        result = size;
-                    }
-                }
-            }
-        }
-
-        return (result);
-    }
+    public Imager() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.tool_imager, container, false);
-        preview = (SurfaceView) v.findViewById(R.id.camera_preview);
-        previewHolder = preview.getHolder();
-        previewHolder.addCallback(surfaceCallback);
-        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        ImagerFrame = (ImageView) v.findViewById(R.id.overlay);
-
-        ImageView overlay = (ImageView) v.findViewById(R.id.overlay);
-        overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("imager").appendPath("imager.png").build());
-
         return v;
     }
 
     @Override
-    public boolean checkClick(View view) {
-        if(view.getId() == R.id.button){
-            gcMain.experienceManager.ToolSuccess(this);
-            gcMain.swapTo(Tools.communicator);
+    public void onDestroyView() {
+        FragmentManager fm = getFragmentManager();
+        Fragment xmlFragment = fm.findFragmentById(R.id.camera_preview);
+
+        if (xmlFragment != null && !getActivity().isDestroyed()) {
+            fm.beginTransaction().remove(xmlFragment).commit();
         }
-        return false;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        camera = Camera.open();
-        Log.d("Surface:", "Invalidate");
-
-
-        startPreview();
-    }
-
-    @Override
-    public void onPause() {
-        if (inPreview) {
-            camera.stopPreview();
-        }
-
-        camera.release();
-        camera = null;
-        inPreview = false;
-
-        super.onPause();
-    }
-
-    @Override
-    public void afterAnimation(boolean enter) {
-        super.afterAnimation(enter);
-        if (false) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (preview != null) {
-                        if (inPreview) {
-                            camera.stopPreview();
-                        }
-
-                        camera.release();
-                        camera = null;
-                        inPreview = false;
-                        camera = Camera.open();
-                        startPreview();
-
-                        preview.setVisibility(View.GONE);
-                        preview.setVisibility(View.VISIBLE);
-                        ImagerFrame.getParent().requestTransparentRegion(ImagerFrame);
-
-                        Log.d("Imager", "Preview Swicharoo");
-                    } else Log.e("Imager", "Preview Screen was null.");
-                }
-            }, 1000);
-        }
-
-    }
-
-    private void initPreview(int width, int height) {
-        if (camera != null && previewHolder.getSurface() != null) {
-            try {
-                camera.setPreviewDisplay(previewHolder);
-            } catch (Throwable t) {
-                Log.e("PreviewDemo-surfaceCallback",
-                        "Exception in setPreviewDisplay()", t);
-                Toast
-                        .makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG)
-                        .show();
-            }
-
-            if (!cameraConfigured) {
-                Camera.Parameters parameters = camera.getParameters();
-                Camera.Size size = getBestPreviewSize(width, height,
-                        parameters);
-
-                if (size != null) {
-                    parameters.setPreviewSize(size.width, size.height);
-                    camera.setParameters(parameters);
-                    cameraConfigured = true;
-                }
-            }
-        }
-    }
-
-    private void startPreview() {
-        if (cameraConfigured && camera != null) {
-            camera.setDisplayOrientation(90);
-            camera.startPreview();
-            inPreview = true;
-            Log.d("Surface:", "StartPreview");
-        }
+        super.onDestroyView();
     }
 
     @Override
@@ -193,5 +59,108 @@ public class Imager extends ToolFragment {
             return R.animator.rotate_in_from_right;
         }
         return R.animator.rotate_out_to_left;
+    }
+
+    public static class SampleCamFragment extends AbstractArchitectCamFragmentV4 {
+
+        private static final java.lang.String ARCHITECT_ACTIVITY_EXTRA_KEY_URL = "url2load";
+        /**
+         * last time the calibration toast was shown, this avoids too many toast shown when compass needs calibration
+         */
+        private long lastCalibrationToastShownTimeMillis = System.currentTimeMillis();
+        private int selectedGhost =3;
+        private Vibrator v;
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            v = (Vibrator)getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        @Override
+        public String getARchitectWorldPath() {
+            try {
+                String url = "imager/barry/index.html";//"samples/ss/index.html"; //getResources().getAssets().list("samples")[0];
+                Log.d("@@@@@@@@@@@@", url);
+                return  url;
+                //final String decodedUrl = URLDecoder.decode(getActivity().getIntent().getExtras().getString(ARCHITECT_ACTIVITY_EXTRA_KEY_URL), "UTF-8");
+                //return decodedUrl;
+            } catch (Exception e) {
+                Toast.makeText(this.getActivity(), "Unexpected Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        public void onActivityCreated(Bundle bundle) {
+            super.onActivityCreated(bundle);
+            this.architectView.callJavascript("World.setGhostMarker( " + selectedGhost + " );");
+        }
+
+        @Override
+        public int getContentViewId() {
+            return R.layout.architect_view;
+        }
+
+        @Override
+        public int getArchitectViewId() {
+            return R.id.architectView;
+        }
+
+        @Override
+        public String getWikitudeSDKLicenseKey() {
+            return getString(R.string.Wikitude_Key);
+        }
+
+
+        @Override
+        public ArchitectView.SensorAccuracyChangeListener getSensorAccuracyListener() {
+            return new ArchitectView.SensorAccuracyChangeListener() {
+                @Override
+                public void onCompassAccuracyChanged( int accuracy ) {
+				/* UNRELIABLE = 0, LOW = 1, MEDIUM = 2, HIGH = 3 */
+                    if ( accuracy < SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM && getActivity() != null && !getActivity().isFinishing()  && System.currentTimeMillis() - SampleCamFragment.this.lastCalibrationToastShownTimeMillis > 5 * 1000) {
+                        Toast.makeText( getActivity(), R.string.compass_accuracy_low, Toast.LENGTH_LONG ).show();
+                    }
+                }
+            };
+        }
+
+        @Override
+        public ArchitectView.ArchitectUrlListener getUrlListener() {
+            return new ArchitectView.ArchitectUrlListener() {
+
+                @Override
+                public boolean urlWasInvoked(String uriString) {
+                    Uri invokedUri = Uri.parse(uriString);
+                    if ("button".equalsIgnoreCase(invokedUri.getHost())) {
+                        if(invokedUri.getBooleanQueryParameter("visible", false)){
+                            ((MainActivity)getActivity()).experienceManager.ToolSuccess(Tools.imager);
+                            SoundManager.playSound(SoundManager.Sounds.imagerSound);
+                            ((MainActivity) getActivity()).swapTo(Tools.communicator);                   //Todo:Hack
+                        }
+                        else Toast.makeText(getActivity(),"~NO GHOST FOUND!~",Toast.LENGTH_LONG).show();
+                    }else if("enter".equalsIgnoreCase(invokedUri.getHost())){
+                        v.vibrate(new long[]{200,200},1);
+                    }
+                    else if("enter".equalsIgnoreCase(invokedUri.getHost())){
+                        v.cancel();
+                    }
+                    return true;
+                }
+            };
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            v.cancel();
+        }
+
+        @Override
+        public ILocationProvider getLocationProvider(final LocationListener locationListener) {
+            return new WikitudeProvider(this.getActivity(), locationListener);
+        }
+
     }
 }
