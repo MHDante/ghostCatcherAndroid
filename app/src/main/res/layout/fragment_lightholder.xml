@@ -119,10 +119,18 @@
         <ca.mixitmedia.ghostcatcher.views.LightButton
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
+            android:id="@+id/left_arrowLight"
+            android:layout_gravity="center"
+            android:layout_margin="19dp" />
+
+        <ca.mixitmedia.ghostcatcher.views.LightButton
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
             android:id="@+id/left_toolLight"
             android:layout_gravity="center"
             android:onClick="onClick"
             android:layout_margin="19dp" />
+
 
         <ImageView
             android:layout_width="match_parent"
@@ -145,10 +153,19 @@
         <ca.mixitmedia.ghostcatcher.views.LightButton
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
+            android:id="@+id/right_arrowLight"
+            android:layout_gravity="center"
+            android:layout_margin="19dp" />
+
+        <ca.mixitmedia.ghostcatcher.views.LightButton
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
             android:id="@+id/right_toolLight"
             android:layout_gravity="center"
             android:onClick="onClick"
-            android:layout_margin="19dp" />
+            android:layout_margin="19dp"
+            android:visibility="gone" />
+
 
         <ImageView
             android:layout_width="match_parent"

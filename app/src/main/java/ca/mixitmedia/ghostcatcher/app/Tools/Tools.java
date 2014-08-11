@@ -36,8 +36,6 @@ public class Tools{
         imager          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_imager        ));
         rfDetector      .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_rfDetector    ));
 
-        amplifier.setEnabled(true);
-
     }
     public static Iterable<ToolFragment> All(){
         ArrayList<ToolFragment> ret = new ArrayList<>();
@@ -61,6 +59,7 @@ public class Tools{
         if(ToolName.equalsIgnoreCase("tester"         )) return tester      ;
         if(ToolName.equalsIgnoreCase("imager"         )) return imager      ;
         if(ToolName.equalsIgnoreCase("rfDetector"     )) return rfDetector  ;
+
         Utils.messageDialog(gcMain, "Error", "Tried to get non-Existent Tool" + ToolName);
         return null;
     }
