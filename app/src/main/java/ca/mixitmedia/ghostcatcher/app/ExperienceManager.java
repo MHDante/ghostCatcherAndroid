@@ -121,32 +121,22 @@ public class ExperienceManager {
 
     public void UpdateLocation(Uri uri) {
         if (uri != null && uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
-            String path = uri.getLastPathSegment();
-            String[] tokens = path.split("\\.");
+            String[] tokens = uri.getLastPathSegment().split("\\.");
             String type = tokens[1];
             String id = tokens[0];
-            if (type.equals("location")) {
-                UpdateLocation(gcMain.gcEngine.getAllLocations().get(id));
-                return;
-            }
-            Toast.makeText(gcMain, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
-            return;
+            if (type.equals("location")) UpdateLocation(gcMain.gcEngine.getAllLocations().get(id));
+            else Toast.makeText(gcMain, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
         }
-        Toast.makeText( gcMain, "Invalid Location URL", Toast.LENGTH_LONG).show();
+        else Toast.makeText( gcMain, "Invalid Location URL", Toast.LENGTH_LONG).show();
     }
 
     public void UpdateLocation(Location location) {
-        float accuracy = location.getAccuracy();
         for (gcLocation l : engine.getAllLocations().values()) {
             float distance[] = new float[3]; // ugh, ref parameters.
             Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
-            if (distance[0] <= accuracy + 60) {
-                location = l;
+            if (distance[0] <= location.getAccuracy() + 60) {
                 Tools.rfDetector.onLocationChanged(l);
-                gcTrigger trigger = engine.getCurrentSeqPt().getTrigger(l);
-
-                execute(trigger);
-                //Log.d("","Success");
+                execute(engine.getCurrentSeqPt().getTrigger(l));
                 //todo:decide what to do
             }
         }

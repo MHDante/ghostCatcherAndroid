@@ -6,13 +6,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+
 import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
-import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 
 /**
  * Created by Dante on 2014-07-27
  */
-public class gcLocationManager implements LocationListener {
+public class gcLocationManager implements LocationListener, ConnectionCallbacks, OnConnectionFailedListener {
 
     static final int GPS_SLOW_MIN_UPDATE_TIME_MS = 60000; //60 seconds
     static final int GPS_SLOW_MIN_UPDATE_DISTANCE_M = 50; //50 meters
@@ -24,6 +27,8 @@ public class gcLocationManager implements LocationListener {
     int GPSMinUpdateTimeMS;
     // the minimal GPS update interval, in meters.
     int GPSMinUpdateDistanceM;
+
+	boolean GPSStatus;
 
     public gcLocationManager(MainActivity gcMain) {
         this.gcMain = gcMain;
@@ -48,16 +53,15 @@ public class gcLocationManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+	    currentGPSLocation = location;
         gcMain.experienceManager.UpdateLocation(location);
         if (Tools.Current() == Tools.rfDetector) Tools.rfDetector.onLocationChanged(location);
     }
 
     public void setGPSStatus() {
-        boolean gpsAvailability = (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER));
         if (Tools.Current() == Tools.rfDetector) {
-	        Tools.rfDetector.setGPSState(gpsAvailability, false);
-	        if (gpsAvailability && currentGPSLocation != null) {
+	        Tools.rfDetector.setGPSState(GPSStatus, false);
+	        if (GPSStatus && currentGPSLocation != null) {
 		        System.out.println("Stored location loaded");
 		        onLocationChanged(currentGPSLocation);
 	        }
@@ -102,8 +106,19 @@ public class gcLocationManager implements LocationListener {
         locationManager.removeUpdates(this);
     }
 
-    public gcLocation getUserCurrentgcLocation() {
-        return null;
-    }
 
+	@Override
+	public void onConnected(Bundle bundle) {
+		GPSStatus = true;
+	}
+
+	@Override
+	public void onDisconnected() {
+		GPSStatus = false;
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		GPSStatus = false;
+	}
 }

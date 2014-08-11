@@ -192,10 +192,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         ra.setFillAfter(true);// set the animation after the end of the reservation status
         arrowImageView.startAnimation(ra);
 
-	    vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
-	    System.out.println(vibrationIntervalMS);
-		vibrationHandler.post(vibrationRunnable);
-
+	    vibrationIntervalMS =  5000 - 5000 * (int)Math.abs(relativeBearing - 180) / 180;
+	    vibrationIntervalMS = Math.max(vibrationIntervalMS, 200);
         heading = -newHeading;
         relativeBearing = newRelativeBearing;
     }
