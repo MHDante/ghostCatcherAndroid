@@ -17,6 +17,7 @@ public class Tools{
     public static Tester       tester       ;
     public static Imager       imager       ;
     public static RFDetector   rfDetector   ;
+    public static Achievements achievements ;
 
     static MainActivity gcMain;
 
@@ -28,6 +29,7 @@ public class Tools{
         tester          = new Tester();
         imager          = new Imager();
         rfDetector      = new RFDetector();
+        achievements    = new Achievements();
 
         communicator    .setToolLight((LightButton)gcMain.findViewById(R.id.left_toolLight  ));
         locationMap     .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_locationMap   ));
@@ -35,6 +37,7 @@ public class Tools{
         tester          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_bioList       ));
         imager          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_imager        ));
         rfDetector      .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_rfDetector    ));
+        achievements    .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_badges       ));
 
     }
     public static Iterable<ToolFragment> All(){
@@ -45,6 +48,7 @@ public class Tools{
         ret.add(tester      );
         ret.add(imager      );
         ret.add(rfDetector  );
+        ret.add(achievements);
         return ret;
     }
 
@@ -59,6 +63,7 @@ public class Tools{
         if(ToolName.equalsIgnoreCase("tester"         )) return tester      ;
         if(ToolName.equalsIgnoreCase("imager"         )) return imager      ;
         if(ToolName.equalsIgnoreCase("rfDetector"     )) return rfDetector  ;
+        if(ToolName.equalsIgnoreCase("achievements"   )) return achievements;
 
         Utils.messageDialog(gcMain, "Error", "Tried to get non-Existent Tool" + ToolName);
         return null;
