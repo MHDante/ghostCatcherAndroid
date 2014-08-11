@@ -140,7 +140,7 @@ public class ExperienceManager {
         for (gcLocation l : engine.getAllLocations().values()) {
             float distance[] = new float[3]; // ugh, ref parameters.
             Location.distanceBetween(l.getLatitude(), l.getLongitude(), location.getLatitude(), location.getLongitude(), distance);
-            if (distance[0] <= accuracy + 60) {
+            if (distance[0] <= accuracy) {
                 location = l;
                 Tools.rfDetector.onLocationChanged(l);
                 gcTrigger trigger = engine.getCurrentSeqPt().getTrigger(l);

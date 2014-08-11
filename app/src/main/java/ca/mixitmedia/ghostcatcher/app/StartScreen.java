@@ -278,9 +278,11 @@ public class StartScreen extends Activity {
     boolean starting;
     public void start(View view) {
         if (!starting) {
+            starting = true;
             Utils.checkNetworkAvailabilty(this, new Utils.Callback<Boolean>() {
                 @Override
                 public void Run(Boolean connected) {
+                    starting = false;
                     if (!connected) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
                         builder.setMessage("You are not connected to the internet. You will not participate in Out-of-app Experiences. Continue Anyway?")
@@ -303,9 +305,8 @@ public class StartScreen extends Activity {
                     }
                 }
             });
-            starting = false;
         }
-        starting = true;
+
     }
 
     public void credits(View view) {

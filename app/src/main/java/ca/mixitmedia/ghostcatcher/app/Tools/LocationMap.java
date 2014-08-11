@@ -43,9 +43,10 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	ArrayList<Marker> markers = new ArrayList<>();
     GoogleMap map;
     int selectedLocation;
+    boolean bannerRaised;
 
 	AnimatorUpdateListener locationBannerAnimatorUpdateListener;
-	MarginLayoutParams mlp;
+    RelativeLayout locationBanner;
 
 	//Overrides of ToolFragment class
     @Override
@@ -64,15 +65,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	    map.getUiSettings().setRotateGesturesEnabled(false);
 	    map.getUiSettings().setCompassEnabled(false);
 
-	    final RelativeLayout locationBanner = (RelativeLayout) view.findViewById(R.id.location_banner);
-	    mlp = (MarginLayoutParams) locationBanner.getLayoutParams();
-	    locationBannerAnimatorUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
-		    @Override
-		    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-			    mlp.bottomMargin = (Integer) valueAnimator.getAnimatedValue();
-			    locationBanner.requestLayout();
-			}
-	    };
+	    locationBanner = (RelativeLayout) view.findViewById(R.id.location_banner);
 
         return view;
     }
@@ -88,7 +81,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 		MapFragment f = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map);
 		//Todo:Illegal state Exception: Activity has been destroyed.
-		if (f != null)
+		if (f != null && !getActivity().isDestroyed())
 			getFragmentManager().beginTransaction().remove(f).commit();
 		super.onDestroyView();
 	}
@@ -98,9 +91,11 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
         map.setPadding(Utils.convertDpToPixelInt(105, getActivity()), 0, 0, 0);
 
 	    Location currentUserLocation = map.getMyLocation();
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(43.658749, -79.379232), 17f));
 	    if (currentUserLocation != null) {
 		    LatLng latLng = new LatLng(currentUserLocation.getLatitude(), currentUserLocation.getLongitude());
-		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 8f));
+		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f));
 	    }
 
 	    setBanner(sortedLocations.get(0));
@@ -157,7 +152,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	 * Toggles banner detail
 	 */
 	public void toogleBannerState() {
-		setBannerState(mlp.bottomMargin == -285);
+		setBannerState(!bannerRaised);
 	}
 
 	/**
@@ -165,10 +160,13 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	 * @param state true to show detail, false to hide detail.
 	 */
 	public void setBannerState(boolean state) {
-		ValueAnimator valueAnimator = ValueAnimator.ofInt(mlp.bottomMargin, state?0:-285);
-		valueAnimator.addUpdateListener(locationBannerAnimatorUpdateListener);
-		valueAnimator.setDuration(500);
-		valueAnimator.start();
+        if (bannerRaised == state) return;
+        bannerRaised = state;
+        if(state){
+            locationBanner.animate().translationY(-locationBanner.getHeight()*.63f);
+        }else{
+            locationBanner.animate().translationY(0);
+        }
 	}
 
 	protected int getAnimatorId(boolean enter) {

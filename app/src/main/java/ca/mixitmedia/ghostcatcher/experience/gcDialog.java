@@ -62,7 +62,7 @@ public class gcDialog {
         retriever.setDataSource(soundPath);
         dialog.duration = (int) Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
         line = r.readLine();//ommit first line because of reasons.
-int lines = 1;
+        int lines = 1;
         while ((line = r.readLine()) != null) {
             lines++;
             if (line.equals("")) continue;
@@ -76,13 +76,13 @@ int lines = 1;
                             dialog.intervals.add(time);
                             Uri poseUri = chr.getPose(pose);
                             if (poseUri == null)
-                                Utils.messageDialog(seqPt.engine.context,"error", "Line : " + lines + " SeqPt: " + seqPt.id);
+                                Utils.messageDialog(seqPt.engine.getContext(),"error", "Line : " + lines + " SeqPt: " + seqPt.id);
                             dialog.portraits.put(time, poseUri);
 
                             dialog.parsed.put(time, total.toString()+"\n");
                             total = new StringBuilder();
                         }
-                        chr = seqPt.engine.characters.get(line.substring(2).trim());
+                        chr = seqPt.engine.getCharacters().get(line.substring(2).trim());
                     }
                     break;
                 case '<':

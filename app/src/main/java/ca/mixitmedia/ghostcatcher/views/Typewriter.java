@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,10 @@ public class Typewriter extends ScrollView {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         textView = new TextView(context);
         textView.setText("");
-        linearLayout.addView(textView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView.setPadding(10, 0, 10, 0);
+        textView.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.addView(textView, params);
         super.addView(linearLayout);
         //super.setOnTouchListener(new View.OnTouchListener() {
         //    @Override

@@ -46,7 +46,8 @@ public class Imager extends ToolFragment {
     public void onDestroyView() {
         FragmentManager fm = getFragmentManager();
         Fragment xmlFragment = fm.findFragmentById(R.id.camera_preview);
-        if (xmlFragment != null) {
+
+        if (xmlFragment != null && !getActivity().isDestroyed()) {
             fm.beginTransaction().remove(xmlFragment).commit();
         }
         super.onDestroyView();

@@ -51,6 +51,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
     Vibrator vibrator;
     Handler vibrationHandler = new Handler();
+    Handler flashHandler = new Handler();
+    Runnable flashRunnable;
     Runnable vibrationRunnable;
     int vibrationIntervalMS;
 
@@ -193,7 +195,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         arrowImageView.startAnimation(ra);
 
         vibrationIntervalMS =  1000 - 1000 * (int)Math.abs(relativeBearing - 180) / 180;
-        System.out.println(vibrationIntervalMS);
         //vibrationHandler.post(vibrationRunnable);
 
         heading = -newHeading;
@@ -249,20 +250,35 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                     break;
                 case THERE:
                     gcMain.locationManager.setGPSUpdates(0, 0); //0 seconds, 0 meters
-                    Log.d("RFDetector", "We're here bitches!");
+                    Log.d("RFDetector", "We're here bitches!"); //TODO:Are we here? or are we THERE?
                     destinationProximityTextView.setText("#Location Reached#"); //TODO: use story terminology
-                    gcMain.experienceManager.ToolSuccess(this);
-                    //gcMain.swapTo(Tools.communicator);
+                    flashRunnable = new Runnable()  {
+                        int ghettoStateMachine;
+                        @Override
+                        public void run() {
+                            if(ghettoStateMachine++%2==0){
+                                backgroundImageView.setColorFilter(0x33FF0000);
+                            }else {
+                                backgroundImageView.setColorFilter(0x00000000);
+                            }
+                            if (ghettoStateMachine < 6 ) flashHandler.postDelayed(this, 500);
+                            else{
+
+                                gcMain.experienceManager.ToolSuccess(RFDetector.this);
+                                gcMain.swapTo(Tools.communicator);
+                            }
+                        }
+                    };
+                    flashRunnable.run();
                     break;
             }
             approxDistance = currentDistance;
         }
 
         if (currentDistance == ApproxDistance.THERE && !backgroundFlashingState) {
-            backgroundImageView.setColorFilter(0x33FF0000);
+
             backgroundFlashingState = true;
         } else {
-            backgroundImageView.setColorFilter(0x00000000);
             backgroundFlashingState = false;
         }
 
