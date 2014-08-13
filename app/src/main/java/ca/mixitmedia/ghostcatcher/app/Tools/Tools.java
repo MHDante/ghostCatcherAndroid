@@ -20,6 +20,7 @@ public class Tools {
     public static Imager       imager       ;
     public static RFDetector   rfDetector   ;
     public static Achievements achievements ;
+    public static TrophyCase   trophyCase   ;
 
     static MainActivity gcMain;
 
@@ -32,6 +33,7 @@ public class Tools {
         imager          = new Imager();
         rfDetector      = new RFDetector();
         achievements    = new Achievements();
+        trophyCase      = new TrophyCase();
 
         communicator    .setToolLight((LightButton)gcMain.findViewById(R.id.left_toolLight  ));
         locationMap     .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_locationMap   ));
@@ -40,6 +42,7 @@ public class Tools {
         imager          .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_imager        ));
         rfDetector      .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_rfDetector    ));
         achievements    .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_badges       ));
+        trophyCase      .setToolLight((LightButton)gcMain.findViewById(R.id.tool_light_vault        ));
 
     }
 
@@ -51,7 +54,8 @@ public class Tools {
 		        tester,
 		        imager,
 		        rfDetector,
-                achievements);
+                achievements,
+                trophyCase);
     }
 
     public static ToolFragment Current() {
@@ -67,6 +71,7 @@ public class Tools {
 			case "imager": return imager;
 			case "rfdetector": return rfDetector;
             case "achievements": return achievements;
+            case "trophycase":return trophyCase;
 			default:
 				//TODO: should probably remove this dialog in favor of Log.e (below), since returning
 				// null almost surely crashes everything, preventing the prompt from showing

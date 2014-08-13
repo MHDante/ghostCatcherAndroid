@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <GridView
+        android:layout_width="309dp"
+        android:layout_height="432dp"
+        android:id="@+id/trophy_grid_view"
+        android:drawSelectorOnTop="false"
+        android:numColumns="3"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ff5d5d5d"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/trophy_description_view">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:id="@+id/trophy_name"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trophy Data"
+            android:id="@+id/trophy_data"
+            android:layout_below="@+id/trophy_name"
+            android:layout_centerHorizontal="true"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/trophy_image_large"
+            android:layout_below="@+id/trophy_data"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/alert" />
+    </RelativeLayout>
+</RelativeLayout>

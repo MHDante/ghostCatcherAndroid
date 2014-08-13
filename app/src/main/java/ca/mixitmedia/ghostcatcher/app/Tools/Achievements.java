@@ -23,6 +23,9 @@ import ca.mixitmedia.ghostcatcher.app.R;
  */
 public class Achievements extends ToolFragment{
     View view;
+    View descriptionView;
+    TextView trophyTitleDescription, trophyDataDescription;
+    ImageView trophyImageLarge;
     ExpandableListView listView;
     BaseExpandableListAdapter adapter;
     List<Badge> badgeList = new ArrayList<Badge>();
@@ -31,24 +34,25 @@ public class Achievements extends ToolFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tool_achievements, null);
         listView = (ExpandableListView) view.findViewById(R.id.expandableListView);
+        if(badgeList.isEmpty()){
+            badgeList.add(new Badge("Badger",
+                    "Badger, badger, badger, mushroom! Mushroom! Badger, badges, badger....",
+                    Utils.resIdToUri(gcMain,R.drawable.icon_journal)));
+            badgeList.add(new Badge("aThing",
+                    "Blah, this is a whole bunch of filler text to make the space larger cause we need to the relative layout as it's a wild child from the lands Ooo that's come in and smash up the place like whim-bam what the sam.",
+                    Utils.resIdToUri(gcMain, R.drawable.icon_imager)));
+            badgeList.add(new Badge("EVERYTHING IS AWESOME!",
+                    "Everything is cool when you're part of a team! Everything is awesomeeeee, when we're living our dream!",
+                    Utils.resIdToUri(gcMain, R.drawable.icon_imager)));
+            badgeList.add(new Badge("Magic Man",
+                    "You're a jerk from Mars, this requires a reward.",
+                    Utils.resIdToUri(gcMain,R.drawable.icon_journal)));
+            badgeList.add(new Badge("Dark Sided",
+                    "Killed enough Ewoks to please the Emperor and everyone else.",
+                    Utils.resIdToUri(gcMain, R.drawable.icon_imager)));
+        }
 
-        badgeList.add(new Badge("Badger",
-                "Badger, badger, badger, mushroom! Mushroom! Badger, badges, badger....",
-                Utils.resIdToUri(gcMain,R.drawable.icon_journal)));
-        badgeList.add(new Badge("aThing",
-                "Blah, this is a whole bunch of filler text to make the space larger cause we need to the relative layout as it's a wild child from the lands Ooo that's come in and smash up the place like whim-bam what the sam.",
-                Utils.resIdToUri(gcMain, R.drawable.icon_imager)));
-        badgeList.add(new Badge("EVERYTHING IS AWESOME!",
-                "Everything is cool when you're part of a team! Everything is awesomeeeee, when we're living our dream!",
-                Utils.resIdToUri(gcMain, R.drawable.icon_imager)));
-        badgeList.add(new Badge("Magic Man",
-                "You're a jerk from Mars, this requires a reward.",
-                Utils.resIdToUri(gcMain,R.drawable.icon_journal)));
-        badgeList.add(new Badge("Dark Sided",
-                "Killed enough Ewoks to please the Emperor and everyone else.",
-                Utils.resIdToUri(gcMain, R.drawable.icon_imager)));
         adapter = new AchievementsAdapter(badgeList, gcMain);
-
         listView.setAdapter(adapter);
 
         return view;

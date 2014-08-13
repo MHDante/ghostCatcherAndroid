@@ -43,7 +43,7 @@ public class Communicator extends ToolFragment {
     };
     Handler mHandler = new Handler();
     Runnable phraseAdder = new PhraseAdder();
-    Boolean firstRun = true;
+    Boolean firstRun = false;
     public Communicator() {
     }//req'd
 
