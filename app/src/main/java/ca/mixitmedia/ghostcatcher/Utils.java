@@ -192,7 +192,7 @@ public class Utils {
     public static  interface Callback<V>{
         void Run(V parameter);
     }
-    public static void checkNetworkAvailabilty(final Context context, final Callback<Boolean> action)
+    public static void checkNetworkAvailability(final Context context, final Callback<Boolean> action)
     {
         new AsyncTask<Void, Void, Boolean>() {
             @Override

@@ -279,7 +279,7 @@ public class StartScreen extends Activity {
     public void start(View view) {
         if (!starting) {
             starting = true;
-            Utils.checkNetworkAvailabilty(this, new Utils.Callback<Boolean>() {
+            Utils.checkNetworkAvailability(this, new Utils.Callback<Boolean>() {
                 @Override
                 public void Run(Boolean connected) {
                     starting = false;
