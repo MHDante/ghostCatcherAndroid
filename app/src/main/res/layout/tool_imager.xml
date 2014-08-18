@@ -9,15 +9,17 @@
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="60"
         android:name="ca.mixitmedia.ghostcatcher.app.Tools.Imager$SampleCamFragment" />
 
-    <ImageView
-        android:layout_width="match_parent"
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/overlay"
-        android:src="@android:color/transparent"
-        android:adjustViewBounds="true"
-        android:layout_alignParentBottom="true" />
+        android:text="Capture\nBadge"
+        android:id="@+id/button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="55dp"
+        android:textSize="30sp"
+        android:minLines="2" />
 
 </RelativeLayout>

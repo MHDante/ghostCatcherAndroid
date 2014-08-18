@@ -1,6 +1,5 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -113,13 +111,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 
     public boolean checkClick(View view) {
         switch (view.getId()) {
-            case R.id.map_overlay_left_arrow:
-	            System.out.println("left");
-	            return changeSelectedLocation(-1);
-            case R.id.map_overlay_right_arrow:
-	            System.out.println("right");
-	            return changeSelectedLocation(+1);
-	        case R.id.map_overlay:
+	        case R.id.location_banner:
 		        toogleBannerState();
 		        return true;
 	        default: return false;

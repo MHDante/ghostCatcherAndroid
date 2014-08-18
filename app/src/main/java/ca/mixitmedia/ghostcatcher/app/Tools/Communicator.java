@@ -81,13 +81,13 @@ public class Communicator extends ToolFragment {
     @Override
     public boolean checkClick(View view) {
         switch (view.getId()) {
-            case R.id.sound:
-                if (SoundManager.isPlaying()) SoundManager.pause();
-                else SoundManager.play();
-                return true;
-            case R.id.help:
-                if (proximityTest.getStatus() == AsyncTask.Status.PENDING) proximityTest.execute();
-                return true;
+            //case R.id.sound:
+            //    if (SoundManager.isPlaying()) SoundManager.pause();
+            //    else SoundManager.play();
+            //    return true;
+            //case R.id.help:
+            //    if (proximityTest.getStatus() == AsyncTask.Status.PENDING) proximityTest.execute();
+            //    return true;
             default:
                 return false;
         }

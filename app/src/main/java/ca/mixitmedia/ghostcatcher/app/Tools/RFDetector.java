@@ -32,9 +32,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      */
     TextView destinationProximityTextView;
 
-    ImageView backgroundImageView;
     ImageView arrowImageView;
-    ImageView lidImageView;
 
     boolean backgroundFlashingState;
     boolean toolState;
@@ -100,11 +98,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
         destinationProximityTextView = (TextView) view.findViewById(R.id.destinationProximityText);
 
-        backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
         arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
 
-        lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
-        lidImageView.setVisibility(View.VISIBLE);
 
         proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
         proximityBar.setMax(1000);
@@ -257,9 +252,9 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                         @Override
                         public void run() {
                             if(ghettoStateMachine++%2==0){
-                                backgroundImageView.setColorFilter(0x33FF0000);
+                                //backgroundImageView.setColorFilter(0x33FF0000);
                             }else {
-                                backgroundImageView.setColorFilter(0x00000000);
+                                //backgroundImageView.setColorFilter(0x00000000);
                             }
                             if (ghettoStateMachine < 6 ) flashHandler.postDelayed(this, 500);
                             else{
@@ -287,24 +282,24 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void setGPSState (boolean state, boolean instant) {
         if (state == toolState) return;
 
-        RotateAnimation ra;
-        if (state) {
-            ra = new RotateAnimation(0, 180,
-                    Animation.RELATIVE_TO_SELF, 0.1797323136f,
-                    Animation.RELATIVE_TO_SELF, 0.2093457944f);
-            vibrationHandler.post(vibrationRunnable);
-        }
-        else {
-            ra = new RotateAnimation(180, 0,
-                    Animation.RELATIVE_TO_SELF, 0.1797323136f,
-                    Animation.RELATIVE_TO_SELF, 0.2093457944f);
-            destinationProximityTextView.setText("Location Unavailable");
-            vibrationHandler.removeCallbacks(vibrationRunnable);
-        }
+        //RotateAnimation ra;
+        //if (state) {
+        //    ra = new RotateAnimation(0, 180,
+        //            Animation.RELATIVE_TO_SELF, 0.1797323136f,
+        //            Animation.RELATIVE_TO_SELF, 0.2093457944f);
+        //    vibrationHandler.post(vibrationRunnable);
+        //}
+        //else {
+        //    ra = new RotateAnimation(180, 0,
+        //            Animation.RELATIVE_TO_SELF, 0.1797323136f,
+        //            Animation.RELATIVE_TO_SELF, 0.2093457944f);
+        //    destinationProximityTextView.setText("Location Unavailable");
+        //    vibrationHandler.removeCallbacks(vibrationRunnable);
+        //}
 
-        ra.setDuration(instant ? 0 : 1000); //sets duration to 1s or 0.
-        ra.setFillAfter(true);// set the animation after the end of the reservation status
-        lidImageView.startAnimation(ra);
+        //ra.setDuration(instant ? 0 : 1000); //sets duration to 1s or 0.
+        //ra.setFillAfter(true);// set the animation after the end of the reservation status
+        //lidImageView.startAnimation(ra);
         toolState = state;
     }
 
