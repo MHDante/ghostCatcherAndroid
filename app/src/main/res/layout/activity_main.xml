@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/activity_bg"
-    android:gravity="top">
+    tools:context=".MainActivity">
 
     <SurfaceView
         android:layout_width="0px"
@@ -13,61 +12,21 @@
         android:id="@+id/surfaceView"
         android:layout_gravity="right|top" />
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ad_holder"
-        android:layout_gravity="center_horizontal|bottom"
-        android:src="@drawable/ad_holder"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/frame_right"
-        android:layout_alignEnd="@+id/frame_right" />
-
     <FrameLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:id="@+id/fragment_container"
-        android:layout_above="@+id/ad_holder"
         android:layout_marginBottom="-20dp"
-        android:layout_below="@+id/fragment_lightholder"
-        android:layout_marginTop="-20dp">
+        android:layout_alignParentTop="true">
 
     </FrameLayout>
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/frame_left"
-        android:layout_gravity="left|center_vertical"
-        android:src="@drawable/frame_left"
-        android:scaleType="fitStart"
-        android:adjustViewBounds="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp" />
+    <fragment android:id="@+id/navigation_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:name="ca.mixitmedia.ghostcatcher.views.DrawerActivity$NavigationDrawerFragment"
+        tools:layout="@layout/fragment_navigation_drawer" />
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/frame_right"
-        android:layout_gravity="center_vertical|right"
-        android:src="@drawable/frame_right"
-        android:scaleType="fitEnd"
-        android:adjustViewBounds="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="81.5dp"
-        android:name="ca.mixitmedia.ghostcatcher.views.LightHolder"
-        android:id="@+id/fragment_lightholder"
-        tools:layout="@layout/fragment_lightholder" />
-
-
-</RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

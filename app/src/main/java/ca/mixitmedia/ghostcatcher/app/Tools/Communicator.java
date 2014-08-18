@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import ca.mixitmedia.ghostcatcher.Utils;
@@ -23,7 +24,6 @@ import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcAction;
 import ca.mixitmedia.ghostcatcher.experience.gcDialog;
-import ca.mixitmedia.ghostcatcher.views.Typewriter;
 
 /**
  * Created by Dante on 2014-04-14
@@ -31,8 +31,7 @@ import ca.mixitmedia.ghostcatcher.views.Typewriter;
 public class Communicator extends ToolFragment {
 
     gcDialog currentDialog;
-    Typewriter subtitleView;
-    Biocalibrate biocalibrate;
+    TextView subtitleView;
     ImageView imageView;
     long startTime;
     ProximityTest proximityTest = new ProximityTest() {
@@ -52,14 +51,13 @@ public class Communicator extends ToolFragment {
         setEnabled(true);
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.tool_communicator, container, false);
-        subtitleView = (Typewriter) (view.findViewById(R.id.subtitle_text_view));
+        subtitleView = (TextView) (view.findViewById(R.id.subtitle_text_view));
         imageView = (ImageView) view.findViewById(R.id.character_portrait);
-        biocalibrate = new Biocalibrate(view.findViewById(R.id.biocalibrate));
 
         Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ocean_sans.ttf");
-        subtitleView.textView.setTypeface(font);
-        subtitleView.textView.setTextSize(20);
-        subtitleView.textView.setTextColor(Color.GREEN);
+        subtitleView.setTypeface(font);
+        subtitleView.setTextSize(20);
+        subtitleView.setTextColor(Color.GREEN);
         return view;
     }
 
@@ -73,8 +71,7 @@ public class Communicator extends ToolFragment {
     public void CheckForMessages() {
         if (currentDialog == null) {
             if (pendingMessages.size() > 0 && pendingMessages.peek().action.getType() == gcAction.Type.DIALOG) {
-                biocalibrate = new Biocalibrate(getView().findViewById(R.id.biocalibrate));
-                biocalibrate.show();
+                startDialog();
             }
         }else {
             phraseAdder.run();
@@ -99,7 +96,6 @@ public class Communicator extends ToolFragment {
     protected void startDialog() {
         ToolMessage message = pendingMessages.peek();
         if (message.action.getType() == gcAction.Type.DIALOG) {
-            biocalibrate.hide();
             currentDialog = gcDialog.get(gcMain.gcEngine.getCurrentSeqPt(),message.action.getData());
             startTime = System.currentTimeMillis();
             SoundManager.playTrack(currentDialog.audio, false);
@@ -130,7 +126,8 @@ public class Communicator extends ToolFragment {
             //Log.d("PhraseAdder","checking difference between current:" + currentInterval + " and past : " + pastInterval);
 
             if (currentInterval > pastInterval) {
-                subtitleView.concatenateText(currentDialog.parsed.get((int) currentInterval));
+                CharSequence prevText = subtitleView.getText();
+                subtitleView.setText(prevText + currentDialog.parsed.get((int) currentInterval));
                 Uri image =currentDialog.portraits.get((int) currentInterval);
                 if (image !=null) {
                     Log.d("PA", image.getPath());
@@ -155,80 +152,4 @@ public class Communicator extends ToolFragment {
         }
     }
 
-    public class Biocalibrate implements View.OnTouchListener {
-
-        static final int BiocalibrateDelay = 1500;
-        boolean started;
-        long lastDown;
-        long totalDuration;
-        boolean pressed;
-        ProgressBar LoadingBar;
-        Button fingerPrint;
-        View holder;
-        ImageView overlay;
-
-        public Biocalibrate(View view) {
-            holder = view;
-            view.setTranslationY(Utils.GetScreenHeight(getActivity()));
-            LoadingBar = (ProgressBar) holder.findViewById(R.id.calibrate_bar);
-            LoadingBar.setMax(100);
-
-            fingerPrint = (Button) holder.findViewById(R.id.biocalibrate_btn);
-            fingerPrint.setOnTouchListener(this);
-
-            overlay = (ImageView) holder.findViewById(R.id.fingerprint_mask);
-        }
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                lastDown = System.currentTimeMillis();
-                pressed = true;
-                if (!started) {
-                    SoundManager.playSound(SoundManager.Sounds.calibrateSoundClip);
-                    started = true;
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (LoadingBar != null) {
-                                if (pressed) {
-                                    totalDuration += System.currentTimeMillis() - lastDown;
-                                    lastDown = System.currentTimeMillis();
-                                }
-                                int progress = (int) ((((float)totalDuration / (float)BiocalibrateDelay) * 100f));
-                                Log.d("PROGRESS", ":"+progress);
-                                LoadingBar.setProgress(progress);
-                                if (totalDuration > BiocalibrateDelay) {
-                                    startDialog();
-                                } else {
-                                    handler.postDelayed(this, 100);
-                                }
-                            }
-                        }
-                    }, 100);
-                } else SoundManager.resumeFX();
-
-                getView().findViewById(R.id.calibrating_text).setVisibility(View.VISIBLE);
-                overlay.setImageResource(R.drawable.bio_calibrate_pressed);
-
-
-            } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                pressed = false;
-                SoundManager.pauseFX();
-                totalDuration += System.currentTimeMillis() - lastDown;
-                getView().findViewById(R.id.calibrating_text).setVisibility(View.INVISIBLE);
-                overlay.setImageResource(R.drawable.bio_calibrate_unpressed);
-            }
-            return false;
-        }
-
-        public void show() {
-            LoadingBar.setProgress(0);
-            holder.animate().translationY(0);
-        }
-        public void hide(){
-            holder.animate().translationY(Utils.GetScreenHeight(getActivity()));
-        }
-    }
 }

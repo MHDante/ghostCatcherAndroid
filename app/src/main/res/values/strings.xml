@@ -9,6 +9,8 @@
     <string name="title_activity_sample_cam">SampleCamActivity</string>
     <string name="compass_accuracy_low">Compass is wonky</string>
     <string name="title_activity_start_screen">StartScreen</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="start_activity_b1">Continue</string>
     <string name="start_activity_b2">New Game</string>
     <string name="start_activity_b3">Settings</string>

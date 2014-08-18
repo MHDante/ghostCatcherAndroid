@@ -11,8 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -26,9 +30,9 @@ import ca.mixitmedia.ghostcatcher.app.Tools.Tools;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 import ca.mixitmedia.ghostcatcher.experience.gcParser;
-import ca.mixitmedia.ghostcatcher.views.LightButton;
+import ca.mixitmedia.ghostcatcher.views.DrawerActivity;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends DrawerActivity implements View.OnClickListener {
 
     public ExperienceManager experienceManager;
     public gcLocationManager locationManager;
@@ -36,6 +40,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Tools.init(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
@@ -44,12 +49,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Log.e("Huge Mistake", e.getMessage());
             Utils.messageDialog(this,"Error", e.getMessage());
         }
-        Tools.init(this);
         SoundManager.init(this);
         locationManager = new gcLocationManager(this);
         experienceManager = new ExperienceManager(this);
         if (savedInstanceState == null)  //Avoid overlapping fragments.
-            getFragmentManager().beginTransaction().add(R.id.fragment_container, Tools.communicator).commit();
+            //getFragmentManager().beginTransaction().add(R.id.fragment_container, Tools.communicator).commit();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     }
@@ -142,11 +146,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         if (Tools.Current().checkClick(view)) return;
 
-        if (view instanceof LightButton) {
-            for (ToolFragment tf : Tools.All())
-                if (tf.getToolLight() == view && tf.isEnabled())
-                    swapTo(tf);
-        }
+
     }
 
     @Override
@@ -171,12 +171,39 @@ public class MainActivity extends Activity implements View.OnClickListener {
     }
 
     public void swapTo(ToolFragment tool) {
-        if (Tools.Current() == tool) return;
+        if (Tools.Current() == tool ) return;
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, tool)
                 .commit();
     }
 
 
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        swapTo(Tools.All().get(position));
+    }
+
+    @Override
+    protected ListAdapter getDrawerListAdapter() {
+        return new ArrayAdapter<>(
+                this,//getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                Tools.All());
+
+        //return new BaseAdapter() {
+        //    @Override
+        //    public int getCount() {return Tools.All().size();}
+        //    @Override
+        //    public Object getItem(int position) {Tools.All().get(position);}
+        //    @Override
+        //    public long getItemId(int position) {return position;}
+//
+        //    @Override
+        //    public View getView(int position, View convertView, ViewGroup parent) {
+        //        return null;
+        //    }
+        //}
+    }
 }
 

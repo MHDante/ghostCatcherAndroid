@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/overlay"
-        android:src="@drawable/imager"
+        android:src="@android:color/transparent"
         android:adjustViewBounds="true"
         android:layout_alignParentBottom="true" />
 

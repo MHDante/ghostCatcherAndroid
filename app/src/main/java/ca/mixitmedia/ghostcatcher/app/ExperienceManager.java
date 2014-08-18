@@ -14,7 +14,6 @@ import ca.mixitmedia.ghostcatcher.experience.gcDialog;
 import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
 import ca.mixitmedia.ghostcatcher.experience.gcTrigger;
-import ca.mixitmedia.ghostcatcher.views.LightButton;
 
 public class ExperienceManager {
 
@@ -96,7 +95,7 @@ public class ExperienceManager {
                         if (Tools.Current() == Tools.communicator){
                             Tools.communicator.CheckForMessages();
                         }else {
-                            Tools.communicator.getToolLight().setState(LightButton.State.flashing);
+                            //Tools.communicator.getToolLight().setState(LightButton.State.flashing);
                         }
                         if (lock) pendingLock = action;
                     } catch (IOException e) {

@@ -178,7 +178,7 @@ public class StartScreen extends Activity {
     public void settingsDialog(View v) throws Exception {
 
         final Dialog dialog = new Dialog(StartScreen.this);
-        dialog.setContentView(R.layout.dialog_view);
+        dialog.setContentView(R.layout.dialog_settings);
         dialog.setTitle("Settings");
 
         Button close = (Button) dialog.findViewById(R.id.buttonClose);
@@ -309,11 +309,6 @@ public class StartScreen extends Activity {
 
     }
 
-    public void credits(View view) {
-        Intent intent = new Intent(StartScreen.this, Credits.class);
-        startActivity(intent);
-
-    }
 
     //-This is method is used for Download Zip file from server and store in Desire location.
     class DownloadZipFile extends AsyncTask<String, String, String> {

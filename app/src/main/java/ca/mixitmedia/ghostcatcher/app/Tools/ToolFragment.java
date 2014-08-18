@@ -18,41 +18,13 @@ import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcAction;
-import ca.mixitmedia.ghostcatcher.views.LightButton;
 
 public abstract class ToolFragment extends Fragment {
 
-    public LightButton getToolLight() {
-        return toolLight;
-    }
-
-    public void setToolLight(LightButton toolLight) {
-        this.toolLight = toolLight;
-        String name = ((Object) this).getClass().getSimpleName().toLowerCase();
-        int id = Utils.findDrawableIDByName("icon_" + name);
-        if (id != 0) {
-            toolLight.setGlyphID(id);
-        }
-    }
-
-   public gcAction recievedAction;
-
-    private LightButton toolLight;
-    /**
-     * the parent MainActivity which is to hold this ToolFragment
-     */
+    public gcAction recievedAction;
     protected MainActivity gcMain;
     protected Queue<ToolMessage> pendingMessages = new LinkedList<>();
     private boolean enabled = false;
-
-
-    /**
-     * Checks whether the click is to be handled by the parent MainActivity, or will be handled
-     * solely by this ToolFragment
-     *
-     * @param view the clicked view
-     * @return true if touch needs to be handles by the parent MainActivity, otherwise false
-     */
     public boolean checkClick(View view) {
         return false;
     }
@@ -64,14 +36,14 @@ public abstract class ToolFragment extends Fragment {
 
     @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
-int animatorId = getAnimatorId(enter);
+        int animatorId = getAnimatorId(enter);
         setupAnimator(enter);
         Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
 
         if (anim != null) getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-	    anim.addListener(new AnimatorListenerAdapter() {
-			 @Override
+        anim.addListener(new AnimatorListenerAdapter() {
+             @Override
             public void onAnimationStart(Animator animation) {
                 //MainActivity.transitionInProgress = true;
             }
@@ -84,7 +56,7 @@ int animatorId = getAnimatorId(enter);
             }
         });
 
-	    return anim;
+        return anim;
     }
 
     @Override
@@ -93,7 +65,6 @@ int animatorId = getAnimatorId(enter);
         if(pendingMessages.size()>0 && pendingMessages.peek().action.getType() == gcAction.Type.ENABLE_TOOL){
             completeAction();
         }
-        toolLight.setState(LightButton.State.lit);
     }
 
     protected void completeAction(){
@@ -109,7 +80,6 @@ int animatorId = getAnimatorId(enter);
     @Override
     public void onPause() {
         super.onPause();
-        toolLight.setState(LightButton.State.unlit);
     }
 
     protected int getAnimatorId(boolean enter) {
@@ -191,9 +161,6 @@ int animatorId = getAnimatorId(enter);
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        if(enabled)toolLight.setState(LightButton.State.flashing);
-        else toolLight.setState(LightButton.State.disabled);
-
     }
 
     public boolean hasNotification() {

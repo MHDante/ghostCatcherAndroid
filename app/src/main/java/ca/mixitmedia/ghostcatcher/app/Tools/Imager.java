@@ -99,7 +99,7 @@ public class Imager extends ToolFragment {
 
         @Override
         public int getContentViewId() {
-            return R.layout.architect_view;
+            return R.layout.widget_architect_view;
         }
 
         @Override
