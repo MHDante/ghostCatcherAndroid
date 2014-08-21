@@ -1,10 +1,5 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-
 /**
  * Created by Dante on 07/03/14
  */
@@ -19,18 +14,14 @@ public class gcAction {
         return locked;
     }
 
-
-
     gcAction() {}
 
     public Type getType() {
         return type;
     }
-
     public String getData() {
         return data;
     }
-
     public gcTrigger getTrigger() {
         return trigger;
     }

@@ -39,6 +39,7 @@ public class gcLocationManager implements LocationListener, ConnectionCallbacks,
     //Todo:Implement
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
+	    setGPSStatus();
     }
 
     @Override
@@ -105,7 +106,6 @@ public class gcLocationManager implements LocationListener, ConnectionCallbacks,
     public void removeUpdates() {
         locationManager.removeUpdates(this);
     }
-
 
 	@Override
 	public void onConnected(Bundle bundle) {

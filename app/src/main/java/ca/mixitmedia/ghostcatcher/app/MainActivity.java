@@ -19,6 +19,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
@@ -74,16 +75,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             dialog.setContentView(R.layout.dialog_debug);
             dialog.setTitle("Settings");
 
-            Button close = (Button) dialog.findViewById(R.id.buttonClose);
-            Button enableTools = (Button) dialog.findViewById(R.id.enableTools);
-            Button Location1 = (Button) dialog.findViewById(R.id.location1);
-            Location1.setText("Ryerson Theatre");
-            Button Location2 = (Button) dialog.findViewById(R.id.location2);
-            Location2.setText("Lake Devo");
-            Button Location3 = (Button) dialog.findViewById(R.id.location3);
-            Location3.setText("Arch");
-            Button Location4 = (Button) dialog.findViewById(R.id.location4);
-            Location4.setText("TransMedia Zone");
+	        ArrayList<Button> LocationButtons = new ArrayList<>(Arrays.asList((Button) dialog.findViewById(R.id.location1),
+			        (Button) dialog.findViewById(R.id.location2),
+			        (Button) dialog.findViewById(R.id.location3),
+			        (Button) dialog.findViewById(R.id.location4)));
+	        LocationButtons.get(1).setText("Ryerson Theatre");
+	        LocationButtons.get(2).setText("Lake Devo");
+	        LocationButtons.get(3).setText("Arch");
+	        LocationButtons.get(4).setText("TransMedia Zone");
+
             // if button is clicked, close the custom dialog
             dialog.setOnDismissListener(new OnDismissListener() {
                 @Override
@@ -91,7 +91,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     debugging = true;
                 }
             });
-            close.setOnClickListener(new View.OnClickListener() {
+	        dialog.findViewById(R.id.buttonClose).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
@@ -99,18 +99,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 }
             });
 
-            enableTools.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for(ToolFragment t: Tools.All()) t.setEnabled(true);
-                    }
-            });
-
 	        View.OnClickListener clickListener = new View.OnClickListener() {
 		        @Override
 		        public void onClick(View v) {
-			        ArrayList<gcLocation> locations = new ArrayList<>(gcEngine.getAllLocations().values());
-			        gcLocation target = locations.get(0);
+			        gcLocation target = (new ArrayList<>(gcEngine.getAllLocations().values())).get(0);
 			        switch (v.getId()) {
 				        case R.id.location1:
                             target = gcEngine.getAllLocations().get("rye_theatre");
@@ -124,15 +116,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
 				        case R.id.location4:
                             target = gcEngine.getAllLocations().get("tmz");
 					        break;
+				        case R.id.enableTools:
+					        for (ToolFragment t: Tools.All()) t.setEnabled(true);
+					        return;
 			        }
 			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG).show();
 			        experienceManager.UpdateLocation(target);
 		        }
 	        };
-            Location1.setOnClickListener(clickListener);
-	        Location2.setOnClickListener(clickListener);
-	        Location3.setOnClickListener(clickListener);
-	        Location4.setOnClickListener(clickListener);
+	        dialog.findViewById(R.id.enableTools).setOnClickListener(clickListener);
+	        for (Button b : LocationButtons) b.setOnClickListener(clickListener);
 
             dialog.show();
         }
@@ -143,9 +136,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         if (Tools.Current().checkClick(view)) return;
 
         if (view instanceof LightButton) {
-            for (ToolFragment tf : Tools.All())
-                if (tf.getToolLight() == view && tf.isEnabled())
-                    swapTo(tf);
+            for (ToolFragment tf : Tools.All()) {
+	            if (tf.getToolLight() == view && tf.isEnabled()) swapTo(tf);
+            }
         }
     }
 
@@ -167,7 +160,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onDestroy() {
         SoundManager.stop();
         super.onDestroy();
-        
     }
 
     public void swapTo(ToolFragment tool) {
@@ -176,7 +168,5 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 .replace(R.id.fragment_container, tool)
                 .commit();
     }
-
-
 }
 

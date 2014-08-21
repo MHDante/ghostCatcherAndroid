@@ -41,10 +41,9 @@ public class ExperienceManager {
         return pendingLock != null;
     }
 
-
-    public void execute(gcTrigger trigger) {
+	public void execute(gcTrigger trigger) {
         if (trigger == null || trigger.isConsumed()){return;}
-            while(true){
+            while (true) {
             if (trigger.getActions().size() < 1){
                 trigger.consume();
                 return;
@@ -93,13 +92,13 @@ public class ExperienceManager {
                     try {
                         gcDialog.loadDialog(engine.getCurrentSeqPt(), data);//todo:threading
                         Tools.communicator.sendMessage(new ToolFragment.ToolMessage(action, lock));
-                        if (Tools.Current() == Tools.communicator){
-                            Tools.communicator.CheckForMessages();
-                        }else {
-                            Tools.communicator.getToolLight().setState(LightButton.State.flashing);
-                        }
+
+                        if (Tools.Current() == Tools.communicator) Tools.communicator.CheckForMessages();
+                        else Tools.communicator.getToolLight().setState(LightButton.State.flashing);
+	                        
                         if (lock) pendingLock = action;
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         Utils.messageDialog(gcMain, "Error", e.getMessage());
                     }
                     break;

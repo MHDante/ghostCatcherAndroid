@@ -1,16 +1,10 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class gcTrigger {
 
@@ -26,11 +20,9 @@ public class gcTrigger {
         actions = new LinkedList<>();
     }
 
-
     public boolean isEnabled() {
         return enabled;
     }
-
     public void setEnabled(boolean value) {
         enabled = value;
     }
@@ -38,7 +30,6 @@ public class gcTrigger {
     public int getId() {
         return id;
     }
-
     public void setId(int value) {
         id = value;
     }
@@ -46,7 +37,6 @@ public class gcTrigger {
     public Type getType() {
         return type;
     }
-
     public void setType(Type value) {
         type = value;
     }
@@ -58,11 +48,9 @@ public class gcTrigger {
     public void consume() {
         consumed = true;
     }
-
     public boolean isConsumed() {
         return consumed;
     }
-
 
     public enum Type {
         AUTO,
@@ -72,7 +60,4 @@ public class gcTrigger {
         LOCATION_EXIT,
         SCRIPTED
     }
-
-
-
 }

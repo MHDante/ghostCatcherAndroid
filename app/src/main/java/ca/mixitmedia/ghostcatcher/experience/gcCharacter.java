@@ -1,14 +1,8 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import android.app.AlertDialog;
 import android.net.Uri;
-import android.util.Log;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +23,6 @@ public class gcCharacter {
     gcCharacter(gcEngine engine) {
         this.engine = engine;
     }
-
-
 
     public String getId() {
         return id;
@@ -66,5 +58,4 @@ public class gcCharacter {
         }
         else return getPose(new ArrayList<>(poses.keySet()).get(0));
     }
-
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -61,14 +60,15 @@ public class LightHolder extends Fragment {
             @Override
             public void onScrollChanged(BounceScrollView scrollView, int x, int y, int oldx, int oldy) {
                 float maxScroll = scrollView.getMaxScrollAmount();
-                if(state == State.Left && x > maxScroll){
+                if (state == State.Left && x > maxScroll){
                     state = State.Right;
                     arrowRight.setState(LightButton.State.lit);
                     arrowLeft.setState(LightButton.State.unlit);
                     leftLight.setVisibility(View.GONE);
                     rightLight.setVisibility(View.VISIBLE);
 
-                }else if (state == State.Right && x<maxScroll){
+                }
+                else if (state == State.Right && x < maxScroll){
                     arrowRight.setState(LightButton.State.unlit);
                     arrowLeft.setState(LightButton.State.lit);
                     state = State.Left;
@@ -76,13 +76,13 @@ public class LightHolder extends Fragment {
                     leftLight.setVisibility(View.VISIBLE);
                 }
                 float alpha  = 1f - Utils.Triangle(x, maxScroll)/(maxScroll);
-                float xRotation = x/(maxScroll*2);
+                float xRotation = x / (maxScroll * 2);
                 leftLight.setAlpha(x > maxScroll ? 0 : alpha);
                 rightLight.setAlpha(x < maxScroll ? 0 : alpha);
                 leftGear.setRotation((xRotation)*360);
                 rightGear.setRotation((xRotation)*360);
 
-                if(x == 0f || x == maxScroll*2){
+                if (x == 0f || x == maxScroll * 2) {
                     arrowLeft.setState(LightButton.State.unlit);
                     arrowRight.setState(LightButton.State.unlit);
                 }
@@ -90,12 +90,11 @@ public class LightHolder extends Fragment {
 
             @Override
             public void onFling(boolean rightToLeft) {
-                if (rightToLeft){
+                if (rightToLeft) {
                     arrowRight.setState(LightButton.State.unlit);
                     arrowLeft.setState(LightButton.State.lit);
                 }
-                else{
-
+                else {
                     arrowRight.setState(LightButton.State.lit);
                     arrowLeft.setState(LightButton.State.unlit);
                 }
@@ -105,11 +104,10 @@ public class LightHolder extends Fragment {
     }
 
     public interface ScrollViewListener {
-
         void onScrollChanged(BounceScrollView scrollView, int x, int y, int oldx, int oldy);
         void onFling(boolean rightToLeft);
-
     }
+
     private static class BounceScrollView extends HorizontalScrollView {
         private static final int MAX_Y_OVERSCROLL_DISTANCE = 100;
 
@@ -143,9 +141,7 @@ public class LightHolder extends Fragment {
         @Override
         protected void onScrollChanged(int x, int y, int oldx, int oldy) {
             super.onScrollChanged(x, y, oldx, oldy);
-            if(scrollViewListener != null) {
-                scrollViewListener.onScrollChanged(this, x, y, oldx, oldy);
-            }
+            if (scrollViewListener != null) scrollViewListener.onScrollChanged(this, x, y, oldx, oldy);
         }
 
         private void initBounceScrollView() {
@@ -174,14 +170,13 @@ public class LightHolder extends Fragment {
                 //If the user swipes
                 if (mGestureDetector.onTouchEvent(event)) {
                     return true;
-                } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    int scrollX = getScrollX();
-                    int maxScroll = getMaxScrollAmount();
-                    smoothScrollTo(scrollX < maxScroll ? 0 : maxScroll * 2, 0);
-                    return true;
-                } else {
-                    return false;
                 }
+                else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    int maxScroll = getMaxScrollAmount();
+                    smoothScrollTo(getScrollX() < maxScroll ? 0 : maxScroll * 2, 0);
+                    return true;
+                }
+                else return false;
             }
         }
 
@@ -204,12 +199,12 @@ public class LightHolder extends Fragment {
                         scrollViewListener.onFling(false);
                         return true;
                     }
-                } catch (Exception e) {
-                    //Log.e("There was an error processing the Fling event:", e.getMessage());
+                }
+                catch (Exception e) {
+                //Log.e("There was an error processing the Fling event:", e.getMessage());
                 }
                 return false;
             }
         }
-
     }
 }

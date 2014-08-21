@@ -1,27 +1,20 @@
 package ca.mixitmedia.ghostcatcher.views;
 
-import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.Utils;
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
 
 /**
  * Created by Dante on 2014-06-13
@@ -55,6 +48,7 @@ public class LightButton extends View {
     Paint paint, glyphPaint;
     Context context;
     Rect drawRect,glyphRect = new Rect(0,0,0,0);
+
     public LightButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -91,7 +85,6 @@ public class LightButton extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         this.height = h;
         this.width = w;
-        ToolFragment t;
     }
 
     Rect clipBounds = new Rect();
@@ -99,28 +92,30 @@ public class LightButton extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.getClipBounds(clipBounds);
+
         switch (state) {
             case disabled:
                 canvas.drawBitmap(disabled, drawRect, clipBounds, paint);
                 break;
+
             case lit:
                 canvas.drawBitmap(lit, drawRect, clipBounds, paint);
                 if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 break;
+
             case unlit:
                 canvas.drawBitmap(unlit, drawRect, clipBounds, paint);
                 if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 break;
-            case flashing:
 
-                long now_ms = System.currentTimeMillis();
-                if((now_ms/500)%2 ==0) {
+            case flashing:
+                if((System.currentTimeMillis()/500)%2 ==0) {
                     canvas.drawBitmap(unlit, drawRect, clipBounds, paint);
-                    if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
+                    if (glyph != null) canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 }
                 else {
                     canvas.drawBitmap(lit, drawRect, clipBounds, paint);
-                    if (glyph!=null)canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
+                    if (glyph != null ) canvas.drawBitmap(glyph, glyphRect, clipBounds, glyphPaint);
                 }
                 postInvalidateDelayed(500);
                 break;

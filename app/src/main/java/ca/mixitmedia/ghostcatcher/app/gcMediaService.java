@@ -64,10 +64,9 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         updateNotification();
         startForeground(NOTIFICATION_MPLAYER, status);
-        return (START_NOT_STICKY);
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -77,7 +76,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
     }
 
     public IBinder onBind(Intent intent) {
-        return (null);
+        return null;
     }
 
     ///////////////////////////////////Media Player Listeners
@@ -97,13 +96,12 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
                 mPlayer.reset();
                 mPlayer.setDataSource(getApplicationContext(), track);
                 mPlayer.prepareAsync();
-
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 Log.e("AudioPlayer", "Error:" + e.getMessage());
             }
-        } else {
-            stop();
         }
+        else stop();
     }
 
     ///////////////////////////////////Utility methods
@@ -114,7 +112,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         tracks = new ConcurrentLinkedQueue<>();
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(NOTIFICATION_MPLAYER);
         stopSelf();
-
     }
 
     void startPlaying() {
@@ -133,7 +130,8 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
             mPlayer.setDataSource(getApplicationContext(), track);
             mPlayer.prepareAsync();
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             Log.e("AudioPlayer", "Error:" + e.getMessage());
         }
         isStarted = true;
@@ -147,7 +145,7 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
 
 
         //Uri ImgUri = locations.size() > 0 ? locations.get(0).getImageUri() :
-                Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/drawable/ghost");
+        Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/drawable/ghost");
         //Bitmap nextLocation = gcEngine.readBitmap(getApplicationContext(), ImgUri);
         //statusBarView.setImageViewBitmap(R.id.icon, nextLocation);
         statusBarView.setTextViewText(R.id.location_title, "Ghost Catcher");
@@ -170,7 +168,6 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
                 new Intent(this, MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
 
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_MPLAYER, status);
-
     }
 
     ///////////////////////////////////Broadcast Receiver
@@ -178,34 +175,42 @@ public class gcMediaService extends Service implements MediaPlayer.OnCompletionL
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if (intent.getAction().equals(ACTION_TOGGLE_PLAY)) {
-                if (isStarted) {
-                    if (mPlayer.isPlaying()) {
-                        mPlayer.pause();
-                        isPaused = true;
-                        updateNotification();
-                    } else {
-                        mPlayer.start();
-                        duration = mPlayer.getDuration();
-                        isPaused = false;
-                        updateNotification();
-                    }
-                } else startPlaying();
-            } else if (intent.getAction().equals(ACTION_STOP)) {
-                stop();
-            } else if (intent.getAction().equals(ACTION_PLAY_TRACK)) {
-                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
-                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks = new ConcurrentLinkedQueue<>();
-                tracks.add(track);
-                startPlaying();
-            } else if (intent.getAction().equals(ACTION_QUEUE_TRACK)) {
-                Uri track = intent.getParcelableExtra(EXTRA_TRACK);
-                looping = intent.getBooleanExtra(EXTRA_LOOP, false);
-                tracks.add(track);
-                if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
-            }
+	        switch (intent.getAction()) {
+		        case ACTION_TOGGLE_PLAY:
+			        if (isStarted) {
+				        if (mPlayer.isPlaying()) {
+					        mPlayer.pause();
+					        isPaused = true;
+				        }
+				        else {
+					        mPlayer.start();
+					        duration = mPlayer.getDuration();
+					        isPaused = false;
+				        }
+				        updateNotification();
+			        }
+			        else startPlaying();
+			        break;
+
+		        case ACTION_STOP:
+			        stop();
+				    break;
+
+		        case ACTION_PLAY_TRACK:
+			        Uri track = intent.getParcelableExtra(EXTRA_TRACK);
+			        looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+			        tracks = new ConcurrentLinkedQueue<>();
+			        tracks.add(track);
+			        startPlaying();
+			        break;
+
+		        case ACTION_QUEUE_TRACK:
+			        Uri track1 = intent.getParcelableExtra(EXTRA_TRACK);
+			        looping = intent.getBooleanExtra(EXTRA_LOOP, false);
+			        tracks.add(track1);
+			        if (mPlayer.isLooping() && tracks.size() > 1) mPlayer.setLooping(false);
+			        break;
+	        }
         }
     }
-
 }

@@ -21,7 +21,7 @@ public abstract class ProximityTest extends AsyncTask<String, Void, String> {
     String ProximityURL;
 
     public ProximityTest(String action, String location, String status) {
-        ProximityURL = BaseURL + "action=" + action + "&location=" + location + "&status=" + status;
+        ProximityURL = BaseURL+"action="+action+"&location="+location+"&status="+status;
     }
 
     public ProximityTest() {
@@ -40,7 +40,8 @@ public abstract class ProximityTest extends AsyncTask<String, Void, String> {
             HttpResponse response = httpclient.execute(request);
             in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             return in.readLine();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.e("log_tag", "Error in http connection " + e.toString());
             return null;
         }

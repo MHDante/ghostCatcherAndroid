@@ -35,12 +35,12 @@ import ca.mixitmedia.ghostcatcher.Utils;
 
 public class StartScreen extends Activity {
 
-    private ProgressDialog mProgressDialog;
+    ProgressDialog mProgressDialog;
 
-    private String url;
-    private String unzipLocation;
-    private String zipFile;
-    private File fileDir, appDir;
+    String url;
+    String unzipLocation;
+    String zipFile;
+    File fileDir, appDir;
 
     public static String fileToMD5(String filePath) {
         InputStream inputStream = null;
@@ -48,23 +48,22 @@ public class StartScreen extends Activity {
             inputStream = new FileInputStream(filePath);
             byte[] buffer = new byte[1024];
             MessageDigest digest = MessageDigest.getInstance("MD5");
+
             int numRead = 0;
             while (numRead != -1) {
                 numRead = inputStream.read(buffer);
-                if (numRead > 0)
-                    digest.update(buffer, 0, numRead);
+                if (numRead > 0) digest.update(buffer, 0, numRead);
             }
-            byte[] md5Bytes = digest.digest();
-            return convertHashToString(md5Bytes);
-        } catch (Exception e) {
+
+            return convertHashToString(digest.digest());
+        }
+        catch (Exception e) {
             return null;
-        } finally {
+        }
+        finally {
             if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                try { inputStream.close(); }
+                catch (Exception e) { e.printStackTrace(); }
             }
         }
     }
@@ -136,17 +135,15 @@ public class StartScreen extends Activity {
 
     public static String calculateMD5(File updateFile) {
         MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
+        try { digest = MessageDigest.getInstance("MD5"); }
+        catch (NoSuchAlgorithmException e) {
             Log.e("TAG", "Exception while getting digest", e);
             return null;
         }
 
-        InputStream is;
-        try {
-            is = new FileInputStream(updateFile);
-        } catch (FileNotFoundException e) {
+        InputStream inputStream;
+        try { inputStream = new FileInputStream(updateFile); }
+        catch (FileNotFoundException e) {
             Log.e("TAG", "Exception while getting FileInputStream", e);
             return null;
         }
@@ -154,57 +151,47 @@ public class StartScreen extends Activity {
         byte[] buffer = new byte[8192];
         int read;
         try {
-            while ((read = is.read(buffer)) > 0) {
-                digest.update(buffer, 0, read);
-            }
-            byte[] md5sum = digest.digest();
-            BigInteger bigInt = new BigInteger(1, md5sum);
+            while ((read = inputStream.read(buffer)) > 0) digest.update(buffer, 0, read);
+
+            BigInteger bigInt = new BigInteger(1, digest.digest());
             String output = bigInt.toString(16);
             // Fill to 32 chars
             output = String.format("%32s", output).replace(' ', '0');
             return output;
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to process file for MD5", e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                Log.e("TAG", "Exception on closing MD5 input stream", e);
-            }
+        }
+        catch (IOException e) { throw new RuntimeException("Unable to process file for MD5", e); }
+        finally {
+            try { inputStream.close(); }
+            catch (IOException e) { Log.e("TAG", "Exception on closing MD5 input stream", e); }
         }
     }
 
 
     public void settingsDialog(View v) throws Exception {
 
-        final Dialog dialog = new Dialog(StartScreen.this);
-        dialog.setContentView(R.layout.dialog_view);
-        dialog.setTitle("Settings");
+	    final Dialog dialog = new Dialog(StartScreen.this);
 
-        Button close = (Button) dialog.findViewById(R.id.buttonClose);
-        Button delete = (Button) dialog.findViewById(R.id.buttonDelete);
-        // if button is clicked, close the custom dialog
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+	    View.OnClickListener listener = new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+			    switch (v.getId()) {
+				    case R.id.buttonClose:
+					    dialog.dismiss();
+					    return;
+				    case R.id.buttonDelete:
+					    if (!fileDir.exists()) return;
+						clearApplicationData();
+						findViewById(R.id.startButton).setEnabled(false);
+						Toast.makeText(StartScreen.this, "DELETED", Toast.LENGTH_LONG).show();
+					    return;
+			    }
+		    }
+	    };
 
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (fileDir.exists()) {
-                    clearApplicationData();
-
-                    Button newGame = (Button) findViewById(R.id.startButton);
-                    newGame.setEnabled(false);
-
-                    Toast.makeText(StartScreen.this, "DELETED", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
+	    dialog.findViewById(R.id.buttonClose).setOnClickListener(listener);
+	    dialog.findViewById(R.id.buttonDelete).setOnClickListener(listener);
+	    dialog.setContentView(R.layout.dialog_view);
+	    dialog.setTitle("Settings");
         dialog.show();
     }
 
@@ -213,13 +200,12 @@ public class StartScreen extends Activity {
         Log.d("FILEDIR IS ", fileDir.getAbsolutePath());
         Log.d("APPDIR IS", appDir.getAbsolutePath());
 
-        if (fileDir.exists()) {
-            String[] children = fileDir.list();
-            for (String s : children) {
-                if (!s.equals("lib")) {
-                    deleteDir(new File(fileDir, s));
-                    Log.d("", "deleted");
-                }
+        if (!fileDir.exists()) return;
+        String[] children = fileDir.list();
+        for (String s : children) {
+            if (!s.equals("lib")) {
+                deleteDir(new File(fileDir, s));
+                Log.d("clearApplicationData()", "deleted: "+s);
             }
         }
     }
@@ -229,46 +215,39 @@ public class StartScreen extends Activity {
             String[] children = dir.list();
             for (String aChildren : children) {
                 boolean success = deleteDir(new File(dir, aChildren));
-                if (!success) {
-                    return false;
-                }
+                if (!success) return false;
             }
         }
-
         return dir.delete();
     }
 
     public void internetDialog() throws Exception {
-        AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
+        new AlertDialog.Builder(StartScreen.this)
+		    .setMessage("Ghost Catcher needs to download a file. Data charges may apply. \n\nDo you want to continue?")
+			.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+					@Override
+	            public void onClick(DialogInterface dialog, int which) {
+	                new DownloadZipFile().execute(url);
+	                dialog.dismiss();
+	            }
+	        })
+			.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+	            @Override
+	            public void onClick(DialogInterface dialog, int which) {
+	                //Button startButton = (Button) findViewById(R.id.startButton);
+	                //startButton.setEnabled(false);
+	                dialog.dismiss();
 
-        builder.setMessage("Ghost Catcher needs to download a file. Data charges may apply. \n\nDo you want to continue?");
-
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                new DownloadZipFile().execute(url);
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Button startButton = (Button) findViewById(R.id.startButton);
-                //startButton.setEnabled(false);
-                dialog.dismiss();
-
-                finish();
-            }
-        });
-
-        builder.show();
+	                finish();
+	            }
+	        })
+		    .show();
     }
 
     //Extract zip calls Asynctask
     public void unzip() throws IOException {
         mProgressDialog = new ProgressDialog(StartScreen.this);
-        mProgressDialog.setMessage("Extracting the downloaded file...");
+	    mProgressDialog.setMessage("Extracting the downloaded file...");
         mProgressDialog.setCancelable(false);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.show();
@@ -284,22 +263,29 @@ public class StartScreen extends Activity {
                 public void Run(Boolean connected) {
                     starting = false;
                     if (!connected) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
-                        builder.setMessage("You are not connected to the internet. You will not participate in Out-of-app Experiences. Continue Anyway?")
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
-                                        startActivity(myIntent);
-                                    }
-                                })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        finish();
-                                    }
-                                }).show();
-                    } else {
+	                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+		                    @Override
+		                    public void onClick(DialogInterface dialog, int which) {
+			                    switch (which) {
+				                    case DialogInterface.BUTTON_POSITIVE:
+					                    Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
+					                    startActivity(myIntent);
+					                    break;
+
+				                    case DialogInterface.BUTTON_NEGATIVE:
+					                    finish();
+					                    break;
+			                    }
+		                    }
+	                    };
+
+                        new AlertDialog.Builder(StartScreen.this)
+		                        .setMessage("You are not connected to the internet. You will not participate in Out-of-app Experiences. Continue Anyway?")
+		                        .setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener)
+		                        .show();
+                    }
+                    else {
                         Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
                         startActivity(myIntent);
                     }
@@ -331,7 +317,6 @@ public class StartScreen extends Activity {
 
         @Override
         protected String doInBackground(String... f_url) {
-            int count;
 
             try {
                 URL url = new URL(f_url[0]);
@@ -348,7 +333,7 @@ public class StartScreen extends Activity {
 
                 byte data[] = new byte[1024];
                 long total = 0;
-                while ((count = input.read(data)) != -1) {
+	            for (int count; (count = input.read(data)) != -1;)  {
                     total += count;
                     // Publish the progress which triggers onProgressUpdate method
                     publishProgress("" + (int) ((total * 100) / lengthOfFile));
@@ -365,9 +350,8 @@ public class StartScreen extends Activity {
                 //Update flag when done
                 result = true;
 
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
             }
+            catch (Exception e) { Log.e("Error: ", e.getMessage()); }
             return null;
         }
 
@@ -378,46 +362,41 @@ public class StartScreen extends Activity {
         @Override
         protected void onPostExecute(String unused) {
             mProgressDialog.dismiss();
-            if (result) {
+            if (!result) return;
+            Log.d("UNZIP", "zipfile md5 is: " + calculateMD5(new File(zipFile)));
 
-                Log.d("UNZIP", "zipfile md5 is: " + calculateMD5(new File(zipFile)));
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            StartUnzip();
+                            break;
 
-                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                StartUnzip();
-                                break;
-
-                            case DialogInterface.BUTTON_NEGATIVE:
-                                finish();
-                                break;
-                        }
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            finish();
+                            break;
                     }
-                };
-
-                if (!calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf")) {
-                    Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                    AlertDialog.Builder builder = new AlertDialog.Builder(StartScreen.this);
-                    builder.setMessage("File did not match the Authentication Signature, Continue anyway?").setPositiveButton("Yes", dialogClickListener)
-                            .setNegativeButton("No", dialogClickListener).show();
-                } else {
-                    StartUnzip();
                 }
+            };
 
+            if (!calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf")) {
+                Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
+                new AlertDialog.Builder(StartScreen.this)
+		                .setMessage("File did not match the Authentication Signature, Continue anyway?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener)
+		                .show();
             }
+            else StartUnzip();
         }
     }
 
     public void StartUnzip() {
-
         try {
             Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
             unzip();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        catch (IOException e) {  e.printStackTrace(); }
     }
 
     private class UnZipTask extends AsyncTask<String, Void, Boolean> {
@@ -431,13 +410,8 @@ public class StartScreen extends Activity {
             Log.d("UNZIP LOCATION IS", unzipLocation);
 
             //File archive = new File(filePath);
-            try {
-                UnzipUtil d = new UnzipUtil(zipFile, unzipLocation);
-                d.unzip();
-
-            } catch (Exception e) {
-                return false;
-            }
+            try { new UnzipUtil(zipFile, unzipLocation).unzip(); }
+            catch (Exception e) { return false; }
             return true;
         }
 
@@ -445,13 +419,9 @@ public class StartScreen extends Activity {
         protected void onPostExecute(Boolean result) {
             mProgressDialog.dismiss();
 
-            //Now delete the zipfile since it takes up 360000000 bits
-            File theZip = new File(zipFile);
-
-            theZip.delete();
-
+            //Now delete the zip file since it takes up 360000000 bits
+            new File(zipFile) .delete();
         }
-
     }
 
     public class UnzipUtil {
@@ -469,12 +439,11 @@ public class StartScreen extends Activity {
             try {
                 FileInputStream fin = new FileInputStream(zipFile);
                 ZipInputStream zin = new ZipInputStream(fin);
+
                 ZipEntry ze;
                 while ((ze = zin.getNextEntry()) != null) {
-
-                    if (ze.isDirectory()) {
-                        dirChecker(ze.getName());
-                    } else {
+                    if (ze.isDirectory()) dirChecker(ze.getName());
+                    else {
                         FileOutputStream fout = new FileOutputStream(new File(location + "/" + ze.getName()));
                         //Log.e("uz", location+ "/"+ ze.getTitle());
                         byte[] buffer = new byte[8192];
@@ -483,15 +452,12 @@ public class StartScreen extends Activity {
                             fout.write(buffer, 0, len);
                         }
                         fout.close();
-
                         zin.closeEntry();
-
                     }
                 }
                 zin.close();
-            } catch (Exception e) {
-                Log.e("Decompress", "unzip", e);
             }
+            catch (Exception e) { Log.e("Decompress", "unzip", e); }
         }
 
         private boolean dirChecker(String dir) {

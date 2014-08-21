@@ -1,6 +1,5 @@
 package ca.mixitmedia.ghostcatcher.views;
 
-import java.io.IOException;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.pm.ApplicationInfo;
@@ -20,6 +19,8 @@ import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.ArchitectView.ArchitectConfig;
 import com.wikitude.architect.ArchitectView.ArchitectUrlListener;
 import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
+
+import java.io.IOException;
 
 
 	public abstract class AbstractArchitectCamFragmentV4 extends Fragment implements ArchitectViewHolderInterface{
@@ -112,29 +113,26 @@ import com.wikitude.architect.ArchitectView.SensorAccuracyChangeListener;
 			this.locationListener = new LocationListener() {
 
 				@Override
-				public void onStatusChanged( String provider, int status, Bundle extras ) {
-				}
+				public void onStatusChanged( String provider, int status, Bundle extras ) { }
 
 				@Override
-				public void onProviderEnabled( String provider ) {
-				}
+				public void onProviderEnabled( String provider ) { }
 
 				@Override
-				public void onProviderDisabled( String provider ) {
-				}
+				public void onProviderDisabled( String provider ) { }
 
 				@Override
 				public void onLocationChanged( final Location location ) {
 					if (location!=null) {
 						AbstractArchitectCamFragmentV4.this.lastKnownLocaton = location;
-					if ( AbstractArchitectCamFragmentV4.this.architectView != null ) {
-						// check if location has altitude at certain accuracy level & call right architect method (the one with altitude information)
-						if ( location.hasAltitude() && location.hasAccuracy() && location.getAccuracy()<7) {
-							AbstractArchitectCamFragmentV4.this.architectView.setLocation( location.getLatitude(), location.getLongitude(), location.getAltitude(), location.getAccuracy() );
-						} else {
-							AbstractArchitectCamFragmentV4.this.architectView.setLocation( location.getLatitude(), location.getLongitude(), location.hasAccuracy() ? location.getAccuracy() : 1000 );
+						if ( AbstractArchitectCamFragmentV4.this.architectView != null ) {
+							// check if location has altitude at certain accuracy level & call right architect method (the one with altitude information)
+							if ( location.hasAltitude() && location.hasAccuracy() && location.getAccuracy()<7) {
+								AbstractArchitectCamFragmentV4.this.architectView.setLocation( location.getLatitude(), location.getLongitude(), location.getAltitude(), location.getAccuracy() );
+							} else {
+								AbstractArchitectCamFragmentV4.this.architectView.setLocation( location.getLatitude(), location.getLongitude(), location.hasAccuracy() ? location.getAccuracy() : 1000 );
+							}
 						}
-					}
 					}
 				}
 			};

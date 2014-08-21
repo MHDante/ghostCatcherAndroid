@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -21,7 +20,6 @@ import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -40,18 +38,12 @@ public class Utils {
     public static String removeExtension(String name) {
         final int lastPeriodPos = name.lastIndexOf('.');
 
-        if (lastPeriodPos <= 0) {
-            // No period after first character - return name as it was passed in
-            return name;
-        } else {
-            // Remove the last period and everything after it
-            return name.substring(0, lastPeriodPos);
-        }
+        if (lastPeriodPos <= 0) return name;// No period after first character - return name as it was passed in
+        else  return name.substring(0, lastPeriodPos);// Remove the last period and everything after it
     }
 
     public static Uri resIdToUri(Context context, int resId) {
-        return Uri.parse("android.resource://" + context.getPackageName()
-                + "/" + resId);
+        return Uri.parse("android.resource://"+context.getPackageName()+"/"+resId);
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -78,7 +70,7 @@ public class Utils {
     }
 
     public static void messageDialog(Context context, String title, String message) {
-	    (new AlertDialog.Builder(context))
+		new AlertDialog.Builder(context)
 		        .setTitle(title)
 		        .setMessage(message)
 		        .setNeutralButton("OK", null)
@@ -94,8 +86,7 @@ public class Utils {
      * @return A float value to represent px equivalent to dp depending on device density
      */
     public static float convertDpToPixel(float dp, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return dp * (metrics.densityDpi / 160f);
     }
 
@@ -111,8 +102,7 @@ public class Utils {
      * @return A float value to represent dp equivalent to px value
      */
     public static float convertPixelsToDp(float px, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return px / (metrics.densityDpi / 160f);
     }
 
@@ -165,7 +155,7 @@ public class Utils {
 
     //ft. OrbIt
     public static float Triangle(float num, float mod) {
-        float a = Math.abs(num) % (2 * mod);
+        float a = Math.abs(num) % (2 * mod); //holy shit variable names, Bat man!
         float b = a - mod;
         float c = Math.abs(b);
         float d = mod - c;
@@ -189,11 +179,12 @@ public class Utils {
         }
         return ret;
     }
+
     public static  interface Callback<V>{
         void Run(V parameter);
     }
-    public static void checkNetworkAvailability(final Context context, final Callback<Boolean> action)
-    {
+
+    public static void checkNetworkAvailability(final Context context, final Callback<Boolean> action) {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
@@ -224,20 +215,22 @@ public class Utils {
             }
         }.execute();
 
-        }
+    }
+
     public static long TimeSince(long startTimeMillis) {
         return System.currentTimeMillis() - startTimeMillis;
     }
+
     public static int GetScreenWidth(Activity ctxt){
         return GetScreenSize(ctxt).x;
     }
     public static int GetScreenHeight(Activity ctxt){
         return GetScreenSize(ctxt).y;
     }
+
     public static Point GetScreenSize(Activity ctxt){
-        Display display = ctxt.getWindowManager().getDefaultDisplay();
         Point size = new Point();
-        display.getSize(size);
+	    ctxt.getWindowManager().getDefaultDisplay().getSize(size);
         return size;
     }
 }

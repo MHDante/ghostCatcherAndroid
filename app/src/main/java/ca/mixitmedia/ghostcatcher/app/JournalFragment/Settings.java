@@ -24,6 +24,4 @@ public class Settings extends Fragment {
 
         return v;
     }
-
-
 }
