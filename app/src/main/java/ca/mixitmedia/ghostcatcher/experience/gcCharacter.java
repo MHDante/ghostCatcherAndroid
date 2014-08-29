@@ -1,15 +1,14 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import android.app.AlertDialog;
 import android.net.Uri;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import ca.mixitmedia.ghostcatcher.Utils;
+import ca.mixitmedia.ghostcatcher.app.R;
 
 /**
  * Created by Dante on 07/03/14
@@ -20,44 +19,9 @@ public class gcCharacter {
     String name;
     String bio;
     Map<String, String> poses = new HashMap<>();
-
-    private gcCharacter() {
-    }
-
-    public static gcCharacter parse(XmlPullParser parser) throws IOException, XmlPullParserException {
-        if (!parser.getName().equals("character"))
-            throw new RuntimeException("Tried to parse something that wasn't a character");
-
-        gcCharacter result = new gcCharacter();
-        result.setId(parser.getAttributeValue(null, "id"));
-        result.setName(parser.getAttributeValue(null, "name"));
-
-        int pEvent = parser.next();
-
-        while (pEvent != XmlPullParser.END_DOCUMENT) {
-            switch (pEvent) {
-                case XmlPullParser.START_TAG:
-                    switch (parser.getName()) {
-                        case "bio":
-                            if (parser.next() == XmlPullParser.TEXT) {
-                                result.bio = parser.getText();
-                            }
-
-                            break;
-                        case "pose":
-                            result.poses.put(parser.getAttributeValue(null, "id"),
-                                    parser.getAttributeValue(null, "image"));
-                            break;
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    if (parser.getName().equals("character"))
-                        return result;
-                    break;
-            }
-            pEvent = parser.next();
-        }
-        throw new RuntimeException("CharacterParsing error : " + result.name);
+    gcEngine engine;
+    gcCharacter(gcEngine engine) {
+        this.engine = engine;
     }
 
     public String getId() {
@@ -82,11 +46,16 @@ public class gcCharacter {
 
     public Uri getPose(String poseName) {
         if (!poses.containsKey(poseName)) {
-            new AlertDialog.Builder(gcEngine.Access().context)
-                    .setMessage("Character " + name + "does not have a pose with id: " + poseName)
-                    .create().show();
+            Utils.messageDialog( engine.getContext(), "Error","Character " + name + " does not have a pose with id: " + poseName);
+            return null;
         }
-        return Uri.fromFile(new File(gcEngine.Access().root + "/characters/" + getId() + "/" + poses.get(poseName)));
+        return Uri.fromFile(new File(gcEngine.root + "/characters/" + getId() + "/" + poses.get(poseName)));
     }
 
+    public Uri getDefaultPose() {
+        if (poses.size() <1){
+            return Utils.resIdToUri(engine.getContext(), R.drawable.shine);
+        }
+        else return getPose(new ArrayList<>(poses.keySet()).get(0));
+    }
 }

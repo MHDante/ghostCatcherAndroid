@@ -1,0 +1,144 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:foregroundGravity="center">
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:name="com.google.android.gms.maps.MapFragment"
+        map:cameraTargetLat="43.6576004"
+        map:cameraTargetLng="-79.37839"
+        map:cameraZoom="13"
+        android:layout_gravity="center_horizontal" />
+
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_marginBottom="-143dp"
+		android:id="@+id/location_banner">
+
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:weightSum="592"
+			android:layout_alignParentBottom="false">
+
+			<ImageView
+				android:id="@+id/map_overlay_left_arrow"
+				android:src="@drawable/map_overlay_left_arrow"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="61"
+				android:layout_marginTop="15dp"
+				android:scaleType="matrix"/>
+
+			<TableLayout
+				android:id="@+id/map_overlay"
+				android:background="@drawable/map_overlay"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="470"
+				android:weightSum="342"
+				android:onClick="onClick">
+
+				<Space
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:layout_weight="18" />
+
+				<TableRow
+					android:layout_width="fill_parent"
+					android:layout_height="0dp"
+					android:weightSum="470"
+					android:layout_weight="93">
+
+					<Space
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:layout_weight="21"
+						android:id="@+id/space3"/>
+
+					<ImageView
+						android:id="@+id/location_thumbnail"
+						android:src="@drawable/shine"
+						android:layout_weight="116"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"/>
+
+					<Space
+						android:layout_width="0dp"
+						android:layout_height="0dp"
+						android:layout_weight="21"/>
+
+					<TextView
+						android:id="@+id/location_title"
+						android:layout_weight="294"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"
+						android:text="Location Title"
+						android:gravity="center"
+						android:textSize="25sp"
+						android:singleLine="true"
+						android:textStyle="bold"/>
+
+				</TableRow>
+
+				<Space
+					android:layout_weight="20"
+					android:layout_width="0dp"
+					android:layout_height="0dp"/>
+
+				<TableRow
+					android:layout_width="wrap_content"
+					android:layout_height="0dp"
+					android:layout_weight="193"
+					android:weightSum="470">
+
+					<Space
+						android:layout_weight="35"
+						android:layout_width="0dp"
+						android:layout_height="0dp"/>
+
+					<TextView
+						android:id="@+id/location_text"
+						android:text="Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vestibulum id ligula porta felis euismod semper. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus."
+						android:layout_weight="403"
+						android:layout_width="0dp"
+						android:layout_height="fill_parent"/>
+
+					<Space
+						android:layout_weight="32"
+						android:layout_width="0dp"
+						android:layout_height="0dp"/>
+
+				</TableRow>
+
+				<Space
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:layout_weight="18"/>
+
+			</TableLayout>
+
+			<ImageView
+				android:id="@+id/map_overlay_right_arrow"
+				android:src="@drawable/map_overlay_right_arrow"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="61"
+				android:layout_marginTop="15dp"
+				android:scaleType="matrix"
+				android:onClick="onClick"/>
+		</LinearLayout>
+
+	</RelativeLayout>
+
+</RelativeLayout>

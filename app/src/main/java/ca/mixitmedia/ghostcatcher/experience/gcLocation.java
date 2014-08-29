@@ -2,66 +2,34 @@ package ca.mixitmedia.ghostcatcher.experience;
 
 import android.location.Location;
 import android.net.Uri;
-import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
-public class gcLocation extends Location {
+public class gcLocation extends Location implements Comparable {
     String id;
     String name;
     String description;
-
-    private gcLocation() {
+    gcEngine engine;
+    gcLocation(gcEngine engine, double latitude, double longitude) {
         super("gcLocation Provider");
-    }
-
-    public static gcLocation parse(XmlPullParser parser)
-            throws IOException, XmlPullParserException {
-
-        if (!parser.getName().equals("location"))
-            throw new RuntimeException("Tried to parse something that wasn't a location");
-
-        gcLocation result = new gcLocation();
-        result.setId(parser.getAttributeValue(null, "id"));
-        result.setName(parser.getAttributeValue(null, "name"));
-        result.setLatitude(Double.parseDouble(parser.getAttributeValue(null, "lat")));
-        result.setLongitude(Double.parseDouble(parser.getAttributeValue(null, "long")));
-        result.setDescription(parser.getAttributeValue(null, "description"));
-        return result;
-    }
-
-    public static gcLocation fromURI(Uri uri) {
-
-        if (uri != null && uri.getScheme().equals("troubadour") && uri.getHost().equals("ghostcatcher.mixitmedia.ca")) {
-            String path = uri.getLastPathSegment();
-            String[] tokens = path.split("\\.");
-            String type = tokens[1];
-            String id = tokens[0];
-            if (type.equals("location")) {
-                return gcEngine.Access().getLocation(id);
-
-            }
-            Toast.makeText(gcEngine.Access().context, "Location: " + id + " was not found", Toast.LENGTH_LONG).show();
-            return null;
-        }
-        Toast.makeText(gcEngine.Access().context, "Invalid Location URL", Toast.LENGTH_LONG).show();
-        return null;
+        this.engine = engine;
+	    setLatitude(latitude);
+	    setLongitude(longitude);
     }
 
     public Uri getImageUri() {
-        File f = new File(gcEngine.Access().root.getPath() + "/locations/" + getId() + ".png");
-        if (!f.exists())
-            //TODO: this should be a FileNotFoundException.
-            throw new RuntimeException("error opening loc image: " + f.getAbsolutePath());
-        return Uri.fromFile(f);
+        return Uri.fromFile(new File(gcEngine.root.getPath()+"/locations/"+id+".png"));
     }
+
+	public boolean equalsMarkerTitle (Marker marker) {
+		return this.getTitle().equals(marker.getTitle());
+	}
 
     public String getId() {
         return id;
@@ -71,7 +39,7 @@ public class gcLocation extends Location {
         this.id = id;
     }
 
-    public String getName() {
+    public String getTitle() {
         return name;
     }
 
@@ -86,5 +54,14 @@ public class gcLocation extends Location {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public LatLng asLatLng() {
+		return new LatLng(this.getLatitude(), this.getLongitude());
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return this.getId().compareTo(((gcLocation) o).getTitle());
+	}
 }
 

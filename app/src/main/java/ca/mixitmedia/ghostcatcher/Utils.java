@@ -1,48 +1,49 @@
 package ca.mixitmedia.ghostcatcher;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaMetadataRetriever;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.mixitmedia.ghostcatcher.app.R;
-import ca.mixitmedia.ghostcatcher.experience.gcEngine;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class Utils {
 
     public static String removeExtension(String name) {
         final int lastPeriodPos = name.lastIndexOf('.');
 
-        if (lastPeriodPos <= 0) {
-            // No period after first character - return name as it was passed in
-            return name;
-        } else {
-            // Remove the last period and everything after it
-            return name.substring(0, lastPeriodPos);
-        }
+        if (lastPeriodPos <= 0) return name;// No period after first character - return name as it was passed in
+        else  return name.substring(0, lastPeriodPos);// Remove the last period and everything after it
     }
 
-    public static Uri resIdToUri(int resId) {
-        return Uri.parse("android.resource://" + gcEngine.Access().context.getPackageName()
-                + "/" + resId);
+    public static Uri resIdToUri(Context context, int resId) {
+        return Uri.parse("android.resource://"+context.getPackageName()+"/"+resId);
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -57,13 +58,24 @@ public class Utils {
 
         return bitmap;
     }
+    public static long getMediaDuration(Uri uri){
+
+        MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
+        metaRetriever.setDataSource(uri.getPath());
+                // convert duration to minute:seconds
+        String duration =
+                metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+        Log.d("utilS",duration);
+        return Long.parseLong(duration);
+    }
 
     public static void messageDialog(Context context, String title, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle(title);
-        dialog.setMessage(message);
-        dialog.setNeutralButton("OK", null);
-        dialog.create().show();
+		new AlertDialog.Builder(context)
+		        .setTitle(title)
+		        .setMessage(message)
+		        .setNeutralButton("OK", null)
+		        .create()
+			    .show();
     }
 
     /**
@@ -74,10 +86,8 @@ public class Utils {
      * @return A float value to represent px equivalent to dp depending on device density
      */
     public static float convertDpToPixel(float dp, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return px;
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return dp * (metrics.densityDpi / 160f);
     }
 
     public static int convertDpToPixelInt(float dp, Context context) {
@@ -92,10 +102,8 @@ public class Utils {
      * @return A float value to represent dp equivalent to px value
      */
     public static float convertPixelsToDp(float px, Context context) {
-        Resources resources = context.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = px / (metrics.densityDpi / 160f);
-        return dp;
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return px / (metrics.densityDpi / 160f);
     }
 
 
@@ -140,9 +148,18 @@ public class Utils {
             Field field = res.getField(name);
             return field.getInt(null);
         } catch (Exception e) {
-            Log.e("MyTag", "Failure to get drawable id.", e);
+            Log.e("MyTag", "Failure to get drawable id: " + name, e);
             return 0;
         }
+    }
+
+    //ft. OrbIt
+    public static float Triangle(float num, float mod) {
+        float a = Math.abs(num) % (2 * mod); //holy shit variable names, Bat man!
+        float b = a - mod;
+        float c = Math.abs(b);
+        float d = mod - c;
+        return d;
     }
 
     public static List<Uri> getNdefIntentURIs(Intent intent) {
@@ -163,7 +180,57 @@ public class Utils {
         return ret;
     }
 
+    public static  interface Callback<V>{
+        void Run(V parameter);
+    }
+
+    public static void checkNetworkAvailability(final Context context, final Callback<Boolean> action) {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                ConnectivityManager cm = (ConnectivityManager)context
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork != null && activeNetwork.isConnected()) {
+                    try {
+                        URL url = new URL("http://www.google.com/");
+                        HttpURLConnection urlc = (HttpURLConnection)url.openConnection();
+                        urlc.setRequestProperty("User-Agent", "test");
+                        urlc.setRequestProperty("Connection", "close");
+                        urlc.setConnectTimeout(1000); // mTimeout is in seconds
+                        urlc.connect();
+                        return urlc.getResponseCode() == 200;
+                    } catch (IOException e) {
+                        Log.i("warning", "Error checking internet connection", e);
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean connected) {
+                action.Run(connected);
+            }
+        }.execute();
+
+    }
+
     public static long TimeSince(long startTimeMillis) {
-        return startTimeMillis - System.currentTimeMillis();
+        return System.currentTimeMillis() - startTimeMillis;
+    }
+
+    public static int GetScreenWidth(Activity ctxt){
+        return GetScreenSize(ctxt).x;
+    }
+    public static int GetScreenHeight(Activity ctxt){
+        return GetScreenSize(ctxt).y;
+    }
+
+    public static Point GetScreenSize(Activity ctxt){
+        Point size = new Point();
+	    ctxt.getWindowManager().getDefaultDisplay().getSize(size);
+        return size;
     }
 }

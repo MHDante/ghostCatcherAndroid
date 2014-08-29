@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/activity_bg">
+    android:id="@+id/activity_bg"
+    android:gravity="top">
+
+    <SurfaceView
+        android:layout_width="0px"
+        android:layout_height=" 0dp"
+        android:id="@+id/surfaceView"
+        android:layout_gravity="right|top" />
 
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/background"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/gear_animation_0000"
-        android:alpha=".4" />
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/frame_right"
-        android:layout_gravity="center_vertical|right"
-        android:src="@drawable/frame_right"
-        android:scaleType="fitEnd"
+        android:layout_height="wrap_content"
+        android:id="@+id/ad_holder"
+        android:layout_gravity="center_horizontal|bottom"
+        android:src="@drawable/ad_holder"
+        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/frame_right"
+        android:layout_alignEnd="@+id/frame_right" />
 
+    <FrameLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/fragment_container"
+        android:layout_above="@+id/ad_holder"
+        android:layout_marginBottom="-20dp"
+        android:layout_below="@+id/fragment_lightholder"
+        android:layout_marginTop="-20dp">
+
+    </FrameLayout>
 
     <ImageView
         android:layout_width="fill_parent"
@@ -43,266 +52,22 @@
 
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ad_holder"
-        android:layout_gravity="center_horizontal|bottom"
-        android:src="@drawable/ad_holder"
+        android:layout_height="fill_parent"
+        android:id="@+id/frame_right"
+        android:layout_gravity="center_vertical|right"
+        android:src="@drawable/frame_right"
         android:scaleType="fitEnd"
         android:adjustViewBounds="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/frame_right"
-        android:layout_alignEnd="@+id/frame_right"
-        android:layout_marginTop="-40dp" />
-
-    <FrameLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_container"
-        android:layout_alignParentLeft="true"
-        android:visibility="visible"
-        android:layout_above="@+id/ad_holder"
-        android:layout_below="@+id/tool_holder">
-
-    </FrameLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
-        android:visibility="visible"
-        android:id="@+id/tool_holder">
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:weightSum="768"
-            android:orientation="horizontal"
-            android:layout_alignBottom="@+id/overlay">
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="81.5dp"
+        android:name="ca.mixitmedia.ghostcatcher.views.LightHolder"
+        android:id="@+id/fragment_lightholder"
+        tools:layout="@layout/fragment_lightholder" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_weight="144"
-                android:layout_height="wrap_content" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_locationMap"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_rfDetector"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_imager"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_amplifier"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <Space
-                android:layout_weight="144"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:translationX="300dp"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:weightSum="768"
-            android:orientation="horizontal"
-            android:layout_alignBottom="@+id/overlay">
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_weight="144"
-                android:layout_height="wrap_content" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_tester"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_checklist"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_ghostVault"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <ca.mixitmedia.ghostcatcher.views.LightButton
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/tool_light_badges"
-                android:layout_weight="120"
-                android:onClick="onClick" />
-
-            <Space
-                android:layout_weight="144"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/overlay"
-            android:layout_gravity="center_horizontal|top"
-            android:src="@drawable/toolselector"
-            android:scaleType="fitStart"
-            android:visibility="visible"
-            android:adjustViewBounds="true" />
-
-    </RelativeLayout>
-
-    <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="left|top"
-        android:translationX="0dp"
-        android:id="@+id/back_gear"
-        android:onClick="onClick"
-        android:layout_marginLeft="-20dp"
-        android:layout_marginTop="-20dp">
-
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:weightSum="100"
-            android:gravity="fill_vertical|top">
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:id="@+id/space"
-                android:layout_weight="22" />
-
-            <TableRow
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:weightSum="100"
-                android:layout_weight="56">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="22" />
-
-                <ca.mixitmedia.ghostcatcher.views.LightButton
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/tool_light_communicator"
-                    android:layout_weight="56"
-                    android:onClick="onClick" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="22" />
-            </TableRow>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="22" />
-
-        </TableLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/back_gear"
-            android:scaleType="fitXY"
-            android:layout_gravity="center"
-            android:id="@+id/back_button" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="left|top"
-        android:translationX="0dp"
-        android:id="@+id/journal_gear"
-        android:onClick="onClick"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="-20dp"
-        android:layout_marginTop="-20dp">
-
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:weightSum="100"
-            android:gravity="fill_vertical|top">
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="22" />
-
-            <TableRow
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:weightSum="100"
-                android:layout_weight="56">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="22" />
-
-                <ca.mixitmedia.ghostcatcher.views.LightButton
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/tool_light_journal"
-                    android:layout_weight="56"
-                    android:onClick="onClick" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="22" />
-            </TableRow>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="22" />
-
-        </TableLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/back_gear"
-            android:scaleType="fitXY"
-            android:layout_gravity="center"
-            android:id="@+id/journal_button" />
-    </FrameLayout>
 
 </RelativeLayout>

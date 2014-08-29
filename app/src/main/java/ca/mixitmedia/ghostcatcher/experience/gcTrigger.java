@@ -1,63 +1,28 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 public class gcTrigger {
 
 
     boolean enabled;
+    boolean consumed;
     int id;
     Type type;
     String data;
-    List<gcAction> actions;
+    Queue<gcAction> actions;
 
-    private gcTrigger() {
-        actions = new ArrayList<>();
-    }
-
-    public static gcTrigger parse(XmlPullParser parser)
-            throws IOException, XmlPullParserException {
-        if (!parser.getName().equalsIgnoreCase("trigger"))
-            throw new RuntimeException("Tried to parse something that wasn't a trigger");
-
-        gcTrigger result = new gcTrigger();
-        result.id = Integer.parseInt(parser.getAttributeValue(null, "id"));
-        result.type = Type.valueOf(parser.getAttributeValue(null, "type").toUpperCase());
-        result.data = parser.getAttributeValue(null, "data");
-
-        int pEvent = parser.next();
-
-        while (pEvent != XmlPullParser.END_DOCUMENT) {
-            switch (pEvent) {
-                case XmlPullParser.START_TAG:
-                    switch (parser.getName().toLowerCase()) {
-                        case "action":
-                            result.actions.add(gcAction.parse(parser));
-                            break;
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    if (parser.getName().equals("trigger"))
-                        return result;
-                    break;
-            }
-            pEvent = parser.next();
-        }
-        throw new RuntimeException("trigger Parsing error : " + result.id);
+    gcTrigger() {
+        actions = new LinkedList<>();
     }
 
     public boolean isEnabled() {
         return enabled;
     }
-
     public void setEnabled(boolean value) {
         enabled = value;
     }
@@ -65,7 +30,6 @@ public class gcTrigger {
     public int getId() {
         return id;
     }
-
     public void setId(int value) {
         id = value;
     }
@@ -73,15 +37,20 @@ public class gcTrigger {
     public Type getType() {
         return type;
     }
-
     public void setType(Type value) {
         type = value;
     }
 
-    public List<gcAction> getActions() {
+    public Queue<gcAction> getActions() {
         return actions;
     }
 
+    public void consume() {
+        consumed = true;
+    }
+    public boolean isConsumed() {
+        return consumed;
+    }
 
     public enum Type {
         AUTO,
@@ -91,6 +60,4 @@ public class gcTrigger {
         LOCATION_EXIT,
         SCRIPTED
     }
-
-
 }

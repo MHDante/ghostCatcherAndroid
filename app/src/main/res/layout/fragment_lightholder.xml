@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="81.5dp"
+    tools:showIn="@layout/activity_main">
+
+    <view class="ca.mixitmedia.ghostcatcher.views.LightHolder$BounceScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bounceScrollView"
+        android:overScrollMode="always"
+        android:scrollbars="none">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="1536"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_weight="154"
+                    android:layout_height="wrap_content" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_locationMap"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_rfDetector"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_imager"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_amplifier"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <Space
+                    android:layout_weight="308"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_bioList"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_todoList"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_vault"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <ca.mixitmedia.ghostcatcher.views.LightButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tool_light_badges"
+                    android:layout_weight="115"
+                    android:onClick="onClick" />
+
+                <Space
+                    android:layout_weight="154"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tool_selector_overlay"
+                android:layout_gravity="left|top"
+                android:src="@drawable/toolselector"
+                android:scaleType="fitStart"
+                android:visibility="visible"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="-12dp" />
+        </FrameLayout>
+    </view>
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginTop="-20dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="5dp">
+
+        <ca.mixitmedia.ghostcatcher.views.LightButton
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/left_arrowLight"
+            android:layout_gravity="center"
+            android:layout_margin="19dp" />
+
+        <ca.mixitmedia.ghostcatcher.views.LightButton
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/left_toolLight"
+            android:layout_gravity="center"
+            android:onClick="onClick"
+            android:layout_margin="19dp" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/back_gear"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:id="@+id/left_gear"
+            android:adjustViewBounds="false" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="-20dp"
+        android:layout_marginTop="-20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="5dp">
+
+        <ca.mixitmedia.ghostcatcher.views.LightButton
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/right_arrowLight"
+            android:layout_gravity="center"
+            android:layout_margin="19dp" />
+
+        <ca.mixitmedia.ghostcatcher.views.LightButton
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/right_toolLight"
+            android:layout_gravity="center"
+            android:onClick="onClick"
+            android:layout_margin="19dp"
+            android:visibility="gone" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/back_gear"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:id="@+id/right_gear"
+            android:adjustViewBounds="false" />
+    </FrameLayout>
+
+
+</RelativeLayout>

@@ -15,6 +15,8 @@ import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -25,134 +27,82 @@ import ca.mixitmedia.ghostcatcher.views.SignalBeaconView;
 
 public class Amplifier extends ToolFragment {
 
+    private int dialogueStream = 0;
+
     private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
     private static final Region ALL_ESTIMOTE_BEACONS = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
-    final Uri rootUri = gcEngine.Access().root;
-    int averageStrengthBeaconOne = 0;
-    int averageStrengthBeaconTwo = 0;
-    int averageStrengthBeaconThree = 0;
-    int iteratorBeaconOne = 0;
-    int iteratorBeaconTwo = 0;
-    int iteratorBeaconThree = 0;
-    int[] beaconOneStrengthQueue = new int[5];
-    int[] beaconTwoStrengthQueue = new int[5];
-    int[] beaconThreeStrengthQueue = new int[5];
-    int currentStrengthBeaconOne;
-    int currentStrengthBeaconTwo;
-    int currentStrengthBeaconThree;
-    String beaconOneDebugString;
-    String beaconTwoDebugString;
-    String beaconThreeDebugString;
-    float fakeTime;
-    private int dialogueStream = 0;
-    private BeaconManager beaconManager = new BeaconManager(gcEngine.Access().context);
+
+    private BeaconManager beaconManager;
+
+    List<SignalBeacon> beaconList;
+
+    int currentStrength;
+
+    int  amplifierSoundOne, amplifierSoundTwo, amplifierSoundThree;
+
+    final Uri rootUri = gcEngine.root;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         super.onCreateView(inflater, container, savedInstanceState);
 
+        beaconList = new ArrayList<>(Arrays.asList(
+                new SignalBeacon("CB:ED:AB:9A:95:E4", amplifierSoundOne),
+                new SignalBeacon("FB:6B:2C:F1:C6:B7", amplifierSoundTwo),
+                new SignalBeacon("DB:A6:5D:34:24:3B", amplifierSoundThree)));
+
+        beaconManager = new BeaconManager(getActivity());
         View view = inflater.inflate(R.layout.tool_amplifier, container, false);
         final TextView debugTextField = (TextView) view.findViewById(R.id.debug_text_field);
 
         beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-            @Override
-            public void onBeaconsDiscovered(Region region, List<Beacon> beacons) {
+            @Override public void onBeaconsDiscovered(Region region, List<Beacon> beacons){
+                for (SignalBeacon beacon : beaconList){
+                    Beacon currentBeacon = null;
 
-                for (int i = 0; i < beacons.size(); i++) {
-                    currentStrengthBeaconOne = Math.abs(beacons.get(i).getRssi());
-
-                    if (beacons.get(i).getMacAddress().equals("CB:ED:AB:9A:95:E4")) {
-                        currentStrengthBeaconOne = Math.abs(beacons.get(i).getRssi());
-
-                        if (iteratorBeaconOne <= 4) {
-                            beaconOneStrengthQueue[iteratorBeaconOne] = currentStrengthBeaconOne;
-                            averageStrengthBeaconOne = currentStrengthBeaconOne;
-                            iteratorBeaconOne++;
-                        } else {
-                            int beaconOneSum = 0;
-                            if (!(currentStrengthBeaconOne > (averageStrengthBeaconOne * 1.75)) && !(currentStrengthBeaconOne < (averageStrengthBeaconOne * 0.75))) {
-                                for (int j = 4; j >= 0; j--) {
-                                    if (j == 0) {
-                                        beaconOneStrengthQueue[j] = currentStrengthBeaconOne;
-                                    } else {
-                                        beaconOneStrengthQueue[j] = beaconOneStrengthQueue[j - 1];
-                                    }
-                                }
-                            }
-
-                            for (int k = 0; k < beaconOneStrengthQueue.length; k++)
-                                beaconOneSum += beaconOneStrengthQueue[k];
-
-                            averageStrengthBeaconOne = beaconOneSum / 5;
-                        }
-                        beaconOneDebugString = "ONE->RSSI: " + currentStrengthBeaconOne + "   Sum: " + (averageStrengthBeaconOne * 5) + "  Average: " + averageStrengthBeaconOne;
+                    for(Beacon aBeacon : beacons) {
+                        if (aBeacon.getMacAddress().equals(beacon.macAddress))
+                            currentBeacon = aBeacon;
                     }
 
-                    if (beacons.get(i).getMacAddress().equals("FB:6B:2C:F1:C6:B7")) {
-                        currentStrengthBeaconTwo = Math.abs(beacons.get(i).getRssi());
-
-                        if (iteratorBeaconTwo <= 4) {
-                            beaconTwoStrengthQueue[iteratorBeaconTwo] = currentStrengthBeaconTwo;
-                            averageStrengthBeaconTwo = currentStrengthBeaconTwo;
-                            iteratorBeaconTwo++;
-                        } else {
-                            int beaconTwoSum = 0;
-                            if (!(currentStrengthBeaconTwo > (averageStrengthBeaconTwo * 1.75)) && !(currentStrengthBeaconTwo < (averageStrengthBeaconTwo * 0.75))) {
-                                for (int j = 4; j >= 0; j--) {
-                                    if (j == 0) {
-                                        beaconTwoStrengthQueue[j] = currentStrengthBeaconTwo;
-                                    } else {
-                                        beaconTwoStrengthQueue[j] = beaconTwoStrengthQueue[j - 1];
-                                    }
-                                }
-                            }
-
-                            for (int k = 0; k < beaconTwoStrengthQueue.length; k++)
-                                beaconTwoSum += beaconTwoStrengthQueue[k];
-
-                            averageStrengthBeaconTwo = beaconTwoSum / 5;
-                        }
-                        beaconTwoDebugString = "\nTWO->RSSI: " + currentStrengthBeaconTwo + "   Sum: " + (averageStrengthBeaconTwo * 5) + "  Average: " + averageStrengthBeaconTwo;
+                    if(currentBeacon!=null){
+                        currentStrength = Math.abs(currentBeacon.getRssi());
+                        if(currentStrength == 0)
+                            currentStrength = 100;
                     }
-                    if (beacons.get(i).getMacAddress().equals("DB:A6:5D:34:24:3B")) {
-                        currentStrengthBeaconThree = Math.abs(beacons.get(i).getRssi());
+                    else
+                        currentStrength = 100;
 
-                        if (iteratorBeaconThree <= 4) {
-                            beaconThreeStrengthQueue[iteratorBeaconThree] = currentStrengthBeaconThree;
-                            averageStrengthBeaconThree = currentStrengthBeaconThree;
-                            iteratorBeaconThree++;
-                        } else {
-                            int beaconThreeSum = 0;
-                            if (!(currentStrengthBeaconThree > (averageStrengthBeaconThree * 1.75)) && !(currentStrengthBeaconThree < (averageStrengthBeaconThree * 0.75))) {
-                                for (int j = 4; j >= 0; j--) {
-                                    if (j == 0) {
-                                        beaconThreeStrengthQueue[j] = currentStrengthBeaconThree;
-                                    } else {
-                                        beaconThreeStrengthQueue[j] = beaconThreeStrengthQueue[j - 1];
-                                    }
-
-                                }
-                            }
-
-                            for (int k = 0; k < beaconThreeStrengthQueue.length; k++)
-                                beaconThreeSum += beaconThreeStrengthQueue[k];
-
-                            averageStrengthBeaconThree = beaconThreeSum / 5;
-                        }
-                        beaconThreeDebugString = "\nTHREE->RSSI: " + currentStrengthBeaconThree + "   Sum: " + (averageStrengthBeaconThree * 5) + "  Average: " + averageStrengthBeaconThree;
-                    }
-                    debugTextField.setText(beaconOneDebugString + beaconTwoDebugString + beaconThreeDebugString);
+                    beacon.calculateAverage(currentStrength);
                 }
+
+                    debugTextField.setText(beaconList.get(0).toString()+"\n"+beaconList.get(1).toString()+"\n"+beaconList.get(2).toString());
             }
+
         });
 
         ImageView overlay = (ImageView) view.findViewById(R.id.overlay);
         overlay.setImageURI(rootUri.buildUpon().appendPath("skins").appendPath("amplifier").appendPath("amplifier_overlay.png").build());
 
-        SoundManager.soundPool.setVolume(SoundManager.Sounds.creepyChains, (averageStrengthBeaconOne / 100), (averageStrengthBeaconOne / 100));
-
         return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        amplifierSoundOne = SoundManager.soundPool.load(gcMain, R.raw.amplifier_sound_1, 1);
+        amplifierSoundTwo = SoundManager.soundPool.load(gcMain, R.raw.amplifier_sound_2, 1);
+        amplifierSoundThree = SoundManager.soundPool.load(gcMain, R.raw.amplifier_sound_3, 1);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        SoundManager.soundPool.unload(amplifierSoundOne);
+        SoundManager.soundPool.unload(amplifierSoundTwo);
+        SoundManager.soundPool.unload(amplifierSoundThree);
     }
 
     @Override
@@ -177,57 +127,79 @@ public class Amplifier extends ToolFragment {
         } catch (RemoteException e) {
             Log.e("BEACON", "Cannot stop but it does not matter now", e);
         }
+
         super.onStop();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        iteratorBeaconOne = 0;
-        iteratorBeaconTwo = 0;
-        iteratorBeaconThree = 0;
+
+        for(SignalBeacon beacon : beaconList){
+            beacon.iterator = 0;
+            beacon.stopSound();
+        }
+
+        SoundManager.stop();
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        for(SignalBeacon beacon : beaconList){
+//            if(beacon.soundStream == 0)
+//                beacon.initializeBeaconSound();
+//            else
+//                SoundManager.soundPool.resume(beacon.soundStream);
+//        }
+//
+//        SoundManager.play();
+//
+//    }
 
     @Override
     public void afterAnimation(boolean enter) {
         super.afterAnimation(enter);
 
-        SoundManager.soundPool.play(SoundManager.Sounds.creepyChains, 0.5f, 0.5f, 1, -1, 1.0f);
-        //gcMain.soundPool.setLoop(SoundManager.Sounds.creepyChains, -1);
-
-        if (enter) {
+        if (enter){
             View view = this.getView();
+
+            SoundManager.playTrack(Uri.parse("android.resource://"+getActivity().getPackageName()+"/raw/amplifier_main"),true);
+            for(SignalBeacon beacon : beaconList)
+                beacon.initializeBeaconSound();
 
             final SignalBeaconView beaconView = new SignalBeaconView(getActivity(), null);
             FrameLayout beaconViewHolder = (FrameLayout) view.findViewById(R.id.signal_beacon_holder);
 
             beaconViewHolder.addView(beaconView);
-
             beaconView.setWaveFunction(new SignalBeaconView.WaveFunction() {
                 @Override
                 public float getGraphYWaveOne(float graphX, float amplitude) {
-                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND) / 250);
-                    float period = 80;
+                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/250);
+                    float period = 90;
 
-                    return amplitude + (float) (((amplitude / 2) - (averageStrengthBeaconOne * (Math.log10(averageStrengthBeaconOne)))) * Math.sin(graphX / period + time));
+                    beaconList.get(0).alterVolume();
+
+                    return amplitude + (float) (((amplitude/1.5) - ((beaconList.get(0).averageStrength)*(Math.log10((beaconList.get(0).averageStrength)*2)))) * Math.sin(graphX  / period + time));
                 }
-
                 public float getGraphYWaveTwo(float graphX, float amplitude) {
-                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND) / 230);
+                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/230);
                     float period = 50;
 
-                    return amplitude + (float) (((amplitude / 2) - (averageStrengthBeaconTwo * (Math.log10(averageStrengthBeaconTwo)))) * Math.pow(Math.cos(graphX / period + time), 3));
+                    beaconList.get(1).alterVolume();
+
+                    return amplitude + (float) (((amplitude/1.5) - ((beaconList.get(1).averageStrength)*(Math.log10((beaconList.get(1).averageStrength)*2)))) * Math.sin(graphX / period + time));
                 }
-
                 public float getGraphYWaveThree(float graphX, float amplitude) {
-                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND) / 250);
-                    float period = 75;
+                    float time = (Calendar.getInstance().get(Calendar.MILLISECOND)/250);
+                    float period = 70;
 
-                    return amplitude + (float) (((amplitude / 2) - (averageStrengthBeaconThree * (Math.log10(averageStrengthBeaconThree)))) * Math.pow(Math.sin(graphX / period + time), 5));
+                    beaconList.get(2).alterVolume();
+
+                    return amplitude + (float) (((amplitude/1.5) - ((beaconList.get(2).averageStrength)*(Math.log10((beaconList.get(2).averageStrength)*2)))) * Math.sin(graphX /period + time));
                 }
             });
         }
-
     }
 
     @Override
@@ -249,11 +221,68 @@ public class Amplifier extends ToolFragment {
 
     protected int getAnimatorId(boolean enter) {
         if (enter) {
-            SoundManager.playSound(SoundManager.Sounds.leverRoll);
-            return R.animator.rotate_in_from_left;
-        }
+			SoundManager.playSound(SoundManager.Sounds.leverRoll);
+			return R.animator.rotate_in_from_left;
+		}
         return R.animator.rotate_out_to_right;
     }
 
+    private class SignalBeacon{
+        int currentStrength,averageStrength, strengthSum, iterator, signalQueueSize=5,soundStream, sound;
+        String macAddress;
+        int[] strengthQueue = new int[signalQueueSize];
+        float volumeInitial = 0.8f, volumeControl;
 
+        public SignalBeacon(String beaconAddress, int soundFile){
+            sound = soundFile;
+            macAddress = beaconAddress;
+            iterator = 0;
+            averageStrength = 0;
+            currentStrength = 0;
+        }
+
+        public void setSignalQueueSize(int queueSize){  signalQueueSize = queueSize;}
+
+        public void calculateAverage(int measuredStrength){
+            currentStrength = measuredStrength;
+
+            if (iterator <= (signalQueueSize - 1)){
+                strengthQueue[iterator] = currentStrength;
+                averageStrength = currentStrength;
+                iterator++;
+            }
+            else {
+                strengthSum=0;
+                for (int j = (signalQueueSize - 1); j >= 0; j--) {
+                    if (j == 0) {
+                        strengthQueue[j] = currentStrength;
+                    } else {
+                        strengthQueue[j] = strengthQueue[j - 1];
+                    }
+
+                }
+                for (int k = 0; k < signalQueueSize; k++)
+                    strengthSum += strengthQueue[k];
+
+                averageStrength = strengthSum / signalQueueSize;
+            }
+        }
+
+        public void initializeBeaconSound(){
+            soundStream = SoundManager.soundPool.play(sound, 0, 0, 1, -1, 1);
+        }
+
+        public void stopSound(){
+            SoundManager.soundPool.stop(soundStream);
+        }
+
+        public void alterVolume(){
+            volumeControl = (volumeInitial - ((averageStrength-50)/50));
+            SoundManager.soundPool.setVolume(soundStream,volumeControl,volumeControl);
+        }
+
+        public String toString(){
+            return "RSSI: "+currentStrength+"  Sum: "+(averageStrength*signalQueueSize)+"  Average: "+averageStrength;
+        }
+    }
 }

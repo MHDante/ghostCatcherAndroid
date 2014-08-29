@@ -1,16 +1,14 @@
 package ca.mixitmedia.ghostcatcher.experience;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ca.mixitmedia.ghostcatcher.app.Tools.ToolFragment;
+
 /**
- * Created by Dante on 07/03/14.
+ * Created by Dante on 07/03/14
  */
 
 public class gcSeqPt {
@@ -20,56 +18,20 @@ public class gcSeqPt {
     List<Task> tasks;
     List<Mystery> mysteries;
     List<gcTrigger> triggers;
+    public gcEngine engine;
 
-    private gcSeqPt() {
+    gcSeqPt(gcEngine engine) {
+        this.engine = engine;
         tasks = new ArrayList<>();
         mysteries = new ArrayList<>();
         triggers = new ArrayList<>();
-
     }
 
-    public static gcSeqPt parse(XmlPullParser parser) throws IOException, XmlPullParserException {
-        if (!parser.getName().equalsIgnoreCase("seq_pt"))
-            throw new RuntimeException("Tried to parse something that wasn't a seqPt");
-
-
-        gcSeqPt result = new gcSeqPt();
-        result.id = parser.getAttributeValue(null, "id");
-        result.name = parser.getAttributeValue(null, "name");
-
-        int pEvent = parser.next();
-
-        while (pEvent != XmlPullParser.END_DOCUMENT) {
-            switch (pEvent) {
-                case XmlPullParser.START_TAG:
-                    switch (parser.getName().toLowerCase()) {
-                        case "mystery":
-                            Mystery m = Mystery.parse(parser);
-                            result.mysteries.add(m);
-                            break;
-                        case "task":
-                            result.tasks.add(Task.parse(parser));
-                            break;
-                        case "trigger":
-                            result.triggers.add(gcTrigger.parse(parser));
-                            break;
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    if (parser.getName().equals("seq_pt"))
-                        return result;
-                    break;
-            }
-            pEvent = parser.next();
-        }
-        throw new RuntimeException("SeqPt Parsing error : " + result.name);
-    }
-
-    public List<gcLocation> getLocations() {
+    public List<gcLocation> getActiveLocations() {
         List<gcLocation> locations = new ArrayList<>();
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
-                for (gcLocation l : gcEngine.Access().locations) {
+                for (gcLocation l : engine.getAllLocations().values()) {
                     if (t.data.equals(l.getId()))
                         locations.add(l);
                 }
@@ -82,6 +44,16 @@ public class gcSeqPt {
         for (gcTrigger t : triggers) {
             if (t.type == gcTrigger.Type.LOCATION_ENTER) { //todo: abstract.
                 if (t.data.equalsIgnoreCase(loc.getId()))
+                    if (t.isEnabled())
+                        return t;
+            }
+        }
+        return null;
+    }
+    public gcTrigger getSuccessTrigger(ToolFragment tf) {
+        for (gcTrigger t : triggers) {
+            if (t.type == gcTrigger.Type.TOOL_SUCCESS) { //todo: abstract.
+                if (t.data.equalsIgnoreCase(((Object) tf).getClass().getSimpleName()))
                     if (t.isEnabled())
                         return t;
             }

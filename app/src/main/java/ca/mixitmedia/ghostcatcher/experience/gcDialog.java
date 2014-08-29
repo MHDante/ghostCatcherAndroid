@@ -32,19 +32,18 @@ public class gcDialog {
     private gcDialog() {
     }
 
-    public static gcDialog get(gcSeqPt seqPt, String id) {
-        if (!seqPt.dialogCache.containsKey(id))
-            try {
+    public static gcDialog get(gcSeqPt seqPt, String id){
+        try {
+            if (!seqPt.dialogCache.containsKey(id))
                 loadDialog(seqPt, id);
-            } catch (IOException e) {
-                Utils.messageDialog(gcEngine.Access().context, "Error", e.getMessage());
-                e.printStackTrace();
-            }
+        }catch (IOException e){
+            Utils.messageDialog(seqPt.engine.getContext(), "Dialog IOError:", "Could not load Dialog: "+id+ " in seq: " +seqPt.id);
+        }
         return seqPt.dialogCache.get(id);
     }
 
     public static void loadDialog(gcSeqPt seqPt, String id) throws IOException {
-        String seqPath = gcEngine.Access().root + "/seq" + "/seq" + seqPt.id;
+        String seqPath = gcEngine.root + "/seq" + "/seq" + seqPt.id;
         String textPath = seqPath + "/text/" + id + ".txt";
         String soundPath = seqPath + "/sounds/" + id + ".mp3";
 
@@ -54,7 +53,7 @@ public class gcDialog {
         StringBuilder total = new StringBuilder();
         String line;
         int time = 0;
-        gcCharacter chr = gcEngine.Access().getCharacter("static");
+        gcCharacter chr = seqPt.engine.getCharacters().get("static");
         String pose = null;
 
         gcDialog dialog = new gcDialog();
@@ -62,21 +61,28 @@ public class gcDialog {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(soundPath);
         dialog.duration = (int) Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
-        line = r.readLine();
-
+        line = r.readLine();//ommit first line because of reasons.
+        int lines = 1;
         while ((line = r.readLine()) != null) {
+            lines++;
             if (line.equals("")) continue;
             switch (line.charAt(0)) {
                 case '#':
                     continue;
                 case '>':
                     if (line.charAt(1) == '>') {
-                        chr = gcEngine.Access().getCharacter(line.substring(2).trim());
+                        
                         if (!total.toString().isEmpty()) {
                             dialog.intervals.add(time);
-                            dialog.portraits.put(time, chr.getPose(pose));
-                            dialog.parsed.put(time, total.toString());
+                            Uri poseUri = chr.getPose(pose);
+                            if (poseUri == null)
+                                Utils.messageDialog(seqPt.engine.getContext(),"error", "Line : " + lines + " SeqPt: " + seqPt.id);
+                            dialog.portraits.put(time, poseUri);
+
+                            dialog.parsed.put(time, total.toString()+"\n");
+                            total = new StringBuilder();
                         }
+                        chr = seqPt.engine.getCharacters().get(line.substring(2).trim());
                     }
                     break;
                 case '<':
@@ -96,19 +102,24 @@ public class gcDialog {
 
         }
 
-        dialog.portraits.put(time, chr.getPose(pose));
-        if (!new File(chr.getPose(pose).getPath()).exists()) {
-            new AlertDialog.Builder(gcEngine.Access().context)
+        if (chr.getPose(pose) == null){
+            new AlertDialog.Builder(seqPt.engine.getContext())
                     .setMessage("File doesn't exist for pose " + pose + " for character " + chr.name)
                     .create().show();
-            throw new RuntimeException("File doesn't exist for pose " + pose + " for character " + chr.name);
+        }
+        dialog.portraits.put(time, chr.getPose(pose));
+        String filename = chr.getPose(pose).getPath();
+        if (!new File(filename).exists()) {
+            throw new IOException("File "+filename+" doesn't exist for pose " + pose + " for character " + chr.name);
         }
         dialog.parsed.put(time, total.toString());
+        dialog.intervals.add(time);
         dialog.id = id;
         seqPt.dialogCache.put(id, dialog);
     }
 
-    public static int getDuration() {
-        throw new RuntimeException("NotImplemented");
+    public int getDuration() {
+        return (int)Utils.getMediaDuration(audio)/1000;
+
     }
 }
