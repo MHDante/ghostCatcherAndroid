@@ -35,11 +35,8 @@ import ca.mixitmedia.ghostcatcher.app.R;
  */
 public class Utils {
 
-    public static String removeExtension(String name) {
-        final int lastPeriodPos = name.lastIndexOf('.');
-
-        if (lastPeriodPos <= 0) return name;// No period after first character - return name as it was passed in
-        else  return name.substring(0, lastPeriodPos);// Remove the last period and everything after it
+    public static String removeExtension(String str) {
+        return str.substring(0, str.lastIndexOf('.'));
     }
 
     public static Uri resIdToUri(Context context, int resId) {
