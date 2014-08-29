@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,8 +65,11 @@ public class Communicator extends ToolFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (firstRun) startDialog(); else CheckForMessages();
-        firstRun = false;
+        if (firstRun) {
+			startDialog();
+			firstRun = false;
+		}
+		else CheckForMessages();
     }
 
     public void CheckForMessages() {
@@ -98,9 +100,10 @@ public class Communicator extends ToolFragment {
 
     protected void startDialog() {
         ToolMessage message = pendingMessages.peek();
+
         if (message.action.getType() == gcAction.Type.DIALOG) {
             biocalibrate.hide();
-            currentDialog = gcDialog.get(gcMain.gcEngine.getCurrentSeqPt(),message.action.getData());
+            currentDialog = gcDialog.get(gcMain.gcEngine.getCurrentSeqPt(), message.action.getData());
             startTime = System.currentTimeMillis();
             SoundManager.playTrack(currentDialog.audio, false);
             phraseAdder = new PhraseAdder();

@@ -80,30 +80,25 @@ public class gcParser {
         result.setId(get("id"));
         result.setName(get("name"));
 
-        int pEvent = parser.next();
-
-        while (pEvent != XmlPullParser.END_DOCUMENT) {
+        for (int pEvent = parser.next(); pEvent != XmlPullParser.END_DOCUMENT; pEvent = parser.next()) {
             switch (pEvent) {
                 case XmlPullParser.START_TAG:
                     switch (parser.getName()) {
                         case "bio":
-                            if (parser.next() == XmlPullParser.TEXT) {
-                                result.bio = parser.getText();
-                            }
-
+                            if (parser.next() == XmlPullParser.TEXT) result.bio = parser.getText();
                             break;
+
                         case "pose":
-                            result.poses.put(get("id"),
-                                    get("image"));
+                            result.poses.put(get("id"), get("image"));
                             break;
                     }
                     break;
+
                 case XmlPullParser.END_TAG:
-                    if (parser.getName().equals("character"))
-                        return result;
+                    if (parser.getName().equals("character")) return result;
                     break;
             }
-            pEvent = parser.next();
+            ;
         }
         throw new RuntimeException("CharacterParsing error : " + result.name);
     }

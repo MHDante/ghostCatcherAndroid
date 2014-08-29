@@ -75,14 +75,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
             dialog.setContentView(R.layout.dialog_debug);
             dialog.setTitle("Settings");
 
-	        ArrayList<Button> LocationButtons = new ArrayList<>(Arrays.asList((Button) dialog.findViewById(R.id.location1),
+	        ArrayList<Button> LocationButtons = new ArrayList<>(Arrays.asList(
+					(Button) dialog.findViewById(R.id.location1),
 			        (Button) dialog.findViewById(R.id.location2),
 			        (Button) dialog.findViewById(R.id.location3),
 			        (Button) dialog.findViewById(R.id.location4)));
-	        LocationButtons.get(1).setText("Ryerson Theatre");
-	        LocationButtons.get(2).setText("Lake Devo");
-	        LocationButtons.get(3).setText("Arch");
-	        LocationButtons.get(4).setText("TransMedia Zone");
+	        LocationButtons.get(0).setText("Ryerson Theatre");
+	        LocationButtons.get(1).setText("Lake Devo");
+	        LocationButtons.get(2).setText("Arch");
+	        LocationButtons.get(3).setText("TransMedia Zone");
 
             // if button is clicked, close the custom dialog
             dialog.setOnDismissListener(new OnDismissListener() {
