@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 20
     buildToolsVersion '19.1.0'
 
     signingConfigs {
@@ -25,11 +25,6 @@ android {
             runProguard false
             signingConfig signingConfigs.debug
         }
-        //release {
-        //    runProguard false
-        //    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        //    signingConfig signingConfigs.debug
-        //}
     }
 }
 
@@ -39,7 +34,7 @@ task copyApk(type: Copy) {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:5.2.08'
     compile 'com.android.support:support-v13:20.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/wikitudesdk.jar')

@@ -61,7 +61,7 @@ public class gcLocationManager implements LocationListener, ConnectionCallbacks,
 
     public void setGPSStatus() {
         if (Tools.Current() == Tools.rfDetector) {
-	        Tools.rfDetector.setGPSState(GPSStatus, false);
+	        //Tools.rfDetector.setGPSState(GPSStatus, false);
 	        if (GPSStatus && currentGPSLocation != null) {
 		        System.out.println("Stored location loaded");
 		        onLocationChanged(currentGPSLocation);

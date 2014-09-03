@@ -68,74 +68,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
     boolean debugging = true;
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-
-        if (debugging && ev.getPointerCount() >= 4) {
-            debugging = false;
-            final Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.dialog_debug);
-            dialog.setTitle("Settings");
-
-	        ArrayList<Button> LocationButtons = new ArrayList<>(Arrays.asList(
-					(Button) dialog.findViewById(R.id.location1),
-			        (Button) dialog.findViewById(R.id.location2),
-			        (Button) dialog.findViewById(R.id.location3),
-			        (Button) dialog.findViewById(R.id.location4)));
-	        LocationButtons.get(0).setText("Ryerson Theatre");
-	        LocationButtons.get(1).setText("Lake Devo");
-	        LocationButtons.get(2).setText("Arch");
-	        LocationButtons.get(3).setText("TransMedia Zone");
-
-            // if button is clicked, close the custom dialog
-            dialog.setOnDismissListener(new OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    debugging = true;
-                }
-            });
-	        dialog.findViewById(R.id.buttonClose).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    debugging = true;
-                }
-            });
-
-	        View.OnClickListener clickListener = new View.OnClickListener() {
-		        @Override
-		        public void onClick(View v) {
-			        gcLocation target = (new ArrayList<>(gcEngine.getAllLocations().values())).get(0);
-			        switch (v.getId()) {
-				        case R.id.location1:
-                            target = gcEngine.getAllLocations().get("rye_theatre");
-					        break;
-				        case R.id.location2:
-                            target = gcEngine.getAllLocations().get("lake_devo");
-					        break;
-				        case R.id.location3:
-                            target = gcEngine.getAllLocations().get("arch");
-					        break;
-				        case R.id.location4:
-                            target = gcEngine.getAllLocations().get("tmz");
-					        break;
-				        case R.id.enableTools:
-					        for (ToolFragment t: Tools.All()) t.setEnabled(true);
-					        return;
-			        }
-			        Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG).show();
-			        experienceManager.UpdateLocation(target);
-		        }
-	        };
-	        dialog.findViewById(R.id.enableTools).setOnClickListener(clickListener);
-	        for (Button b : LocationButtons) b.setOnClickListener(clickListener);
-
-            dialog.show();
-        }
+        if (debugging && ev.getPointerCount() >= 4)
+            showDebugMenu();
         return super.dispatchTouchEvent(ev);
     }
 
     public void onClick(View view) {
         if (Tools.Current().checkClick(view)) return;
-
+        if (view.getId() == R.id.help){
+            showDebugMenu();
+        }
         if (view instanceof LightButton) {
             for (ToolFragment tf : Tools.All()) {
 	            if (tf.getToolLight() == view && tf.isEnabled()) swapTo(tf);
@@ -168,6 +110,69 @@ public class MainActivity extends Activity implements View.OnClickListener {
         getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, tool)
                 .commit();
+    }
+
+    public void showDebugMenu(){
+
+            debugging = false;
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog_debug);
+            dialog.setTitle("Settings");
+
+            ArrayList<Button> LocationButtons = new ArrayList<>(Arrays.asList(
+                    (Button) dialog.findViewById(R.id.location1),
+                    (Button) dialog.findViewById(R.id.location2),
+                    (Button) dialog.findViewById(R.id.location3),
+                    (Button) dialog.findViewById(R.id.location4)));
+            LocationButtons.get(0).setText("Ryerson Theatre");
+            LocationButtons.get(1).setText("Lake Devo");
+            LocationButtons.get(2).setText("Arch");
+            LocationButtons.get(3).setText("TransMedia Zone");
+
+            // if button is clicked, close the custom dialog
+            dialog.setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    debugging = true;
+                }
+            });
+            dialog.findViewById(R.id.buttonClose).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    debugging = true;
+                }
+            });
+
+            View.OnClickListener clickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    gcLocation target = (new ArrayList<>(gcEngine.getAllLocations().values())).get(0);
+                    switch (v.getId()) {
+                        case R.id.location1:
+                            target = gcEngine.getAllLocations().get("rye_theatre");
+                            break;
+                        case R.id.location2:
+                            target = gcEngine.getAllLocations().get("lake_devo");
+                            break;
+                        case R.id.location3:
+                            target = gcEngine.getAllLocations().get("arch");
+                            break;
+                        case R.id.location4:
+                            target = gcEngine.getAllLocations().get("tmz");
+                            break;
+                        case R.id.enableTools:
+                            for (ToolFragment t: Tools.All()) t.setEnabled(true);
+                            return;
+                    }
+                    Toast.makeText(MainActivity.this, target.getTitle(), Toast.LENGTH_LONG).show();
+                    experienceManager.UpdateLocation(target);
+                }
+            };
+            dialog.findViewById(R.id.enableTools).setOnClickListener(clickListener);
+            for (Button b : LocationButtons) b.setOnClickListener(clickListener);
+
+            dialog.show();
     }
 }
 

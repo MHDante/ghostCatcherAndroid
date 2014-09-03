@@ -114,7 +114,7 @@
 		android:layout_alignParentLeft="true"
 		android:adjustViewBounds="true"
 		android:src="@drawable/rf_lid"
-		android:visibility="visible"
+		android:visibility="invisible"
 		android:layout_alignParentTop="true"/>
 
 	<!--DEBUG <LinearLayout

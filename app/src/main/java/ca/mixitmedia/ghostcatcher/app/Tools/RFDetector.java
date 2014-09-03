@@ -34,10 +34,10 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
 
     ImageView backgroundImageView;
     ImageView arrowImageView;
-    ImageView lidImageView;
+    //ImageView lidImageView;
 
     boolean backgroundFlashingState;
-    boolean toolState;
+    //boolean toolState;
 
     ProgressBar proximityBar;
 
@@ -103,8 +103,8 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         backgroundImageView = (ImageView) view.findViewById(R.id.rf_background);
         arrowImageView = (ImageView) view.findViewById(R.id.rf_arrow);
 
-        lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
-        lidImageView.setVisibility(View.VISIBLE);
+        //lidImageView = (ImageView) view.findViewById(R.id.rf_lid);
+        //lidImageView.setVisibility(View.VISIBLE);
 
         proximityBar = (ProgressBar) view.findViewById(R.id.proximityBar);
         proximityBar.setMax(1000);
@@ -113,7 +113,9 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
             @Override
             public void run() {
                 vibrator.vibrate(50);
-                if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS +500);
+                //if (toolState) vibrationHandler.postDelayed(this, vibrationIntervalMS +500);
+                vibrationHandler.postDelayed(this, vibrationIntervalMS +500);
+
             }
         };
 
@@ -151,7 +153,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
         gcMain.locationManager.requestSlowGPSUpdates(); //slow down gps updates
-        setGPSState(false, false);
+        //setGPSState(false, false);
         super.onPause();
     }
 
@@ -179,7 +181,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
      * @param newHeading the new heading, range: [0, 360), increasing clockwise from North
      */
     private void updateHeading(float newHeading) {
-	    if (!toolState) return;
+	    //if (!toolState) return;
         newHeading = Math.round(newHeading);
 
         float newRelativeBearing = Math.round((newHeading - bearing + 360) % 360);
@@ -211,7 +213,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
             Log.d("RF", "Locations shouldn't be null, you dun fucked up.");
             return;
         }
-        setGPSState(true, false);
+        //setGPSState(true, false);
         bearing = (location.bearingTo(destination) + 360) % 360;
         proximity = location.distanceTo(destination);
         proximityBar.setProgress(1000 - (int) proximity);
@@ -278,35 +280,35 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         destinationProximityTextView.setText("Proximity: " + Math.round(proximity) + " m");
     }
 
-    /**
-     * opens/closes the lid.
-     *
-     * @param state   true for open, false for closed.
-     * @param instant true for instance animation, false for animation with duration
-     */
-    public void setGPSState (boolean state, boolean instant) {
-        if (state == toolState) return;
-
-        RotateAnimation ra;
-        if (state) {
-            ra = new RotateAnimation(0, 180,
-                    Animation.RELATIVE_TO_SELF, 0.1797323136f,
-                    Animation.RELATIVE_TO_SELF, 0.2093457944f);
-            vibrationHandler.post(vibrationRunnable);
-        }
-        else {
-            ra = new RotateAnimation(180, 0,
-                    Animation.RELATIVE_TO_SELF, 0.1797323136f,
-                    Animation.RELATIVE_TO_SELF, 0.2093457944f);
-            destinationProximityTextView.setText("Location Unavailable");
-            vibrationHandler.removeCallbacks(vibrationRunnable);
-        }
-
-        ra.setDuration(instant ? 0 : 1000); //sets duration to 1s or 0.
-        ra.setFillAfter(true);// set the animation after the end of the reservation status
-        lidImageView.startAnimation(ra);
-        toolState = state;
-    }
+    ///**
+    // * opens/closes the lid.
+    // *
+    // * @param state   true for open, false for closed.
+    // * @param instant true for instance animation, false for animation with duration
+    // */
+    //public void setGPSState (boolean state, boolean instant) {
+    //    if (state == toolState) return;
+//
+    //    RotateAnimation ra;
+    //    if (state) {
+    //        ra = new RotateAnimation(0, 180,
+    //                Animation.RELATIVE_TO_SELF, 0.1797323136f,
+    //                Animation.RELATIVE_TO_SELF, 0.2093457944f);
+    //        vibrationHandler.post(vibrationRunnable);
+    //    }
+    //    else {
+    //        ra = new RotateAnimation(180, 0,
+    //                Animation.RELATIVE_TO_SELF, 0.1797323136f,
+    //                Animation.RELATIVE_TO_SELF, 0.2093457944f);
+    //        destinationProximityTextView.setText("Location Unavailable");
+    //        vibrationHandler.removeCallbacks(vibrationRunnable);
+    //    }
+//
+    //    ra.setDuration(instant ? 0 : 1000); //sets duration to 1s or 0.
+    //    ra.setFillAfter(true);// set the animation after the end of the reservation status
+    //    lidImageView.startAnimation(ra);
+    //    toolState = state;
+    //}
 
     public void updateDestination() {
         destination = gcMain.experienceManager.getDestination();

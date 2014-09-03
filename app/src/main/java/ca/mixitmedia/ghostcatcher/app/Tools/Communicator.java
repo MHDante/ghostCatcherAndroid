@@ -91,8 +91,8 @@ public class Communicator extends ToolFragment {
                 else SoundManager.play();
                 return true;
             case R.id.help:
-                if (proximityTest.getStatus() == AsyncTask.Status.PENDING) proximityTest.execute();
-                return true;
+                //if (proximityTest.getStatus() == AsyncTask.Status.PENDING) proximityTest.execute();
+                return false;
             default:
                 return false;
         }
