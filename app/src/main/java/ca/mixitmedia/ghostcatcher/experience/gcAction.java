@@ -32,6 +32,7 @@ public class gcAction {
         DISABLE_TOOL,
         END_SQPT,
         ENABLE_TRIGGER,
+        DISABLE_TRIGGER,
         COMPLETE_TASK,
         CHECK_TASK,
         ACHIEVEMENT,

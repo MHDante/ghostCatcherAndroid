@@ -70,6 +70,10 @@ public class ExperienceManager {
                     engine.getCurrentSeqPt().getTrigger(Integer.parseInt(data)).setEnabled(true);
                     lock = false;
                     break;
+                case DISABLE_TRIGGER:
+                    engine.getCurrentSeqPt().getTrigger(Integer.parseInt(data)).setEnabled(false);
+                    lock = false;
+                    break;
                 case DISABLE_TOOL:
                     ToolFragment t = Tools.byName(data);
                     t.setEnabled(false);

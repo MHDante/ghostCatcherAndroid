@@ -2,7 +2,6 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,16 +17,12 @@ import android.widget.Toast;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -41,41 +36,6 @@ public class StartScreen extends Activity {
     String unzipLocation;
     String zipFile;
     File fileDir, appDir;
-
-    public static String fileToMD5(String filePath) {
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(filePath);
-            byte[] buffer = new byte[1024];
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-
-            int numRead = 0;
-            while (numRead != -1) {
-                numRead = inputStream.read(buffer);
-                if (numRead > 0) digest.update(buffer, 0, numRead);
-            }
-
-            return convertHashToString(digest.digest());
-        }
-        catch (Exception e) {
-            return null;
-        }
-        finally {
-            if (inputStream != null) {
-                try { inputStream.close(); }
-                catch (Exception e) { e.printStackTrace(); }
-            }
-        }
-    }
-
-    //From internet
-    private static String convertHashToString(byte[] md5Bytes) {
-        String returnVal = "";
-        for (byte md5Byte : md5Bytes) {
-            returnVal += Integer.toString((md5Byte) + 0x100, 16).substring(1);
-        }
-        return returnVal;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +57,7 @@ public class StartScreen extends Activity {
 
         unzipLocation = getExternalFilesDir("mixitmedia").getPath();
         Log.d("Filepaths 3 :", unzipLocation);
-        zipFile = cacheDir + "/demo.zip";
+        zipFile = cacheDir + "/ruhaunted.zip";
         Log.d("Filepaths 4 :", zipFile);
 
         setContentView(R.layout.activity_start_screen);
@@ -107,7 +67,7 @@ public class StartScreen extends Activity {
         final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-        url = getString(R.string.url);
+        url = "http://mixitmedia.ca/ruhaunted.zip";
 
         Button continueButton = (Button) findViewById(R.id.continueButton);
         Button creditsButton = (Button) findViewById(R.id.creditsButton);
@@ -133,67 +93,7 @@ public class StartScreen extends Activity {
         }
     }
 
-    public static String calculateMD5(File updateFile) {
-        MessageDigest digest;
-        try { digest = MessageDigest.getInstance("MD5"); }
-        catch (NoSuchAlgorithmException e) {
-            Log.e("TAG", "Exception while getting digest", e);
-            return null;
-        }
 
-        InputStream inputStream;
-        try { inputStream = new FileInputStream(updateFile); }
-        catch (FileNotFoundException e) {
-            Log.e("TAG", "Exception while getting FileInputStream", e);
-            return null;
-        }
-
-        byte[] buffer = new byte[8192];
-        int read;
-        try {
-            while ((read = inputStream.read(buffer)) > 0) digest.update(buffer, 0, read);
-
-            BigInteger bigInt = new BigInteger(1, digest.digest());
-            String output = bigInt.toString(16);
-            // Fill to 32 chars
-            output = String.format("%32s", output).replace(' ', '0');
-            return output;
-        }
-        catch (IOException e) { throw new RuntimeException("Unable to process file for MD5", e); }
-        finally {
-            try { inputStream.close(); }
-            catch (IOException e) { Log.e("TAG", "Exception on closing MD5 input stream", e); }
-        }
-    }
-
-
-    public void settingsDialog(View v) throws Exception {
-
-	    final Dialog dialog = new Dialog(StartScreen.this);
-
-	    View.OnClickListener listener = new View.OnClickListener() {
-		    @Override
-		    public void onClick(View v) {
-			    switch (v.getId()) {
-				    case R.id.buttonClose:
-					    dialog.dismiss();
-					    return;
-				    case R.id.buttonDelete:
-					    if (!fileDir.exists()) return;
-						clearApplicationData();
-						findViewById(R.id.startButton).setEnabled(false);
-						Toast.makeText(StartScreen.this, "DELETED", Toast.LENGTH_LONG).show();
-					    return;
-			    }
-		    }
-	    };
-
-	    dialog.findViewById(R.id.buttonClose).setOnClickListener(listener);
-	    dialog.findViewById(R.id.buttonDelete).setOnClickListener(listener);
-	    dialog.setContentView(R.layout.dialog_view);
-	    dialog.setTitle("Settings");
-        dialog.show();
-    }
 
     public void clearApplicationData() {
 
@@ -295,12 +195,6 @@ public class StartScreen extends Activity {
 
     }
 
-    public void credits(View view) {
-        Intent intent = new Intent(StartScreen.this, Credits.class);
-        startActivity(intent);
-
-    }
-
     //-This is method is used for Download Zip file from server and store in Desire location.
     class DownloadZipFile extends AsyncTask<String, String, String> {
         boolean result;
@@ -363,7 +257,6 @@ public class StartScreen extends Activity {
         protected void onPostExecute(String unused) {
             mProgressDialog.dismiss();
             if (!result) return;
-            Log.d("UNZIP", "zipfile md5 is: " + calculateMD5(new File(zipFile)));
 
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
@@ -380,20 +273,12 @@ public class StartScreen extends Activity {
                 }
             };
 
-            if (!calculateMD5(new File(zipFile)).equals("c95917caae58436218600f063c3ef9cf")) {
-                Log.d("UNZIP", "CORRUPT FILE. MAN THE HARPOONS. NOOOOOOO");
-                new AlertDialog.Builder(StartScreen.this)
-		                .setMessage("File did not match the Authentication Signature, Continue anyway?").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener)
-		                .show();
-            }
-            else StartUnzip();
+            StartUnzip();
         }
     }
 
     public void StartUnzip() {
         try {
-            Log.d("UNZIP", "NOT CORRUPT FILE. YAAAY");
             unzip();
         }
         catch (IOException e) {  e.printStackTrace(); }

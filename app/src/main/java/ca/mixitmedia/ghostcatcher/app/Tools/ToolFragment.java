@@ -35,7 +35,7 @@ public abstract class ToolFragment extends Fragment {
         }
     }
 
-   public gcAction recievedAction;
+    public gcAction recievedAction;
 
     private LightButton toolLight;
     /**
@@ -59,19 +59,19 @@ public abstract class ToolFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return super.onCreateView(inflater, container, savedInstanceState);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public Animator onCreateAnimator(int transit, final boolean enter, int nextAnim) {
-int animatorId = getAnimatorId(enter);
+        int animatorId = getAnimatorId(enter);
         setupAnimator(enter);
         Animator anim = AnimatorInflater.loadAnimator(getActivity(), animatorId);
 
         if (anim != null) getView().setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-	    anim.addListener(new AnimatorListenerAdapter() {
-			 @Override
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
             public void onAnimationStart(Animator animation) {
                 //MainActivity.transitionInProgress = true;
             }
@@ -84,7 +84,7 @@ int animatorId = getAnimatorId(enter);
             }
         });
 
-	    return anim;
+        return anim;
     }
 
     @Override
@@ -114,8 +114,8 @@ int animatorId = getAnimatorId(enter);
 
     protected int getAnimatorId(boolean enter) {
         if (enter) {
-	        SoundManager.playSound(SoundManager.Sounds.metalClick);
-	        return R.animator.transition_in_from_bottom;
+            SoundManager.playSound(SoundManager.Sounds.metalClick);
+            return R.animator.transition_in_from_bottom;
         }
         return R.animator.transition_out_from_bottom;
     }

@@ -123,6 +123,8 @@
                                                                                             <xs:enumeration
                                                                                                 value="ENABLE_TRIGGER" />
                                                                                             <xs:enumeration
+                                                                                                value="DISABLE_TRIGGER" />
+                                                                                            <xs:enumeration
                                                                                                 value="COMPLETE_TASK" />
                                                                                             <xs:enumeration
                                                                                                 value="CHECK_TASK" />
