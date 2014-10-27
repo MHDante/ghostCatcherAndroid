@@ -39,7 +39,7 @@ task copyApk(type: Copy) {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:5.0.89'
     compile 'com.android.support:support-v13:20.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/wikitudesdk.jar')
