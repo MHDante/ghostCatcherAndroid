@@ -28,14 +28,15 @@
     </character>
   </chars>
   <locs>
-    <location id="loc1" name="RCC – Church and Gould" lat="43.65827" long="-79.37772" tagline="" />
-    <location id="loc2" name="Lake Devo" lat="43.65769" long="-79.37981" tagline="" />
-    <location id="loc3" name="Ram in the Rye" lat="43.65783" long="-79.37775" tagline="" />
+    <location id="loc1" name="RCC – Church and Gould" lat="43.65827" long="-79.37772" description="This is a place" />
+    <location id="loc2" name="Lake Devo" lat="43.65769" long="-79.37981" description="This is another place" />
+    <location id="loc3" name="Ram in the Rye" lat="43.65783" long="-79.37775" description="This is one more place" />
   </locs>
   <timeline>
     <seq_pt id="01" name="Introduction">
       <triggers>
         <trigger id="00" type="AUTO" data="" enabled="true" timelimit="">
+		  <action type="SET_DESTINATION" lock="false">loc1</action>
           <action type="DIALOG" lock="true">intro</action>
           <action type="ENABLE_TOOL" lock="false">locationmap</action>
 		  <action type="ENABLE_TOOL" lock="false">rfdetector</action>
@@ -44,18 +45,19 @@
         </trigger>
         <trigger id="01" type="LOCATION_ENTER" data="loc1" enabled="false" timelimit="">
           <action type="DIALOG" lock="true">1</action>
-          <action type="ENABLE_TRIGGER" lock="true">01</action>
-		  <action type="DISABLE_TRIGGER" lock="false">00</action>
+		<action type="SET_DESTINATION" lock="false">loc2</action>
+          <action type="ENABLE_TRIGGER" lock="true">02</action>
+		  <action type="DISABLE_TRIGGER" lock="false">01</action>
         </trigger>
-                <trigger id="01" type="LOCATION_ENTER" data="loc2" enabled="false" timelimit="">
+		<trigger id="02" type="LOCATION_ENTER" data="loc2" enabled="false" timelimit="">
           <action type="DIALOG" lock="true">2</action>
-          <action type="ENABLE_TRIGGER" lock="true">01</action>
-		  <action type="DISABLE_TRIGGER" lock="false">00</action>
+		  <action type="SET_DESTINATION" lock="false">loc3</action>
+          <action type="ENABLE_TRIGGER" lock="true">03</action>
+		  <action type="DISABLE_TRIGGER" lock="false">02</action>
         </trigger>
-                <trigger id="01" type="LOCATION_ENTER" data="loc3" enabled="false" timelimit="">
+        <trigger id="03" type="LOCATION_ENTER" data="loc3" enabled="false" timelimit="">
           <action type="DIALOG" lock="true">3</action>
-          <action type="ENABLE_TRIGGER" lock="true">01</action>
-		  <action type="DISABLE_TRIGGER" lock="false">00</action>
+          <action type="END_SQPT" lock="true">03</action>
         </trigger>
       </triggers>
     </seq_pt>

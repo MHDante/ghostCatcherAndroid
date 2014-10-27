@@ -1,5 +1,6 @@
 package ca.mixitmedia.ghostcatcher.app;
 
+import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class ExperienceManager {
     public gcLocation location;
     public gcEngine engine;
     public gcAction pendingLock;
+    gcLocation destination;
 
     public ExperienceManager(MainActivity gcMain) {
         this.gcMain = gcMain;
@@ -66,6 +68,9 @@ public class ExperienceManager {
                 case CONSUME_TRIGGER:
                     lock = false;
                     break;
+                case SET_DESTINATION:
+                    destination = gcMain.gcEngine.getAllLocations().get(data);
+                    break;
                 case ENABLE_TRIGGER:
                     engine.getCurrentSeqPt().getTrigger(Integer.parseInt(data)).setEnabled(true);
                     lock = false;
@@ -89,6 +94,11 @@ public class ExperienceManager {
                     if (lock) pendingLock = action;
                     break;
                 case END_SQPT:
+                    if(gcMain.hasWindowFocus()) {
+                        Intent myIntent = new Intent(gcMain, CreditsActivity.class);
+                        gcMain.startActivity(myIntent);
+                        gcMain.finish();
+                    }
                     engine.EndSeqPt();
                     lock = false;
                     break;
@@ -146,7 +156,7 @@ public class ExperienceManager {
     }
 
     public gcLocation getDestination(){
-        return engine.getAllLocations().get("lake_devo");
+        return destination;
     }
 
     public void ToolSuccess(ToolFragment toolFragment) {

@@ -177,6 +177,7 @@
                         android:layout_height="match_parent"
                         android:id="@+id/calibrate_bar"
                         android:indeterminate="false"
+                        android:progressDrawable="@android:drawable/progress_horizontal"
                         style="?android:attr/progressBarStyleHorizontal" />
 
                     <TextView

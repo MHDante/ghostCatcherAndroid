@@ -2,16 +2,21 @@ package ca.mixitmedia.ghostcatcher.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
@@ -23,6 +28,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -30,69 +37,147 @@ import ca.mixitmedia.ghostcatcher.Utils;
 
 public class StartScreen extends Activity {
 
-    ProgressDialog mProgressDialog;
-
     String url;
     String unzipLocation;
     String zipFile;
     File fileDir, appDir;
+    ProgressBar loadBar;
+    TextView loadtext;
+    FrameLayout loadScreen;
+    int kwame = 0;
+    int layer = 0;
+    ImageView ad1;
+    ImageView ad2;
+    ImageView ad3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start_screen);
+
+        loadBar = (ProgressBar) findViewById(R.id.loadbar);
+        loadtext = (TextView) findViewById(R.id.loadtext);
+        loadScreen = (FrameLayout) findViewById(R.id.loadScreen);
+
+        ad1 = (ImageView)findViewById(R.id.ad1);
+        ad2 = (ImageView)findViewById(R.id.ad2);
+        ad3 = (ImageView)findViewById(R.id.ad3);
+        new AsyncTask<Void,Void,Void>(){
+
+            Bitmap ad1bm;
+            Bitmap ad2bm;
+            Bitmap ad3bm;
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    URL ad1url = new URL("http://mixitmedia.ca/ad1.jpg");
+                    URL ad2url = new URL("http://mixitmedia.ca/ad2.jpg");
+                    URL ad3url = new URL("http://mixitmedia.ca/ad3.jpg");
+                    ad1bm= BitmapFactory.decodeStream(ad1url.openConnection().getInputStream());
+                    ad2bm= BitmapFactory.decodeStream(ad2url.openConnection().getInputStream());
+                    ad3bm= BitmapFactory.decodeStream(ad3url.openConnection().getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (ad1bm!=null)ad1.setImageBitmap(ad1bm);
+                if (ad2bm!=null)ad2.setImageBitmap(ad2bm);
+                if (ad3bm!=null)ad3.setImageBitmap(ad3bm);
+            }
+        }.execute();
+
 
         fileDir = new File(getExternalFilesDir("mixitmedia"), "ghostcatcher");
-
         appDir = fileDir.getParentFile().getParentFile().getParentFile();
-
         Log.d("APPDIR IS", appDir.getAbsolutePath());
-        //APPDIR IS﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app
-
         Log.d("Filepaths 1 :", fileDir.getPath());
-        //Filepaths 1 :﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app/files/mixitmedia/ghostcatcher
-
         String cacheDir = getExternalCacheDir().getPath();
-        Log.d("Filepaths 2 :", cacheDir);
-        //Filepaths 2 :﹕ /storage/emulated/0/Android/data/ca.mixitmedia.ghostcatcher.app/cache
-
         unzipLocation = getExternalFilesDir("mixitmedia").getPath();
-        Log.d("Filepaths 3 :", unzipLocation);
         zipFile = cacheDir + "/ruhaunted.zip";
-        Log.d("Filepaths 4 :", zipFile);
 
-        setContentView(R.layout.activity_start_screen);
-        //
+        url = "http://mixitmedia.ca/ruhaunted.zip";
+
+        Button continueButton = (Button) findViewById(R.id.continueButton);
+        Button startButton = (Button) findViewById(R.id.startButton);
+
+        final Calendar c = Calendar.getInstance();
+        final Calendar start = new GregorianCalendar(2014,9,31,19,0);
+        final Calendar end = new GregorianCalendar(2014,9,31,23,59);
+
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(kwame<5 && c.before(start)){
+                    Utils.messageDialog(StartScreen.this,"Too early!", "The Event starts on " + start.getTime());
+                    return;
+                }
+                if(kwame<5 && c.after(end)){
+                    Utils.messageDialog(StartScreen.this,"Too Late!", "The Event ended on " + end.getTime());
+                    return;
+                }
+                continueGame();
+
+            }
+        });
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(kwame<5 && c.before(start)){
+                    Utils.messageDialog(StartScreen.this,"Too early!", "The Event starts on " + start.getTime());
+                    return;
+                }
+                if(kwame<5 && c.after(end)){
+                    Utils.messageDialog(StartScreen.this,"Too Late!", "The Event ended on " + end.getTime());
+                    return;
+                }
+                start();
+            }
+        });
+        if (!fileDir.exists() || fileDir.list().length == 0) {
+            continueButton.setEnabled(false);
+        }
+        findViewById(R.id.transmedia).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (kwame >4){
+                    Toast.makeText(StartScreen.this,"HI KWAME.", Toast.LENGTH_LONG).show();
+                }
+                kwame++;
+            }
+        });
+
+    }
+
+    private void start() {
+        if (MainActivity.gcMain!=null) MainActivity.gcMain.finish();
+        clearApplicationData();
 
         final ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-        url = "http://mixitmedia.ca/ruhaunted.zip";
-
-        Button continueButton = (Button) findViewById(R.id.continueButton);
-        Button creditsButton = (Button) findViewById(R.id.creditsButton);
-
-        continueButton.setEnabled(false);
-        creditsButton.setEnabled(false);
-
-        if (!fileDir.exists() || fileDir.list().length == 0) {
-
-            Log.e("FILEDIR IS", fileDir.getAbsolutePath());
-            if (wifi.isAvailable())
-                // Trigger Async Task (onPreExecute method)
-                new DownloadZipFile().execute(url);
-            else if (mobile.isAvailable()) {
-                try {
-                    internetDialog();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
-            }
+        starting = true;
+        Log.e("FILEDIR IS", fileDir.getAbsolutePath());
+        if (wifi.isAvailable() && wifi.isConnected()) {
+            // Trigger Async Task (onPreExecute method)
+            new DownloadZipFile().execute(url);
+            loadScreen.setVisibility(View.VISIBLE);
+        }
+        else if (mobile.isAvailable() && mobile.isConnected()) {
+                internetDialog(new Runnable() {
+                    @Override
+                    public void run() {
+                        new DownloadZipFile().execute(url);
+                        loadScreen.setVisibility(View.VISIBLE);
+                    }
+                });
+        } else {
+            Toast.makeText(this, "NO INTERNET", Toast.LENGTH_LONG).show();
         }
     }
-
 
 
     public void clearApplicationData() {
@@ -121,41 +206,45 @@ public class StartScreen extends Activity {
         return dir.delete();
     }
 
-    public void internetDialog() throws Exception {
-        new AlertDialog.Builder(StartScreen.this)
+    public void internetDialog(final Runnable onAccept){
+        AlertDialog d =new AlertDialog.Builder(StartScreen.this)
 		    .setMessage("Ghost Catcher needs to download a file. Data charges may apply. \n\nDo you want to continue?")
 			.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-					@Override
-	            public void onClick(DialogInterface dialog, int which) {
-	                new DownloadZipFile().execute(url);
-	                dialog.dismiss();
-	            }
-	        })
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onAccept.run();
+                    dialog.dismiss();
+                }
+            })
 			.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-	            @Override
-	            public void onClick(DialogInterface dialog, int which) {
-	                //Button startButton = (Button) findViewById(R.id.startButton);
-	                //startButton.setEnabled(false);
-	                dialog.dismiss();
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Button startButton = (Button) findViewById(R.id.startButton);
+                    //startButton.setEnabled(false);
+                    dialog.dismiss();
 
-	                finish();
-	            }
-	        })
-		    .show();
+                    finish();
+                }
+            }).create();
+               d.setOnDismissListener( new DialogInterface.OnDismissListener() {
+                   @Override
+                   public void onDismiss(DialogInterface dialogInterface) {
+                       finish();
+                   }
+               });
+        d.show();
     }
 
-    //Extract zip calls Asynctask
-    public void unzip() throws IOException {
-        mProgressDialog = new ProgressDialog(StartScreen.this);
-	    mProgressDialog.setMessage("Extracting the downloaded file...");
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.show();
-        new UnZipTask().execute(zipFile);
+    public void BeginExperience(){
+        if(this.hasWindowFocus()) {
+            Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
+            startActivity(myIntent);
+            finish();
+        }
     }
 
     boolean starting;
-    public void start(View view) {
+    public void continueGame() {
         if (!starting) {
             starting = true;
             Utils.checkNetworkAvailability(this, new Utils.Callback<Boolean>() {
@@ -168,8 +257,7 @@ public class StartScreen extends Activity {
 		                    public void onClick(DialogInterface dialog, int which) {
 			                    switch (which) {
 				                    case DialogInterface.BUTTON_POSITIVE:
-					                    Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
-					                    startActivity(myIntent);
+                                        BeginExperience();
 					                    break;
 
 				                    case DialogInterface.BUTTON_NEGATIVE:
@@ -186,8 +274,7 @@ public class StartScreen extends Activity {
 		                        .show();
                     }
                     else {
-                        Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
-                        startActivity(myIntent);
+                        BeginExperience();
                     }
                 }
             });
@@ -196,17 +283,13 @@ public class StartScreen extends Activity {
     }
 
     //-This is method is used for Download Zip file from server and store in Desire location.
-    class DownloadZipFile extends AsyncTask<String, String, String> {
+    class DownloadZipFile extends AsyncTask<String, Integer, String> {
         boolean result;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mProgressDialog = new ProgressDialog(StartScreen.this);
-            mProgressDialog.setMessage("Downloading file. Please wait...");
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
+            loadtext.setText("Downloading file. Please wait...");
         }
 
         @Override
@@ -230,7 +313,7 @@ public class StartScreen extends Activity {
 	            for (int count; (count = input.read(data)) != -1;)  {
                     total += count;
                     // Publish the progress which triggers onProgressUpdate method
-                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                    publishProgress((int) ((total * 100) / lengthOfFile));
 
                     // Write data to file
                     output.write(data, 0, count);
@@ -249,13 +332,16 @@ public class StartScreen extends Activity {
             return null;
         }
 
-        protected void onProgressUpdate(String... progress) {
-            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+        protected void onProgressUpdate(Integer... progress) {
+            loadBar.setProgress(progress[0]);
+            if(progress[0]>60 && layer ==0){
+                ad1.animate().setDuration(300).alpha(0).start();
+                layer++;
+            }
         }
 
         @Override
         protected void onPostExecute(String unused) {
-            mProgressDialog.dismiss();
             if (!result) return;
 
             DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -263,7 +349,7 @@ public class StartScreen extends Activity {
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
-                            StartUnzip();
+                            new UnZipTask().execute(zipFile);
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
@@ -272,19 +358,18 @@ public class StartScreen extends Activity {
                     }
                 }
             };
-
-            StartUnzip();
+            new UnZipTask().execute(zipFile);
         }
     }
 
-    public void StartUnzip() {
-        try {
-            unzip();
-        }
-        catch (IOException e) {  e.printStackTrace(); }
-    }
 
-    private class UnZipTask extends AsyncTask<String, Void, Boolean> {
+
+    private class UnZipTask extends AsyncTask<String, Integer, Boolean> {
+
+        @Override
+        protected void onPreExecute() {
+            loadtext.setText("Extracting the downloaded file...");
+        }
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -295,41 +380,46 @@ public class StartScreen extends Activity {
             Log.d("UNZIP LOCATION IS", unzipLocation);
 
             //File archive = new File(filePath);
-            try { new UnzipUtil(zipFile, unzipLocation).unzip(); }
+            try {
+                dirChecker("");
+                unzip();
+            }
             catch (Exception e) { return false; }
             return true;
         }
 
         @Override
+        protected void onProgressUpdate(Integer... progress) {
+            loadBar.setProgress(progress[0]);
+            if(progress[0]>30 && layer ==1){
+                ad2.animate().setDuration(300).alpha(0).start();
+                layer++;
+            }
+
+        }
+
+        @Override
         protected void onPostExecute(Boolean result) {
-            mProgressDialog.dismiss();
 
             //Now delete the zip file since it takes up 360000000 bits
             new File(zipFile) .delete();
-        }
-    }
-
-    public class UnzipUtil {
-        private String zipFile;
-        private String location;
-
-        public UnzipUtil(String zipFile, String location) {
-            this.zipFile = zipFile;
-            this.location = location;
-
-            dirChecker("");
+            BeginExperience();
         }
 
         public void unzip() {
             try {
+                long lengthOfFile = new File(zipFile).length();
+                double total = 0;
                 FileInputStream fin = new FileInputStream(zipFile);
                 ZipInputStream zin = new ZipInputStream(fin);
 
                 ZipEntry ze;
                 while ((ze = zin.getNextEntry()) != null) {
+                    total += (int) ze.getSize();
+                    publishProgress((int) ((total * 100) / lengthOfFile));
                     if (ze.isDirectory()) dirChecker(ze.getName());
                     else {
-                        FileOutputStream fout = new FileOutputStream(new File(location + "/" + ze.getName()));
+                        FileOutputStream fout = new FileOutputStream(new File(unzipLocation + "/" + ze.getName()));
                         //Log.e("uz", location+ "/"+ ze.getTitle());
                         byte[] buffer = new byte[8192];
                         int len;
@@ -346,7 +436,7 @@ public class StartScreen extends Activity {
         }
 
         private boolean dirChecker(String dir) {
-            File f = new File(location + "/" + dir);
+            File f = new File(unzipLocation + "/" + dir);
             if (!f.isDirectory()) {
                 //Log.e("DirChecker", dir);
                 return f.mkdirs();
@@ -354,4 +444,4 @@ public class StartScreen extends Activity {
             return false;
         }
     }
-}
+    }

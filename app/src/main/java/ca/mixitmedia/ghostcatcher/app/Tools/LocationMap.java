@@ -1,6 +1,5 @@
 package ca.mixitmedia.ghostcatcher.app.Tools;
 
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
@@ -30,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import ca.mixitmedia.ghostcatcher.Utils;
+import ca.mixitmedia.ghostcatcher.app.MainActivity;
 import ca.mixitmedia.ghostcatcher.app.R;
 import ca.mixitmedia.ghostcatcher.app.SoundManager;
 import ca.mixitmedia.ghostcatcher.experience.gcLocation;
@@ -43,7 +43,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
     int selectedLocation;
     boolean bannerRaised;
 
-	AnimatorUpdateListener locationBannerAnimatorUpdateListener;
+	//AnimatorUpdateListener locationBannerAnimatorUpdateListener;
     RelativeLayout locationBanner;
 
 	//Overrides of ToolFragment class
@@ -79,7 +79,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 		MapFragment f = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map);
 		//Todo:Illegal state Exception: Activity has been destroyed.
-		if (f != null && !getActivity().isDestroyed())
+		if (f != null && MainActivity.gcMain!=null)
 			getFragmentManager().beginTransaction().remove(f).commit();
 		super.onDestroyView();
 	}
@@ -99,7 +99,7 @@ public class LocationMap extends ToolFragment implements OnMarkerClickListener, 
 	    setBanner(sortedLocations.get(0));
         for (gcLocation l : sortedLocations) {
 	        int pinResource;
-            if (gcMain.gcEngine.getCurrentSeqPt().getActiveLocations().contains(l)) pinResource = R.drawable.map_marker_active;
+            if (l.equals(gcMain.experienceManager.getDestination())) pinResource = R.drawable.map_marker_active;
 	        else pinResource = R.drawable.map_marker_inactive;
 
 	        markers.add(map.addMarker(new MarkerOptions()

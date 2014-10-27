@@ -32,6 +32,7 @@ public class Communicator extends ToolFragment {
     Typewriter subtitleView;
     Biocalibrate biocalibrate;
     ImageView imageView;
+    Uri pendingImage;
     long startTime;
     ProximityTest proximityTest = new ProximityTest() {
         @Override
@@ -64,6 +65,7 @@ public class Communicator extends ToolFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(pendingImage!=null)imageView.setImageURI(pendingImage);
         if (firstRun) {
 			startDialog();
 			firstRun = false;
@@ -132,10 +134,12 @@ public class Communicator extends ToolFragment {
             //Log.d("PhraseAdder","checking difference between current:" + currentInterval + " and past : " + pastInterval);
 
             if (currentInterval > pastInterval) {
-                subtitleView.concatenateText(currentDialog.parsed.get((int) currentInterval));
+                String next = currentDialog.parsed.get((int) currentInterval);
+                if(!next.isEmpty())subtitleView.concatenateText(next);
                 Uri image =currentDialog.portraits.get((int) currentInterval);
                 if (image !=null) {
-                    Log.d("PA", image.getPath());
+                    //Log.d("PA", image.getPath());
+                    pendingImage = image;
                     imageView.setImageURI(image);
                 }
                 pastInterval = currentInterval;
@@ -150,6 +154,7 @@ public class Communicator extends ToolFragment {
             } else {
             //    Log.d("PhraseAdder","end ");
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.shine));
+                pendingImage = null;
                 currentDialog = null;
                 completeAction();
                 CheckForMessages();

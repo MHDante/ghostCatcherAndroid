@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import ca.mixitmedia.ghostcatcher.Utils;
-
 /**
  * Created by Dante on 07/03/14
  */
@@ -56,7 +54,8 @@ public class gcEngine {
 
 
     public void EndSeqPt() {
-        Utils.messageDialog(context, " END SQ PT", "Not Implemented");
+
+        //Utils.messageDialog(context, " END SQ PT", "Not Implemented");
         //throw new RuntimeException("Not Implemented");
     }
 

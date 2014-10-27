@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,10 +35,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public ExperienceManager experienceManager;
     public gcLocationManager locationManager;
     public gcEngine gcEngine;
-
+    public static MainActivity gcMain;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        gcMain = this;
+        //Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
         try {
             gcEngine = gcParser.parseXML(this);
@@ -88,7 +96,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onPause() {
         if (SoundManager.isPlaying()) SoundManager.pause();
-        locationManager.removeUpdates(); //stop location updates
+        locationManager.onPause(); //stop location updates
         super.onPause();
     }
 
@@ -96,13 +104,26 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
         SoundManager.play();
-        locationManager.requestSlowGPSUpdates();
+        locationManager.onResume();
     }
 
     @Override
     protected void onDestroy() {
+        gcMain = null;
         SoundManager.stop();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        locationManager.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        locationManager.onStop();
     }
 
     public void swapTo(ToolFragment tool) {
@@ -122,12 +143,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
             ArrayList<Button> LocationButtons = new ArrayList<>(Arrays.asList(
                     (Button) dialog.findViewById(R.id.location1),
                     (Button) dialog.findViewById(R.id.location2),
-                    (Button) dialog.findViewById(R.id.location3),
-                    (Button) dialog.findViewById(R.id.location4)));
-            LocationButtons.get(0).setText("Ryerson Theatre");
-            LocationButtons.get(1).setText("Lake Devo");
-            LocationButtons.get(2).setText("Arch");
-            LocationButtons.get(3).setText("TransMedia Zone");
+                    (Button) dialog.findViewById(R.id.location3)));
+            LocationButtons.get(0).setText("Location 1");
+            LocationButtons.get(1).setText("Location 2");
+            LocationButtons.get(2).setText("Location 3");
 
             // if button is clicked, close the custom dialog
             dialog.setOnDismissListener(new OnDismissListener() {
@@ -143,6 +162,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     debugging = true;
                 }
             });
+            dialog.findViewById(R.id.credits).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO:TERRIBLE CODE DUPLICATION WITH ENDSQPT().
+                    //if(gcMain.hasWindowFocus()) {
+                        Intent myIntent = new Intent(gcMain, CreditsActivity.class);
+                        gcMain.startActivity(myIntent);
+                        gcMain.finish();
+                    //}
+                }
+            });
 
             View.OnClickListener clickListener = new View.OnClickListener() {
                 @Override
@@ -150,16 +180,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     gcLocation target = (new ArrayList<>(gcEngine.getAllLocations().values())).get(0);
                     switch (v.getId()) {
                         case R.id.location1:
-                            target = gcEngine.getAllLocations().get("rye_theatre");
+                            target = gcEngine.getAllLocations().get("loc1");
                             break;
                         case R.id.location2:
-                            target = gcEngine.getAllLocations().get("lake_devo");
+                            target = gcEngine.getAllLocations().get("loc2");
                             break;
                         case R.id.location3:
-                            target = gcEngine.getAllLocations().get("arch");
-                            break;
-                        case R.id.location4:
-                            target = gcEngine.getAllLocations().get("tmz");
+                            target = gcEngine.getAllLocations().get("loc3");
                             break;
                         case R.id.enableTools:
                             for (ToolFragment t: Tools.All()) t.setEnabled(true);

@@ -62,7 +62,6 @@ public class Utils {
                 // convert duration to minute:seconds
         String duration =
                 metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-        Log.d("utilS",duration);
         return Long.parseLong(duration);
     }
 

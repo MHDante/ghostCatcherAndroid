@@ -61,7 +61,7 @@ public class gcDialog {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(soundPath);
         dialog.duration = (int) Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
-        line = r.readLine();//ommit first line because of reasons.
+        r.readLine();//ommit first line because of reasons.
         int lines = 1;
         while ((line = r.readLine()) != null) {
             lines++;
@@ -71,8 +71,8 @@ public class gcDialog {
                     continue;
                 case '>':
                     if (line.charAt(1) == '>') {
-                        
-                        if (!total.toString().isEmpty()) {
+
+                        if (chr!=null) {
                             dialog.intervals.add(time);
                             Uri poseUri = chr.getPose(pose);
                             if (poseUri == null)

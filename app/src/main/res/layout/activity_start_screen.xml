@@ -1,6 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<LinearLayout android:layout_width="fill_parent"
     android:layout_height="match_parent"
     tools:context="ca.mixitmedia.ghostcatcher.app.StartScreen"
     android:orientation="vertical"
@@ -28,27 +31,7 @@
         android:layout_height="wrap_content"
         android:text="@string/start_activity_b2"
         android:id="@+id/startButton"
-        android:onClick="start"
         android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:clickable="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start_activity_b3"
-        android:id="@+id/settingsButton"
-        android:onClick="settingsDialog"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:clickable="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start_activity_b4"
-        android:onClick="credits"
-        android:id="@+id/creditsButton"
-        android:layout_gravity="center_horizontal" />
-
 
     <LinearLayout
         android:id="@+id/LinearLayout02"
@@ -61,17 +44,72 @@
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:adjustViewBounds="false" />
 
         <ImageView
             android:src="@drawable/logo_tmz"
-            android:id="@+id/imageView3"
+            android:id="@+id/transmedia"
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:adjustViewBounds="false" />
     </LinearLayout>
 
+
+
 </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"
+        android:id="@+id/loadScreen">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/ad3"
+            android:src="@drawable/ad_space"
+            android:scaleType="fitXY"
+            android:focusableInTouchMode="false" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/ad2"
+            android:src="@drawable/ad_space"
+            android:scaleType="fitXY" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/ad1"
+            android:src="@drawable/ad_space"
+            android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:background="#d5233547"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loading..."
+                android:id="@+id/loadtext" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/loadbar" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

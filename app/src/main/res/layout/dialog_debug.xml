@@ -49,8 +49,8 @@
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Location 4"
-                    android:id="@+id/location4"
+                    android:text="Launch Credits"
+                    android:id="@+id/credits"
                     android:layout_gravity="center_horizontal"/>
                 <Button
                     android:layout_width="match_parent"

@@ -87,7 +87,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     /**
      * debug
      */
-    Location destination;
+    //Location destination;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,11 +122,11 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         //destination = new Location("dummyProvider");
         //destination.setLatitude(43.652202);
         //destination.setLongitude(-79.5814);
-        destination = gcMain.gcEngine.getAllLocations().get("lake_devo");
-        approxDistance = ApproxDistance.CLOSE; //TODO: why is this here?
+        //destination = gcMain.gcEngine.getAllLocations().get("lake_devo");
+        //approxDistance = ApproxDistance.CLOSE; //TODO: why is this here?
 
         //set initial data right away, if available
-        gcMain.locationManager.setGPSUpdates(3000, 0);
+        gcMain.locationManager.setGPSUpdates(3000);
 
         return view;
     }
@@ -141,8 +141,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
-        gcMain.locationManager.setGPSUpdates(0, 0);
-        gcMain.locationManager.setGPSStatus();
+        gcMain.locationManager.setGPSUpdates(0);
         //updateDestination();
     }
 
@@ -152,7 +151,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     @Override
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
-        gcMain.locationManager.requestSlowGPSUpdates(); //slow down gps updates
+        gcMain.locationManager.setGPSUpdates(60000); //slow down gps updates
         //setGPSState(false, false);
         super.onPause();
     }
@@ -214,6 +213,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
             return;
         }
         //setGPSState(true, false);
+        Location destination =  gcMain.experienceManager.getDestination();
         bearing = (location.bearingTo(destination) + 360) % 360;
         proximity = location.distanceTo(destination);
         proximityBar.setProgress(1000 - (int) proximity);
@@ -235,23 +235,23 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         if (approxDistance != currentDistance) {
             switch (currentDistance) {
                 case FAR_FAR_AWAY:
-                    gcMain.locationManager.setGPSUpdates(60000, 100); //60 seconds, 100 meters
+                    gcMain.locationManager.setGPSUpdates(60000); //60 seconds, 100 meters
                     Log.d("RFDetector", "setGPSUpdates(60000, 100)");
                     break;
                 case FAR:
-                    gcMain.locationManager.setGPSUpdates(30000, 25); //30 seconds, 25 meters
+                    gcMain.locationManager.setGPSUpdates(30000); //30 seconds, 25 meters
                     Log.d("RFDetector", "setGPSUpdates(30000, 25)");
                     break;
                 case MEDIUM:
-                    gcMain.locationManager.setGPSUpdates(10000, 10); //10 seconds, 10 meters
+                    gcMain.locationManager.setGPSUpdates(10000); //10 seconds, 10 meters
                     Log.d("RFDetector", "setGPSUpdates(10000, 10)");
                     break;
                 case CLOSE:
-                    gcMain.locationManager.setGPSUpdates(0, 0); //0 seconds, 0 meters
+                    gcMain.locationManager.setGPSUpdates(0); //0 seconds, 0 meters
                     Log.d("RFDetector", "setGPSUpdates(0,0)");
                     break;
                 case THERE:
-                    gcMain.locationManager.setGPSUpdates(0, 0); //0 seconds, 0 meters
+                    gcMain.locationManager.setGPSUpdates(0); //0 seconds, 0 meters
                     Log.d("RFDetector", "We're here bitches!"); //TODO:Are we here? or are we THERE?
                     destinationProximityTextView.setText("#Location Reached#"); //TODO: use story terminology
                     flashRunnable = new Runnable()  {
@@ -280,39 +280,6 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
         destinationProximityTextView.setText("Proximity: " + Math.round(proximity) + " m");
     }
 
-    ///**
-    // * opens/closes the lid.
-    // *
-    // * @param state   true for open, false for closed.
-    // * @param instant true for instance animation, false for animation with duration
-    // */
-    //public void setGPSState (boolean state, boolean instant) {
-    //    if (state == toolState) return;
-//
-    //    RotateAnimation ra;
-    //    if (state) {
-    //        ra = new RotateAnimation(0, 180,
-    //                Animation.RELATIVE_TO_SELF, 0.1797323136f,
-    //                Animation.RELATIVE_TO_SELF, 0.2093457944f);
-    //        vibrationHandler.post(vibrationRunnable);
-    //    }
-    //    else {
-    //        ra = new RotateAnimation(180, 0,
-    //                Animation.RELATIVE_TO_SELF, 0.1797323136f,
-    //                Animation.RELATIVE_TO_SELF, 0.2093457944f);
-    //        destinationProximityTextView.setText("Location Unavailable");
-    //        vibrationHandler.removeCallbacks(vibrationRunnable);
-    //    }
-//
-    //    ra.setDuration(instant ? 0 : 1000); //sets duration to 1s or 0.
-    //    ra.setFillAfter(true);// set the animation after the end of the reservation status
-    //    lidImageView.startAnimation(ra);
-    //    toolState = state;
-    //}
-
-    public void updateDestination() {
-        destination = gcMain.experienceManager.getDestination();
-    }
 
     /**
      * An enumeration that stores the frequency with which location updates should be received.
