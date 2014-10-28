@@ -101,7 +101,7 @@
                 android:id="@+id/space5"
                 android:layout_weight="12" />
 
-            <ca.mixitmedia.ghostcatcher.views.Typewriter
+            <ca.mixitmedia.ruhaunted.views.Typewriter
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="..."

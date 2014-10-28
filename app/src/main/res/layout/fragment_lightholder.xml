@@ -20,28 +20,28 @@
                     android:layout_weight="154"
                     android:layout_height="wrap_content" />
 
-                <ca.mixitmedia.ghostcatcher.views.LightButton
+                <ca.mixitmedia.ruhaunted.views.LightButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/tool_light_locationMap"
                     android:layout_weight="115"
                     android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.LightButton
+                <ca.mixitmedia.ruhaunted.views.LightButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/tool_light_rfDetector"
                     android:layout_weight="115"
                     android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.LightButton
+                <ca.mixitmedia.ruhaunted.views.LightButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/tool_light_imager"
                     android:layout_weight="115"
                     android:onClick="onClick" />
 
-                <ca.mixitmedia.ghostcatcher.views.LightButton
+                <ca.mixitmedia.ruhaunted.views.LightButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:id="@+id/tool_light_amplifier"
@@ -77,14 +77,14 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="5dp">
 
-        <ca.mixitmedia.ghostcatcher.views.LightButton
+        <ca.mixitmedia.ruhaunted.views.LightButton
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:id="@+id/left_arrowLight"
             android:layout_gravity="center"
             android:layout_margin="19dp" />
 
-        <ca.mixitmedia.ghostcatcher.views.LightButton
+        <ca.mixitmedia.ruhaunted.views.LightButton
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:id="@+id/left_toolLight"
@@ -113,7 +113,7 @@
 
         android:layout_marginBottom="5dp">
 
-        <ca.mixitmedia.ghostcatcher.views.LightButton
+        <ca.mixitmedia.ruhaunted.views.LightButton
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:id="@+id/right_toolLight"

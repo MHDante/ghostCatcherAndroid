@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.mixitmedia.ghostcatcher.app" >
+    package="ca.mixitmedia.ruhaunted.app" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -58,7 +58,7 @@
             android:value="AIzaSyBd2jsok_1ns75y5fQJ51U80Me-GCRC4n4" />
 
         <activity
-            android:name="ca.mixitmedia.ghostcatcher.app.StartScreen"
+            android:name="ca.mixitmedia.ruhaunted.app.StartScreen"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" >
@@ -69,7 +69,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ca.mixitmedia.ghostcatcher.app.MainActivity"
+            android:name="ca.mixitmedia.ruhaunted.app.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" >
@@ -85,12 +85,12 @@
         </activity>
 
         <service
-            android:name="ca.mixitmedia.ghostcatcher.app.gcMediaService"
+            android:name="ca.mixitmedia.ruhaunted.app.gcMediaService"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name="ca.mixitmedia.ghostcatcher.app.CreditsActivity"
+            android:name="ca.mixitmedia.ruhaunted.app.CreditsActivity"
             android:label="@string/title_activity_credits" >
         </activity>
     </application>

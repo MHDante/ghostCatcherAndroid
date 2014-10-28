@@ -64,7 +64,7 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="81.5dp"
-        android:name="ca.mixitmedia.ghostcatcher.views.LightHolder"
+        android:name="ca.mixitmedia.ruhaunted.views.LightHolder"
         android:id="@+id/fragment_lightholder"
         tools:layout="@layout/fragment_lightholder" />
 

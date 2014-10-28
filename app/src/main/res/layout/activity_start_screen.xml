@@ -5,9 +5,9 @@
     android:layout_height="fill_parent">
 <LinearLayout android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    tools:context="ca.mixitmedia.ghostcatcher.app.StartScreen"
+    tools:context="ca.mixitmedia.ruhaunted.app.StartScreen"
     android:orientation="vertical"
-    android:weightSum="1">
+    android:weightSum="2">
 
     <ImageView
         android:src="@drawable/logo_mixitmedia"
@@ -15,7 +15,13 @@
         android:layout_height="250dp"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:layout_margin="10dp" />
+
+    <Space
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <Button
         android:clickable="true"
@@ -32,6 +38,11 @@
         android:text="@string/start_activity_b2"
         android:id="@+id/startButton"
         android:layout_gravity="center_horizontal" />
+
+    <Space
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/LinearLayout02"
