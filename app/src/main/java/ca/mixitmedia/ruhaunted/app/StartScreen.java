@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import ca.mixitmedia.ruhaunted.Utils;
+import ca.mixitmedia.ruhaunted.experience.gcEngine;
 
 public class StartScreen extends Activity {
 
@@ -230,6 +232,16 @@ public class StartScreen extends Activity {
 
     static boolean pendingExperience = false;
     public void BeginExperience(){
+        Uri root = Uri.parse(new File(this.getExternalFilesDir("mixitmedia"), "ghostcatcher").getAbsolutePath());
+        File f = new File(root + "/Exp1Chapter1.xml");
+        if (!f.exists()){
+            Utils.messageDialog(this,"Download error", "The current network might be blocking the data download, Please try a different network.", new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
+        }
         if(this.hasWindowFocus()) {
             Intent myIntent = new Intent(StartScreen.this, MainActivity.class);
             startActivity(myIntent);
@@ -332,7 +344,8 @@ public class StartScreen extends Activity {
                 result = true;
 
             }
-            catch (Exception e) { Log.e("Error: ", e.getMessage()); }
+            catch (Exception e) { Log.e("Errorzzzz" +
+                    ": ", e.getMessage()); }
             return null;
         }
 
@@ -408,6 +421,7 @@ public class StartScreen extends Activity {
             //Now delete the zip file since it takes up 360000000 bits
             new File(zipFile) .delete();
             BeginExperience();
+
         }
 
         public void unzip() {

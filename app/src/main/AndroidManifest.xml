@@ -55,7 +55,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBd2jsok_1ns75y5fQJ51U80Me-GCRC4n4" />
+            android:value="AIzaSyD0N7uWkvPeYHHVgvlYK4T94BsO2diQlwo" />
 
         <activity
             android:name="ca.mixitmedia.ruhaunted.app.StartScreen"

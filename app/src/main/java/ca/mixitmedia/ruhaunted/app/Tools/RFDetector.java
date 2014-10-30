@@ -142,6 +142,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
                 sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
         gcMain.locationManager.setGPSUpdates(0);
+        vibrationHandler.post(vibrationRunnable);
         //updateDestination();
     }
 
@@ -152,6 +153,7 @@ public class RFDetector extends ToolFragment implements SensorEventListener {
     public void onPause() {
         sensorManager.unregisterListener(this);    //unregister listener for sensors
         gcMain.locationManager.setGPSUpdates(60000); //slow down gps updates
+        vibrationHandler.removeCallbacks(vibrationRunnable);
         //setGPSState(false, false);
         super.onPause();
     }

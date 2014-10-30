@@ -10,7 +10,7 @@
     android:weightSum="2">
 
     <ImageView
-        android:src="@drawable/logo_mixitmedia"
+        android:src="@drawable/title"
         android:layout_width="wrap_content"
         android:layout_height="250dp"
         android:layout_gravity="center"

@@ -2,7 +2,9 @@ package ca.mixitmedia.ruhaunted;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -66,12 +68,23 @@ public class Utils {
     }
 
     public static void messageDialog(Context context, String title, String message) {
-		new AlertDialog.Builder(context)
+        messageDialog(context, title, message, null);
+    }
+    public static void messageDialog(Context context, String title, String message, final Runnable onDissmiss) {
+		Dialog d = new AlertDialog.Builder(context)
 		        .setTitle(title)
 		        .setMessage(message)
 		        .setNeutralButton("OK", null)
-		        .create()
-			    .show();
+		        .create();
+
+        if (onDissmiss!=null)d.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                onDissmiss.run();
+            }
+        });
+        d.show();
+
     }
 
     /**

@@ -46,15 +46,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         //Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        setContentView(R.layout.activity_main);
-
         try {
             gcEngine = gcParser.parseXML(this);
         } catch (IOException | XmlPullParserException e){
             Log.e("Huge Mistake", e.getMessage());
             Utils.messageDialog(this,"Error", e.getMessage());
         }
+        setContentView(R.layout.activity_main);
+
+
 
         Tools.init(this);
         SoundManager.init(this);
